@@ -1,0 +1,42 @@
+package dcldxSkinsdxBarsPaintersD12;
+
+{$R *.res}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressSkins Library Uses Clause Auto Fill Helper for Bars Painters by Developer Express Inc.'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl,
+  rtl,
+  designide,
+  dcldxSkinsCoreD12,
+  dcldxSkinsDesignHelperD12,
+  dxSkinsdxBarPainterD12,
+  dxSkinsdxRibbonPainterD12,
+  dxSkinsdxDLPainterD12;
+
+contains
+  dxSkinsdxBarsPaintersReg;
+
+end.

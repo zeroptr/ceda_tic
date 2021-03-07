@@ -1,0 +1,43 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = tee89.bpl TeeUI89.bpl TeeDB89.bpl TeePro89.bpl \
+  TeeLanguage89.bpl DclTeePro89.bpl TeeGL89.bpl TeeImage89.bpl
+
+# missing: TeeQR89 and DclTQR89 packages
+
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Tee89.bpl: Tee89.dpk
+  $(DCC)
+
+TeeDB89.bpl: TeeDB89.dpk
+  $(DCC)
+
+TeeUI89.bpl: TeeUI89.dpk
+  $(DCC)
+
+TeePro89.bpl: TeePro89.dpk
+  $(DCC)
+
+TeeLanguage89.bpl: TeeLanguage89.dpk
+  $(DCC)
+
+DclTeePro89.bpl: DclTeePro89.dpk
+  $(DCC)
+
+TeeGL89.bpl: TeeGL89.dpk
+  $(DCC)
+
+TeeImage89.bpl: TeeImage89.dpk
+  $(DCC)

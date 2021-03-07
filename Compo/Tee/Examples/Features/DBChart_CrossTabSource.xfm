@@ -1,0 +1,87 @@
+inherited DBCrossTabSourceDemo: TDBCrossTabSourceDemo
+  Left = 268
+  Top = 228
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 54
+  end
+  inherited Memo1: TMemo
+    Height = 54
+    Lines.Strings = (
+      'DBCrosstabSource component connects to any dataset and'
+      'automatically creates series from database data, '
+      'using Group and Label fields and formula (sum or count values).')
+  end
+  inherited Panel1: TPanel
+    Top = 56
+    Height = 46
+    object CheckBox1: TCheckBox
+      Left = 12
+      Top = 12
+      Width = 81
+      Height = 17
+      Caption = '&Open table'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object RadioGroup1: TRadioGroup
+      Left = 119
+      Top = 1
+      Width = 145
+      Height = 33
+      Columns = 2
+      ItemIndex = 1
+      Items.Strings = (
+        'Count'
+        'Sum')
+      TabOrder = 1
+      OnClick = RadioGroup1Click
+    end
+    object Button1: TButton
+      Left = 280
+      Top = 8
+      Width = 57
+      Height = 25
+      Caption = '&Swap'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+  end
+  inherited DBChart1: TDBChart
+    Top = 102
+    Height = 253
+    Title.Text.Strings = (
+      'TeeChart'
+      'Crosstab source example')
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = False
+      DataSource = DBCrossTabSource1
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+  end
+  object DBCrossTabSource1: TDBCrossTabSource
+    Active = True
+    DataSet = Table1
+    GroupField = 'Terms'
+    LabelField = 'PaymentMethod'
+    Series = Series1
+    ValueField = 'AmountPaid'
+    Left = 56
+    Top = 132
+  end
+  object Table1: TTable
+    DatabaseName = 'DBDEMOS'
+    TableName = 'ORDERS.DB'
+    Left = 328
+    Top = 124
+  end
+end

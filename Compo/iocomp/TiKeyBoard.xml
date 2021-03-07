@@ -1,0 +1,21 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<Font.Style>1</Font.Style>
+<Font.Color>-2147483640</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>8</Font.Size>
+<OuterMargin>5</OuterMargin>
+<SecondRowMargin>10</SecondRowMargin>
+<Style>0</Style>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

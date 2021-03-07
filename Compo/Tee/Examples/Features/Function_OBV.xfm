@@ -1,0 +1,90 @@
+inherited OBVFuncDemo: TOBVFuncDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 71
+  end
+  inherited Memo1: TMemo
+    Height = 71
+    Lines.Strings = (
+      '"On Balance Volume" function ( OBV ) is a financial indicator.'
+      'The formula is: '
+      'When close price is bigger than open price, volume is added.'
+      
+        'When close price is lower or equal than open price, volume is su' +
+        'btracted.')
+  end
+  inherited Chart1: TChart
+    Top = 114
+    Height = 223
+    Title.Visible = False
+    CustomAxes = <
+      item
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 40.000000000000000000
+        EndPosition = 60.000000000000000000
+      end
+      item
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 64.000000000000000000
+      end>
+    LeftAxis.EndPosition = 36.000000000000000000
+    View3D = False
+    object Series1: TCandleSeries
+      CloseValues.Name = 'Tancament'
+      CloseValues.Order = loNone
+      DateValues.Name = 'Data'
+      DateValues.Order = loAscending
+      HighValues.Name = 'Alt'
+      HighValues.Order = loNone
+      LowValues.Name = 'Baix'
+      LowValues.Order = loNone
+      OpenValues.Name = 'Obertura'
+      OpenValues.Order = loNone
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Title = 'Candle'
+    end
+    object Series2: TVolumeSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Title = 'Volume'
+      VertAxis = aCustomVertAxis
+      LinePen.Color = clGreen
+      VolumeValues.Name = 'Y'
+      VolumeValues.Order = loNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      CustomVertAxis = 0
+    end
+    object Series3: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clBlue
+      Title = 'OBV function'
+      VertAxis = aCustomVertAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      YValues.ValueSource = 'Tancament'
+      CustomVertAxis = 1
+      object TeeFunction1: TOBVFunction
+        Period = 1.000000000000000000
+        Volume = Series2
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 73
+    Visible = False
+  end
+end

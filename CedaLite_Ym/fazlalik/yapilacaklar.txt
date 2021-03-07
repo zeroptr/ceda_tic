@@ -1,0 +1,59 @@
+Seferde
+Ölçü birimi adet adet oto gelecek  ekranda gözükmeyecek
+alýcý birim fiyattan direk satýcý birim fiyata geçecek
+fatura kesildi checkleri alta sefer tamamlandýnýn altýna alýnacak
+dorse kodu kalkacak
+bekleme faturasý yok ise bekleme bölümlerine girilmeyecek
+mazot ve sefer aramlarda çift týklama ile seçme yapýlacak
+
+
+Araç Tanýmlamada 
+öz mal deðilse kasko sigorta, trafik sigorta ve litre/km ye geçmeyecek
+ruhsat tanýmlamasý 2 sayfaya alýnacak bilgiler scrool box a atýlacak 
+ekran küçültülecek
+araç arama listesinde plaka cari kod ad þeklinde sadeleþtirlecek
+faturada seferden seçmelerde fazla satýr faturaya aktarýyor
+kasalý raporlar
+sefer aktarma tumunu aktarma hatasý
+MOZOT FATURASINDA ÖLÇÜ TÝPÝ BÝRÝMÝ KÝLO SU ANDA
+
+
+
+
+
+
+
+KAPALI FAUTRA ÝÞLEMELERÝNDE HATA VARDI GÖRÜÞ
+2 cari2 kasa hareketi iþleme
+yukaru tusu ile gridde kaydetme hatasý
+mazot maliyet, 
+EXcEL raporlara resim ekleme
+
+RAPORLAR cari tarih aralýklý cari hareket raporu hata veriyor
+sefer listesinin alan sýralaarýnýn ayarlanmasý
+dekent kasa listelerinde cari adýný listeye alma(açýklamaya cari adý gelmeli ozaman listede gözükür yada detay içinde ilk cari koddan alýnýp mas-det baglanýp getirilebilir
+cari bakiyeli hareket listesine cari kod aralýgý ekleme
+bu raporu sayfa sayfa getirme her müþteri bir sayfa
+
+listedeki proje kodu kalkacak,açýklamalara nereden geldigi gitti yazýlacak
+
+tuþlarla kaydetme konusulup yarlanacak (burak irfan)
+çift tablý ekranlarýn onceki sonraki kayýtlarý faturadaki gibi (burak irfan)
+
+
+faturada genel iskonto tartýþma
+
+
+rapor sütün büyüklüklerinin ayarlanmasý
+
+dekont aramada dekont detaya girlen cari adýný görüntülenmesi 
+
+raporlara kod araligi ekleme
+
+raporlarda her müþteri bir sayafada gelsin
+
+detaylý ekranlarda detaydayken bile kayýt iptal yapabilme
+
+sefer mazot aram adialoglarýn sütün sýralarý
+
+raporlarda bazen tarih aralýklý cari hareket raporu float hatasý veriyor

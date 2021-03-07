@@ -1,0 +1,99 @@
+
+{                                                                              }
+{ IB_DataPumpItems                                                             }
+{                                                                              }
+
+TIB_DPItemBase = class(TComponent)
+private
+  FDataPump: TIB_DataPump;
+  FSrcRow: TIB_Row;
+  FDstRow: TIB_Row;
+  FDstColumn: TIB_Column;
+  FSrcColumn: TIB_Column;
+  FCheckSrcAssigned: boolean;
+  FOnExecute: TIB_DatasetEvent;
+protected
+  function GetAttributes: string; virtual;
+  procedure Prepare; virtual;
+  procedure Execute; virtual;
+  property CheckSrcAssigned: boolean read FCheckSrcAssigned
+                                     write FCheckSrcAssigned;
+  property Attributes: string read GetAttributes;
+public
+  constructor Create( AOwner: TComponent ); override;
+  property DataPump: TIB_DataPump read FDataPump;
+  property DstColumn: TIB_Column read FDstColumn;
+  property SrcColumn: TIB_Column read FSrcColumn;
+  property SrcRow: TIB_Row read FSrcRow;
+  property DstRow: TIB_Row read FDstRow;
+published
+  property OnExecute: TIB_DatasetEvent read FOnExecute write FOnExecute;
+end;
+
+TIB_DPItemTrimSpaces = class(TIB_DPItemBase)
+private
+  FTrimSpaces: smallint;
+protected
+  function GetAttributes: string; override;
+  procedure Prepare; override;
+  procedure Execute; override;
+published
+  property TrimSpaces: smallint read FTrimSpaces write FTrimSpaces;
+end;
+
+TIB_DPItemSubStr = class(TIB_DPItemBase)
+private
+  FStartPos: integer;
+  FCountPos: integer;
+protected
+  function GetAttributes: string; override;
+  procedure Prepare; override;
+  procedure Execute; override;
+published
+  property StartPos: integer read FStartPos write FStartPos;
+  property CountPos: integer read FCountPos write FCountPos;
+end;
+
+{: This item takes an input field and looks for the supplied splitter character
+in the input string.  If it finds the splitter character, it will take either
+the front (left) or the back (right) piece of the input text and assign it to
+the output text.
+<br><br>
+If the character that splits the input is not found then it is possible to
+have the whole input string or none of it assigned to the output.}
+TIB_DPItemSplitter = class(TIB_DPItemBase)
+private
+  FSplitter: char;
+  FFrontPiece: boolean;
+  FNoSplitToFront: boolean;
+  FTrimStr: boolean;
+protected
+  function GetAttributes: string; override;
+  procedure Prepare; override;
+  procedure Execute; override;
+published
+  property Splitter: char read FSplitter write FSplitter;
+  property FrontPiece: boolean read FFrontPiece write FFrontPiece;
+  property NoSplitToFront: boolean read FNoSplitToFront write FNoSplitToFront;
+  property TrimStr: boolean read FTrimStr write FTrimStr;
+end;
+
+{: This item takes an input field and makes sure it complies with a certain mask.
+<br><br>
+In this case it will take a phone number with (###)###-#### and convert it
+into ###-###-####.}
+TIB_DPItemPhone = class(TIB_DPItemBase)
+protected
+  procedure Execute; override;
+end;
+
+{: This item takes an input field and makes sure it complies with a certain mask.
+<br><br>
+In this case it will take a ZIP with #####- and convert it
+into #####.}
+TIB_DPItemZIP = class(TIB_DPItemBase)
+protected
+  procedure Execute; override;
+end;
+
+// IB_DataPumpItems.IMP

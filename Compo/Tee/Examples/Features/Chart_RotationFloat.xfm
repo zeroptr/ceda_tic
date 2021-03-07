@@ -1,0 +1,100 @@
+inherited ChartRotationFloat: TChartRotationFloat
+  Left = 333
+  Top = 214
+  Width = 615
+  Height = 450
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 599
+  end
+  inherited Memo1: TMemo
+    Width = 599
+    Lines.Strings = (
+      
+        'Use the RotationFloat property to specify a rotation degrees wit' +
+        'h more precision and decimals.'
+      ''
+      'Example :'
+      '  Chart1.View3DOptions.RotationFloat:=310.20;')
+  end
+  inherited Chart1: TChart
+    Width = 599
+    Height = 258
+    BottomWall.Pen.Visible = False
+    BottomWall.Transparent = True
+    Gradient.EndColor = 4194432
+    Gradient.Visible = True
+    LeftWall.Pen.Visible = False
+    LeftWall.Transparent = True
+    Legend.Visible = False
+    Title.Visible = False
+    LeftAxis.MaximumOffset = 10
+    LeftAxis.MinimumOffset = 20
+    View3DOptions.Elevation = 360
+    View3DOptions.HorizOffset = -41
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 200
+    View3DOptions.Rotation = 310
+    View3DOptions.Zoom = 95
+    ColorPaletteIndex = 7
+    object Series1: TGanttSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.Gradient.Balance = 0
+      Pointer.Gradient.Direction = gdDiagonalDown
+      Pointer.Gradient.EndColor = 6723942
+      Pointer.Gradient.Visible = True
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 12
+      Pointer.Visible = True
+      XValues.Name = 'Start'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      StartValues.Name = 'Start'
+      StartValues.Order = loAscending
+      EndValues.Name = 'End'
+      EndValues.Order = loNone
+      NextTask.Name = 'NextTask'
+      NextTask.Order = loNone
+      Data = {
+        040400000000000000C01CE3400644657369676E00000000E01EE34000000000
+        0000F0BF00000000801DE3400B446576656C6F706D656E7400000000A01FE340
+        000000000000F0BF00000000801DE3400B50726F746F747970696E6700000000
+        E01EE340000000000000F0BF00000000001EE3400553616C6573000000008020
+        E340000000000000F0BF}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 599
+    object Label1: TLabel
+      Left = 11
+      Top = 14
+      Width = 66
+      Height = 13
+      Caption = '&Rotation float:'
+    end
+    object Edit1: TEdit
+      Left = 89
+      Top = 11
+      Width = 64
+      Height = 21
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Left = 177
+      Top = 8
+      Width = 73
+      Height = 25
+      Caption = '&Apply !'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

@@ -1,0 +1,68 @@
+inherited LegendSeriesGroups: TLegendSeriesGroups
+  Left = 294
+  Top = 180
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'When a Chart has series Groups, the Legend can display series na' +
+        'mes or the series Group Names.'
+      ''
+      'Chart1.Legend.LegendStyle := lsSeriesGroups'
+      '')
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 16
+      Top = 15
+      Width = 63
+      Height = 13
+      Caption = '&Legend style:'
+      FocusControl = CBLegendStyle
+    end
+    object CBLegendStyle: TComboFlat
+      Left = 96
+      Top = 10
+      Width = 149
+      HelpContext = 273
+      ItemIndex = 4
+      TabOrder = 0
+      Text = 'Series Groups'
+      OnChange = CBLegendStyleChange
+      Items.Strings = (
+        'Automatic'
+        'Series Names'
+        'Series Values'
+        'Last Values'
+        'Series Groups')
+    end
+    object bEdit: TButton
+      Left = 272
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = bEditClick
+    end
+    object ComboFlat1: TComboFlat
+      Left = 373
+      Top = 10
+      Width = 145
+      ItemIndex = 1
+      TabOrder = 2
+      Text = 'Check boxes'
+      OnChange = ComboFlat1Change
+      Items.Strings = (
+        'No check-boxes'
+        'Check boxes'
+        'Radio items')
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 184
+    Top = 244
+  end
+end

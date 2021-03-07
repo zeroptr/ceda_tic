@@ -1,0 +1,101 @@
+inherited ColorGrid: TColorGrid
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'ColorGrid series is a 2D surface. Each "cell" has a value and an' +
+        ' optional color.'
+      
+        'The AddXYZ method is used to fill the color grid. An optional "g' +
+        'rid" over cells is'
+      'displayed using the Pen property.'
+      ''
+      'Example: Series1.AddXYZ( 1, 123, 1 );')
+  end
+  inherited Chart1: TChart
+    View3D = False
+    object Series1: TColorGridSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 236
+      Top = 14
+      Width = 23
+      Height = 13
+      Caption = '&Size:'
+      FocusControl = Edit1
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 12
+      Width = 49
+      Height = 17
+      Caption = '&Grid'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object ButtonPen1: TButtonPen
+      Left = 64
+      Top = 8
+      Caption = 'Grid...'
+      TabOrder = 1
+      OnClick = ButtonPen1Click
+    end
+    object Button1: TButton
+      Left = 150
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+    object Edit1: TEdit
+      Left = 266
+      Top = 11
+      Width = 41
+      Height = 21
+      TabOrder = 3
+      Text = '20'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 307
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 1
+      Max = 5000
+      Position = 20
+      TabOrder = 4
+      Wrap = False
+    end
+    object CheckBox2: TCheckBox
+      Left = 331
+      Top = 13
+      Width = 73
+      Height = 17
+      Caption = '&Centered'
+      TabOrder = 5
+      OnClick = CheckBox2Click
+    end
+  end
+end

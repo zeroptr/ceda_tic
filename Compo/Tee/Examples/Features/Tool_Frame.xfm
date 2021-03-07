@@ -1,0 +1,140 @@
+inherited FrameToolForm: TFrameToolForm
+  Left = 156
+  Top = 196
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      'Apply decorative frames to Chart using the TFrameTool.'
+      ''
+      
+        'It offers several frame styles (Wood, Metal, etc) and optional P' +
+        'aspartou spacer.')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 289
+    BackWall.Visible = False
+    BottomWall.Color = clBlack
+    Gradient.EndColor = 16744576
+    Gradient.MidColor = 14548991
+    Gradient.StartColor = 1017855
+    Gradient.Visible = True
+    LeftWall.Color = clSilver
+    Legend.Visible = False
+    MarginBottom = 5
+    MarginLeft = 5
+    MarginRight = 5
+    MarginTop = 5
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Visible = False
+    LeftAxis.MaximumOffset = 9
+    TabOrder = 2
+    object Series1: TAreaSeries
+      Gradient.Direction = gdBottomTop
+      Gradient.StartColor = 14024661
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 14024661
+      AreaLinesPen.Visible = False
+      DrawArea = True
+      LinePen.Color = clGray
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 40
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000000000000028894000000000009C88400000000000A88640000000
+        00001C8640000000000010834000000000009486400000000000008440000000
+        0000248340000000000018854000000000002087400000000000408540000000
+        0000E481400000000000C07C4000000000001875400000000000607840000000
+        0000207C400000000000387D400000000000707C400000000000408040000000
+        00003081400000000000007E400000000000C8794000000000007C8040000000
+        0000C87E400000000000007E40}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Label2: TLabel
+      Left = 346
+      Top = 14
+      Width = 12
+      Height = 13
+      Caption = '45'
+    end
+    object Label1: TLabel
+      Left = 13
+      Top = 13
+      Width = 26
+      Height = 13
+      Caption = 'Styl&e:'
+      FocusControl = cbStyle
+    end
+    object Label3: TLabel
+      Left = 192
+      Top = 13
+      Width = 23
+      Height = 13
+      Caption = '&Size:'
+      FocusControl = ScrollBar4
+    end
+    object ScrollBar4: TScrollBar
+      Left = 220
+      Top = 12
+      Width = 121
+      Height = 16
+      Max = 200
+
+      Position = 45
+      TabOrder = 0
+      OnChange = ScrollBar4Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 389
+      Top = 12
+      Width = 85
+      Height = 17
+      Caption = 'Paspartou'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object cbStyle: TComboBox
+      Left = 57
+      Top = 9
+      Width = 113
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 2
+      OnChange = cbStyleChange
+      Items.Strings = (
+        'Metal'
+        'Gold'
+        'Silver'
+        'Wood'
+        'Cherry'
+        'Modern'
+        'Pine')
+    end
+  end
+end

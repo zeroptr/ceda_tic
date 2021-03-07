@@ -1,0 +1,98 @@
+inherited MarksPerPoint: TMarksPerPoint
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Series Marks can be individually customized using the default pr' +
+        'operty:'
+      ''
+      
+        'Series1.Marks[ 3 ].Font.Size := 14 ;    // custom font for mark ' +
+        'item 3')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Gradient.Direction = gdRadial
+    Gradient.EndColor = clSilver
+    Gradient.Visible = True
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    TabOrder = 0
+    object Series1: TPieSeries
+      Marks.Callout.Brush.Color = clWhite
+      Marks.Callout.Brush.Style = bsClear
+      Marks.Callout.Pen.Width = 2
+      Marks.Callout.Pen.EndStyle = esFlat
+      Marks.Callout.Style = psCircle
+      Marks.Callout.Visible = True
+      Marks.Callout.Distance = 12
+      Marks.Callout.Length = 19
+      Marks.Visible = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Shadow.HorizSize = 10
+      Shadow.Transparency = 80
+      Shadow.VertSize = 10
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 9
+      Top = 12
+      Width = 27
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Mark:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 40
+      Top = 8
+      Width = 33
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 73
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      TabOrder = 1
+    end
+    object Button1: TButton
+      Left = 104
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 200
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Reset'
+      TabOrder = 3
+      OnClick = Button2Click
+    end
+    object Edit2: TEdit
+      Left = 296
+      Top = 8
+      Width = 137
+      Height = 21
+      TabOrder = 4
+      OnChange = Edit2Change
+    end
+  end
+end

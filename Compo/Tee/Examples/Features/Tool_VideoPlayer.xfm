@@ -1,0 +1,89 @@
+inherited VideoPlayerToolForm: TVideoPlayerToolForm
+  Left = 422
+  Top = 248
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      
+        'VideoPlayer tool allows playing videos (standard Windows *.avi f' +
+        'iles), '
+      
+        'as background of several chart objects like the chart itself, le' +
+        'gend, annotations or any'
+      'custom rectangle.'
+      ''
+      'Multiple videos can be played simultaneously.'
+      ''
+      
+        'Note: Video speed might not be accurate depending on current CPU' +
+        ' usage.'
+      
+        'To play other video formats like DivX, XVid, MPEG, etc you need ' +
+        'drivers that'
+      'are compatible with VideoForWindows.')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 289
+    TabOrder = 2
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 15
+      Top = 14
+      Width = 53
+      Height = 13
+      Caption = 'File Name :'
+    end
+    object Edit1: TEdit
+      Left = 80
+      Top = 11
+      Width = 137
+      Height = 21
+      TabOrder = 0
+      Text = 'test.avi'
+    end
+    object bPlay: TButton
+      Left = 229
+      Top = 9
+      Width = 52
+      Height = 25
+      Caption = '&Play'
+      TabOrder = 1
+      OnClick = bPlayClick
+    end
+    object BStop: TButton
+      Left = 286
+      Top = 9
+      Width = 51
+      Height = 25
+      Caption = '&Stop'
+      Enabled = False
+      TabOrder = 2
+      OnClick = BStopClick
+    end
+    object cbLoop: TCheckBox
+      Left = 360
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Loop'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = cbLoopClick
+    end
+  end
+end

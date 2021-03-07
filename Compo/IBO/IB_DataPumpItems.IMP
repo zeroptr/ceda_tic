@@ -1,0 +1,208 @@
+// IB_DataPumpItems.INT
+
+constructor TIB_DPItemBase.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  FCheckSrcAssigned := false;
+  FDataPump := AOwner as TIB_DataPump;
+end;
+
+procedure TIB_DPItemBase.Prepare;
+begin
+  if not Assigned( DstColumn ) then 
+    raise EIB_Error.Create( 'Invalid Destination column' );
+  if CheckSrcAssigned and not Assigned( SrcColumn ) then
+    raise EIB_Error.Create( 'Invalid Source column for ' +
+                            DstColumn.FullFieldName );
+end;
+
+procedure TIB_DPItemBase.Execute;
+begin
+  if Assigned( SrcColumn ) then
+    DstColumn.Assign( SrcColumn )
+  else
+    DstColumn.Clear;
+end;
+
+function TIB_DPItemBase.GetAttributes: string;
+begin
+  Result := '';
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DPItemTrimSpaces.Prepare;
+var
+  tmpStr: string;
+begin
+  inherited Prepare;
+  with DataPump.DPItemAttributes, DstColumn do
+  begin
+    tmpStr := Trim( LinkParamValue[ FullFieldName, 'TRIMSPACES' ] );
+    if tmpStr <> '' then
+      TrimSpaces := StrToInt( tmpStr );
+  end;
+end;
+
+procedure TIB_DPItemTrimSpaces.Execute;
+begin
+  inherited Execute;
+  with DstColumn do
+    if not IsNull then
+      case TrimSpaces of
+        1: AsString := TrimLeft( AsString );
+        2: AsString := TrimRight( AsString );
+        else AsString := Trim( AsString );
+      end;
+end;
+
+function TIB_DPItemTrimSpaces.GetAttributes: string;
+begin
+  Result := inherited GetAttributes;
+  if Result <> '' then
+    Result := Result + ';';
+  case TrimSpaces of
+    1: Result := Result + 'TrimLeft';
+    2: Result := Result + 'TrimRight';
+    else Result := Result + 'Trim';
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DPItemSubStr.Prepare;
+begin
+  with DataPump.DPItemAttributes, DstColumn do
+  begin
+    StartPos := StrToInt( LinkParamValue[ FullFieldName, 'STARTPOS' ] );
+    CountPos := StrToInt( LinkParamValue[ FullFieldName, 'COUNTPOS' ] );
+  end;
+  inherited Prepare;
+end;
+
+procedure TIB_DPItemSubStr.Execute;
+begin
+  with SrcColumn do
+    if IsNull then
+      inherited Execute
+    else
+      DstColumn.AsString := Copy( AsString, StartPos, CountPos );
+end;
+
+function TIB_DPItemSubStr.GetAttributes: string;
+begin
+  Result := inherited GetAttributes;
+  if Result <> '' then
+    Result := Result + ';';
+  Result := Result + 'STARTPOS=' + IntToStr( StartPos );
+  Result := Result + ';';
+  Result := Result + 'COUNTPOS=' + IntToStr( CountPos );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DPItemSplitter.Prepare;
+var
+  tmpStr: string;
+begin
+  inherited Prepare;
+  with DataPump.DPItemAttributes, DstColumn do begin
+    tmpStr := LinkParamValue[ FullFieldName, 'SPLITTER' ];
+    if tmpStr = '' then
+      tmpStr := LinkParamValue[ FullFieldName, 'Splitter' ];
+    if tmpStr <> '' then
+      Splitter := tmpStr[1]
+    else
+      Splitter := ',';
+    FrontPiece := LinkParamIsSet[ FullFieldName, 'FRONTPIECE' ];
+    NoSplitToFront := LinkParamIsSet[ FullFieldName, 'NOSPLITTOFRONT' ];
+    TrimStr := LinkParamIsSet[ FullFieldName, 'TRIMSTR' ]
+  end;
+end;
+
+procedure TIB_DPItemSplitter.Execute;
+var
+  FStr: string;
+  FPos: integer;
+begin
+  FStr := SrcColumn.AsString;
+  FPos := Pos( Splitter, FStr );
+  with DstColumn do
+  begin
+    if FPos = 0 then
+    begin
+      if ( NoSplitToFront and FrontPiece ) or
+         ( not NoSplitToFront and not FrontPiece ) then
+        inherited Execute
+      else
+        AsString := '';
+    end
+    else
+    if FrontPiece then
+      AsString := Copy( FStr, 1, FPos - 1 )
+    else
+      AsString := Copy( FStr, FPos + 1, MaxInt );
+    if TrimStr then
+      AsString := Trim( AsString );
+  end;
+end;
+
+function TIB_DPItemSplitter.GetAttributes: string;
+begin
+  Result := inherited GetAttributes;
+  if Result <> '' then
+    Result := Result + ';';
+  Result := Result + 'SPLITTER=' + SetCharValues( Splitter );
+  if FrontPiece then
+    Result := Result + ';FRONTPIECE';
+  if NoSplitToFront then
+    Result := Result + ';NOSPLITTOFRONT';
+  if TrimStr then
+    Result := Result + ';TRIMSTR';
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DPItemPhone.Execute;
+var
+  tmpStr: string;
+begin
+  with SrcColumn do
+  begin
+    if IsNull then
+      inherited Execute
+    else
+    begin
+      tmpStr := Trim( AsString );
+      if ( Length( tmpStr ) >= 9 ) and ( Pos( '(', tmpStr ) > 0 ) then
+      begin
+        Delete( tmpStr, 1, 1 );
+        tmpStr[ 4 ] := '-';
+      end;
+      tmpStr := Trim( tmpStr );
+      if ( Length( tmpStr ) > 0 ) and ( tmpStr[1] = '-' ) then
+        Delete( tmpStr, 1, 1 );
+      DstColumn.AsString := tmpStr;
+    end;
+  end;
+end;
+
+procedure TIB_DPItemZIP.Execute;
+var
+  tmpStr: string;
+begin
+  with SrcColumn do
+  begin
+    if IsNull then
+      inherited Execute
+    else
+    begin
+      tmpStr := Trim( AsString );
+      if Length( tmpStr ) <> 10 then
+        tmpStr := Copy( tmpStr, 1, 5 );
+      DstColumn.AsString := tmpStr;
+    end;
+  end;
+end;
+
+

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{CEF57247-7B9F-40DA-96AD-3A9990779D52}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    
+    <Projects>
+      <Projects Name="TeeTree2D9Tee7.bpl">TeeTree2D9Tee7.bdsproj</Projects>
+      <Projects Name="DclTree2D9Tee7.bpl">DclTree2D9Tee7.bdsproj</Projects>
+      <Projects Name="Targets">TeeTree2D9Tee7.bpl DclTree2D9Tee7.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

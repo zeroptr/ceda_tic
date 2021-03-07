@@ -1,0 +1,56 @@
+
+{                                                                              }
+{  IBA_Statement.PBL                                                           }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+public
+
+{ Properties }
+
+property RetrieveDomainNames;
+
+published
+
+{ Properties }
+
+property CalculatedFields;
+property ColumnAttributes;
+property DatabaseName;
+property FieldsAlignment;
+property FieldsCharCase;
+property FieldsDisplayFormat;
+property FieldsDisplayLabel;
+property FieldsGridLabel;
+property FieldsDisplayWidth;
+property FieldsEditMask;
+property FieldsIndex;
+property FieldsReadOnly;
+property FieldsTrimming;
+property FieldsVisible;
+property IB_Connection;
+property IB_Transaction;
+property Params;
+property Prepared;
+property SetParamAttribs;
+property SQL;
+property _StatementLinkCount;
+
+{ Events }
+
+property BeforeExecute;
+property AfterExecute;
+property OnActiveChange;
+property OnBlobCallback;
+property OnCalculateField;
+property OnInvalidateSQL;
+property OnLayoutChanged;
+property OnMacroSubstitute;
+property OnPrepareSQL;
+property OnPreparedChanged;
+
+{$I IB_Component.PBL}
+
+{$ENDIF}
+

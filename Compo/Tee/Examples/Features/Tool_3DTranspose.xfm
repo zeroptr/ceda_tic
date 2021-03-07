@@ -1,0 +1,57 @@
+inherited TransposeToolDemo: TTransposeToolDemo
+  Left = 439
+  Top = 323
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 84
+  end
+  inherited Memo1: TMemo
+    Height = 84
+    Lines.Strings = (
+      '3D Transpose tool "rotates" a 3D series 90 degrees.'
+      
+        'It will exchange x with z values.  Works with any Grid3D series ' +
+        '(surface, etc).'
+      ''
+      
+        'A similar effect can be obtained setting the Bottom and Depth ax' +
+        'es'
+      'Inverted property to True.')
+  end
+  inherited Chart1: TChart
+    Top = 127
+    Height = 210
+    Legend.Visible = False
+    Title.Text.Strings = (
+      '3D Transpose tool')
+    Chart3DPercent = 65
+    DepthAxis.Visible = True
+    View3DOptions.OrthoAngle = 60
+    object Series1: TSurfaceSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 86
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Transpose !'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

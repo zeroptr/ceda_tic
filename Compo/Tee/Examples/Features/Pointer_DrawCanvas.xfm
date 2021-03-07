@@ -1,0 +1,71 @@
+inherited PointerDrawCanvas: TPointerDrawCanvas
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Series Pointer objects can now draw into custom Canvas (for exam' +
+        'ple, '
+      'they are now displayed in the editor'#39's comboboxes).'
+      ''
+      'See the example code. Move the mouse over a point...')
+  end
+  inherited Chart1: TChart
+    Chart3DPercent = 10
+    OnMouseMove = Chart1MouseMove
+    object Series1: TPointSeries
+      ColorEachPoint = True
+      Cursor = crHandPoint
+      Marks.ArrowLength = 0
+      Marks.Visible = False
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.HorizSize = 6
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 107
+      Height = 13
+      Caption = 'Pointer displayed here:'
+    end
+    object PaintBox1: TPaintBox
+      Left = 120
+      Top = 6
+      Width = 41
+      Height = 29
+      OnPaint = PaintBox1Paint
+    end
+    object Button1: TButton
+      Left = 304
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 181
+      Top = 15
+      Width = 40
+      Height = 17
+      Caption = '&3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

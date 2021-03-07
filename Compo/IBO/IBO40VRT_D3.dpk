@@ -1,0 +1,63 @@
+package IBO40VRT_D3;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'IB Objects Visual Controls Runtime'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl30,
+  vclx30,
+  IBO40CRT_D3;
+
+contains
+  IB_Controls,
+  DatePick,
+  IB_FieldDataLink,
+  IB_SearchPanel,
+  IB_ArrayGrid,
+  IB_CGrid,
+  IB_ConnectionBar,
+  IB_CursorGrid,
+  IB_DatasetBar,
+  IB_Grid,
+  IB_IncSearch,
+  IB_Ledger,
+  IB_LocateEdit,
+  IB_NavigationBar,
+  IB_SearchBar,
+  IB_SearchEdit,
+  IB_StatementBar,
+  IB_StatementGrid,
+  IB_UpdateBar,
+  IB_ParamEdit,
+  IB_TransactionBar,
+  IBD_Ordering,
+  IBD_IBMemoEdit,
+  IBC_Label,
+  IBC_CustomLabel,
+  IB_ControlInterface,
+  XSpin;
+
+end.

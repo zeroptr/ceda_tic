@@ -1,0 +1,155 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Simple Legend [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>1</BorderStyle>
+<LegendFont.Style>0</LegendFont.Style>
+<LegendFont.Color>-2147483640</LegendFont.Color>
+<LegendFont.Name>MS Sans Serif</LegendFont.Name>
+<LegendFont.Size>8</LegendFont.Size>
+<LegendMargin>10</LegendMargin>
+<LegendPercentMargin>10</LegendPercentMargin>
+<LegendPercentPrecision>1</LegendPercentPrecision>
+<LegendShowPercent>0</LegendShowPercent>
+<LegendShowValue>0</LegendShowValue>
+<LegendValueMargin>10</LegendValueMargin>
+<LegendValuePrecision>1</LegendValuePrecision>
+<OuterMargin>10</OuterMargin>
+<StartDegrees>90</StartDegrees>
+<TitleFont.Style>0</TitleFont.Style>
+<TitleFont.Color>-2147483640</TitleFont.Color>
+<TitleFont.Name>MS Sans Serif</TitleFont.Name>
+<TitleFont.Size>8</TitleFont.Size>
+<TitleHorizontalAlignment>0</TitleHorizontalAlignment>
+<TitleMargin>10</TitleMargin>
+<TitleText>Pie Chart 1</TitleText>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Show Percent Only</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>1</BorderStyle>
+<LegendFont.Style>0</LegendFont.Style>
+<LegendFont.Color>-2147483640</LegendFont.Color>
+<LegendFont.Name>MS Sans Serif</LegendFont.Name>
+<LegendFont.Size>8</LegendFont.Size>
+<LegendMargin>10</LegendMargin>
+<LegendPercentMargin>10</LegendPercentMargin>
+<LegendPercentPrecision>1</LegendPercentPrecision>
+<LegendShowPercent>1</LegendShowPercent>
+<LegendShowValue>0</LegendShowValue>
+<LegendValueMargin>10</LegendValueMargin>
+<LegendValuePrecision>1</LegendValuePrecision>
+<OuterMargin>10</OuterMargin>
+<StartDegrees>90</StartDegrees>
+<TitleFont.Style>0</TitleFont.Style>
+<TitleFont.Color>-2147483640</TitleFont.Color>
+<TitleFont.Name>MS Sans Serif</TitleFont.Name>
+<TitleFont.Size>8</TitleFont.Size>
+<TitleHorizontalAlignment>0</TitleHorizontalAlignment>
+<TitleMargin>10</TitleMargin>
+<TitleText>Pie Chart 1</TitleText>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Show Value Only</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>1</BorderStyle>
+<LegendFont.Style>0</LegendFont.Style>
+<LegendFont.Color>-2147483640</LegendFont.Color>
+<LegendFont.Name>MS Sans Serif</LegendFont.Name>
+<LegendFont.Size>8</LegendFont.Size>
+<LegendMargin>10</LegendMargin>
+<LegendPercentMargin>10</LegendPercentMargin>
+<LegendPercentPrecision>1</LegendPercentPrecision>
+<LegendShowPercent>0</LegendShowPercent>
+<LegendShowValue>1</LegendShowValue>
+<LegendValueMargin>10</LegendValueMargin>
+<LegendValuePrecision>1</LegendValuePrecision>
+<OuterMargin>10</OuterMargin>
+<StartDegrees>90</StartDegrees>
+<TitleFont.Style>0</TitleFont.Style>
+<TitleFont.Color>-2147483640</TitleFont.Color>
+<TitleFont.Name>MS Sans Serif</TitleFont.Name>
+<TitleFont.Size>8</TitleFont.Size>
+<TitleHorizontalAlignment>0</TitleHorizontalAlignment>
+<TitleMargin>10</TitleMargin>
+<TitleText>Pie Chart 1</TitleText>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Show Value & Percent</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>1</BorderStyle>
+<LegendFont.Style>0</LegendFont.Style>
+<LegendFont.Color>-2147483640</LegendFont.Color>
+<LegendFont.Name>MS Sans Serif</LegendFont.Name>
+<LegendFont.Size>8</LegendFont.Size>
+<LegendMargin>10</LegendMargin>
+<LegendPercentMargin>10</LegendPercentMargin>
+<LegendPercentPrecision>1</LegendPercentPrecision>
+<LegendShowPercent>1</LegendShowPercent>
+<LegendShowValue>1</LegendShowValue>
+<LegendValueMargin>10</LegendValueMargin>
+<LegendValuePrecision>1</LegendValuePrecision>
+<OuterMargin>10</OuterMargin>
+<StartDegrees>90</StartDegrees>
+<TitleFont.Style>0</TitleFont.Style>
+<TitleFont.Color>-2147483640</TitleFont.Color>
+<TitleFont.Name>MS Sans Serif</TitleFont.Name>
+<TitleFont.Size>8</TitleFont.Size>
+<TitleHorizontalAlignment>0</TitleHorizontalAlignment>
+<TitleMargin>10</TitleMargin>
+<TitleText>Pie Chart 1</TitleText>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Semi-Transparent [Default]</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<LegendFont.Color>-2147483640</LegendFont.Color>
+<TitleFont.Color>-2147483640</TitleFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<LegendFont.Color>16777215</LegendFont.Color>
+<TitleFont.Color>65535</TitleFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<LegendFont.Color>16777215</LegendFont.Color>
+<TitleFont.Color>16777215</TitleFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

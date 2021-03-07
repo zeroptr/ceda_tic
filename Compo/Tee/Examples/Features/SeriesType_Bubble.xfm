@@ -1,0 +1,181 @@
+inherited BubbleSeriesForm: TBubbleSeriesForm
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      'Bubbles are represented with a center position and Radius.'
+      
+        'Each bubble can show a different style using the OnGetPointerSty' +
+        'le event.'
+      ''
+      'Options include style, pattern, border, marks, radius, etc.')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 106
+    Height = 231
+    BackWall.Brush.Color = clWhite
+    BackWall.Color = clWhite
+    Foot.Alignment = taLeftJustify
+    Foot.Font.Height = -12
+    Foot.Frame.Color = clScrollBar
+    Foot.Visible = False
+    Legend.ColorWidth = 32
+    Legend.Symbol.Width = 32
+    Legend.Visible = False
+    Title.Font.Height = -15
+    Title.Font.Style = [fsItalic]
+    Title.Frame.Color = clScrollBar
+    Title.Text.Strings = (
+      'Bubble')
+    BottomAxis.LabelsAngle = 90
+    BottomAxis.LabelsFont.Color = clTeal
+    BottomAxis.LabelsFont.Height = -12
+    BottomAxis.Title.Font.Color = clGreen
+    BottomAxis.Title.Font.Height = -16
+    BottomAxis.Title.Font.Style = [fsItalic]
+    LeftAxis.LabelsFont.Height = -13
+    LeftAxis.MinorTickLength = 4
+    LeftAxis.MinorTicks.Color = 4227327
+    LeftAxis.TickLength = 8
+    LeftAxis.Title.Caption = 'Price'
+    LeftAxis.Title.Font.Color = clNavy
+    LeftAxis.Title.Font.Height = -15
+    LeftAxis.Title.Font.Style = [fsBold]
+    RightAxis.Title.Angle = 180
+    TopAxis.DateTimeFormat = 'dd/MM/yy'
+    TopAxis.LabelsAngle = 90
+    TopAxis.Title.Caption = 'Date'
+    View3D = False
+    Zoom.Animated = True
+    Zoom.AnimatedSteps = 3
+    BevelWidth = 0
+    TabOrder = 0
+    object Series1: TBubbleSeries
+      OnGetPointerStyle = Series1GetPointerStyle
+      HorizAxis = aTopAxis
+      Marks.ArrowLength = 0
+      Marks.Clip = True
+      Marks.Font.Color = clWhite
+      Marks.Font.Height = -16
+      Marks.Font.Style = [fsItalic]
+      Marks.Frame.Color = 8454143
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.HorizSize = 14
+      Pointer.InflateMargins = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 14
+      Pointer.Visible = True
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.DateTime = False
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+    end
+    object ChartTool1: TAxisArrowTool
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    object ZoomInButton: TSpeedButton
+      Left = 326
+      Top = 8
+      Width = 25
+      Height = 25
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33033333333333333F7F3333333333333000333333333333F777333333333333
+        000333333333333F777333333333333000333333333333F77733333333333300
+        033333333FFF3F777333333700073B703333333F7773F77733333307777700B3
+        33333377333777733333307F8F8F7033333337F333F337F3333377F8F9F8F773
+        3333373337F3373F3333078F898F870333337F33F7FFF37F333307F99999F703
+        33337F377777337F3333078F898F8703333373F337F33373333377F8F9F8F773
+        333337F3373337F33333307F8F8F70333333373FF333F7333333330777770333
+        333333773FF77333333333370007333333333333777333333333}
+      NumGlyphs = 2
+      OnClick = ZoomInButtonClick
+    end
+    object ZoomOutButton: TSpeedButton
+      Left = 358
+      Top = 8
+      Width = 25
+      Height = 25
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33033333333333333F7F3333333333333000333333333333F777333333333333
+        000333333333333F777333333333333000333333333333F77733333333333300
+        033333333FFF3F777333333700073B703333333F7773F77733333307777700B3
+        333333773337777333333078F8F87033333337F3333337F33333778F8F8F8773
+        333337333333373F333307F8F8F8F70333337F33FFFFF37F3333078999998703
+        33337F377777337F333307F8F8F8F703333373F3333333733333778F8F8F8773
+        333337F3333337F333333078F8F870333333373FF333F7333333330777770333
+        333333773FF77333333333370007333333333333777333333333}
+      NumGlyphs = 2
+      OnClick = ZoomOutButtonClick
+    end
+    object Label1: TLabel
+      Left = 167
+      Top = 13
+      Width = 38
+      Height = 17
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '&Style:'
+      FocusControl = ComboBox1
+    end
+    object CheckBox3: TCheckBox
+      Left = 96
+      Top = 12
+      Width = 70
+      Height = 17
+      Caption = '&Random'
+      TabOrder = 0
+      OnClick = CheckBox3Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 12
+      Top = 12
+      Width = 81
+      Height = 17
+      Caption = 'View &Marks'
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object ComboBox1: TComboBox
+      Left = 209
+      Top = 9
+      Width = 103
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 2
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Rectangle'
+        'Circle'
+        'Triangle'
+        'DownTriangle'
+        'Cross'
+        'DiagCross'
+        'Star'
+        'Diamond')
+    end
+  end
+end

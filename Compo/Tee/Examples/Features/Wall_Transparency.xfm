@@ -1,0 +1,140 @@
+inherited WallTransparency: TWallTransparency
+  Left = 415
+  Top = 395
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 57
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      
+        'The four chart walls now support transparency, even with gradien' +
+        't filling.'
+      ''
+      'Chart1.Walls.Left.Transparency := 70 ;    // % of transparency')
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    BackImageInside = True
+    BackWall.Color = clWhite
+    BackWall.Gradient.Direction = gdRadial
+    BackWall.Gradient.EndColor = clWhite
+    BackWall.Gradient.StartColor = clYellow
+    BackWall.Transparency = 40
+    BackWall.Transparent = False
+    BottomWall.Transparency = 40
+    Gradient.EndColor = clRed
+    Gradient.StartColor = clGreen
+    Gradient.Visible = True
+    LeftWall.Color = clWhite
+    LeftWall.Transparency = 40
+    Legend.Shadow.HorizSize = 6
+    Legend.Shadow.Transparency = 70
+    Legend.Shadow.VertSize = 6
+    Legend.ShapeStyle = fosRoundRectangle
+    Legend.Transparency = 30
+    RightWall.Transparency = 40
+    RightWall.Visible = True
+    Title.Color = clSilver
+    Title.Font.Color = clWhite
+    Title.Font.Height = -16
+    Title.Font.Style = [fsBold]
+    Title.Font.Shadow.Color = clBlack
+    Title.Font.Shadow.HorizSize = 2
+    Title.Font.Shadow.VertSize = 2
+    Title.Text.Strings = (
+      'Walls transparency')
+    Title.Transparent = False
+    View3DOptions.Elevation = 342
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 73
+    View3DOptions.Rotation = 311
+    View3DOptions.Zoom = 97
+    object Series1: TSurfaceSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      PaletteStyle = psStrong
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 59
+    object Label1: TLabel
+      Left = 11
+      Top = 12
+      Width = 68
+      Height = 13
+      Caption = '&Transparency:'
+    end
+    object Label2: TLabel
+      Left = 210
+      Top = 12
+      Width = 20
+      Height = 13
+      Caption = '40%'
+    end
+    object Button1: TButton
+      Left = 288
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ScrollBar1: TScrollBar
+      Left = 84
+      Top = 11
+      Width = 121
+      Height = 16
+
+      Position = 40
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 344
+    Top = 104
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    AmbientLight = 8
+    Light.Color = clGray
+    Light.Visible = True
+    Light.Position.X = -100.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Light1.Color = clGray
+    Light1.Visible = False
+    Light1.Position.X = -100.000000000000000000
+    Light1.Position.Y = -100.000000000000000000
+    Light1.Position.Z = -100.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Shininess = 0.500000000000000000
+    TeePanel = Chart1
+    Left = 408
+    Top = 80
+  end
+end

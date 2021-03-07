@@ -1,0 +1,53 @@
+object ChartReports: TChartReports
+  Left = 286
+  Top = 173
+  Width = 475
+  Height = 364
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 467
+    Height = 337
+    Align = alClient
+    Color = clBtnFace
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Courier New'
+    Font.Style = []
+    Lines.Strings = (
+      'Several Reporting Tools and Components support TeeChart Pro.'
+      'Integration, compatibliity and support depends on each specific '
+      'tool'#39's vendor.'
+      ''
+      'Please contact the following websites for more information.'
+      ''
+      'VCL / CLX version:'
+      ''
+      'Ace Reporter'#9'www.sct-associates.com'
+      'CGI Expert'#9'www.cgiexpert.com'
+      'FastReport'#9'www.fr.hotmail.ru'
+      'HREF WebHub'#9'www.href.com'
+      'HTML Report'#9'www.htmlreport.com'
+      'HyperReport     www.geoticies.com/Baja/Outback/6013/'
+      'QR Artist       www.mensand.com'
+      'QR Design'#9'www.thsd.de'
+      'QuickReport'#9'www.qusoft.com'
+      'RAVE            www.nevrona.com'
+      'ReportBuilder'#9'www.digital-metaphors.com'
+      ''
+      'ActiveX version:'
+      ''
+      'ActiveReports'#9'www.datadynamics.com'
+      'Crystal Reports'#9'www.seagatesoftware.com')
+    ParentFont = False
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+end

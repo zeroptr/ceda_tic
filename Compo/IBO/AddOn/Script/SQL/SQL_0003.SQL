@@ -1,0 +1,101 @@
+/*
+Список користувачів системи
+13.08.1998
+ */
+
+/* Table: PERSONAL */
+CREATE TABLE PERSONAL (
+        OBLAST      OBLAST_ID,
+        ROVD        ROVD_ID,
+        NUM         D_ID,
+        PSEVDO_NAME CHAR(15) NOT NULL,
+        ENTER_PASS  SHORTNAME,
+        EDIT_PASS   SHORTNAME,
+        RANK        NAME,
+        POSADA      NAME,
+        FULL_NAME   NAME,
+        DATE_IN     DATE,
+        DATE_WORK   DATE,
+        DATE_LC     DATE,
+        ON_LINE     CHAR(1), /* CAN BE 0-OFF, 1-ON, *-DELETED */
+        COUNTER     INTEGER,
+        N_DOSTUP    INTEGER,
+        B_FORMA26   BOOLEAN, /* FORMA 26 ACCESS RIGHTS */
+        B_FINGER    BOOLEAN, /* FINGERPRINTS */
+        B_FIND      BOOLEAN, /* FIND OPTIONS */
+        B_OUT       BOOLEAN, /* RELOCATIONS OF EX-PRISONERS */
+        CLERK       CLERK_SIGN,
+        CLERK_LC    CLERK_SIGN,
+UNIQUE (NUM),
+UNIQUE (PSEVDO_NAME),
+CONSTRAINT PERSONAL_PK PRIMARY KEY (OBLAST, ROVD, NUM));
+
+/* Table: JURNAL */
+CREATE TABLE JURNAL (
+        OBLAST      OBLAST_ID,
+        ROVD        ROVD_ID,
+        NUM         D_ID,
+        ACTION_TIME DATE,
+        ACTION_NAME NAME,
+        ACTION_RES  CHAR(1),
+        CLERK       CLERK_SIGN);
+
+COMMIT;
+
+SET TERM ^ ;
+
+CREATE TRIGGER CLERK_INSERTED FOR PERSONAL
+AFTER INSERT AS
+BEGIN
+  POST_EVENT "CLERK_ADDED";
+    INSERT INTO JURNAL
+    ( OBLAST,
+      ROVD  ,
+      NUM   ,
+      ACTION_TIME,
+      ACTION_NAME,
+      ACTION_RES ,
+      CLERK      
+      )
+    VALUES
+    ( NEW.OBLAST,
+      NEW.ROVD,
+      NEW.NUM,
+      "NOW",
+      "Clerk inserted",
+      "0",
+      NEW.CLERK);  
+END
+ ^
+
+CREATE TRIGGER CLERK_CHANGED FOR PERSONAL
+AFTER UPDATE AS
+BEGIN
+  POST_EVENT "CLERK_CHANGED";
+    INSERT INTO JURNAL
+    ( OBLAST,
+      ROVD  ,
+      NUM   ,
+      ACTION_TIME,
+      ACTION_NAME,
+      ACTION_RES ,
+      CLERK      
+      )
+    VALUES
+    ( NEW.OBLAST,
+      NEW.ROVD,
+      NEW.NUM,
+      "NOW",
+      "Clerk changed",
+      "0",
+      NEW.CLERK_LC);  
+END
+^
+COMMIT WORK ^
+SET TERM ; ^
+
+
+INSERT INTO PERSONAL (OBLAST,ROVD,NUM,PSEVDO_NAME,FULL_NAME,B_FORMA26,B_FINGER,B_FIND,B_OUT,CLERK,ENTER_PASS) VALUES
+("00","000",0,"SYSTEM","RARITET LTD","Y","Y","Y","Y","SYSTEM","SYSTEM");
+/* Updated 22.08.1998 2:59:10 PM */
+/* Updated 22.08.1998 3:10:55 PM */

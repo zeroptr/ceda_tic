@@ -1,0 +1,3510 @@
+// IBA_Column.INT
+// IBA_ColumnBlob.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{  Dirk Schiffler <ds@rcs.de>                                                  }
+{  05/04/2002                                                                  }
+{     an Enhancement in TIB_Column.GetDisplayText                              }
+{     If no DisplayFormat defined for DateTime values, then the standard       }
+{     should be the global variables ShortDateFormat and/or ShortTimeFormat    }
+{     and not any mask.                                                        }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  25-Jan-02                                                                   }
+{      Further adjustments to ColumnNumeric to support consistency changes     }
+{      made to some IB_Utils methods.  Part of this is to be consistent with   }
+{      the VCL in the use of statistical/bankers rounding of assignments.      }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  08-Gen-02                                                                   }
+{      TIB_Column.GetDisplayWidth now considers GridDisplayName if set         }
+{      (added private function CalcDefaultWidth, changed GetDefaultWidth too)  }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  01-Jan-02                                                                   }
+{      Attempting to resolve rounding and overflow issues relating to all      }
+{      number processing aspects of TIB_Column instances.  Also removed the    }
+{      NoRoundErr processing - as this has been removed from IBO.              }
+{      TIB_ColumnCurr and TIB_ColumnComp removed, no longer used.              }
+{      **1**  I dont know why RoundDown was used, but I left it in.            }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  06-Nov-01                                                                   }
+{      TIB_ColumnNumeric.SetAsString() can work even if CurrencyString is      }
+{      longer than 1 char and has chars that can not be placed in Masks        }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  03-Nov-01 bug fix                                                           }
+{      TIB_ColumnNumeric.SetAsString() now really try the conversion removing  }
+{      eventual numeric formatting chars for any reason present and uses locale}
+{      settings the best it can do                                             }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  30-Oct-01 bug fix                                                           }
+{      Now grids and Autolabel using FieldName that are not in double quotes   }
+{      have '_' changed with space even if in SQL Dialect3                     }
+{      i.e. FIRST_NAME -> FIRST NAME (but "FIRST_NAME" is not changed)         }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  24-Oct-2001                                                                 }
+{     Added support for IB6 CURRENT_DATE/_TIMESTAMP/_TIME as field defaults    }
+{            Copyright (C) 2001 Marco Menardi                                  }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_Column.Create( ARow: TIB_Row;
+                               PSQLVAR: PXSQLVAR;
+                               AFieldNo: smallint );
+var
+  tmpPos: integer;
+  tmpStr: string;
+begin
+  inherited Create;
+  FOrderingLinkItemNo := -999;
+  FRow := ARow;
+  FFieldNo := AFieldNo;
+  FPXSQLVAR := PSQLVAR;
+  FDisplayWidth := -1;
+  FCharCase := ccNormal;
+  FVisible := true;
+  FTrimming := ctNone;
+  FMaskIntf := nil;
+  FBlankIsNull := IsAttributeSet[ IB_BLANKISNULL ];
+  FIsBoolean := IsAttributeSet[ IB_BOOLEAN ];
+  FIsText := false;
+  FPadChar := #0;
+  FBooleanTrue := '';
+  FBooleanFalse := '';
+  FIsCurrencyDataType := false;
+  if FIsBoolean then
+  begin
+    tmpStr := Trim( AttributeParams[ IB_BOOLEAN ] );
+    tmpPos := Pos( ',', tmpStr );
+    if tmpPos > 1 then
+    begin
+      FBooleanTrue := Trim( Copy( tmpStr, 1, tmpPos - 1 ));
+      FBooleanFalse := Trim( Copy( tmpStr, tmpPos + 1, MaxInt ));
+    end;
+  end
+  else
+  if ( SQLtype = SQL_BOOLEAN ) or
+     ( SQLtype = SQL_BOOLEAN_ ) then
+    FIsBoolean := true;     
+  if FIsBoolean then
+    FAlignment := taCenter
+  else
+    case SQLtype of
+      SQL_FLOAT,
+      SQL_FLOAT_,
+      SQL_DOUBLE,
+      SQL_DOUBLE_,
+      SQL_SHORT,
+      SQL_SHORT_,
+      SQL_LONG,
+      SQL_LONG_,
+      SQL_QUAD,
+      SQL_QUAD_,
+      SQL_INT64,
+      SQL_INT64_: FAlignment := taRightJustify;
+      else        FAlignment := taLeftJustify;
+    end;
+  SysLayoutChanged;
+end;
+
+procedure TIB_Column.SysLayoutChanged;
+var
+  tmpBool: boolean;
+begin
+  if ( SQLType = SQL_TYPE_DATE ) or
+     ( SQLType = SQL_TYPE_DATE_ ) then
+    tmpBool := true
+  else
+    FDateOnlyFmt := GetAttributeParamsEx( IB_NOTIME, tmpBool );
+  if tmpBool and ( FDateOnlyFmt = '' ) then
+  begin
+    FDateOnlyFmt := DisplayFormat;
+    if FDateOnlyFmt = '' then
+      FDateOnlyFmt := ShortDateFormat;
+  end;
+  FTimeOnlyFmt := GetAttributeParamsEx( IB_NODATE, tmpBool );
+  if tmpBool and ( FTimeOnlyFmt = '' ) then
+  begin
+    FTimeOnlyFmt := DisplayFormat;
+    if FTimeOnlyFmt = '' then
+      FTimeOnlyFmt := ShortTimeFormat;
+  end;
+end;
+
+destructor TIB_Column.Destroy;
+begin
+  if Assigned( FValidateBuffer ) then
+  begin
+    FreeMem( FValidateBuffer );
+    FValidateBuffer := nil;
+  end;
+  if Assigned( FPreserveBuffer ) then
+  begin
+    FreeMem( FPreserveBuffer );
+    FPreserveBuffer := nil;
+  end;
+  FreeMaskIntf;
+  inherited Destroy;
+end;
+
+procedure TIB_Column.FreeMaskIntf;
+begin
+  // No need for an explicit free - the mask processor should
+  // be derived from TInterfacedObject and will free itself when
+  // the reference count reaches 0.
+  if FMaskIntf <> nil then
+    FMaskIntf := nil;
+end;
+
+function TIB_Column.GetBDEFieldName: string;
+begin
+  if not Row.FBDENamesValid then
+    Row.NameVarListForBDE;
+  Result := FBDEFieldName;
+end;
+
+function TIB_Column.GetDBFFieldName: string;
+begin
+  if not Row.FBDENamesValid then
+    Row.NameVarListForBDE;
+  Result := FDBFFieldName;
+end;
+
+function TIB_Column.GetIsDateOnly: boolean;
+begin
+  Result := FDateOnlyFmt <> '';
+end;
+
+function TIB_Column.GetIsTimeOnly: boolean;
+begin
+  Result := FTimeOnlyFmt <> '';
+end;
+
+function TIB_Column.GetBlobSize: longint;
+begin
+  Result := 0;
+end;
+
+function TIB_Column.GetDataSize: word;
+begin
+  Result := SQLLen;
+  case SQLtype of
+    SQL_VARYING,
+    SQL_VARYING_: Inc( Result, SizeOf( smallint ));
+  end;
+end;
+
+procedure ApplyTrimming( var Result: string; Trimming: TIB_ColumnTrimming );
+var
+  tmpInt: integer;
+  tmpPInt, tmpPInt2, tmpPEnd: pchar;
+begin
+  case Trimming of
+    ctAll: begin
+    // Needs some optimization!
+      Result := Trim( Result );
+      {repeat
+        tmpInt := Pos( ' ', Result );
+        if tmpInt > 0 then
+          Delete( Result, tmpInt, 1 );
+      until tmpInt = 0;}
+      if Length(Result) < 3
+      then Exit; // You need at least 3 positions to have a blank in the middle
+      tmpPInt := @Result[2];
+      tmpPInt2 := tmpPInt;
+      tmpPEnd := tmpPInt + Length(Result); // to the terminator
+      while (tmpPInt2 < tmpPEnd) do
+      begin
+        // We know a blank cannot be at the tail due to the Trim above!
+        // Hence, the check for the length can be avoided.
+        while {(tmpPInt2 < tmpPEnd) and} (tmpPInt2^ = #32) do
+          Inc(tmpPInt2);
+        while (tmpPInt2 < tmpPEnd) and (tmpPInt2^ <> #32) do
+        begin // This is one line in C
+          tmpPInt^ := tmpPInt2^;
+          Inc(tmpPInt2);
+          Inc(tmpPInt);
+        end
+      end;
+      if tmpPInt <> tmpPInt2
+      then SetLength(Result, tmpPInt - @Result[1])
+    end;
+    ctBoth: Result := Trim( Result );
+    ctLeft: Result := TrimLeft( Result );
+    ctRight: Result := TrimRight( Result );
+    ctSentence: begin
+    // Needs some optimization!
+      Result := Trim( Result );
+      repeat
+        tmpInt := Pos( '  ', Result );
+        if tmpInt > 0 then
+          Delete( Result, tmpInt, 1 );
+      until tmpInt = 0;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Column.LoadFromFile( const AFileName: string );
+begin
+  raise Exception.Create( E_NotImplemented );
+end;
+
+procedure TIB_Column.SaveToFile( const AFileName: string );
+begin
+  raise Exception.Create( E_NotImplemented );
+end;
+
+procedure TIB_Column.AssignTo( Dest: TObject );
+begin
+  if Dest is TIB_Column then
+    ( Dest as TIB_Column ).Assign( Self )
+  else
+  if Dest is TStrings then with Dest as TStrings do
+    Text := AsString
+  else
+    raise EIB_ColumnError.Create( Format( E_Assign_Column, [Dest.ClassName] ));
+end;
+
+procedure TIB_Column.Assign( Source: TObject );
+begin
+  if Source is TIB_Column then with Source as TIB_Column do
+  begin
+    Inc( Self.Row.FStrictModifyOnlyLevel );
+    try
+      if IsNull then
+      begin
+        if not Self.IsNull then
+          Self.Clear;
+      end
+      else
+      begin
+        if Self.IsNull then
+          Self.IsNull := false;
+        if Self.IsBoolean and IsBoolean then
+          Self.AsBoolean := AsBoolean
+        else
+        if Self.IsDateTime or Self.IsDateOnly or Self.IsTimeOnly then
+          Self.AsDateTime := AsDateTime
+        else
+        if Self.IsArray or IsArray then
+          Self.AsVariant := AsVariant
+        else
+          Self.AsString := AsString;
+      end;
+    finally
+      Dec( Self.Row.FStrictModifyOnlyLevel );
+    end;
+  end
+  else
+    raise EIB_ColumnError.Create(Format(E_AssignTo_Column, [Source.ClassName]));
+end;
+
+procedure TIB_Column.Revert;
+var
+  tmpVar: variant;
+begin
+  if IsModified then
+  begin
+    tmpVar := OldAsVariant;
+    if VarIsEmpty( tmpVar ) or VarIsNull( tmpVar ) then
+      Clear
+    else
+      AsVariant := tmpVar;
+  end;
+end;
+
+procedure TIB_Column.SetBlobData( ABuffer: Pointer; ASize: integer );
+var
+  tmpStr: string;
+begin
+  SetLength( tmpStr, ASize );
+  Move( ABuffer^, tmpStr[1], ASize );
+  AsString := tmpStr;
+end;
+
+procedure TIB_Column.FocusControl;
+var
+  AField: TIB_Column;
+begin
+  AField := Self;
+  Statement.ProcessLinkEvent(setFocusControl, longint(@AField));
+end;
+
+procedure TIB_Column.Clear;
+begin
+  IsNull := true;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Column.GetStatement: TIB_Statement;
+begin
+  Result := Row.Statement;
+  if Assigned( Result.FBindingCursor ) then
+    Result := Result.FBindingCursor;
+end;
+
+function TIB_Column.GetSQLTypeSource: string;
+begin
+  Result := '';
+  with FPXSQLVAR^ do
+  begin
+    if SQLScale <> 0 then
+    case SQLtype of
+      SQL_QUAD,
+      SQL_QUAD_,
+      SQL_INT64,
+      SQL_INT64_:  Result := 'DECIMAL ( 18, ' + IntToStr( -SQLScale ) + ' )';
+      SQL_DOUBLE,
+      SQL_DOUBLE_: Result := 'NUMERIC ( 15, ' + IntToStr( -SQLScale ) + ' )';
+      SQL_FLOAT,
+      SQL_FLOAT_:  Result := 'NUMERIC ( 9, ' + IntToStr( -SQLScale ) + ' )';
+      SQL_LONG,
+      SQL_LONG_:   Result := 'DECIMAL ( 9, ' + IntToStr( -SQLScale ) + ' )';
+      SQL_SHORT,
+      SQL_SHORT_:  Result := 'DECIMAL ( 4, ' + IntToStr( -SQLScale ) + ' )';
+    end
+    else
+    case SQLtype of
+      SQL_BOOLEAN,
+      SQL_BOOLEAN_: Result := 'BOOLEAN';
+      SQL_FLOAT,
+      SQL_FLOAT_: Result := 'FLOAT';
+      SQL_DOUBLE,
+      SQL_DOUBLE_: Result := 'DOUBLE PRECISION';
+      SQL_SHORT,
+      SQL_SHORT_: Result := 'SMALLINT';
+      SQL_LONG,
+      SQL_LONG_: Result := 'INTEGER';
+      SQL_QUAD,
+      SQL_QUAD_,
+      SQL_INT64,
+      SQL_INT64_: Result := 'DECIMAL ( 18, ' + IntToStr( -SQLScale ) + ' )';
+      SQL_TYPE_DATE,
+      SQL_TYPE_DATE_: Result := 'DATE';
+      SQL_TYPE_TIME,
+      SQL_TYPE_TIME_: Result := 'TIME';
+      SQL_TIMESTAMP,
+      SQL_TIMESTAMP_:
+        if Statement.IB_Connection.SQLDialect >= 3 then
+          Result := 'TIMESTAMP'
+        else
+          Result := 'DATE';
+      SQL_TEXT,
+      SQL_TEXT_: Result := 'CHAR( ' + IntToStr( SQLLen ) + ' )';
+      SQL_VARYING,
+      SQL_VARYING_: Result := 'VARCHAR( ' + IntToStr( SQLLen ) + ' )';
+      SQL_BLOB,
+      SQL_BLOB_: Result := 'BLOB( ' + IntToStr( MaxWord ) + ', ' +
+                                      IntToStr( sqlsubtype ) + ' )';
+{
+  with Blob_Desc do begin
+    if sqlsubtype = 1 then begin
+      Result := 'BLOB( SUB_TYPE '      + IntToStr( blob_desc_subtype      ) +
+                      'SEGMENT SIZE '  + IntToStr( blob_desc_segment_size ) +
+                      'CHARACTER SET ' + IntToStr( blob_desc_charset      ) +
+                      ' )';
+    end;
+  end;
+}
+    end;
+  end;
+  if FieldNo < 0 then
+    Result := Result + ' /* CLIENT CALCULATED */';
+end;
+
+function TIB_Column.GetFieldSource( DomainInfo: boolean ): string;
+var
+  ss: string;
+begin
+  ss := '';
+  if DomainInfo then
+    ss := DomainName;
+  if ( ss = '' ) or ( Pos( IB_RDB, ss ) = 1 ) then
+    ss := SQLTypeSource;
+  if FieldName = '' then
+    Result := PadRight( '""', #32, 20, false ) + '   ' +
+              PadRight( ss, #32, 20, false )
+  else
+    Result := PadRight( FieldName, #32, 20, false ) + '   ' +
+              PadRight( ss, #32, 20, false );
+  if not IsNullable then
+    Result := Result + '   NOT NULL';
+  Result := TrimRight( Result );
+  if FieldNo < 0 then
+    Result := Result + '   /* Calculated */';
+  if IsDefaulted then
+    Result := Result + '   /* Defaulted */';
+  if Computed then
+    Result := Result + '   /* Computed */';
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Column.GetSQLName: string;
+begin
+  if FPXSQLVAR.sqlname_length <={!!} 0 then
+    Result := ''
+  else
+  begin
+    Result := Copy( FPXSQLVAR.sqlname, 1, FPXSQLVAR.sqlname_length );
+    if AnsiCompareText( Result, IB_DB_KEY ) = 0 then
+      Result := IB_RDB + IB_DB_KEY
+    else
+      Result := Statement.IB_Connection.mkVARIdent( Result );
+  end;
+end;
+
+function TIB_Column.GetRelName: string;
+begin
+  if FPXSQLVAR.relname_length <={!!} 0 then
+    Result := ''
+  else
+  begin
+    Result := Copy( FPXSQLVAR.relname, 1, FPXSQLVAR.relname_length );
+    Result := Statement.IB_Connection.mkVARIdent( Result );
+  end;
+end;
+
+function TIB_Column.GetOwnerName: string;
+begin
+  if FPXSQLVAR.ownname_length <={!!} 0 then
+    Result := ''
+  else
+  begin
+    Result := Copy( FPXSQLVAR.ownname, 1, FPXSQLVAR.ownname_length );
+    Result := Statement.IB_Connection.mkVARIdent( Result );
+  end;
+end;
+
+function TIB_Column.GetFieldName: string;
+begin
+  if FPXSQLVAR.aliasname_length <={!!} 0 then
+    Result := ''
+  else
+  begin
+    Result := Copy( FPXSQLVAR.aliasname, 1, FPXSQLVAR.aliasname_length );
+    Result := Statement.IB_Connection.mkVARIdent( Result );
+  end;
+  if ( Result = '' ) and ( Statement.SQLDialect < 3 ) then
+    Result := 'COLUMN' + IntToStr( FieldNo );
+end;
+
+function TIB_Column.GetFullFieldName: string;
+begin
+  Result := FieldName;
+  if ( RelName <> '' ) and ( SQLName = FieldName ) then
+    Result := RelName + '.' + Result;
+end;
+
+function TIB_Column.GetBestFieldName: string;
+begin
+  if Row.RelationCount > 1 then
+    Result := FullFieldName
+  else
+    Result := FieldName;
+end;
+
+function TIB_Column.GetDomainName: string;
+begin
+  if ( not IsCalculated ) and
+     ( FDomainName = '' ) and
+     ( Row.RowType = rtField ) and
+     ( Pos( IB_RDB, FieldName ) <> 1 ) then
+    FDomainName := Statement.GetDomainName( RelName, SQLName );
+  Result := FDomainName;
+end;
+
+function TIB_Column.GetSQLType: smallint;
+begin
+  Result := FPXSQLVAR.SQLtype;
+end;
+
+function TIB_Column.GetSQLScale: smallint;
+begin
+  Result := FPXSQLVAR.SQLscale;
+end;
+
+function TIB_Column.GetSQLSubType: smallint;
+begin
+  Result := FPXSQLVAR.SQLsubtype;
+end;
+
+function TIB_Column.GetSQLLen: smallint;
+begin
+  Result := FPXSQLVAR.SQLLen;
+end;
+
+function TIB_Column.GetOldIsNull: boolean;
+begin
+  Result := FOldColumnInd^ = IB_NULL;
+end;
+function TIB_Column.GetOldIsNotNull: boolean;
+begin
+  Result := FOldColumnInd^ <> IB_NULL;
+end;
+function TIB_Column.GetIsNull: boolean;
+begin
+  Result := FNewColumnInd^ = IB_NULL;
+end;
+
+function TIB_Column.GetIsNotNull: boolean;
+begin
+  Result := FNewColumnInd^ <> IB_NULL;
+end;
+
+function TIB_Column.GetOldAsString: string;
+var
+  tmpInd: smallint;
+  tmpData: pointer;
+begin
+  if OldIsNull then
+    Result := ''
+  else
+  begin
+    tmpInd := FNewColumnInd^;
+    tmpData := FNewColumnBuffer;
+    try
+      FNewColumnInd^ := FOldColumnInd^;
+      FNewColumnBuffer := FOldColumnBuffer;
+      Result := AsString;
+    finally
+      FNewColumnInd^ := tmpInd;
+      FNewColumnBuffer := tmpData;
+    end;
+  end;
+end;
+
+function TIB_Column.GetOldAsVariant: variant;
+var
+  tmpInd: smallint;
+  tmpData: pointer;
+begin
+  if OldIsNull then
+    Result := Unassigned
+  else
+  begin
+    tmpInd := FNewColumnInd^;
+    tmpData := FNewColumnBuffer;
+    try
+      FNewColumnInd^ := FOldColumnInd^;
+      FNewColumnBuffer := FOldColumnBuffer;
+      Result := AsVariant;
+    finally
+      FNewColumnInd^ := tmpInd;
+      FNewColumnBuffer := tmpData;
+    end;
+  end;
+end;
+
+procedure TIB_Column.SysSetIsNull( const NewValue: boolean );
+begin
+  if NewValue then
+  begin
+    if not IsNullable and ( Row.RowType = rtParam ) then
+      Inc( PSQLVAR.SQLType );
+    FNewColumnInd^ := IB_NULL;
+    case SQLType of
+      SQL_VARYING,
+      SQL_VARYING_: with SQL_VARCHAR( FNewColumnBuffer^ ) do
+      begin
+        vary_len_low := 0;
+        vary_len_high := 0;
+        FillChar( vary_string, SQLLen, FPadChar );
+      end
+      else
+        FillChar( FNewColumnBuffer^, DataSize, FPadChar );
+    end;
+  end
+  else
+  if FNewColumnInd^ <> 0 then
+  begin
+    FNewColumnInd^ := 0;
+    if IsBoolean then
+    begin
+      if AsBoolean then
+      begin
+        if AsString <> BooleanTrue then
+          AsString := BooleanTrue;
+      end
+      else
+      begin
+        if AsString <> BooleanFalse then
+          AsString := BooleanFalse;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Column.SetIsNull( const NewValue: boolean );
+begin
+  if ( NewValue <> IsNull ) or
+     (( NewValue and not IsNullable ) and ( Row.RowType = rtParam )) then
+  begin
+    SysBeforeModify;
+    SysSetIsNull( NewValue );
+    SysAfterModify;
+  end;
+end;
+
+function TIB_Column.GetComputed: boolean;
+var
+  tmpInt: integer;
+begin
+  Result := ( Row.RowType = rtField ) and ( IsAttributeSet[ IB_COMPUTED ] );
+  if not Result and not IsCalculated then
+    with Statement.IB_Connection.SchemaCache.Computed do
+    begin
+      tmpInt := LinkIndex[ SQLName + ',' + RelName ];
+      Result := tmpInt >= 0;
+    end;
+end;
+
+function TIB_Column.GetIsLoaded: boolean;
+begin
+  Result := true;
+end;
+
+function TIB_Column.GetIsModified: boolean;
+begin
+  Result := ( not BuffersEqual( FNewColumnBuffer,
+                                FOldColumnBuffer,
+                                DataSize )) or
+            ( FNewColumnInd^ <> FOldColumnInd^ );
+end;
+
+function TIB_Column.GetIsCalculated: boolean;
+begin
+  Result := ( Row.RowType = rtField ) and
+            (( RelName = '' ) or
+             ( SQLName = '' ) or
+             ( SQLName = IB_DB_KEY ) or
+             ( SQLName = IB_RDB + IB_DB_KEY ));
+end;
+
+function TIB_Column.GetReadOnly: boolean;
+begin
+  Result := FReadOnly or FNotInForUpdate;
+  if not Result then
+    Statement.GetColumnIsReadOnly( Self, Result );
+end;
+
+function TIB_Column.GetControlsReadOnly: boolean;
+begin
+  Result := FForceControlsReadOnly;
+  if not Result then
+    Statement.GetControlIsReadOnly( Self, Result );
+end;
+
+function TIB_Column.GetRequired: boolean;
+begin
+  Result := not IsNullable and not IsCalculated;
+  if not Result then
+    Result := IsAttributeSet[ IB_REQUIRED ]
+  else
+  if IsAttributeSet[ IB_NOTREQUIRED ] then
+    Result := false;
+end;
+
+function TIB_Column.GetIsNullable: boolean;
+begin
+  Result := Odd( FPXSQLVAR.SQLType );
+end;
+
+function TIB_Column.GetIsPrimary: boolean;
+var
+  tmpInt: integer;
+begin
+  if IsCalculated or Computed then
+    Result := false
+  else
+  with Statement.IB_Connection.SchemaCache.PrimaryKeys do
+  begin
+    tmpInt := LinkIndex[ SQLName + ',' + RelName ];
+    Result := tmpInt >= 0;
+  end;
+end;
+
+function TIB_Column.GetIsForeign: boolean;
+var
+  tmpInt: integer;
+begin
+  if IsCalculated or Computed then
+    Result := false
+  else
+  with Statement.IB_Connection.SchemaCache.ForeignKeys do
+  begin
+    tmpInt := LinkIndex[ SQLName + ',' + RelName ];
+    Result := tmpInt >= 0;
+  end;
+end;
+
+function TIB_Column.GetIsDefaulted: boolean;
+var
+  tmpInt: integer;
+begin
+  if IsCalculated or Computed then
+    Result := false
+  else
+  with Statement.IB_Connection.SchemaCache.Defaults do
+  begin
+    tmpInt := LinkIndex[ RelName + '.' + SQLName ];
+    Result := tmpInt >= 0;
+  end;
+end;
+
+function TIB_Column.GetIsAlternate: boolean;
+//  !! WIP
+//var
+//  tmpInt: integer;
+begin
+Result := false;
+Exit;
+  if IsCalculated or Computed then
+    Result := false
+  else
+  begin
+    Result := false;
+//    with Statement.IB_Connection.SchemaCache.FieldNoNames do begin
+//      tmpInt := LinkIndex[ SQLName + ',' + RelName ];
+//      Result := tmpInt >= 0;
+//    end;
+  end;
+end;
+
+function TIB_Column.GetIsIndexField: boolean;
+//  !! WIP
+//var
+//  tmpInt: integer;
+begin
+  if IsCalculated or Computed then
+    Result := false
+  else
+  begin
+    Result := IsPrimary or IsForeign;
+//    with Statement.IB_Connection.SchemaCache.FieldNoNames do begin
+//      tmpInt := LinkIndex[ SQLName + ',' + RelName ];
+//      Result := tmpInt >= 0;
+//    end;
+  end;
+end;
+
+function TIB_Column.GetDefaultWidth: integer;
+begin
+  Result := CalcDefaultWidth( False );
+end;
+
+function TIB_Column.GetDisplayWidth: integer;
+begin
+  if FDisplayWidth >= 0 then
+    Result := FDisplayWidth
+  else
+    Result := CalcDefaultWidth( True );
+end;
+
+function TIB_Column.CalcDefaultWidth( IsGrid: boolean ): integer;
+var
+  DataWidth: integer;
+  HeaderWidth: integer;
+begin
+  if IsGrid then
+    HeaderWidth := Length( Trim( GridDisplayName ) )
+  else
+    HeaderWidth := Length( Trim( DisplayName ) );
+  if ( SQLType = SQL_TIMESTAMP ) or
+     ( SQLType = SQL_TIMESTAMP_ ) or
+     ( SQLType = SQL_QUAD ) or
+     ( SQLType = SQL_QUAD_ ) or
+     ( SQLType = SQL_INT64 ) or
+     ( SQLType = SQL_INT64_ ) then
+    DataWidth := 16
+  else
+    DataWidth := SQLLen;
+  if HeaderWidth > DataWidth then
+    Result := HeaderWidth * 8
+  else
+    Result := DataWidth * 8;
+  if Result < 70 then
+    Result := 70;
+  if Result > 200 then
+    Result := 200;
+end;
+
+
+{$IFDEF IBO_VCL30_OR_GREATER}
+function TIB_Column.GetAsWideString: widestring;
+begin
+  raise Exception.Create( 'Not implemented at this time.' );
+end;
+
+procedure TIB_Column.SetAsWideString( const NewValue: WideString );
+begin
+  raise Exception.Create( 'Not implemented at this time.' );
+end;
+{$ENDIF}
+
+function TIB_Column.GetAsRawString: string;
+var
+  tmpLen: word;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+    case SQLType of
+      SQL_Text,
+      SQL_Text_:
+        Result := Copy( Pchar( FNewColumnBuffer ), 1, SQLLen );
+      SQL_Varying,
+      SQL_Varying_: with SQL_VARCHAR( FNewColumnBuffer^ ) do
+      begin
+        tmpLen := vary_len_low + vary_len_high * 256;
+        SetLength( Result, tmpLen );
+        Move( vary_string, pchar( Result )^, tmpLen );
+      end
+      else
+        Result := AsString;
+    end;
+end;
+
+procedure TIB_Column.SetAsRawString( const NewValue: string );
+var
+  tmpLen: word;
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  tmpLen := Length( tmpVal );
+  case SQLType of
+    SQL_Text,
+    SQL_Text_:
+    begin
+      if integer( tmpLen ) > SQLLen then
+        raise Exception.Create( 'String truncation: ' + BestFieldName );
+      SysBeforeModify;
+      FillChar( FNewColumnBuffer^, DataSize, FPadChar );
+      if ( tmpLen = 0 ) and FBlankIsNull then
+        SysSetIsNull( true )
+      else
+        SysSetIsNull( false );
+      Move( tmpVal[1], FNewColumnBuffer^, tmpLen );
+      SysAfterModify;
+    end;
+    SQL_Varying,
+    SQL_Varying_: with SQL_VARCHAR( FNewColumnBuffer^ ) do
+    begin
+      if integer( tmpLen ) > SQLLen then
+        raise Exception.Create( 'String truncation: ' + BestFieldName );
+      SysBeforeModify;
+      FillChar( vary_string, SQLLen, FPadChar );
+      if ( tmpLen = 0 ) and FBlankIsNull then
+        SysSetIsNull( true )
+      else
+        SysSetIsNull( false );
+      vary_len_low  := tmpLen mod 256;
+      vary_len_high := tmpLen div 256;
+      Move( tmpVal[1], vary_string, tmpLen );
+      SysAfterModify;
+    end
+    else
+      AsString := tmpVal;
+  end;
+end;
+
+function TIB_Column.GetAsDate: TDateTime;
+begin
+  if AsString = '' then
+    Result := 0
+  else
+    Result := Trunc( StrToDateTime( AsString ));
+end;
+
+function TIB_Column.GetAsDateTime: TDateTime;
+begin
+  if AsString = '' then
+    Result := 0
+  else
+    Result := StrToDateTime( AsString );
+end;
+
+function TIB_Column.GetAsDateTimeEncodeString: string;
+begin
+  // Validate the string as begin a DateTimeEncodeString
+  // (or should I skip this and assume it will be ok?)
+  EncodeStringToDateTime( AsString );
+  Result := AsString;
+end;
+
+procedure TIB_Column.SetAsDate( const NewValue: TDateTime );
+begin
+  AsString := DateTimeToStr( Trunc( NewValue ));
+end;
+
+procedure TIB_Column.SetAsDateTime( const NewValue: TDateTime );
+begin
+  AsString := DateTimeToStr( NewValue );
+end;
+
+procedure TIB_Column.SetAsDateTimeEncodeString( const NewValue: string );
+begin
+  // Validate the NewValue as begin a DateTimeEncodeString
+  // (or should I skip this and assume it will be ok?)
+  EncodeStringToDateTime( NewValue );
+  AsString := NewValue;
+end;
+
+function TIB_Column.GetAsBoolean: boolean;
+begin
+  Result := not IsNull;
+  if Result then
+  begin
+    case SQLType of
+      SQL_BOOLEAN,
+      SQL_BOOLEAN_:
+        if PShort(FNewColumnBuffer)^ = ISC_TRUE then
+          Result := true
+        else
+        if PShort(FNewColumnBuffer)^ = ISC_FALSE then
+          Result := false
+        else
+          raise Exception.Create( 'Unexpected Boolean Value' );
+      else
+        Result := AnsiCompareText( Trim( AsString ), BooleanTrue ) = 0;
+    end;
+  end;
+end;
+
+procedure TIB_Column.SetAsBoolean( const NewValue: boolean);
+begin
+  if NewValue then
+    AsString := BooleanTrue
+  else
+    AsString := BooleanFalse;
+end;
+
+function TIB_Column.GetAsInteger: integer;
+begin
+  if Trim( AsString ) = '' then
+    Result := 0
+  else
+    try
+      Result := StrToInt( Trim( AsString ));
+    except
+      Result := Trunc( StrToFloat( Trim( AsString )));
+    end;
+end;
+
+procedure TIB_Column.SetAsInteger( const NewValue: integer);
+begin
+  AsString := IntToStr( NewValue );
+end;
+
+function TIB_Column.GetAsInt64: ISC_INT64;
+begin
+  if Trim( AsString ) = '' then
+    Result := 0
+  else
+{$IFDEF IBO_VCL40_OR_GREATER}
+    Result := StrToInt64( Trim( AsString ));
+{$ELSE}
+{$IFDEF IBO_CPPB}
+    raise Exception.Create( 'Unsupported' );
+{$ELSE}
+    comp(Result) := AsComp;
+{$ENDIF}
+{$ENDIF}
+end;
+
+procedure TIB_Column.SetAsInt64( const NewValue: ISC_INT64 );
+begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  AsString := IntToStr( NewValue );
+{$ELSE}
+{$IFDEF IBO_CPPB}
+  raise Exception.Create( 'Unsupported' );
+{$ELSE}
+  AsComp := comp(NewValue);
+{$ENDIF}
+{$ENDIF}
+end;
+
+function TIB_Column.GetAsFloat: double;
+begin
+  if AsString = '' then begin
+    Result := 0;
+  end else begin
+    Result := StrToFloat( AsString );
+  end;
+end;
+
+procedure TIB_Column.SetAsFloat( const NewValue: double );
+begin
+  AsString := FloatToStr( NewValue );
+end;
+
+function TIB_Column.GetAsSmallint: smallint;
+begin
+  if AsString = '' then begin
+    Result := 0;
+  end else begin
+    Result := StrToInt( Trim( AsString ));
+  end;
+end;
+
+procedure TIB_Column.SetAsSmallint( const NewValue: smallint);
+begin
+  AsString := IntToStr( NewValue );
+end;
+
+function TIB_Column.GetAsDouble: double;
+begin
+  if AsString = '' then begin
+    Result := 0;
+  end else begin
+    Result := StrToFloat( AsString );
+  end;
+end;
+
+procedure TIB_Column.SetAsDouble( const NewValue: double);
+begin
+  AsString := FloatToStr( NewValue );
+end;
+
+function TIB_Column.GetAsCurrency: currency;
+begin
+  if AsString = '' then
+    Result := 0
+  else
+    Result := StrToCurr( AsString );
+end;
+
+procedure TIB_Column.SetAsCurrency( const NewValue: currency);
+begin
+  AsString := CurrToStr( NewValue );
+end;
+
+{$IFNDEF IBO_VCL40_OR_GREATER}
+// This fixes a loss of precision problem with D3 and FloatToStr
+function CompToStr(n: comp): String;
+var
+   o: comp;
+   s: string;
+begin
+   if (n > -1E18) and (n < 1E18)
+   then Result := FloatToStrF(n, ffFixed, 18, 0)
+   else if n > 0
+   then begin
+      s := FloatToStr(n);
+      o := n - 1E18 * StrToInt(s[1]);
+      Result := s[1] + FloatToStrF(o, ffFixed, 18, 0)
+   end
+   else begin
+      s := FloatToStr(n);
+      o := n - 1E18 * -StrToInt(s[2]);
+      Result := FloatToStrF(o, ffFixed, 18, 0);
+      Insert(s[2], Result, 2)
+   end
+end;
+{$ENDIF}
+
+{$IFNDEF IBO_CPPB}
+function TIB_Column.GetAsComp: comp;
+begin
+  if AsString = '' then begin
+    Result := 0;
+  end else begin
+    Result := StrToFloat( AsString );
+  end;
+end;
+
+procedure TIB_Column.SetAsComp( const NewValue: comp);
+begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  AsString := FloatToStr( NewValue );
+{$ELSE}
+  AsString := CompToStr( NewValue );
+{$ENDIF}
+end;
+
+{$ENDIF}
+
+function TIB_Column.GetAsExtended: extended;
+begin
+  if AsString = '' then begin
+    Result := 0;
+  end else begin
+    Result := StrToFloat( AsString );
+  end;
+end;
+
+procedure TIB_Column.SetAsExtended( const NewValue: extended);
+begin
+  AsString := FloatToStr( NewValue );
+end;
+
+// Avoiding having to load in the ActiveX unit.
+const
+  VT_DECIMAL_X = 14;
+
+type
+  tagDEC_X = packed record
+    wReserved: Word;
+    case Integer of
+      0: (scale, sign: Byte; Hi32: Longint;
+      case Integer of
+        0: (Lo32, Mid32: Longint);
+        1: (Lo64: LONGLONG));
+      1: (signscale: Word);
+  end;
+
+function TIB_Column.GetAsVariant: Variant;
+begin
+  if Row.RowState = rsNone then
+    Result := Unassigned
+  else
+  if IsNull then
+    Result := Null
+  else
+  case SQLType of
+    SQL_VARYING,
+    SQL_VARYING_,
+    SQL_TEXT,
+    SQL_TEXT_: Result := AsString;
+    SQL_FLOAT,
+    SQL_FLOAT_: Result := AsFloat;
+    SQL_DOUBLE,
+    SQL_DOUBLE_: Result := AsDouble;
+    SQL_SHORT,
+    SQL_SHORT_: if SQLScale = 0 then
+      Result := AsSmallint
+    else
+    begin
+      if FIsCurrencyDataType then
+        Result := AsString
+      else
+        Result := AsExtended;
+    end;
+    SQL_LONG,
+    SQL_LONG_: if SQLScale = 0 then
+      Result := AsInteger
+    else
+    begin
+      if IsCurrencyDataType then
+        Result := AsString
+      else
+        Result := AsExtended;
+    end;
+    SQL_QUAD,
+    SQL_QUAD_,
+    SQL_INT64,
+    SQL_INT64_: if SQLScale = 0 then
+      Result := AsString // variant support for int64 is not reliable
+    else
+      begin
+        if IsCurrencyDataType then
+          Result := AsString // only reliable way of maintaining accuracy
+        else
+          Result := AsExtended;
+      end;
+    SQL_TYPE_DATE,
+    SQL_TYPE_DATE_: Result := AsDate;
+    SQL_TYPE_TIME,
+    SQL_TYPE_TIME_,
+    SQL_TIMESTAMP,
+    SQL_TIMESTAMP_: Result := AsDateTime;
+    SQL_BLOB,
+    SQL_BLOB_: Result := AsString;
+//    SQL_ARRAY,
+//    SQL_ARRAY_: {should be overridden} ;
+    else
+      raise EIB_Error.Create( E_UNSUPPORTED_COLUMN_TYPE );
+  end;
+end;
+
+procedure TIB_Column.SetAsVariant( const NewValue: Variant );
+{$IFDEF IBO_VCL60_OR_GREATER}
+{$ELSE}
+var
+  tmpExt: extended;
+{$IFDEF IBO_VCL40_OR_GREATER}
+  tmpInt64: int64;
+{$ENDIF}
+{$ENDIF}
+begin
+  if VarIsNull( NewValue ) or VarIsEmpty( NewValue ) then
+  begin
+    if not IsNull then
+      IsNull := true;
+  end
+  else
+  begin
+    if IsNull then
+      IsNull := false;
+    if VarType( NewValue ) = varString then
+    begin
+      if AsString <> NewValue then
+        AsString := NewValue;
+    end
+    else
+    case SQLType of
+      SQL_VARYING,
+      SQL_VARYING_,
+      SQL_TEXT,
+      SQL_TEXT_: if AsString <> VarAsType( NewValue, varString ) then
+        AsString := VarAsType( NewValue, varString );
+      SQL_FLOAT,
+      SQL_FLOAT_: if AsFloat <> NewValue then AsFloat := NewValue;
+      SQL_DOUBLE,
+      SQL_DOUBLE_: if AsDouble <> NewValue then AsDouble := NewValue;
+      SQL_SHORT,
+      SQL_SHORT_: if SQLScale = 0 then
+      begin
+        if AsSmallint <> NewValue then AsSmallint := NewValue;
+      end
+      else
+      begin
+        if AsExtended <> NewValue then AsExtended := NewValue;
+      end;
+      SQL_LONG,
+      SQL_LONG_: if SQLScale = 0 then
+      begin
+        if AsInteger <> NewValue then AsInteger := NewValue;
+      end
+      else
+      begin
+        if AsExtended <> NewValue then AsExtended := NewValue;
+      end;
+      SQL_QUAD,
+      SQL_QUAD_,
+      SQL_INT64,
+      SQL_INT64_: begin
+        // We can leave this here despite having changed GetAsVariant to
+        // return AsString for these types.  There is a check above for
+        // vartype of varString which will detect values generated by other
+        // column instances, this code can be used to accept values from
+        // other sources that are not given in string format.
+  {$IFDEF IBO_VCL60_OR_GREATER}
+        if SQLScale = 0 then
+        begin
+//          if AsInt64 <> NewValue then AsInt64 := NewValue;
+          if AsExtended <> NewValue then AsExtended := NewValue;
+        end
+        else
+        begin
+          if AsExtended <> NewValue then AsExtended := NewValue;
+        end;
+  {$ELSE}
+        tmpExt := NewValue;
+  {$IFDEF IBO_VCL40_OR_GREATER}
+        if TVarData(NewValue).VType = VT_DECIMAL_X then
+          tmpInt64 := tagDEC_X(NewValue).lo64
+        else
+        begin
+          tmpInt64 := Trunc( tmpExt );
+        end;
+        if SQLScale = 0 then
+        begin
+          if AsInt64 <> tmpInt64 then
+            AsInt64 := tmpInt64
+        end
+        else
+        if AsExtended <> tmpExt then
+          AsExtended := tmpExt;
+  {$ELSE}
+        if AsExtended <> tmpExt then
+          AsExtended := tmpExt;
+  {$ENDIF}
+  {$ENDIF}
+      end;
+      SQL_TYPE_DATE,
+      SQL_TYPE_DATE_: if AsDate <> Trunc( NewValue ) then
+        AsDate := Trunc( NewValue );
+      SQL_TYPE_TIME,
+      SQL_TYPE_TIME_: if AsDateTime <> Frac( NewValue ) then
+        AsDateTime := Frac( NewValue );
+      SQL_TIMESTAMP,
+      SQL_TIMESTAMP_: if AsDateTime <> NewValue then
+        AsDateTime := NewValue;
+      SQL_BLOB,
+      SQL_BLOB_: if AsString <> NewValue then AsString := NewValue;
+  //  SQL_ARRAY,
+  //  SQL_ARRAY_: {should be overridden} ;
+      else raise EIB_Error.Create( E_UNSUPPORTED_COLUMN_TYPE );
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Column.SysBeforeModify;
+begin
+  if not Assigned( FValidateBuffer ) then
+    GetMem( FValidateBuffer, DataSize + SizeOf( smallint ));
+  if not FValidating then
+    Move( FNewColumnInd^, FValidateBuffer^, DataSize + SizeOf( smallint ));
+end;
+
+procedure TIB_Column.SysAfterModify;
+var
+  WasActuallyChanged: boolean;
+begin
+  if not FValidating then
+    try
+      FValidating := true;
+      try
+        if Assigned( FOnValidate ) then
+          FOnValidate( Self );
+        with Statement do
+          if Assigned( FOnValidateField ) then
+            FOnValidateField( Statement, Row, Self );
+      except
+        Move( FValidateBuffer^, FNewColumnInd^, DataSize + SizeOf(smallint));
+        raise;
+      end;
+    finally
+      FValidating := false;
+    end;
+  WasActuallyChanged := SysInternalChanged;
+  if WasActuallyChanged or ( Row.FStrictModifyOnlyLevel = 0 ) then
+  begin
+    if (( FieldNo >= 0 ) or not Row.Statement.CalculatingFields ) and
+       ( Statement is TIB_Dataset ) and
+       not ( TIB_Dataset( Statement ).NeedToPost ) then
+    begin
+      if not Assigned( FPreserveBuffer ) then
+        GetMem( FPreserveBuffer, DataSize + SizeOf( smallint ));
+      Move( FNewColumnInd^, FPreserveBuffer^, DataSize + SizeOf(smallint));
+    end;
+    try
+      DoBeforeModify;
+      if (( FieldNo >= 0 ) or not Row.Statement.CalculatingFields ) then
+        FRow.SysBeforeColumnModify( Self );
+      if Assigned( FPreserveBuffer ) then
+      begin
+        Move( FPreserveBuffer^, FNewColumnInd^, DataSize + SizeOf(smallint));
+        FreeMem( FPreserveBuffer );
+        FPreserveBuffer := nil;
+      end;
+    except
+      Move( FValidateBuffer^, FNewColumnInd^, DataSize + SizeOf(smallint));
+      raise;
+    end;
+    if not IsArray then  // This is necessary for now.
+      FRow.SysAfterColumnModify( Self );
+  end;
+  if WasActuallyChanged then
+    DoAfterModify;
+end;
+
+function TIB_Column.SysInternalChanged: boolean;
+var
+  tmpSize: integer;
+begin
+// Need to do this in a way that will ignore white space.
+  tmpSize := SizeOf( smallint );
+  if FNewColumnInd^ <> IB_NULL then
+    case SQLType of
+      SQL_VARYING,
+      SQL_VARYING_: with SQL_VARCHAR( FNewColumnBuffer^ ) do
+        Inc( tmpSize, vary_len_high * 256 + vary_len_low + SizeOf( smallint ));
+      else
+        Inc( tmpSize, DataSize );
+    end;
+  Result := not BuffersEqual( FValidateBuffer, FNewColumnInd, tmpSize );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Column.SetAlignment( AValue: TAlignment );
+begin
+  if FAlignment <> AValue then
+    with Statement.FieldsAlignment do
+      case AValue of
+        taLeftJustify:  LinkValues[ BestFieldName ] := 'LEFT';
+        taRightJustify: LinkValues[ BestFieldName ] := 'RIGHT';
+        taCenter:       LinkValues[ BestFieldName ] := 'CENTER';
+      end;
+end;
+
+procedure TIB_Column.SetCharCase( AValue: TIB_CharCase );
+begin
+  if FCharCase <> AValue then
+    with Statement.FieldsCharCase do
+      case AValue of
+        ccUpper:  LinkValues[ BestFieldName ] := 'UPPER';
+        ccLower:  LinkValues[ BestFieldName ] := 'LOWER';
+        ccProper: LinkValues[ BestFieldName ] := 'PROPER';
+        else      LinkValues[ BestFieldName ] := 'NORMAL';
+      end;
+end;
+
+function TIB_Column.GetDisplayFormat: string;
+begin
+  Result := FDisplayFormat;
+end;
+
+procedure TIB_Column.SetDisplayFormat( const AValue: string );
+begin
+  if FDisplayFormat <> AValue then
+    with Statement.FieldsDisplayFormat do
+      LinkValues[ BestFieldName ] := AValue;
+end;
+
+procedure TIB_Column.SetDisplayLabel( const AValue: string );
+begin
+  if FDisplayLabel <> AValue then
+    with Statement.FieldsDisplayLabel do
+      if AValue = '' then
+        LinkValues[ BestFieldName ] := '-'
+      else
+      if AValue = '-' then
+        LinkValues[ BestFieldName ] := '/-'
+      else
+        LinkValues[ BestFieldName ] := AValue;
+end;
+
+procedure TIB_Column.SetGridDisplayLabel( const AValue: string );
+begin
+  if FGridDisplayLabel <> AValue then
+    with Statement.FieldsGridLabel do
+      if AValue = '' then
+      begin
+        LinkValues[ BestFieldName ] := '-';
+      end else if AValue = '-' then
+      begin
+        LinkValues[ BestFieldName ] := '/-';
+      end else
+        LinkValues[ BestFieldName ] := AValue;
+end;
+
+procedure TIB_Column.SetDisplayWidth( AValue: integer );
+begin
+  if DisplayWidth <> AValue then
+    with Statement.FieldsDisplayWidth do
+      if AValue = GetDefaultWidth then
+      begin
+        FDisplayWidth := -1;
+        LinkValues[ BestFieldName ] := '';
+      end
+      else
+        LinkValues[ BestFieldName ] := IntToStr( AValue );
+end;
+
+function TIB_Column.GetEditMask: string;
+var
+  tmpInt: integer;
+  tmpS: string;
+begin
+// FEditMask may have been assigned directly in IB_Statement so we always
+// have to check whether we need to do enhanced processing.
+// Edit masks for use with mask processor interfaces must have a six character
+// prefix in the form "::XX::" where "XX" standards for the mask type.  Here I
+// will only bother checking for the first "::" characters - which leaves the
+// identification characters open for expansion later.
+  if ( FMaskIntf = nil ) and ( Length( FEditMask ) >= 6 ) and
+     ( Copy( FEditMask, 1, 2 ) = '::' ) then
+    SetEditMask( FEditMask );
+  Result := FEditMask;
+  if Result = '' then
+  begin
+    if IsDateTime then
+    begin
+      if IsDateOnly then
+      begin
+        tmpS := UpperCase( FDateOnlyFmt );
+        tmpInt := Pos( 'DD' + DateSeparator, tmpS );
+        if tmpInt > 0 then
+          System.Delete( tmpS, tmpInt, 3 );
+        tmpInt := Pos( 'D' + DateSeparator, tmpS );
+        if tmpInt > 0 then
+          System.Delete( tmpS, tmpInt, 2 );
+        tmpInt := Pos( 'MM' + DateSeparator, tmpS );
+        if tmpInt > 0 then
+          System.Delete( tmpS, tmpInt, 3 );
+        tmpInt := Pos( 'M' + DateSeparator, tmpS );
+        if tmpInt > 0 then
+          System.Delete( tmpS, tmpInt, 2 );
+        tmpInt := Pos( 'YY', tmpS );
+        if tmpInt > 0 then
+          System.Delete( tmpS, tmpInt, 2 );
+        tmpInt := Pos( 'YY', tmpS );
+        if tmpInt > 0 then
+          System.Delete( tmpS, tmpInt, 2 );
+        if tmpS = '' then
+          Result := '!99' + DateSeparator + '99' + DateSeparator + '9999;1; ';
+      end
+      else
+      if IsTimeOnly then
+        Result := '!99' + TimeSeparator + '99' + TimeSeparator + '99;1; ';
+    end;
+  end
+  else
+  begin
+    tmpInt := Pos( '%d', LowerCase( Result ));
+    while tmpInt > 0 do
+    begin
+      Delete( Result, tmpInt, 2 );
+      Insert( DateSeparator, Result, tmpInt );
+      tmpInt := Pos( '%d', LowerCase( Result ));
+    end;
+    tmpInt := Pos( '%t', LowerCase( Result ));
+    while tmpInt > 0 do
+    begin
+      Delete( Result, tmpInt, 2 );
+      Insert( TimeSeparator, Result, tmpInt );
+      tmpInt := Pos( '%t', LowerCase( Result ));
+    end;
+  end;
+end;
+
+procedure TIB_Column.SetEditMask( const AValue: string );
+begin
+  // Call to LinkValues will reset FEditMask directly, no need to assign
+  // the value within this procedure.
+  if FEditMask <> AValue then
+    with Statement.FieldsEditMask do
+      LinkValues[ BestFieldName ] := AValue;
+  // Always free any previously used processor, the next mask may require
+  // a different processor.
+  FreeMaskIntf;
+  // If necessary create mask processor to handle the mask definition
+  if (Length(FEditMask) >= 6) and (Copy(FEditMask,1,2) = '::') and
+    assigned(IB_CreateMaskProcessor) then
+    FMaskIntf := IB_CreateMaskProcessor(FEditMask);
+end;
+
+function TIB_Column.IsMasked: boolean;
+begin
+  if FMaskIntf = nil then
+    Result := ( EditMask <> '' )
+  else
+    Result := FMaskIntf.IsMasked;
+end;
+
+function TIB_Column.EmptyMaskText: string;
+begin
+  if FMaskIntf = nil then
+    Result := FormatMaskText( EditMask, '' )
+  else
+    Result := FMaskIntf.EmptyText;
+end;
+
+function TIB_Column.FormatTextWithMask( const SourceStr: string ): string;
+begin
+  // Ensure IsMasked or GetEditMask is called before this function
+  // to ensure that FMaskIntf has been created if necessary.
+  if FMaskIntf = nil then
+  begin
+    // IBO standards with this use the DisplayFormat if provided
+    // otherwise the EditFormat (rather than the other way around)
+    if DisplayFormat <> '' then
+      Result := FormatMaskText( DisplayFormat, SourceStr )
+    else
+    begin
+      if EditMask <> '' then
+        Result := FormatMaskText( EditMask, SourceStr )
+      else
+        Result := SourceStr;
+    end;
+  end
+  else
+  begin
+    // Mask processor are not expected to need a separate DisplayFormat
+    // I could still use the DisplayFormat to allow different display
+    // to edit layout but this means resetting the mask which is more
+    // overhead for very little gain.  Might change my mind later :-)
+    if IsMasked then
+      Result := FMaskIntf.FormatText( SourceStr )
+    else
+      Result := SourceStr;
+  end;
+end;
+
+function TIB_Column.GetIndex: Integer;
+begin
+  if Assigned( Row ) then begin
+    Result := Row.FColumnList.IndexOf( Self );
+  end else begin
+    Result := -1;
+  end;
+end;
+
+procedure TIB_Column.SetIndex( AValue: integer );
+var
+  CurIndex, Count: Integer;
+begin
+  CurIndex := GetIndex;
+  if CurIndex >= 0 then
+  begin
+    Count := Row.FColumnList.Count;
+    if AValue < 0 then
+      AValue := 0;
+    if AValue >= Count then
+      AValue := Count - 1;
+    if AValue <> CurIndex then
+    begin
+      Row.FColumnList.Move( CurIndex, AValue );
+      with Statement do
+      begin
+        if ( Row.RowType = rtField ) and
+           ( FIgnoreLayoutChange = 0 ) then
+        begin
+          Inc( FIgnoreLayoutChange );
+          FieldsIndex.BeginUpdate;
+          try
+            FieldsIndex.Clear;
+            for CurIndex := 0 to FieldCount - 1 do
+              with Fields[ CurIndex ] do
+                FieldsIndex.Add( BestFieldName );
+          finally
+            FieldsIndex.EndUpdate;
+            Dec( FIgnoreLayoutChange );
+          end;
+          SysLayoutChanged;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Column.SetPreventEditing( AValue: boolean );
+begin
+  if FPreventEditing <> AValue then
+    with Statement.FieldsReadOnly do
+      LinkParamIsSet[ BestFieldName, IB_NOEDIT ] := AValue;
+end;
+
+procedure TIB_Column.SetPreventInserting( AValue: boolean );
+begin
+  if FPreventInserting <> AValue then
+    with Statement.FieldsReadOnly do
+      LinkParamIsSet[ BestFieldName, IB_NOINSERT ] := AValue;
+end;
+
+procedure TIB_Column.SetPreventSearching( AValue: boolean );
+begin
+  if FPreventSearching <> AValue then
+    with Statement.FieldsReadOnly do
+      LinkParamIsSet[ BestFieldName, IB_NOSEARCH ] := AValue;
+end;
+
+procedure TIB_Column.SetForceControlsReadOnly( AValue: boolean );
+begin
+  if ( AValue <> FForceControlsReadOnly ) then
+  begin
+    FForceControlsReadOnly := AValue;
+    if ( Row.RowType <> rtParam ) then
+    begin
+      if Statement is TIB_Dataset then
+        (Statement as TIB_Dataset).StateChanged
+      else
+// This was making things REALLY slow when doing a bunch of adjustments
+// to only a few columns. I'll have to look into this better and see if it is
+// even necessary at all. StateChange should do all that is needed for datasets.
+// I moved it from being executed all the time to only if it is connected to a
+// statement.
+        with Statement do
+          LayoutChange( FieldsReadOnly );
+    end;
+  end;
+end;
+
+procedure TIB_Column.SetTrimming( AValue: TIB_ColumnTrimming );
+begin
+  if FTrimming <> AValue then
+  begin
+    with Statement.FieldsTrimming do
+    begin
+      case AValue of
+        ctNone: LinkValues[ BestFieldName ] := 'NONE';
+        ctAll: LinkValues[ BestFieldName ] := 'ALL';
+        ctBoth: LinkValues[ BestFieldName ] := 'BOTH';
+        ctLeft: LinkValues[ BestFieldName ] := 'LEFT';
+        ctRight: LinkValues[ BestFieldName ] := 'RIGHT';
+        ctSentence: LinkValues[ BestFieldName ] := 'SENTENCE';
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Column.SetVisible( AValue: boolean );
+begin
+  if FVisible <> AValue then
+    with Statement.FieldsVisible do
+      if AValue then
+        LinkValues[ BestFieldName ] := ''
+      else
+        LinkValues[ BestFieldName ] := 'FALSE';
+end;
+
+function TIB_Column.GetDisplayName: string;
+begin
+  if FDisplayLabel = '-' then
+    Result := ''
+  else
+  if FDisplayLabel = '/-' then
+    Result := '-'
+  else
+  if FDisplayLabel <> '' then
+    Result := FDisplayLabel
+  else
+  begin
+    Result := FieldName;
+    if isLitCriteria( Result, '"' ) then
+      Result := stLitCriteria( Result );
+  end;
+end;
+
+function TIB_Column.GetDisplayLabel: string;
+begin
+  if FDisplayLabel = '-' then
+    Result := ''
+  else
+  if FDisplayLabel = '/-' then
+    Result := '-'
+  else
+  if FDisplayLabel <> '' then
+    Result := FDisplayLabel
+  else
+  begin
+    Result := FieldName;
+    if not isLitCriteria( Result, '"' ) then
+      replace_string( Result, '_', ' ' )
+    else
+      Result := stLitCriteria( Result );
+  end;
+end;
+
+function TIB_Column.GetGridDisplayName: string;
+begin
+  if FGridDisplayLabel = '-' then
+    Result := ''
+  else
+  if FGridDisplayLabel = '/-' then
+    Result := '-'
+  else
+  if FGridDisplayLabel <> '' then
+    Result := FGridDisplayLabel
+  else
+    Result := GetDisplayName;
+end;
+
+function TIB_Column.GetGridDisplayLabel: string;
+begin
+  if FGridDisplayLabel = '-' then
+    Result := ''
+  else
+  if FGridDisplayLabel = '/-' then
+    Result := '-'
+  else
+  if FGridDisplayLabel <> '' then
+    Result := FGridDisplayLabel
+  else
+    Result := GetDisplayLabel;
+end;
+
+function TIB_Column.GetDisplayText: string;
+begin
+  if IsNull then
+  begin
+    if ( SQLType = SQL_BOOLEAN ) or
+       ( SQLType = SQL_BOOLEAN_ ) then
+      Result := 'UNKNOWN'
+    else
+      Result := ''
+  end
+  else
+  if DisplayFormat <> '' then
+  begin
+    if IsNumeric then
+    begin
+      if FIsCurrencyDataType then
+        Result := FormatCurr( DisplayFormat, AsCurrency )
+      else
+        Result := FormatFloat( DisplayFormat, AsExtended );
+    end
+    else begin
+      if IsDateTime then
+        Result := FormatDateTime( DisplayFormat, AsDateTime )
+      else
+        Result := FormatTextWithMask( AsString );
+    end;
+  end
+  else
+  begin
+    if IsDateTime then
+    begin
+      if ( SQLType = SQL_TYPE_DATE ) or
+         ( SQLType = SQL_TYPE_DATE_ ) or
+         IsDateOnly then
+        Result := FormatDateTime( ShortDateFormat, AsDateTime )
+      else
+      if ( SQLType = SQL_TYPE_TIME ) or
+         ( SQLType = SQL_TYPE_TIME_ ) or
+         IsTimeOnly then
+        Result := FormatDateTime( ShortTimeFormat, AsDateTime )
+      else
+        Result := DateTimeToStr( AsDateTime );
+    end
+    else
+    if IsMasked then
+      Result := FormatTextWithMask( AsString )
+    else
+    if IsCurrency then
+    begin
+      if FIsCurrencyDataType then
+        Result := CurrToStrF( AsCurrency,
+                              ffCurrency,
+                              CurrencyDecimals )
+      else
+        Result := FloatToStrF( AsExtended,
+                               ffCurrency,
+                               18{-SQLScale},
+                               CurrencyDecimals )
+    end
+    else
+      Result := AsString;
+  end;
+end;
+
+function TIB_Column.GetAttributeParamsEx( const AParam: string;
+                                            var IsSet: boolean ): string;
+begin
+  IsSet := false;
+  with Statement do
+  begin
+    Result := ColumnAttributes.GetLinkParamValueEx( BestFieldName,
+                                                    AParam,
+                                                    IsSet );
+    if not IsSet and Assigned( IB_Connection ) then
+      with IB_Connection do
+      begin
+        Result := ColumnAttributes.GetLinkParamValueEx( FullFieldName,
+                                                        AParam,
+                                                        IsSet );
+        if not IsSet and ( fetDomainName in FieldEntryTypes ) then
+          Result := ColumnAttributes.GetLinkParamValueEx( DomainName,
+                                                          AParam,
+                                                          IsSet );
+      end;
+  end;
+end;
+
+function TIB_Column.GetAttributeParams( const AParam: string ): string;
+var
+  IsSet: boolean;
+begin
+  Result := GetAttributeParamsEx( AParam, IsSet );
+end;
+
+procedure TIB_Column.SetAttributeParams( const AParam: string; AValue: string );
+begin
+  Statement.ColumnAttributes.LinkParamValue[ BestFieldName, AParam ] := AValue;
+end;
+
+// Updated to exclude Boolean fields from Default processing.
+function TIB_Column.GetIsAttributeSet( const AParam: string ): boolean;
+var
+  BParam: string;
+  BResult: boolean;
+begin
+  BParam := '';
+  if AParam <> IB_BOOLEAN then // we dont want to setup a loop
+  begin
+    if not IsBoolean then
+    begin
+      if ( Statement.IB_Connection.DefaultNoCase ) and
+         ( AParam = IB_NOCASE ) then
+        BParam := IB_YESCASE
+      else
+      if ( Statement.IB_Connection.DefaultNoTrailing ) and
+                  ( AParam = IB_NOTRAILING ) then
+        BParam := IB_YESTRAILING;
+    end;
+  end;
+  if BParam <> '' then
+  begin
+    BResult := false;
+    with Statement do
+    begin
+      Result := ColumnAttributes.LinkParamIsSet[ BestFieldName, AParam ];
+      if not Result then
+        BResult := ColumnAttributes.LinkParamIsSet[ BestFieldName, BParam ];
+      if (not BResult) and (not Result) and Assigned( IB_Connection ) then
+      begin
+        with IB_Connection do if ( ColumnAttributes.Count > 0 ) then
+        begin
+          Result := ColumnAttributes.LinkParamIsSet[ FullFieldName, AParam ];
+          if not Result then
+            BResult := ColumnAttributes.LinkParamIsSet[ FullFieldName, BParam ];
+          if (not BResult) and (not Result) and
+             ( fetDomainName in IB_Connection.FieldEntryTypes ) then
+          begin
+            Result := ColumnAttributes.LinkParamIsSet[ DomainName, AParam ];
+            if not Result then
+              BResult := ColumnAttributes.LinkParamIsSet[ DomainName, BParam ];
+            if (not Result) and (not BResult) then
+              Result := true;
+          end;
+        end;
+      end;
+    end;
+    if not BResult then
+      Result := not BResult;
+  end
+  else
+    with Statement do
+    begin
+      Result := ColumnAttributes.LinkParamIsSet[ BestFieldName, AParam ];
+      if not Result and Assigned( IB_Connection ) then
+      begin
+        with IB_Connection do if ( ColumnAttributes.Count > 0 ) then
+        begin
+        // Don't use BestFieldName here. COMPUTED don't work well.
+          Result := ColumnAttributes.LinkParamIsSet[ FullFieldName, AParam ];
+          if not Result and
+             ( fetDomainName in IB_Connection.FieldEntryTypes ) and
+             ( DomainName <> '' ) then
+            Result := ColumnAttributes.LinkParamIsSet[ DomainName, AParam ];
+        end;
+      end;
+    end;
+end;
+
+procedure TIB_Column.SetIsAttributeSet( const AParam: string; AValue: boolean );
+begin
+  Statement.ColumnAttributes.LinkParamIsSet[ BestFieldName, AParam ] := AValue;
+end;
+
+function TIB_Column.GetColData: string;
+begin
+  Result := '';
+  with Row do
+    if IsKeyFields or ( RowState <> rsNone ) then
+      if FNewColumnInd^ <> IB_Null then
+      begin
+        SetLength( Result, DataSize );
+        Move( FNewColumnBuffer^, Pchar(Result)^, DataSize );
+      end;
+end;
+
+procedure TIB_Column.SetColData( const AValue: string );
+begin
+  if Length( AValue ) = 0 then
+    FNewColumnInd^ := IB_Null
+  else
+  if Length( AValue ) = DataSize then
+  begin
+    FNewColumnInd^ := IB_NotNull;
+    Move( Pchar(AValue)^, FNewColumnBuffer^, DataSize )
+  end
+  else
+    raise EIB_ColumnError.Create( E_Invalid_ColData );
+end;
+
+function TIB_Column.GetOldColData: string;
+begin
+  Result := '';
+  with Row do
+    if IsKeyFields or ( RowState <> rsNone ) then
+      if FOldColumnInd^ <> IB_Null then
+      begin
+        SetLength( Result, DataSize );
+        Move( FOldColumnBuffer^, Pchar(Result)^, DataSize );
+      end;
+end;
+
+procedure TIB_Column.SetOldColData( const AValue: string );
+begin
+  if length( AValue ) = 0 then
+    FOldColumnInd^ := IB_Null
+  else
+  if Length( AValue ) = DataSize + SizeOf( smallint ) then
+    Move( Pchar(AValue)^, FOldColumnInd^, DataSize + SizeOf( smallint ))
+  else
+    raise EIB_ColumnError.Create( E_Invalid_ColData );
+end;
+
+function TIB_Column.GetOrderingLinkItemNo: integer;
+var
+  tmpStr: string;
+  tmpCode: integer;
+begin
+  Result := FOrderingLinkItemNo;
+  if Result < -1 then
+  begin
+    Result := -1;
+    if Statement is TIB_Dataset then
+      with Statement as TIB_Dataset do
+      begin
+        tmpStr := Trim( OrderingLinks.LinkParamValue[ BestFieldName, 'ITEM' ] );
+        if tmpStr = '' then
+          tmpStr := Trim( OrderingLinks.LinkValues[ BestFieldName ] );
+        if tmpStr <> '' then
+        begin
+          Val( tmpStr, Result, tmpCode );
+          Result := Abs( Result );
+        end;
+      end;
+    FOrderingLinkItemNo := Result;
+  end;
+end;
+
+function TIB_Column.IsValidChar( AChar: Char ): boolean;
+begin
+  if SQLScale <> 0 then
+    Result := AChar in [ DecimalSeparator, '+', '-', '0'..'9' ]
+  else
+  case SQLType of
+    SQL_BOOLEAN,
+    SQL_BOOLEAN_:
+      Result := ( Pos( AChar, BooleanTrue ) > 0 ) or
+                ( Pos( AChar, BooleanFalse ) > 0 ) or
+                ( Pos( AChar, 'TtRrUuEeFfAaLlSsYyNnOoKkWw01' ) > 0 );  
+    SQL_FLOAT,
+    SQL_FLOAT_,
+    SQL_DOUBLE,
+    SQL_DOUBLE_: Result := AChar in [ DecimalSeparator,
+                                      '+','-','0'..'9','E','e',
+                                      'I','N','T','i','n','t', ' ' ];
+    SQL_SHORT,
+    SQL_SHORT_,
+    SQL_LONG,
+    SQL_LONG_,
+    SQL_QUAD,
+    SQL_QUAD_,
+    SQL_INT64,
+    SQL_INT64_: Result := AChar in [ '+', '-', '0'..'9' ];
+    SQL_TYPE_TIME,
+    SQL_TYPE_TIME_: Result := AChar in [ TimeSeparator,
+                                         '0'..'9',
+                                         'a'..'z',
+                                         'A'..'Z', ' ' ];
+    SQL_TYPE_DATE,
+    SQL_TYPE_DATE_: Result := AChar in [ DateSeparator,
+                                         '0'..'9',
+                                         'a'..'z',
+                                         'A'..'Z', ' ' ];
+    SQL_TIMESTAMP,
+    SQL_TIMESTAMP_: Result := AChar in [ DateSeparator,
+                                         TimeSeparator,
+                                         '0'..'9',
+                                         'a'..'z',
+                                         'A'..'Z', ' ' ];
+  else Result := true;
+  end;
+end;
+
+function TIB_Column.GetBooleanTrue: string;
+begin
+  Result := FBooleanTrue;
+  if ( FBooleanFalse = '' ) and ( FBooleanTrue = '' ) then
+  begin
+    if ( SQLType = SQL_BOOLEAN ) or
+       ( SQLType = SQL_BOOLEAN_ ) then
+      Result := 'TRUE'
+    else
+    if IsNumeric then
+      Result := BoolTrueNbr
+    else
+    if IsText then
+      Result := BoolTrueChr;
+  end;
+end;
+
+function TIB_Column.GetBooleanFalse: string;
+begin
+  Result := FBooleanFalse;
+  if ( FBooleanFalse = '' ) and ( FBooleanTrue = '' ) then
+  begin
+    if ( SQLType = SQL_BOOLEAN ) or
+       ( SQLType = SQL_BOOLEAN_ ) then
+      Result := 'FALSE'
+    else
+    if IsNumeric then
+      Result := BoolFalseNbr
+    else
+    if IsText then
+      Result := BoolFalseChr;
+  end;
+end;
+
+procedure TIB_Column.SetBooleanTrue( const AValue: string );
+begin
+  FBooleanTrue := AValue;
+  Statement.LayoutChange( nil );
+end;
+
+procedure TIB_Column.SetBooleanFalse( const AValue: string );
+begin
+  FBooleanFalse := AValue;
+  Statement.LayoutChange( nil );
+end;
+
+function TIB_Column.GetAsXml: string;
+var
+  XML : TStringList;
+begin
+  XML := TStringList.Create;
+  try
+    XML.Add( '<' + LowerCase( FieldName ) + '>' );
+    XML.Add( AsString );
+    XML.Add( '</'+ LowerCase( FieldName ) + '>' );
+    RESULT := XML.Text;
+  finally
+    XML.Free;
+  end;
+end;
+
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Column.DoBeforeModify;
+begin
+  if Assigned( FOnBeforeModify ) then
+    FOnBeforeModify( Self );
+end;
+
+procedure TIB_Column.DoAfterModify;
+begin
+  if Assigned( FOnAfterModify ) then
+    FOnAfterModify( Self );
+end;
+
+{------------------------------------------------------------------------------}
+
+constructor TIB_ColumnNumBase.Create( ARow: TIB_Row;
+                                      PSQLVAR: PXSQLVAR;
+                                      AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FIsNumeric := true;
+end;
+
+{------------------------------------------------------------------------------}
+
+constructor TIB_ColumnNumeric.Create( ARow: TIB_Row;
+                                      PSQLVAR: PXSQLVAR;
+                                      AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FFmtStr := replicate_char( '#', 17 + FPXSQLVAR^.SQLScale ) +
+             '0.' +
+             replicate_char( '0', -FPXSQLVAR^.SQLScale );
+  FIsCurrency := IsAttributeSet[ IB_CURRENCY ];
+  if (SQLScale < -4) or IsAttributeSet[ 'NOBCD' ] then
+    FIsCurrencyDataType := false
+  else
+    FIsCurrencyDataType := true;
+end;
+
+function TIB_ColumnNumeric.GetAsString: string;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+  begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  with FPXSQLVAR^ do case SQLType of
+    SQL_QUAD,
+    SQL_QUAD_,
+    SQL_INT64,
+    SQL_INT64_:
+      Result := Int64ScaledToStr( int64(FNewColumnBuffer^), -SQLScale );
+    else
+{$ENDIF}
+      if IsCurrencyDataType then
+      begin
+        // FormatCurr rounds inappropriately at the limits of the range
+        //Result := FormatCurr( FFmtStr, Value );
+        // Similar problems happen with ffFixed, I dont really understand
+        // why these problems occur (probably due to the semi-real nature of
+        // the currency data type).  However ffGeneral seems to be working
+        // as desired - and matches the default used by TDataset stuff.
+        try
+          Result := CurrToStrF( AsCurrency, ffGeneral, -SQLScale );
+        except
+          Result := FormatFloat( FFmtStr, AsExtended );
+        end;
+      end
+      else
+        Result := FormatFloat( FFmtStr, AsExtended );
+{$IFDEF IBO_VCL40_OR_GREATER}
+    end;
+{$ENDIF}
+  end;
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnNumeric.SetAsString( const NewValue: string);
+var
+  tmpVal: string;
+  x: integer;
+  tmpCurStr: string;
+begin
+  tmpVal := Trim( NewValue );
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  if ( Length( tmpVal ) = 0 ) then
+  begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then
+      Clear
+    else
+    begin
+      if IsCurrencyDataType then
+        AsCurrency := 0
+      else
+        AsExtended := 0;
+    end;
+  end
+  else
+    try
+      if IsCurrencyDataType then
+        AsCurrency := StrToCurr( tmpVal )
+      else
+        AsExtended := StrToFloat( tmpVal );
+    except
+      on EConvertError do
+      begin
+        tmpVal := strip_char( tmpVal, ThousandSeparator );
+        // remove locale currency prefix string that can be present in the
+        // format string. CurrencyString is depured (in Italy is 'L.')
+        tmpCurStr := strip_char( CurrencyString, ThousandSeparator );
+        tmpCurStr := strip_char( tmpCurStr, DecimalSeparator );
+        x := Pos( tmpCurStr, tmpVal );
+        if x > 0 then
+          System.Delete( tmpVal, x, length(tmpCurStr) );
+{$IFDEF IBO_VCL40_OR_GREATER}
+  with FPXSQLVAR^ do case SQLType of
+    SQL_QUAD,
+    SQL_QUAD_,
+    SQL_INT64,
+    SQL_INT64_:
+      begin
+        SysBeforeModify;
+        SysSetIsNull( false );
+        int64(FNewColumnBuffer^) := StrToInt64Scaled( tmpVal, -SQLScale );
+        SysAfterModify;
+      end;
+    else
+{$ENDIF}
+        if IsCurrencyDataType then
+          AsCurrency := StrToCurr( tmpVal )
+        else
+          AsExtended := StrToFloat( tmpVal );
+{$IFDEF IBO_VCL40_OR_GREATER}
+    end;
+{$ENDIF}
+      end
+      else
+        raise;
+    end;
+end;
+
+function TIB_ColumnNumeric.GetAsExtended: extended;
+var
+  tmpINT64: ISC_INT64;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := 0
+  else
+  with FPXSQLVAR^ do case SQLType of
+    SQL_DOUBLE,
+    SQL_DOUBLE_:
+      begin
+        Result := double(FNewColumnBuffer^);
+        Result := RoundDown( Result, -SQLScale ); // **1**
+      end;
+    SQL_FLOAT,
+    SQL_FLOAT_:
+      begin
+        Result := single(FNewColumnBuffer^);
+        Result := RoundDown( Result, -SQLScale ); // **1**
+      end;
+    SQL_SHORT,
+    SQL_SHORT_:
+      Result := ScaleExtended( smallint(FNewColumnBuffer^), SQLScale );
+    SQL_LONG,
+    SQL_LONG_:
+      Result := ScaleExtended( integer(FNewColumnBuffer^), SQLScale );
+    SQL_QUAD,
+    SQL_QUAD_:
+      begin
+        FillChar( tmpINT64, 8, FPadChar );
+        ISC_QUAD(tmpINT64).isc_quad_high :=
+          ISC_QUAD(FNewColumnBuffer^).isc_quad_low;
+        ISC_QUAD(tmpINT64).isc_quad_low :=
+          ISC_QUAD(FNewColumnBuffer^).isc_quad_high;
+{$IFDEF IBO_VCL40_OR_GREATER}
+        Result := tmpINT64;
+{$ELSE}
+        Result := comp( tmpINT64 );
+{$ENDIF}
+        Result := ScaleExtended( Result, SQLScale );
+      end;
+    SQL_INT64,
+    SQL_INT64_:
+      begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+        Result := int64(FNewColumnBuffer^);
+{$ELSE}
+        Result := comp(FNewColumnBuffer^);
+{$ENDIF}
+        Result := ScaleExtended( Result, SQLScale );
+      end;
+  else
+      raise EIB_Error.Create( E_UNSUPPORTED_COLUMN_TYPE );
+  end;
+end;
+
+function TIB_ColumnNumeric.GetAsCurrency: currency;
+var
+  tmpINT64: ISC_INT64;
+begin
+    if FNewColumnInd^ = IB_NULL then begin
+      Result := 0;
+    end else with FPXSQLVAR^ do case SQLType of
+      SQL_DOUBLE,
+      SQL_DOUBLE_:
+        begin
+          Result := double(FNewColumnBuffer^);
+          Result := RoundDown( Result, -SQLScale ); // **1**
+        end;
+      SQL_FLOAT,
+      SQL_FLOAT_:
+        begin
+          Result := single(FNewColumnBuffer^);
+          Result := RoundDown( Result, -SQLScale ); // **1**
+        end;
+      SQL_SHORT,
+      SQL_SHORT_:
+        Result := IntegerToCurrency( smallint(FNewColumnBuffer^), SQLScale );
+      SQL_LONG,
+      SQL_LONG_:
+        Result := IntegerToCurrency( integer(FNewColumnBuffer^), SQLScale );
+      SQL_QUAD,
+      SQL_QUAD_:
+        begin
+          FillChar( tmpINT64, 8, FPadChar );
+          ISC_QUAD(tmpINT64).isc_quad_high :=
+            ISC_QUAD(FNewColumnBuffer^).isc_quad_low;
+          ISC_QUAD(tmpINT64).isc_quad_low :=
+            ISC_QUAD(FNewColumnBuffer^).isc_quad_high;
+          Result := Int64ToCurrency( tmpINT64, SQLScale );
+        end;
+      SQL_INT64,
+      SQL_INT64_:
+        begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+          tmpINT64 := int64(FNewColumnBuffer^);
+{$ELSE}
+          tmpINT64 := comp(FNewColumnBuffer^);
+{$ENDIF}
+          Result := Int64ToCurrency( tmpINT64, SQLScale );
+        end;
+    else
+      raise EIB_Error.Create( E_UNSUPPORTED_COLUMN_TYPE );
+    end;
+end;
+
+procedure TIB_ColumnNumeric.SetAsExtended( const NewValue: extended );
+var
+  tmpVal: extended;
+  tmpINT64: ISC_INT64;
+begin
+  tmpVal := NewValue;
+  SysBeforeModify;
+  SysSetIsNull( false );
+  with FPXSQLVAR^ do begin
+    case SQLType of
+      SQL_DOUBLE,
+      SQL_DOUBLE_:
+        begin
+          tmpVal := RoundNear( tmpVal, -SQLScale );
+          double(FNewColumnBuffer^) := tmpVal;
+        end;
+      SQL_FLOAT,
+      SQL_FLOAT_:
+        begin
+          tmpVal := RoundNear( tmpVal, -SQLScale );
+          single(FNewColumnBuffer^) := tmpVal;
+        end;
+      SQL_SHORT,
+      SQL_SHORT_:
+        smallint(FNewColumnBuffer^) := ExtendedToSmallint( tmpVal, -SQLScale );
+      SQL_LONG,
+      SQL_LONG_:
+        integer(FNewColumnBuffer^) := ExtendedToInteger( tmpVal, -SQLScale );
+      SQL_QUAD,
+      SQL_QUAD_:
+        begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+          tmpINT64 := ExtendedToInt64( tmpVal, -SQLScale );
+{$ELSE}
+          raise Exception.Create( E_Unsupported );
+{$ENDIF}
+          ISC_QUAD(FNewColumnBuffer^).isc_quad_high :=
+            ISC_QUAD(tmpINT64).isc_quad_low;
+          ISC_QUAD(FNewColumnBuffer^).isc_quad_low :=
+            ISC_QUAD(tmpINT64).isc_quad_high;
+        end;
+      SQL_INT64,
+      SQL_INT64_:
+        begin
+          tmpINT64 := ExtendedToInt64( tmpVal, -SQLScale );
+{$IFDEF IBO_VCL40_OR_GREATER}
+          int64(FNewColumnBuffer^) := tmpINT64;
+{$ELSE}
+          comp(FNewColumnBuffer^) := tmpINT64;
+{$ENDIF}
+        end;
+    else
+      raise EIB_Error.Create( E_UNSUPPORTED_COLUMN_TYPE );
+    end;
+  end;
+  SysAfterModify;
+end;
+
+procedure TIB_ColumnNumeric.SetAsCurrency( const NewValue: currency );
+var
+  tmpVal: currency;
+  tmpINT64: ISC_INT64;
+begin
+    tmpVal := NewValue;
+    SysBeforeModify;
+    SysSetIsNull( false );
+    with FPXSQLVAR^ do
+    begin
+      case SQLType of
+        SQL_DOUBLE,
+        SQL_DOUBLE_:
+          begin
+            tmpVal := RoundNear( tmpVal, -SQLScale );
+            double(FNewColumnBuffer^) := tmpVal;
+          end;
+        SQL_FLOAT,
+        SQL_FLOAT_:
+          begin
+            tmpVal := RoundNear( tmpVal, -SQLScale );
+            single(FNewColumnBuffer^) := tmpVal;
+          end;
+        SQL_SHORT,
+        SQL_SHORT_:
+          smallint(FNewColumnBuffer^) := CurrencyToSmallint( tmpVal, -SQLScale );
+        SQL_LONG,
+        SQL_LONG_:
+          integer(FNewColumnBuffer^) := CurrencyToInteger( tmpVal, -SQLScale );
+        SQL_QUAD,
+        SQL_QUAD_:
+          begin
+  {$IFDEF IBO_VCL40_OR_GREATER}
+            tmpINT64 := CurrencyToInt64( tmpVal, -SQLScale );
+  {$ELSE}
+            raise Exception.Create( E_Unsupported );
+  {$ENDIF}
+            ISC_QUAD(FNewColumnBuffer^).isc_quad_high :=
+              ISC_QUAD(tmpINT64).isc_quad_low;
+            ISC_QUAD(FNewColumnBuffer^).isc_quad_low :=
+              ISC_QUAD(tmpINT64).isc_quad_high;
+          end;
+        SQL_INT64,
+        SQL_INT64_:
+          begin
+            tmpINT64 := CurrencyToInt64( tmpVal, -SQLScale );
+{$IFDEF IBO_VCL40_OR_GREATER}
+            int64(FNewColumnBuffer^) := tmpINT64;
+{$ELSE}
+            comp(FNewColumnBuffer^) := tmpINT64;
+{$ENDIF}
+          end;
+      else
+        raise EIB_Error.Create( E_UNSUPPORTED_COLUMN_TYPE );
+      end;
+    end;
+    SysAfterModify;
+end;
+
+function TIB_ColumnNumeric.GetValue: extended;
+begin
+  Result := AsExtended;
+end;
+
+procedure TIB_ColumnNumeric.SetValue( const NewValue: extended );
+begin
+  AsExtended := NewValue;
+end;
+
+function TIB_ColumnNumeric.GetAsInteger: integer;
+begin
+  if IsCurrencyDataType then
+    Result := CurrencyToInteger(AsCurrency,0)
+  else
+    Result := Trunc( AsExtended );
+end;
+
+procedure TIB_ColumnNumeric.SetAsInteger( const NewValue: integer);
+begin
+  if IsCurrencyDataType then
+    AsCurrency := NewValue
+  else
+    AsExtended := NewValue;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnFloat.GetAsString: string;
+begin
+  if FNewColumnInd^ = IB_NULL then begin
+    Result := '';
+  end else begin
+    Result := FloatToStr( Value );
+  end;
+  if Assigned( FOnGetText ) then begin
+    FOnGetText( Self, Result );
+  end;
+end;
+
+procedure TIB_ColumnFloat.SetAsString( const NewValue: string);
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  if ( Length( tmpVal ) = 0 ) then
+  begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then
+      Clear
+    else
+      Value := 0;
+  end
+  else
+    Value := StrToFloat( tmpVal );
+end;
+
+function TIB_ColumnFloat.GetAsFloat: double;
+begin
+  Result := Value;
+end;
+
+procedure TIB_ColumnFloat.SetAsFloat( const NewValue: double );
+begin
+  Value := NewValue;
+end;
+
+function TIB_ColumnFloat.GetValue: single;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := 0
+  else
+    Result := single(FNewColumnBuffer^);
+end;
+
+procedure TIB_ColumnFloat.SetValue( const NewValue: single );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  single(FNewColumnBuffer^) := NewValue;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnDouble.GetAsString: string;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+    Result := FloatToStr(Value);
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnDouble.SetAsString( const NewValue: string );
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  if ( Length( tmpVal ) = 0 ) then
+  begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then
+      Clear
+    else
+      Value := 0;
+  end
+  else
+  if Pos( 'INF', tmpVal ) > 0 then
+  begin
+    if Pos( '-', tmpVal ) > 0 then
+      Value := mindouble
+    else
+      Value := maxdouble;
+  end
+  else
+    Value := StrToFloat( tmpVal );
+end;
+
+function TIB_ColumnDouble.GetAsDouble: Double;
+begin
+  Result := Value;
+end;
+
+procedure TIB_ColumnDouble.SetAsDouble( const NewValue: Double);
+begin
+  Value := NewValue;
+end;
+
+function TIB_ColumnDouble.GetValue: double;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := 0
+  else
+    Result := double(FNewColumnBuffer^);
+end;
+
+procedure TIB_ColumnDouble.SetValue( const NewValue: double );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  double(FNewColumnBuffer^) := NewValue;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnBoolean.GetAsString: string;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := 'UNKNOWN'
+  else
+  if Value then
+    Result := BooleanTrue
+  else
+    Result := BooleanFalse;
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnBoolean.SetAsString( const NewValue: string);
+var
+  tmpVal: string;
+begin
+  tmpVal := Trim( UpperCase( NewValue ));
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  tmpVal := Trim( UpperCase( tmpVal ));
+  if ( Length( tmpVal ) = 0 ) then
+  begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then
+      Clear
+    else
+      Value := False;
+  end
+  else
+  if ( tmpVal = UpperCase( BooleanTrue )) or
+     ( tmpVal = '1' ) or
+     ( tmpVal = 'T' ) or
+     ( tmpVal = 'TRUE' ) or
+     ( tmpVal = 'Y' ) or
+     ( tmpVal = 'YES' ) then
+    Value := true
+  else
+  if ( tmpVal = UpperCase( BooleanFalse )) or
+     ( tmpVal = '0' ) or
+     ( tmpVal = 'F' ) or
+     ( tmpVal = 'FALSE' ) or
+     ( tmpVal = 'N' ) or
+     ( tmpVal = 'NO' ) then
+    Value := false
+  else
+  if ( tmpVal = 'UNKNOWN' ) or
+     ( tmpVal = 'NULL' ) then
+    Clear
+  else
+    raise Exception.Create( 'Invalid Boolean string conversion: ' + tmpVal );
+end;
+
+function TIB_ColumnBoolean.GetValue: boolean;
+begin
+  Result := AsBoolean;
+end;
+
+procedure TIB_ColumnBoolean.SetValue( const NewValue: boolean );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  if NewValue then
+    PShort(FNewColumnBuffer)^ := ISC_TRUE
+  else
+    PShort(FNewColumnBuffer)^ := ISC_FALSE;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnSmallint.GetAsString: string;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+    Result := IntToStr(Value);
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnSmallint.SetAsString( const NewValue: string);
+var
+  tmp: longint;
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  if ( Length( tmpVal ) = 0 ) then
+  begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then
+      Clear
+    else
+      Value := 0;
+  end
+  else
+  begin
+    tmp := StrToInt( Trim( tmpVal ));
+    if (tmp < low(smallint)) or
+       (tmp > high(smallint)) then
+      raise EIB_ColumnError.Create( E_Value_Out_Of_Range );
+    Value := tmp;
+  end;
+end;
+
+function TIB_ColumnSmallint.GetAsSmallint: smallint;
+begin
+  Result := Value;
+end;
+
+procedure TIB_ColumnSmallint.SetAsSmallint( const NewValue: smallint);
+begin
+  Value := NewValue;
+end;
+
+function TIB_ColumnSmallint.GetValue: smallint;
+begin
+  if FNewColumnInd^ = IB_NULL then begin
+    Result := 0;
+  end else begin
+    Result := smallint(FNewColumnBuffer^);
+  end;
+end;
+
+procedure TIB_ColumnSmallint.SetValue( const NewValue: smallint );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  smallint(FNewColumnBuffer^) := NewValue;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnInteger.GetAsString: string;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+    Result := IntToStr(Value);
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnInteger.SetAsString( const NewValue: string );
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  tmpVal := Trim( tmpVal );
+  if ( Length( tmpVal ) = 0 ) then
+  begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then
+      Clear
+    else
+      Value := 0;
+  end
+  else
+    try
+      Value := StrToInt( tmpVal );
+    except
+    // In Delphi 3 it doesn't seem to know how to reciprocate the value.
+      if IntToStr( Low( integer )) = tmpVal then
+        Value := Low( integer );
+    end;
+end;
+
+function TIB_ColumnInteger.GetAsInteger: integer;
+begin
+  Result := Value;
+end;
+
+procedure TIB_ColumnInteger.SetAsInteger( const NewValue: integer);
+begin
+  Value := NewValue;
+end;
+
+function TIB_ColumnInteger.GetValue: integer;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := 0
+  else
+    Result := integer(FNewColumnBuffer^);
+end;
+
+procedure TIB_ColumnInteger.SetValue( const NewValue: integer);
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  integer(FNewColumnBuffer^) := NewValue;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnInt64.GetAsString: string;
+begin
+  Result := '';
+{$IFDEF IBO_VCL40_OR_GREATER}
+  if FNewColumnInd^ <> IB_NULL then begin
+    Result := IntToStr(Value);
+  end;
+{$ELSE}{!!!}
+    if FNewColumnInd^ <> IB_NULL then begin
+      Result := CompToStr(Value);
+    end;
+{$ENDIF}
+  if Assigned( FOnGetText ) then begin
+    FOnGetText( Self, Result );
+  end;
+end;
+
+procedure TIB_ColumnInt64.SetAsString( const NewValue: string );
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then begin
+    FOnSetText( Self, tmpVal );
+  end;
+  tmpVal := Trim( tmpVal );
+  if ( Length( tmpVal ) = 0 ) then begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then begin
+      Clear;
+    end else begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+      Value := 0;
+{$ELSE}
+      Value := 0;
+{$ENDIF}
+    end;
+  end else begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+    Value := StrToInt64( tmpVal );
+{$ELSE}
+    Value := StrToFloat( tmpVal );
+{$ENDIF}
+  end;
+end;
+
+function TIB_ColumnInt64.GetAsInteger: integer;
+begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  Result := Value;
+{$ELSE}
+  Result := Trunc(Value);
+{$ENDIF}
+end;
+
+procedure TIB_ColumnInt64.SetAsInteger( const NewValue: integer);
+begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  Value := NewValue;
+{$ELSE}
+  Value := NewValue;
+{$ENDIF}
+end;
+
+function TIB_ColumnInt64.GetValue: ISC_INT64;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    FillChar( Result, SizeOf( ISC_INT64 ), FPadChar )
+  else
+    Result := ISC_INT64(FNewColumnBuffer^);
+end;
+
+procedure TIB_ColumnInt64.SetValue( const NewValue: ISC_INT64 );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  ISC_INT64(FNewColumnBuffer^) := NewValue;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnQuad.GetAsString: string;
+begin
+  Result := '';
+{$IFDEF IBO_VCL40_OR_GREATER}
+  if FNewColumnInd^ <> IB_NULL then begin
+    Result := IntToStr(Value);
+  end;
+{$ELSE}{!!!}
+    Result := FloatToStr(AsExtended);
+{$ENDIF}
+  if Assigned( FOnGetText ) then begin
+    FOnGetText( Self, Result );
+  end;
+end;
+
+procedure TIB_ColumnQuad.SetAsString( const NewValue: string );
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then begin
+    FOnSetText( Self, tmpVal );
+  end;
+  tmpVal := Trim( tmpVal );
+  if ( Length( tmpVal ) = 0 ) then begin
+    if IsNullable or (( Row.RowType = rtField ) and FBlankIsNull ) then begin
+      Clear;
+    end else begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+      Value := 0;
+{$ELSE}
+      AsExtended := 0;
+{$ENDIF}
+    end;
+  end else begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+    Value := StrToInt64( tmpVal );
+{$ELSE}
+    AsExtended := StrToFloat( tmpVal );
+{$ENDIF}
+  end;
+end;
+
+function TIB_ColumnQuad.GetAsInteger: integer;
+begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  Result := Value;
+{$ELSE}
+  Result := Trunc( AsExtended );
+{$ENDIF}
+end;
+
+procedure TIB_ColumnQuad.SetAsInteger( const NewValue: integer);
+begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  Value := NewValue;
+{$ELSE}
+  AsExtended := NewValue;
+{$ENDIF}
+end;
+
+function TIB_ColumnQuad.GetValue: ISC_INT64;
+begin
+  FillChar( Result, SizeOf( ISC_INT64 ), FPadChar );
+  if FNewColumnInd^ <> IB_NULL then
+  begin
+     ISC_QUAD(Result).isc_quad_high := ISC_QUAD(FNewColumnBuffer^).isc_quad_low;
+     ISC_QUAD(Result).isc_quad_low := ISC_QUAD(FNewColumnBuffer^).isc_quad_high;
+  end;
+end;
+
+procedure TIB_ColumnQuad.SetValue( const NewValue: ISC_INT64 );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  ISC_QUAD(FNewColumnBuffer^).isc_quad_high := ISC_QUAD(NewValue).isc_quad_low;
+  ISC_QUAD(FNewColumnBuffer^).isc_quad_low := ISC_QUAD(NewValue).isc_quad_high;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+constructor TIB_ColumnDateTime.Create( ARow: TIB_Row;
+                                       PSQLVAR: PXSQLVAR;
+                                       AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FIsDateTime := true;
+end;
+
+function TIB_ColumnDateTime.GetAsString: string;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+  if ( SQLType = SQL_TYPE_DATE ) or
+     ( SQLType = SQL_TYPE_DATE_ ) then
+    Result := DateToStr( Value )
+  else
+  if IsDateOnly then
+    DateTimeToString( Result, FDateOnlyFmt, Value )
+  else
+  if ( SQLType = SQL_TYPE_TIME ) or
+     ( SQLType = SQL_TYPE_TIME_ ) then
+    Result := TimeToStr( Value )
+  else
+  if IsTimeOnly then
+    DateTimeToString( Result, FTimeOnlyFmt, Value )
+  else
+    Result := DateTimeToStr( Value );
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnDateTime.SetAsString( const NewValue: string );
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  if ( Length( tmpVal ) = 0 ) or
+     (( IsMasked ) and ( EmptyMaskText = tmpVal )) then
+    Clear
+  else
+  if IsValidIdent( tmpVal ) then
+  begin
+    tmpVal := UpperCase( tmpVal );
+    if Pos( 'NOW', tmpVal ) = 1 then
+      Value := now
+    else
+    if Pos( 'TOD', tmpVal ) = 1 then
+      Value := Trunc(now)
+    else
+    if Pos( 'TOM', tmpVal ) = 1 then
+      Value := Trunc(now) + 1
+    else
+    if Pos( 'YES', tmpVal ) = 1 then
+      Value := Trunc(now) - 1
+    else
+    if Pos( 'LASTW', tmpVal ) = 1 then
+      Value := Trunc(now) - 7
+    else
+    if Pos( 'NEXTW', tmpVal ) = 1 then
+      Value := Trunc(now) + 7
+    else
+    if Pos( 'CURRENT_DATE', tmpVal ) = 1 then
+      Value := Date
+    else
+    if Pos( 'CURRENT_TIMESTAMP', tmpVal ) = 1 then
+      Value := Now
+    else
+    if Pos( 'CURRENT_TIME', tmpVal ) = 1 then
+      Value := Time
+    else
+    if Pos( 'NULL', tmpVal ) = 1 then
+      Clear;
+  end
+  else  // I assume that a date/time constant (i.e. '10:45') is never a valid
+  begin // identifier, since it must begin with a digit [0..9]
+//  if Pos( 'BINARY', tmpVal ) = 1 then
+//    Value :=
+//  else
+    if ( SQLType = SQL_TYPE_TIME ) or
+       ( SQLType = SQL_TYPE_TIME_ ) then
+      Value := StrToTime( tmpVal )
+    else
+    if IsTimeOnly then
+      Value := Trunc( OldAsVariant ) + StrToTime( tmpVal )
+    else
+      Value := StrToDateTime( tmpVal );
+  end;
+end;
+
+function TIB_ColumnDateTime.GetAsDate: TDateTime;
+begin
+  Result := Trunc( Value );
+end;
+
+procedure TIB_ColumnDateTime.SetAsDate( const NewValue: TDateTime );
+begin
+  Value := Trunc( NewValue );
+end;
+
+function TIB_ColumnDateTime.GetAsDateTime: TDateTime;
+begin
+  Result := Value;
+end;
+
+procedure TIB_ColumnDateTime.SetAsDateTime( const NewValue: TDateTime );
+begin
+  Value := NewValue;
+end;
+
+function TIB_ColumnDateTime.GetAsDateTimeEncodeString: string;
+begin
+  Result := DateTimeToEncodeString( Value );
+end;
+
+procedure TIB_ColumnDateTime.SetAsDateTimeEncodeString( const NewValue: string);
+begin
+  Value := EncodeStringToDateTime(NewValue);
+end;
+
+function TIB_ColumnDateTime.GetValue: TDateTime;
+var
+  pTime: PISC_TIME;
+begin
+  Result := 0;
+  if FNewColumnInd^ <> IB_NULL then
+  case SQLType of
+    SQL_TYPE_DATE,
+    SQL_TYPE_DATE_: begin
+      Result := ISC_DATE( FNewColumnBuffer^ ) - 15018;
+    end;
+    SQL_TYPE_TIME,
+    SQL_TYPE_TIME_: begin
+      pTime := PISC_TIME( FNewColumnBuffer );
+      Result := EncodeTime(( pTime^ div ( 10000 * 60 * 60 )),
+                           ( pTime^ div ( 10000 * 60 )) mod 60,
+                             pTime^ div ( 10000 ) mod 60,
+                           ( pTime^ mod ( 10000 )) div 10 );
+    end;
+    SQL_TIMESTAMP,
+    SQL_TIMESTAMP_: begin
+      Result := isc_decode_TDateTime( pisc_quad( FNewColumnBuffer ));
+    end;
+  end;
+end;
+
+procedure TIB_ColumnDateTime.SetValue( const NewValue: TDateTime );
+var
+  Hour, Min, Sec, MSec: word;
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  case SQLType of
+    SQL_TYPE_DATE,
+    SQL_TYPE_DATE_: begin
+      PISC_DATE( FNewColumnBuffer )^ := Trunc( NewValue ) + 15018;
+    end;
+    SQL_TYPE_TIME,
+    SQL_TYPE_TIME_: begin
+      DecodeTime( NewValue, Hour, Min, Sec, MSec );
+      PISC_TIME( FNewColumnBuffer )^ := Hour * 10000 * 60 * 60 +
+                                        Min  * 10000 * 60      +
+                                        Sec  * 10000           +
+                                        MSec *    10;
+    end;
+    SQL_TIMESTAMP,
+    SQL_TIMESTAMP_: if IsDateOnly then begin
+      isc_encode_TDateTime( Trunc( NewValue ), pisc_quad( FNewColumnBuffer ));
+    end else begin
+      isc_encode_TDateTime( NewValue, pisc_quad( FNewColumnBuffer ));
+    end;
+  end;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+constructor TIB_ColumnText.Create( ARow: TIB_Row;
+                                   PSQLVAR: PXSQLVAR;
+                                   AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FIsText := true;
+  if ( ARow.RowType <> rtParam ) and
+     ( not Statement.IB_Connection.DefaultNoTrimming ) then
+    FTrimming := ctRight;
+  if not IsAttributeSet[ IB_BINARY ] then
+    FPadChar := #32;
+  if IsAttributeSet[ IB_NOCASE ] then
+  begin
+    FNoCaseFieldName := AttributeParams[ IB_NOCASE ];
+    if FNoCaseFieldName = '' then
+      FNoCaseFieldName := 'UPPER( ' + FullFieldName + ' )';
+  end;
+end;
+
+function TIB_ColumnText.GetAsString: string;
+begin
+  Result := Value;
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnText.SetAsString( const NewValue: string);
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then begin
+    FOnSetText( Self, tmpVal );
+  end;
+  Value := tmpVal;
+end;
+
+{$IFDEF IBO_VCL30_OR_GREATER}
+function TIB_ColumnText.GetAsWideString: WideString;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+    SetString( Result, PWideChar(FNewColumnBuffer) + 1, DataSize div 2 );
+end;
+
+procedure TIB_ColumnText.SetAsWideString( const NewValue: WideString );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  FillChar( FNewColumnBuffer^, DataSize, FPadChar );
+  if 2 * Length(NewValue) >= DataSize then
+    Move(PWideChar(NewValue)^, FNewColumnBuffer^, DataSize)
+  else
+    Move(PWideChar(NewValue)^, FNewColumnBuffer^, 2 * Length(NewValue));
+  SysAfterModify;
+end;
+{$ENDIF}
+
+function TIB_ColumnText.GetValue: string;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+  begin
+    Result := Copy(Pchar(FNewColumnBuffer), 1, SQLLen );
+    case CharCase of
+      ccUpper: Result := AnsiUpperCase( Result );
+      ccLower: Result := AnsiLowerCase( Result );
+    end;
+    if not Row.IsKeyFields then
+      ApplyTrimming( Result, Trimming );
+  end;
+end;
+
+procedure TIB_ColumnText.SetValue( const NewValue: string );
+var
+  tmpVal: string;
+  strLen: integer;
+begin
+  tmpVal := NewValue;
+  SysBeforeModify;
+  case CharCase of
+    ccUpper: tmpVal := AnsiUpperCase( tmpVal );
+    ccLower: tmpVal := AnsiLowerCase( tmpVal );
+  end;
+  if not Row.IsKeyFields then
+    ApplyTrimming( tmpVal, Trimming );
+  strLen := Length( tmpVal );
+  FillChar( FNewColumnBuffer^, DataSize, FPadChar );
+  if ( strLen = 0 ) and FBlankIsNull then
+    SysSetIsNull( true )
+  else
+  begin
+    SysSetIsNull( false );
+    if strLen > SQLLen then
+      strLen := SQLLen;
+    Move( tmpVal[1], FNewColumnBuffer^, strLen );
+  end;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+{$IFDEF IBO_VCL30_OR_GREATER}
+function TIB_ColumnVarText.GetAsWideString: WideString;
+var
+  Len: Word;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+  with SQL_VARCHAR( FNewColumnBuffer^ ) do
+  begin
+    Len := vary_len_low + vary_len_high * 256;
+    SetString( Result, PWideChar(@vary_string), Len div 2 );
+  end;
+end;
+
+procedure TIB_ColumnVarText.SetAsWideString( const NewValue: WideString );
+var
+  Len: Word;
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  Len := 2 * Length(NewValue);
+  if Len > DataSize - 2 then
+    Len := DataSize - 2;
+  FillChar( FNewColumnBuffer^, DataSize, FPadChar );
+  with SQL_VARCHAR( FNewColumnBuffer^ ) do
+  begin
+    vary_len_low := Len mod 256;
+    vary_len_high := Len div 256;
+    Move( PWideChar(NewValue)^, vary_string,Len );
+  end;
+  SysAfterModify;
+end;
+{$ENDIF}
+
+function TIB_ColumnVarText.GetValue: string;
+var
+  StrLen: word;
+  tmpPtr: Pointer;
+begin
+  if FNewColumnInd^ = IB_NULL then
+    Result := ''
+  else
+  begin
+    tmpPtr := pointer(longint(FNewColumnBuffer) + SizeOf( smallint ));
+    with SQL_VARCHAR( FNewColumnBuffer^ ) do
+      StrLen := vary_len_low + vary_len_high * 256;
+    Result := Copy(pchar(tmpPtr), 1, StrLen);
+    case CharCase of
+      ccUpper: Result := AnsiUpperCase( Result );
+      ccLower: Result := AnsiLowerCase( Result );
+    end;
+    if not Row.IsKeyFields then
+      ApplyTrimming( Result, Trimming );
+  end;
+end;
+
+procedure TIB_ColumnVarText.SetValue( const NewValue: string );
+var
+  StrLen: smallint;
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  SysBeforeModify;
+  case CharCase of
+    ccUpper: tmpVal := AnsiUpperCase( tmpVal );
+    ccLower: tmpVal := AnsiLowerCase( tmpVal );
+  end;
+  if not Row.IsKeyFields then
+    ApplyTrimming( tmpVal, Trimming );
+  StrLen := Length( tmpVal );
+  if StrLen > SQLLen then
+    StrLen := SQLLen;
+  FillChar( FNewColumnBuffer^, DataSize, FPadChar );
+  if ( StrLen = 0 ) and FBlankIsNull then
+    SysSetIsNull( true )
+  else
+  with SQL_VARCHAR( FNewColumnBuffer^ ) do
+  begin
+    SysSetIsNull( false );
+    vary_len_low  := StrLen mod 256;
+    vary_len_high := StrLen div 256;
+    Move( tmpVal[1], vary_string, StrLen );
+  end;
+  SysAfterModify;
+end;
+
+{------------------------------------------------------------------------------}
+
+constructor TIB_ColumnDB_KEY.Create( ARow: TIB_Row;
+                                     PSQLVAR: PXSQLVAR;
+                                     AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FPadChar := #0;
+end;
+
+function TIB_ColumnDB_KEY.GetAsString: string;
+begin
+  Result := Value;
+  if Assigned( FOnGetText ) then
+    FOnGetText( Self, Result );
+end;
+
+procedure TIB_ColumnDB_KEY.SetAsString( const NewValue: string);
+var
+  tmpVal: string;
+begin
+  tmpVal := NewValue;
+  if Assigned( FOnSetText ) then
+    FOnSetText( Self, tmpVal );
+  Value := tmpVal;
+end;
+
+function TIB_ColumnDB_KEY.GetDefaultWidth: integer;
+var
+  DataWidth: integer;
+  HeaderWidth: integer;
+begin
+  HeaderWidth := Length( Trim( DisplayName ) );
+  DataWidth := 2 * SQLLen;
+  if HeaderWidth > DataWidth then
+    Result := HeaderWidth * 8
+  else
+    Result := DataWidth * 8;
+  if Result < 70 then
+    Result := 70;
+  if Result > 200 then
+    Result := 200;
+end;
+
+function TIB_ColumnDB_KEY.GetValue: string;
+begin
+  if IsNull then
+    Result := ''
+  else
+    Result := IB_Utils.BinaryToHexText( FNewColumnBuffer, SQLLen );
+end;
+
+procedure TIB_ColumnDB_KEY.SetValue( const NewValue: string );
+begin
+  SysBeforeModify;
+  if Length( NewValue ) = 0 then
+  begin
+    SysSetIsNull( true );
+    FillChar( FNewColumnBuffer^, SQLLen, FPadChar );
+  end
+  else
+  begin
+    SysSetIsNull( false );
+    IB_Utils.HexTextToBinary( NewValue, FNewColumnBuffer, SQLLen );
+  end;
+  SysAfterModify;
+end;
+

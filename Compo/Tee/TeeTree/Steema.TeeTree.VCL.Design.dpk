@@ -1,0 +1,40 @@
+package Steema.TeeTree.Vcl.Design;
+
+{$ALIGN 0}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{ DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{ LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $42200000}
+{$DESCRIPTION 'TeeTree 2 for VCL.NET'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  Borland.Studio.Vcl.Design,
+  Steema.TeeTree.Vcl,
+  Borland.Vcl.Design.Standard,
+  System.Drawing;
+
+contains
+  TreeReg in 'TreeReg.pas',
+  TreeDBReg in 'TreeDBReg.pas';
+
+{$I Steema.TeeTree.VCL.inc}
+
+end.

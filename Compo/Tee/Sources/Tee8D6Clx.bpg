@@ -1,0 +1,53 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe -DCLX $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = Tee86clx.bpl TeeUI86clx.bpl TeeDB86clx.bpl DclTee86clx.bpl TeePro86clx.bpl \
+  TeeLanguage86Clx.bpl DclTeePro86clx.bpl TeeGL86clx.bpl DclTGL86clx.bpl TeeImage86clx.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Tee86clx.bpl: Tee86clx.dpk
+  $(DCC)
+
+TeeUI86clx.bpl: TeeUI86clx.dpk
+  $(DCC)
+
+TeeDB86clx.bpl: TeeDB86clx.dpk
+  $(DCC)
+
+DclTee86clx.bpl: DclTee86clx.dpk
+  $(DCC)
+
+TeeQR86clx.bpl: TeeQR86clx.dpk
+  $(DCC)
+
+DclTQR86clx.bpl: DclTQR86clx.dpk
+  $(DCC)
+
+TeePro86clx.bpl: TeePro86clx.dpk
+  $(DCC)
+
+TeeGL86clx.bpl: TeeGL86clx.dpk
+  $(DCC)
+
+TeeLanguage86Clx.bpl: TeeLanguage86Clx.dpk
+  $(DCC)
+
+DclTeePro86clx.bpl: DclTeePro86clx.dpk
+  $(DCC)
+
+DclTGL86clx.bpl: DclTGL86clx.dpk
+  $(DCC)
+
+TeeImage86clx.bpl: TeeImage86clx.dpk
+  $(DCC)
+

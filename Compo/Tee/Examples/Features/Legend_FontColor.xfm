@@ -1,0 +1,102 @@
+inherited LegendFontColor: TLegendFontColor
+  Caption = 'LegendFontColor'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'New Legend FontSeriesColor property displays each Legend item us' +
+        'ing the Series Color.'
+      'Applies to both single and multiple series in the same chart.'
+      ''
+      'Example: Chart1.Legend.FontSeriesColor := True ;')
+  end
+  inherited Chart1: TChart
+    Legend.ColorWidth = 15
+    Legend.Font.Height = -16
+    Legend.Font.Style = [fsBold, fsItalic]
+    Legend.Font.Shadow.Color = clBlack
+    Legend.Font.Shadow.HorizSize = 1
+    Legend.Font.Shadow.VertSize = 1
+    Legend.FontSeriesColor = True
+    Legend.Symbol.Width = 15
+    Legend.Symbol.WidthUnits = lcsPixels
+    Legend.Transparent = True
+    View3D = False
+    object Series1: TPointSeries
+      ColorEachPoint = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.HorizSize = 10
+      Pointer.InflateMargins = True
+      Pointer.Style = psDiamond
+      Pointer.VertSize = 10
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Active = False
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TLineSeries
+      Active = False
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series4: TPointSeries
+      Active = False
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 13
+      Width = 161
+      Height = 17
+      Caption = '&Legend Font Series Color'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 224
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Multiple Series'
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+  end
+end

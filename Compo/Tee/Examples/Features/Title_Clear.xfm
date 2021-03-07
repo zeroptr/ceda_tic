@@ -1,0 +1,60 @@
+inherited TitleClear: TTitleClear
+  Left = 397
+  Top = 271
+  Width = 559
+  Height = 461
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 543
+  end
+  inherited Memo1: TMemo
+    Width = 543
+    Lines.Strings = (
+      'New TChartTitle.Clear method which clears the Text.'
+      ''
+      'Example :'
+      'Chart1.Title.Clear;')
+  end
+  inherited Chart1: TChart
+    Width = 543
+    Height = 269
+  end
+  inherited Panel1: TPanel
+    Width = 543
+    object Label1: TLabel
+      Left = 13
+      Top = 14
+      Width = 54
+      Height = 13
+      Caption = 'Chart &Title :'
+      FocusControl = Edit1
+    end
+    object bClear: TButton
+      Left = 384
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Clear'
+      TabOrder = 0
+      OnClick = bClearClick
+    end
+    object Edit1: TEdit
+      Left = 76
+      Top = 11
+      Width = 229
+      Height = 21
+      TabOrder = 1
+      Text = 'Edit1'
+    end
+    object bApply: TButton
+      Left = 304
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Apply'
+      TabOrder = 2
+      OnClick = bApplyClick
+    end
+  end
+end

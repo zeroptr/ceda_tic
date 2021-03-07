@@ -1,0 +1,60 @@
+inherited LineColorEachLine: TLineColorEachLine
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Line Series in 2D mode can now display points with different col' +
+        'ors '
+      'while drawing Line segments with a single color.'
+      'Note: This new property is public (run-time only).'
+      ''
+      
+        'Example: Series1.ColorEachPoint:=True; Series1.ColorEachLine:=Fa' +
+        'lse; ')
+  end
+  inherited Chart1: TChart
+    Legend.ColorWidth = 35
+    Legend.Symbol.Width = 35
+    Title.Visible = False
+    View3D = False
+    object Series1: TLineSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Color each line'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 128
+      Top = 11
+      Width = 121
+      Height = 17
+      Caption = 'Color each p&oint'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+  end
+end

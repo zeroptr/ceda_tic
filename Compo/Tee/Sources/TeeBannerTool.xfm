@@ -1,0 +1,141 @@
+inherited BannerEditor: TBannerEditor
+  Left = 219
+  Top = 256
+  ClientHeight = 223
+  ClientWidth = 275
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited PageControl1: TPageControl
+    Width = 275
+    Height = 223
+    ActivePage = TabBanner
+    object TabBanner: TTabSheet [0]
+      Caption = 'Banner'
+      object Label16: TLabel
+        Left = 16
+        Top = 34
+        Width = 57
+        Height = 13
+        Caption = 'Scroll &delay:'
+        FocusControl = Edit2
+      end
+      object Label17: TLabel
+        Left = 16
+        Top = 122
+        Width = 69
+        Height = 13
+        Caption = 'Blink &delay on:'
+        FocusControl = Edit3
+      end
+      object Label18: TLabel
+        Left = 136
+        Top = 123
+        Width = 69
+        Height = 13
+        Caption = 'Blink &delay off:'
+        FocusControl = Edit4
+      end
+      object Label19: TLabel
+        Left = 112
+        Top = 34
+        Width = 72
+        Height = 13
+        Caption = 'Scroll d&irection:'
+        FocusControl = CBDirection
+      end
+      object CBScroll: TCheckBox
+        Left = 16
+        Top = 8
+        Width = 145
+        Height = 17
+        Caption = '&Scroll'
+        TabOrder = 0
+        OnClick = CBScrollClick
+      end
+      object Edit2: TEdit
+        Left = 16
+        Top = 52
+        Width = 57
+        Height = 21
+        TabOrder = 1
+        Text = '1'
+        OnChange = Edit2Change
+      end
+      object UDDelay: TUpDown
+        Left = 73
+        Top = 52
+        Width = 15
+        Height = 21
+        Associate = Edit2
+        Min = 1
+        Max = 32000
+        Position = 1
+        TabOrder = 2
+        Thousands = False
+      end
+      object CBBlink: TCheckBox
+        Left = 16
+        Top = 96
+        Width = 97
+        Height = 17
+        Caption = '&Blink'
+        TabOrder = 3
+        OnClick = CBBlinkClick
+      end
+      object Edit3: TEdit
+        Left = 16
+        Top = 140
+        Width = 57
+        Height = 21
+        TabOrder = 4
+        Text = '1'
+        OnChange = Edit3Change
+      end
+      object UDBlinkOn: TUpDown
+        Left = 73
+        Top = 140
+        Width = 15
+        Height = 21
+        Associate = Edit3
+        Min = 1
+        Max = 32000
+        Position = 1
+        TabOrder = 5
+        Thousands = False
+      end
+      object Edit4: TEdit
+        Left = 136
+        Top = 141
+        Width = 57
+        Height = 21
+        TabOrder = 6
+        Text = '1'
+        OnChange = Edit4Change
+      end
+      object UDBlinkOff: TUpDown
+        Left = 193
+        Top = 141
+        Width = 15
+        Height = 21
+        Associate = Edit4
+        Min = 1
+        Max = 32000
+        Position = 1
+        TabOrder = 7
+        Thousands = False
+      end
+      object CBDirection: TComboFlat
+        Left = 112
+        Top = 52
+        Width = 112
+        ItemIndex = 0
+        TabOrder = 8
+        Text = 'Right to Left'
+        OnChange = CBDirectionChange
+        Items.Strings = (
+          'Right to Left'
+          'Left to Right')
+      end
+    end
+  end
+end

@@ -1,0 +1,90 @@
+// IB_Control.INT
+
+{$IFDEF IB_FieldControl}
+
+function {$I IB_Classes.INC} GetSearchBuffer: string;
+begin Result := DataLink.SearchBuffer; end;
+procedure {$I IB_Classes.INC} SetSearchBuffer( AValue: string );
+begin DataLink.SearchBuffer := AValue; end;
+procedure {$I IB_Classes.INC} SetSearchWithMask( AValue: boolean );
+begin DataLink.SearchWithMask := AValue; end;
+function {$I IB_Classes.INC} GetSearchWithMask: boolean;
+begin Result := DataLink.SearchWithMask; end;
+procedure {$I IB_Classes.INC} SetSearchAlways( AValue: boolean );
+begin DataLink.SearchAlways := AValue; end;
+function {$I IB_Classes.INC} GetSearchAlways: boolean;
+begin Result := DataLink.SearchAlways; end;
+function {$I IB_Classes.INC} GetDataField: string;
+begin Result := DataLink.FieldName; end;
+procedure {$I IB_Classes.INC} SetDataField( const AValue: string );
+begin
+  if Assigned( DataLink ) then
+    DataLink.FieldName := AValue;
+{$IFNDEF VER90}
+{$IFDEF IB_AutoLabel}
+  RemakeAutoLabel;
+{$ENDIF}
+{$ENDIF}
+end;
+function {$I IB_Classes.INC} GetField: TIB_Column;
+begin Result := DataLink.Field; end;
+
+{$ENDIF}
+
+function {$I IB_Classes.INC} GetOnPrepareSQL: TIB_DataLinkEvent;
+begin Result := DataLink.OnPrepareSQL; end;
+procedure {$I IB_Classes.INC} SetOnPrepareSQL( AValue: TIB_DataLinkEvent );
+begin DataLink.OnPrepareSQL := AValue; end;
+
+{$IFNDEF IBG_LookupCombo}
+function {$I IB_Classes.INC} GetDataSource: TIB_DataSource;
+begin Result := DataLink.DataSource; end;
+procedure {$I IB_Classes.INC} SetDataSource( AValue: TIB_DataSource );
+begin
+  if Assigned( DataLink) then DataLink.DataSource := AValue;
+{$IFNDEF VER90}
+{$IFDEF IB_AutoLabel}
+  RemakeAutoLabel;
+{$ENDIF}
+{$ENDIF}
+end;
+{$ENDIF}
+
+procedure {$I IB_Classes.INC} SetIgnoreColorScheme( AValue: boolean );
+begin DataLink.IgnoreColorScheme := AValue; end;
+function {$I IB_Classes.INC} GetIgnoreColorScheme: boolean;
+begin Result := DataLink.IgnoreColorScheme; end;
+
+{$IFNDEF IBG_LookupCombo}
+procedure {$I IB_Classes.INC} CMGetDataLink( var Message: TMessage );
+begin Message.Result := Integer( DataLink ); end;
+procedure {$I IB_Classes.INC} StateChanged( Sender: TIB_DataLink;
+                                            IB_DataSource: TIB_DataSource );
+begin
+  SysStateChanged;
+{$IFNDEF VER90}
+{$IFDEF IB_AutoLabel}
+  RemakeAutoLabel;
+{$ENDIF}
+{$ENDIF}
+end;
+{$ENDIF}
+procedure {$I IB_Classes.INC} DataChange( Sender: TIB_DataLink;
+                                          IB_DataSource: TIB_DataSource;
+                                          IB_Field: TIB_Column );
+begin SysDataChange( IB_Field ); end;
+
+{$IFNDEF VER90}
+{$IFDEF IB_AutoLabel}
+procedure {$I IB_Classes.INC} WMWindowPosChanged(var Message: TWMWindowPosChanged);
+begin inherited; RemakeAutoLabel; end;
+procedure {$I IB_Classes.INC} RemakeAutoLabel;
+begin
+if Assigned(AutoLabel) and not (csDestroying in ComponentState) and
+  (Assigned(AutoLabel.theLabel) or (csDesigning in ComponentState)) then
+  AutoLabel.Make;
+end;
+procedure {$I IB_Classes.INC} SetEnabled(Value: Boolean);
+begin inherited; RemakeAutoLabel; end;
+{$ENDIF}
+{$ENDIF}

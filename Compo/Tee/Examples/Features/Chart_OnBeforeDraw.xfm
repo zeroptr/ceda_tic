@@ -1,0 +1,50 @@
+inherited ChartBeforeDraw: TChartBeforeDraw
+  Caption = 'ChartBeforeDraw'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'The OnBeforeDraw event is triggered just at the start of the'
+      
+        'Chart drawing process. It can be used to draw things behind a ch' +
+        'art.')
+  end
+  inherited Chart1: TChart
+    Top = 97
+    Height = 240
+    OnAfterDraw = Chart1AfterDraw
+    OnBeforeDrawAxes = Chart1BeforeDrawAxes
+    OnBeforeDrawChart = Chart1BeforeDrawChart
+    OnBeforeDrawSeries = Chart1BeforeDrawSeries
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    Height = 48
+    object RadioGroup1: TRadioGroup
+      Left = 8
+      Top = 8
+      Width = 369
+      Height = 33
+      Columns = 4
+      ItemIndex = 0
+      Items.Strings = (
+        'Before Chart'
+        'Before Axes'
+        'Before Series'
+        'After Chart')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+  end
+end

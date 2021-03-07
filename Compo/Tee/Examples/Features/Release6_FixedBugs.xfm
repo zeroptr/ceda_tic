@@ -1,0 +1,121 @@
+object Release6Fixed: TRelease6Fixed
+  Left = 223
+  Top = 138
+  Width = 574
+  Height = 461
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 566
+    Height = 434
+    Align = alClient
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Courier New'
+    Font.Style = []
+    Lines.Strings = (
+      'Release 6.0'
+      ''
+      'Defect  Description'
+      '------  -----------'
+      '849     TPieSeries'
+      
+        '        Sorting a pie series using the editor dialog, when havin' +
+        'g'
+      '        an "Other" slice, duplicated "Other" slice.'
+      ''
+      '822     TRadarSeries'
+      '        Setting ClockWiseLabels:=True had no effect.'
+      ''
+      '795     TPieSeries'
+      
+        '        Changing OtherSlice.Text property at design-time in mult' +
+        'iple'
+      '        charts failed.'
+      ''
+      '793     TMarkTipsTool'
+      '        Moving the mouse over series after clearing the series'
+      '        sometimes raise an exception.'
+      ''
+      '786     THistogramSeries'
+      '        Clicked method was not functional.'
+      ''
+      '784     Chart tools editor'
+      '        Scrolling a tool (using arrow buttons) did not repainted'
+      '        listbox of tool icons.'
+      ''
+      '781     TTrendFunction'
+      '        Invalid display when the series XValues Order is "none".'
+      ''
+      '768     TAreaSeries'
+      
+        '        Top part of area is not filled when having legend visibl' +
+        'e'
+      '        and hollow area brush.'
+      ''
+      '767     Tee6New Demo (CBuilder only)'
+      '        Wrong registry setting for path of demo source files.'
+      ''
+      '766     TColorGridSeries'
+      '        Missing display of last column and row.'
+      '        (See new Centered property).'
+      ''
+      '764     TChartAxis'
+      '        Millisecond automatic label increment was not working.'
+      ''
+      '763     TChartValueList'
+      '        Fixed range check error when deleting the last point'
+      '        in the array.'
+      ''
+      '748     THorizBarSeries'
+      '        Wrong display of bars when axis is inverted and Bar size'
+      '        percent is 100.'
+      ''
+      '745     TLineSeries'
+      '        Wrong display when first point is not visible and axis'
+      '        is logarithmic.'
+      ''
+      '715     Legend'
+      '        Fixed clicking legend when CheckBoxes = True and used'
+      '        OnGetLegendRect event.'
+      ''
+      '694     Paging'
+      '        Fixed changing Chart page when multiple series with'
+      '        different number of points exist.'
+      ''
+      '679     TSeriesMarks'
+      
+        '        Fixed drawing problem when using gradients and rotation ' +
+        'angle.'
+      ''
+      '662     TColorGridSeries'
+      '        Added support for displaying Marks.'
+      ''
+      '650     Chart Cursor'
+      '        When scrolling a chart, the cursor is preserved to allow'
+      '        non default cursors.'
+      ''
+      '649     Polar Series'
+      '        Fixed display bug when having multiple polar series,'
+      '        with only few showing Marks and resized.'
+      ''
+      '498     Legend'
+      
+        '        Fixed display bug when style is "LastValues" and a Serie' +
+        's'
+      '        has ShowInLegend = False.'
+      ''
+      '')
+    ParentFont = False
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WantTabs = True
+    WordWrap = False
+  end
+end

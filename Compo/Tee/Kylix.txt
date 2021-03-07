@@ -1,0 +1,156 @@
+===========================
+TeeChart Pro v8 CLX
+100% Full Source Code
+
+Steema Software SL
+
+http://www.steema.com
+info@steema.com
+---------------------------
+
+Installation in Kylix
+=====================
+
+1) Copy the Sources folder to a Linux
+folder under your "home".
+
+  For example, if you log as root:
+
+  # cp sources/* /root/TeeChart
+
+2) Compile the TeeChart packages
+
+ It seems Kylix does not allow compiling
+ packages that depend on other packages,
+ all at the same time from the Kylix IDE.
+
+ A workaround is to compile the TeeChart
+ packages manually from a console window.
+
+ 
+ Use the included KylixRecompile shell
+ script gently provided by 
+
+  Martin Kaul (mkaul@leuze.de)
+
+
+ NOTE: 
+ =====
+
+  Before using the "KylixRecompile" script, 
+  type this to convert from Windows to Linux
+  end-of-line characters:
+
+  "dos2unix KylixRecompile"
+
+
+ ...or you can make a shell script to do
+ the following:
+
+ # source /root/kylix/bin/kylixpath
+ # make -f Tee8K3.bpg
+
+ (Where "root" is your login home folder)
+
+ After compiling, you should copy the 
+ output package files to Kylix folders,
+ to make easier Kylix find them:
+
+ # cp bpl*Tee8K3*.so /root/kylix/bin
+ # cp dcl*Tee8K3*.so /root/kylix/bin
+ # cp *.dcp /root/kylix/lib
+
+ Important:
+ Every time you want to recompile, it might
+ be necessary to remove the TeeChart *.dcp files
+ from Kylix lib folder:
+
+ # rm /root/kylix/lib/Tee*.dcp
+
+3) Run Kylix
+
+ # startkylix  (or use the Gnome/KDE menu)
+
+4) Install the packages
+
+   Component->Install Packages->Add...
+
+  Select and install the dclTee8K3.so,
+  dclTeePro8K3.so and bplTeeImage8K3.so packages.
+
+
+Compiling applications:
+=======================
+
+Kylix needs the correct path to find the
+compiled units (*.dpu files), so it can
+compile your projects.
+
+Project->Options->Directories->Search Path
+
+
+Known bugs and limitations:
+===========================
+
+**Missing or not fully implemented features:
+
+-OpenGL (TChartOpenGL component not included)
+
+-TChartWebSource (it does not load Charts from URL's)
+
+-TQRChart (QuickReport chart control) is not included.
+
+-Metafiles do not exist in Kylix in the same way as in Windows.
+
+-Exporting to PNG, GIF, JPEG, PCX.
+
+-The list of available printers is not supported in SuSE Linux.
+ (The Workaround is to manually edit Linux's /etc/printcap file)
+
+-TeeChart Font "Outlines" and "Inter-Char spacing"
+ are not implemented.
+
+-Rotation of text titles, axis labels, etc is not
+ implemented correctly.
+
+-Null field values in database DBCharts are not supported.
+
+-The TeeChart Wizard (TeeExpForm.pas unit) is not supported.
+
+**Things not found in Kylix CLX library that affect TeeChart Pro:
+
+-Some component properties are not implemented in Kylix:
+ AutoSize, DragCursor, DragKind, Locked, OnCanResize and
+ all Docking related properties and events.
+
+-QuickReport is not included in Kylix.  (No QRChart support).
+
+-The PageControl component has no "TabPosition" property,
+ so, the Chart Editor tabs cannot be positioned in a
+ different orientation than at top.
+
+-There's no way to discover if the system has a
+ mouse wheel present. (TMouse.WheelPresent).
+
+**Known bugs:
+==============
+
+-Some TeeChart Actions perform an endless loop
+ (ie: ChartAction3D)
+
+-Some property categories at Object Inspector display
+ the full list of Chart properties (ie: Walls)
+
+-The ColorGrid series do not paint the first row of
+ points (top row).
+
+-The rectangles around titles and legend miss one
+ pixel at the bottom.
+
+-Connecting a DBChart to a dataset in a DataModule
+ is not possible at design-time.
+
+-Setting a TeeCommander in vertical position do not
+ paints totally correct.
+
+-----------------------------------------------------------------------

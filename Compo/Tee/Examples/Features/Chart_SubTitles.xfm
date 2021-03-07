@@ -1,0 +1,53 @@
+inherited SubTitles: TSubTitles
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 98
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      
+        'SubTitle and SubFoot are two new properties exactly like Title a' +
+        'nd Foot.'
+      ''
+      'Example: Chart1.SubTitle.Text.Add('#39'Hello'#39');')
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    Foot.Font.Color = clYellow
+    Foot.Font.Height = -13
+    Foot.Font.Style = [fsBold]
+    Foot.Text.Strings = (
+      'This is the Chart Foot')
+    SubTitle.Gradient.Visible = True
+    SubTitle.Transparent = False
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Show &SubTitle'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 120
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Show Sub&Foot'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+  end
+end

@@ -1,0 +1,52 @@
+
+{                                                                              }
+{ TIB_CheckBox                                                                 }
+{                                                                              }
+
+{: This control gives a boolean-style interface to a bound data column.}
+TIB_CustomCheckBox = class(TCustomCheckBox)
+{$I IB_WinControl.INT}
+private
+  FValueChecked: string;
+  FValueUncheck: string;
+  FAllowGrayed: boolean;
+  FDisplayLabelAsCaption: Boolean;
+  procedure SetDisplayLabelAsCaption( AValue: Boolean );
+  function GetFieldState: TCheckBoxState; virtual;
+  procedure SetAllowGrayed( AValue: boolean );
+protected
+  procedure CreateParams(var Params: TCreateParams); override;
+  procedure Loaded; override;
+  procedure Toggle; override;
+  procedure KeyPress(var Key: Char); override;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+  property Checked;
+  property State;
+published
+
+{: Property determines whether the checkbox allows the grayed state when the
+user is clicking on the control.
+<br><br>
+It will still show the grayed state when the AValue of the column is null or, in
+search mode, when no criterion is entered.}
+  property AllowGrayed: boolean read FAllowGrayed
+                                write SetAllowGrayed
+                                default false;
+{: Use DisplayLabel of the data column and display it as Caption }
+  property DisplayLabelAsCaption: Boolean read FDisplayLabelAsCaption
+                                          write SetDisplayLabelAsCaption
+                                          default false;
+end;
+
+TIB_CheckBox = class(TIB_CustomCheckBox)
+{$I IB_WinControl.PBL}
+{$IFNDEF HELPSCAN}
+published
+  property Alignment;
+  property Caption;
+{$ENDIF}
+end;
+
+// IBC_CheckBox.IMP

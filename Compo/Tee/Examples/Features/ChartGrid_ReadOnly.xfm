@@ -1,0 +1,31 @@
+inherited ChartGridReadOnly: TChartGridReadOnly
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'When True ChartGrid1.ReadOnly prevents contents of the ChartGrid' +
+        ' being modified.'
+      'Example:'
+      'ChartGrid1.ReadOnly:=True;')
+  end
+  inherited Panel1: TPanel
+    inherited cbAllowAppend: TCheckBox
+      Visible = False
+    end
+    object cbReadOnly: TCheckBox
+      Left = 14
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Read only'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbReadOnlyClick
+    end
+  end
+  inherited ChartGrid1: TChartGrid
+    ShowHint = False
+  end
+end

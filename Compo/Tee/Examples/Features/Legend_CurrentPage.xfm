@@ -1,0 +1,55 @@
+inherited LegendCurrentPage: TLegendCurrentPage
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      
+        'When dividing a Chart in pages, the Legend can now show only the' +
+        ' current page'
+      'points instead of all the points of the series.'
+      ''
+      'Example: Chart1.MaxPointsPerPage := 10;')
+  end
+  inherited Chart1: TChart
+    Top = 106
+    Height = 231
+    Legend.TextStyle = ltsXAndValue
+    MaxPointsPerPage = 10
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    object ChartPageNavigator1: TChartPageNavigator
+      Left = 16
+      Top = 8
+      Width = 192
+      Height = 25
+      TabOrder = 0
+      Chart = Chart1
+    end
+    object CheckBox1: TCheckBox
+      Left = 270
+      Top = 12
+      Width = 161
+      Height = 17
+      Caption = '&Current Page Legend'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

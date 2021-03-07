@@ -1,0 +1,59 @@
+inherited DBCrossTabSourceDemoHideSeries: TDBCrossTabSourceDemoHideSeries
+  Width = 617
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 63
+    Width = 601
+  end
+  inherited Memo1: TMemo
+    Width = 601
+    Height = 63
+    Lines.Strings = (
+      
+        'The new HideSeries property allow you to decide if the Series wh' +
+        'ich have been automatically created by the '
+      
+        'DBCrosstabSource component must be visible or not into the Chart' +
+        ' Editor.')
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    Width = 601
+    Height = 42
+    inherited CheckBox1: TCheckBox
+      Top = 15
+    end
+    inherited RadioGroup1: TRadioGroup
+      Top = 2
+    end
+    inherited Button1: TButton
+      Top = 9
+    end
+    object cbHideSeries: TCheckBox
+      Left = 360
+      Top = 15
+      Width = 97
+      Height = 17
+      Caption = '&Hide Series'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = cbHideSeriesClick
+    end
+    object bEdit: TButton
+      Left = 459
+      Top = 9
+      Width = 72
+      Height = 25
+      Caption = '&Edit'
+      TabOrder = 4
+      OnClick = bEditClick
+    end
+  end
+  inherited DBChart1: TDBChart
+    Top = 107
+    Width = 601
+    Height = 239
+  end
+end

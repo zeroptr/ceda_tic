@@ -1,0 +1,322 @@
+
+
+CREATE TABLE SRV_ARAC (
+    ARAC_KOD                  D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    ARAC_SID                  D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    PLAKA                     D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    ARAC_TIP                  D_SMALLINT NOT NULL /* D_SMALLINT = SMALLINT */,
+    CARI_KOD                  D_KOD /* D_KOD = VARCHAR(15) */,
+    ACIKLAMA                  D_ACK COLLATE PXW_TURK /* D_ACK = VARCHAR(100) */,
+    AKTIF_DEGIL               D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    TRF_SIG_GEC_TAR           D_TARTIP /* D_TARTIP = DATE */,
+    KASKO_SIG_GEC_TAR         D_TARTIP /* D_TARTIP = DATE */,
+    AS_ADISOYADI              D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    AS_DOGUM_YERI             D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    AS_NUFUS_IL               D_ILCESEHIR COLLATE PXW_TURK /* D_ILCESEHIR = VARCHAR(30) */,
+    AS_NUFUS_ILCE             D_ILCESEHIR COLLATE PXW_TURK /* D_ILCESEHIR = VARCHAR(30) */,
+    AS_DOGUM_TARIHI           D_TARTIP /* D_TARTIP = DATE */,
+    AS_IKA_ADRES              D_ACK COLLATE PXW_TURK /* D_ACK = VARCHAR(100) */,
+    AS_SERI_NO                D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    AS_MUYANE_GECERLILIK_SUR  D_TARTIP /* D_TARTIP = DATE */,
+    ARAC_MARKA                D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    ARAC_MARKA_TIP            D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    TRAFIK_CIKIS_TAR          D_TARTIP /* D_TARTIP = DATE */,
+    MODEL_YILI                D_INTEGER /* D_INTEGER = INTEGER */,
+    SON_ONARIM_KM             D_INTEGER /* D_INTEGER = INTEGER */,
+    RADYO_TEYP                D_INTEGER /* D_INTEGER = INTEGER */,
+    ALARM                     D_INTEGER /* D_INTEGER = INTEGER */,
+    SIGORTA_KOD               D_KOD /* D_KOD = VARCHAR(15) */,
+    BAYI_KOD                  D_KOD /* D_KOD = VARCHAR(15) */,
+    RADYO_KOD_NUM             D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    LASTIK_EBADI              D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    ANAHTAR_NUMARASI          D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    NOTLAR                    D_ACK COLLATE PXW_TURK /* D_ACK = VARCHAR(100) */,
+
+    IL                     D_ILCESEHIR COLLATE PXW_TURK /* D_ILCESEHIR = VARCHAR(30) */,
+    ILCE                   D_ILCESEHIR COLLATE PXW_TURK /* D_ILCESEHIR = VARCHAR(30) */,
+    TESCIL_SIRA_NO         D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    TESCIL_TARIHI          D_TARTIP /* D_TARTIP = DATE */,
+    PLAKA_NO               D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    MARKASI                D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    MODELI                 D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    CINSI                  D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    ARAZI                  D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    TIPI                   D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    RENGI                  D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    MOTOR_NO               D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    SASI_NO                D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    RUHSAT_BILGILERI       D_ACK COLLATE PXW_TURK /* D_ACK = VARCHAR(100) */,
+    SILINDIR_HACMI         D_FLOAT /* D_FLOAT = FLOAT */,
+    MOTOR_GUCU             D_FLOAT /* D_FLOAT = FLOAT */,
+    ISTIAP_HADDI           D_FLOAT /* D_FLOAT = FLOAT */,
+    KISI                   D_FLOAT /* D_FLOAT = FLOAT */,
+    IMALATCI_YERLI         D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    KULLANIM_TIPI          D_INTEGER /* D_INTEGER = INTEGER */,
+    YAKIT_TIPI             D_INTEGER /* D_INTEGER = INTEGER */,
+    YUK_TASIMA             D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    ROMORK_TAKMA           D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    TAKSIMETRE             D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    TAKOMETRE              D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    NET_AGIRLIK            D_FLOAT NOT NULL /* D_FLOAT = FLOAT */,
+    KATAR_AGIRLIGI         D_FLOAT /* D_FLOAT = FLOAT */,
+    ROMORK_ISTIAPHAD       D_FLOAT /* D_FLOAT = FLOAT */,
+    MUYANE_GECERLILIK_SUR  D_TARTIP /* D_TARTIP = DATE */,
+    ONAYLAYAN_SICIL        D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    SERI_G_NO              D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */
+
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRv_ARACSRv_ ADD CONSTRAINT PK_SRv_ARAC PRIMARY KEY (ARAC_KOD);
+
+
+/* Fields descriptions */
+
+DESCRIBE FIELD ARAC_KOD TABLE SRv_ARAC
+'ARACIN TANIMLAMA NUMARASI
+';
+
+DESCRIBE FIELD ARAC_TIP TABLE SRv_ARAC
+'0- KAMYON
+1- TIR
+2- DORSE
+3- BÝNEK
+4- DÝÐER
+';
+
+DESCRIBE FIELD CARI_KOD TABLE SRv_ARAC
+'EÐER MAL ÖZMAL DEÐÝL ÝSE BU SAHADA SAÐLÞAYICININ CARÝ KODU GÝRÝLÝR
+';
+
+DESCRIBE FIELD ACIKLAMA TABLE SRv_ARAC
+'BU ARAÇLA ÝLGÝLÝ ALINABÝLECEK NOTLAR
+';
+
+DESCRIBE FIELD AKTIF_DEGIL TABLE SRv_ARAC
+'1 OLDUÐU TAKDÝRDE ÝÞLEM LÝSTELERÝNDE GÖRÜLMEZ
+';
+
+DESCRIBE FIELD TRF_SIG_GEC_TAR TABLE SRv_ARAC
+'TRAFÝK SÝGORTASI GEÇERLÝLÝK SÜRESÝ
+';
+
+DESCRIBE FIELD KASKO_SIG_GEC_TAR TABLE SRv_ARAC
+'KASKO SÝGORTASI GEÇERLÝLÝK SÜRESÝ
+';
+
+
+
+
+
+
+
+CREATE TABLE SRV_ARIZA_TIP (
+    ARIZA_KOD  D_KOD /* D_KOD = VARCHAR(15) */,
+    ARIZA_SID  D_SID /* D_SID = SMALLINT NOT NULL */,
+    ACIKLAMA   D_ACK50 /* D_ACK50 = VARCHAR(50) */
+);
+
+
+
+CREATE TABLE SRV_ARAC_SIGORTA (
+    SIGORTA_KOD  D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    SIGORTA_SID  D_SID /* D_SID = SMALLINT NOT NULL */,
+    ADI          D_ACK30 /* D_ACK30 = VARCHAR(30) */,
+    TEL          D_TELNO /* D_TELNO = VARCHAR(20) */,
+    ILGILI_KISI  D_ACK30 /* D_ACK30 = VARCHAR(30) */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRV_ARAC_SIGORTA ADD CONSTRAINT PK_SRV_ARAC_SIGORTA PRIMARY KEY (SIGORTA_KOD);
+
+
+CREATE TABLE SRV_ARAC_ONARIM (
+    ONARIM_ID              D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    ONARIM_SID             D_SID /* D_SID = SMALLINT NOT NULL */,
+    ARAC_KODU              D_KOD /* D_KOD = VARCHAR(15) */,
+    GELIS_NEDENI           D_SMALLINT /* D_SMALLINT = SMALLINT */,
+    GIRIS_KM               D_INTEGER /* D_INTEGER = INTEGER */,
+    ONCEKI_KM              D_INTEGER /* D_INTEGER = INTEGER */,
+    ODEME_SEKLI            D_SMALLINT /* D_SMALLINT = SMALLINT */,
+    YAKIT_SEVIYESI         D_SMALLINT /* D_SMALLINT = SMALLINT */,
+    GARANTI_ISLEMI         D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    EXSPERTIZ_ISLEMI       D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    SOK_PAR_IADE           D_BOOLEAN NOT NULL /* D_BOOLEAN = SMALLINT NOT NULL CHECK ((VALUE = 0) or (VALUE =1)) */,
+    TESLIM_EDEN            D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    ALACAK_OLAN            D_ACK30 COLLATE PXW_TURK /* D_ACK30 = VARCHAR(30) */,
+    TELEFON                D_TELNO /* D_TELNO = VARCHAR(20) */,
+    SIGORTA_KOD            D_KOD /* D_KOD = VARCHAR(15) */,
+    TESLIM_TAR             D_TARTIP /* D_TARTIP = DATE */,
+    TESLIM_SAAT            D_SAATTIP /* D_SAATTIP = TIME */,
+    TAHMINI_PARCA_TUTAR    D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    TAHMINI_ISCILIK_TUTAR  D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    GIRIS_TARIH            D_TARTIP /* D_TARTIP = DATE */,
+    GIRIS_SAAT             D_SAATTIP /* D_SAATTIP = TIME */,
+    ONARIM_ISTEKLERI       D_MEMO /* D_MEMO = BLOB SUB_TYPE 1 SEGMENT SIZE 100 */,
+    MUSTERI_SIKAYETI       D_MEMO /* D_MEMO = BLOB SUB_TYPE 1 SEGMENT SIZE 100 */,
+    SERVIS_NOTU            D_MEMO /* D_MEMO = BLOB SUB_TYPE 1 SEGMENT SIZE 100 */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRV_ARAC_ONARIM ADD CONSTRAINT PK_SRV_ARAC_ONARIM PRIMARY KEY (ONARIM_ID, ONARIM_SID);
+
+
+
+
+
+
+
+
+
+CREATE TABLE SRV_ARAC_ONARIM_D (
+    URUNHAR_ID            D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    URUNHAR_SID           D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    URUN_KOD              D_URUN_KOD NOT NULL /* D_URUN_KOD = VARCHAR(35) */,
+    TIP                   D_BORCALACAK NOT NULL /* D_BORCALACAK = CHAR(1) NOT NULL CHECK ((VALUE = 'A') or (VALUE ='B')) */,
+    BELGE_TUR             D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    BELGE_ID              D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    BELGE_SID             D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    BELGE_SIRA_NO         D_INTEGER /* D_INTEGER = INTEGER */,
+    TARIH                 D_TARTIP NOT NULL /* D_TARTIP = DATE */,
+    FIILI_TAR             D_TARTIP /* D_TARTIP = DATE */,
+    DOV_BAZ_TAR           D_TARTIP /* D_TARTIP = DATE */,
+    OLCUBIRIM             D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    MIKTAR                D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    DOVKOD                D_DKOD NOT NULL /* D_DKOD = VARCHAR(5) DEFAULT 'YTL' NOT NULL */,
+    DOVKUR                D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    TUTAR                 D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    TUTAR_VPB             D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    URUN_DOVKOD           D_DKOD NOT NULL /* D_DKOD = VARCHAR(5) DEFAULT 'YTL' NOT NULL */,
+    TUTAR_URUN_DOVKOD     D_MONEY /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    BIRIM_FIY             D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    BIRIM_FIY_VPB         D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    BIRIM_FIY_URN_DOVKOD  D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    ISKONTO_TUTAR         D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    ISKONTO_TUTAR_VPB     D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    OLCUBIRIM_URN_OB      D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    MIKTAR_URN_OB         D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    DEPO_KOD              D_KOD /* D_KOD = VARCHAR(15) */,
+    MASRAF_MERK           D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD1                  D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD2                  D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD3                  D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD4                  D_KOD /* D_KOD = VARCHAR(15) */,
+    ACIKLAMA              D_ACK50 NOT NULL COLLATE PXW_TURK /* D_ACK50 = VARCHAR(50) */,
+    ISKONTO_TIP           D_SMALLINT /* D_SMALLINT = SMALLINT */,
+    ISKONTO_ORAN          D_SMALLINT /* D_SMALLINT = SMALLINT */,
+    FAT_IRS_SEP           D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    ONARIM_ID             D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    ONARIM_SID            D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    FATURA_ID             D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    FATURA_SID            D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    IRSALIYE_ID           D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    IRSALIYE_SID          D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    KDV                   D_SMALLINT /* D_SMALLINT = SMALLINT */,
+    KDV_TUTAR             D_MONEY NOT NULL /* D_MONEY = NUMERIC(18,4) DEFAULT 0 NOT NULL */,
+    SECIM                 D_SMALLINT /* D_SMALLINT = SMALLINT */,
+    KAPANDI               D_SMALLINT /* D_SMALLINT = SMALLINT */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRV_ARAC_ONARIM_D ADD CONSTRAINT PK_SRV_ARAC_ONARIM_D PRIMARY KEY (URUNHAR_ID, URUNHAR_SID);
+
+
+/******************************************************************************/
+/****                             Foreign Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRV_ARAC_ONARIM_D ADD CONSTRAINT FK_SRV_ARAC_ONARIM_D_ARAC_ONARIM FOREIGN KEY (ONARIM_ID, ONARIM_SID) REFERENCES ARAC_ONARIM (ONARIM_ID, ONARIM_SID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+/******************************************************************************/
+/****                               Indices                                ****/
+/******************************************************************************/
+
+CREATE INDEX FATURA_IDX_ON_SRV_ARAC_ONARIM_D ON SRV_ARAC_ONARIM_D (FATURA_ID, FATURA_SID);
+CREATE INDEX ISRSALIYE_IDX_SRV_ARAC_ONARIM_D ON SRV_ARAC_ONARIM_D (IRSALIYE_ID, IRSALIYE_SID);
+CREATE INDEX ONARIM_IDX_SRV_ARAC_ONARIM_D ON SRV_ARAC_ONARIM_D (ONARIM_ID, ONARIM_SID);
+CREATE INDEX TARIH_IDX_ON_SRV_ARAC_ONARIM_D ON SRV_ARAC_ONARIM_D (TARIH);
+
+
+
+
+
+
+CREATE TABLE SRV_ARAC_MARKA_TIP (
+    MARKA_TIP_KOD  D_ACK30 NOT NULL /* D_ACK30 = VARCHAR(30) */,
+    MARKA_TIP_SID  D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */,
+    MARKA_KOD      D_ACK30 NOT NULL /* D_ACK30 = VARCHAR(30) */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRV_ARAC_MARKA_TIP ADD CONSTRAINT PK_SRV_ARAC_MARKA_TIP PRIMARY KEY (MARKA_TIP_SID, MARKA_TIP_KOD, MARKA_KOD);
+
+
+
+
+
+
+CREATE TABLE SRV_ARAC_MARKA (
+    MARKA_KOD  D_ACK30 NOT NULL /* D_ACK30 = VARCHAR(30) */,
+    MARKA_SID  D_SID /* D_SID = SMALLINT NOT NULL */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRV_ARAC_MARKA ADD CONSTRAINT PK_SRV_ARAC_MARKA PRIMARY KEY (MARKA_KOD);
+
+
+
+
+
+
+
+CREATE TABLE SRV_ARAC_BAYI (
+    BAYI_KOD  D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    BAYI_SID  D_SID /* D_SID = SMALLINT NOT NULL */,
+    BAYI_ADI  D_ACK30 /* D_ACK30 = VARCHAR(30) */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE SRV_ARAC_BAYI ADD CONSTRAINT PK_SRV_ARAC_BAYI PRIMARY KEY (BAYI_KOD);

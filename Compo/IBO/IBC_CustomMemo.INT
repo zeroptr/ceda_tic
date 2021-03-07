@@ -1,0 +1,57 @@
+
+{                                                                              }
+{  IB_CustomMemo.INT                                                           }
+{                                                                              }
+
+{$I IBC_CustomEdit.INT}
+
+private
+
+FAllowCRLF: boolean;
+FAutoDisplay: boolean;
+FMemoLoaded: boolean;
+FIgnoreChangeLevel: integer;
+procedure SetAutoDisplay( AValue: boolean );
+procedure WMCut(var Message: TMessage); message WM_CUT;
+procedure WMPaste(var Message: TMessage); message WM_PASTE;
+procedure WMLButtonDblClk(var Message: TWMLButtonDblClk);
+                                                       message WM_LBUTTONDBLCLK;
+
+protected
+
+procedure Change; override;
+procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+procedure KeyPress(var Key: Char); override;
+procedure Loaded; override;
+
+public
+
+constructor Create(AOwner: TComponent); override;
+destructor Destroy; override;
+
+{: This property can be used to prevent pressing the ENTER key from causing a
+hard carriage return (CRLF) to be inserted into the text of the column.}
+property AllowCRLF: boolean read FAllowCRLF write FAllowCRLF default true;
+
+{: This property determines whether the contents of the memo should be
+automatically loaded from the server.
+<br><br>
+If this is set to False, the memo contents will be displayed on demand, when
+the user double-clicks on the control or presses the ENTER key when it has the
+focus.}
+property AutoDisplay: boolean read FAutoDisplay
+                              write SetAutoDisplay
+                              default true;
+
+{: Direct access to the contents of the control.}
+property Lines;
+
+{: If the memo has not been loaded then this will cause it to be loaded.
+<br><br>
+It should never need to be called if AutoDisplay is True.}
+procedure LoadMemo;
+
+{: Returns True if the memo contents have been loaded.}
+property MemoLoaded: boolean read FMemoLoaded;
+
+//IBC_CustomMemo.IMP

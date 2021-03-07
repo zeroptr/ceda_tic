@@ -1,0 +1,102 @@
+inherited AxisArrowToolDemo: TAxisArrowToolDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Axis Arrow tool is used to display small arrows at begin and' +
+        ' / or end positions of axes.'
+      
+        'Many Arrows can be added to a Chart, each one associated with a ' +
+        'different axis.'
+      'The Arrows can be customized ( pen, pattern, size ).'
+      
+        'Clicking the arrows will optionally scroll the axis a configurab' +
+        'le percent amount.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    View3D = False
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TAxisArrowTool
+      Position = aaStart
+      OnClick = ChartTool1Click
+      AxisID = 2
+    end
+    object ChartTool2: TAxisArrowTool
+      Brush.Color = 8421440
+      Pen.Color = clWhite
+      OnClick = ChartTool1Click
+      AxisID = 0
+    end
+    object ChartTool3: TAxisArrowTool
+      Position = aaEnd
+      Brush.Color = clWhite
+      Length = 36
+      Pen.Color = clBlue
+      OnClick = ChartTool1Click
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 320
+      Top = 13
+      Width = 32
+      Height = 13
+      Caption = 'Label1'
+    end
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Active Left Top'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 128
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = 'Active &Bottom'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object Button1: TButton
+      Left = 232
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 184
+    Top = 168
+  end
+end

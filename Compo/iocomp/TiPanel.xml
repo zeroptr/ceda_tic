@@ -1,0 +1,76 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Top Aligned [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>1</BorderStyle>
+<ShowTitleBevel>1</ShowTitleBevel>
+<TitleAlignment>1</TitleAlignment>
+<TitleBevelMarginEnds>5</TitleBevelMarginEnds>
+<TitleBevelMarginTop>1</TitleBevelMarginTop>
+<TitleFont.Style>1</TitleFont.Style>
+<TitleFont.Color>8421376</TitleFont.Color>
+<TitleFont.Name>MS Sans Serif</TitleFont.Name>
+<TitleFont.Size>8</TitleFont.Size>
+<TitleMarginLeft>5</TitleMarginLeft>
+<TitleMarginTop>5</TitleMarginTop>
+<TitleText>Title</TitleText>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Bottom Aligned</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>1</BorderStyle>
+<ShowTitleBevel>1</ShowTitleBevel>
+<TitleAlignment>1</TitleAlignment>
+<TitleBevelMarginEnds>5</TitleBevelMarginEnds>
+<TitleBevelMarginTop>-17</TitleBevelMarginTop>
+<TitleFont.Style>1</TitleFont.Style>
+<TitleFont.Color>8421376</TitleFont.Color>
+<TitleFont.Name>MS Sans Serif</TitleFont.Name>
+<TitleFont.Size>8</TitleFont.Size>
+<TitleMarginLeft>5</TitleMarginLeft>
+<TitleMarginTop>130</TitleMarginTop>
+<TitleText>Title</TitleText>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Semi-Transparent [Default]</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<TitleFont.Color>8421376</TitleFont.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<TitleFont.Color>65535</TitleFont.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>GrayScale</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<TitleFont.Color>8421504</TitleFont.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<TitleFont.Color>16777215</TitleFont.Color>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

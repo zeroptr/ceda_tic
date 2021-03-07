@@ -1,0 +1,42 @@
+inherited MarksXYStyle: TMarksXYStyle
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 58
+    Lines.Strings = (
+      'Series Marks can now display the X and Y values for the point.'
+      ''
+      'Example: Series1.Marks.Style:=smsXY;')
+  end
+  inherited Chart1: TChart
+    Top = 99
+    Height = 238
+    Legend.TextStyle = ltsXAndValue
+    Chart3DPercent = 15
+    View3DOptions.Elevation = 315
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TPointSeries
+      Marks.ArrowLength = 0
+      Marks.Style = smsXY
+      Marks.Visible = True
+      SeriesColor = clRed
+      OnGetMarkText = Series1GetMarkText
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 58
+    Visible = False
+  end
+end

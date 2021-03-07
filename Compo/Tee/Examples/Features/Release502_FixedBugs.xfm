@@ -1,0 +1,28 @@
+object Release502Fixed: TRelease502Fixed
+  Left = 223
+  Top = 138
+  Width = 536
+  Height = 445
+  Color = clBtnFace
+  ParentFont = True
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StringGrid1: TStringGrid
+    Left = 0
+    Top = 0
+    Width = 528
+    Height = 418
+    Align = alClient
+    BorderStyle = bsNone
+    ColCount = 2
+    DefaultRowHeight = 18
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect]
+    TabOrder = 0
+    OnDblClick = StringGrid1DblClick
+    ColWidths = (
+      102
+      412)
+  end
+end

@@ -1,0 +1,83 @@
+inherited SeriesTypeOrgChart: TSeriesTypeOrgChart
+  Left = 271
+  Top = 144
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 154
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Organizational Charts display elements in hierarchical structure' +
+        's, such as Company and Employers.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Organizational Charts')
+    View3D = False
+    object Series1: TOrgSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pen.EndStyle = esSquare
+      Items = <
+        item
+          Format.Text = 'Mike Wizard'#13'President'
+        end
+        item
+          Format.Text = 'Anne Best'#13'Sales Director'
+        end
+        item
+          Format.Text = 'Mary Shane'#13'Product Manager'#13'USA'
+        end
+        item
+          Format.Text = 'Paul Dale'#13'Asian Sales'
+        end
+        item
+          Format.Text = 'Bob Shane'#13'Human Relations'
+        end
+        item
+          Format.Text = 'Anne Scarlet'#13'Assistant'
+        end>
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0406000000000000000000F0BF154D696B652057697A6172640D507265736964
+        656E74000000000000000018416E6E6520426573740D53616C65732044697265
+        63746F7200000000000000001E4D617279205368616E650D50726F6475637420
+        4D616E616765720D5553410000000000000040155061756C2044616C650D4173
+        69616E2053616C6573000000000000000019426F62205368616E650D48756D61
+        6E2052656C6174696F6E73000000000000104016416E6E6520536361726C6574
+        0D417373697374616E74}
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 113
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ComboFlat1: TComboFlat
+      Left = 112
+      Top = 10
+      Width = 121
+      ItemIndex = 0
+      TabOrder = 1
+      Text = 'Squared'
+      OnChange = ComboFlat1Change
+      Items.Strings = (
+        'Squared'
+        'Diagonal')
+    end
+  end
+end

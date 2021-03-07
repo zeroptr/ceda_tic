@@ -1,0 +1,78 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Simple Vertical [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<DragToToggle>0</DragToToggle>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+<SwitchBevelStyle>1</SwitchBevelStyle>
+<SwitchHeight>22</SwitchHeight>
+<SwitchOrientation>0</SwitchOrientation>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Simple Horizontal</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<DragToToggle>0</DragToToggle>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+<SwitchBevelStyle>1</SwitchBevelStyle>
+<SwitchHeight>22</SwitchHeight>
+<SwitchOrientation>1</SwitchOrientation>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>User Interface Scheme</Name>
+<Scheme>
+<Name>Non-Interlocked [Default]</Name>
+<Properties>
+<DragToToggle>0</DragToToggle>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+<Transparent>1</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Interlocked</Name>
+<Properties>
+<DragToToggle>1</DragToToggle>
+<MouseControlStyle>1</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+<Transparent>1</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>TouchScreen</Name>
+<Properties>
+<DragToToggle>0</DragToToggle>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>0</ShowFocusRect>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Indicator Scheme</Name>
+<Scheme>
+<Name>Raised Indicator [Default]</Name>
+<Properties>
+<SwitchBevelStyle>1</SwitchBevelStyle>
+<SwitchHeight>22</SwitchHeight>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Smooth Indicator</Name>
+<Properties>
+<SwitchBevelStyle>0</SwitchBevelStyle>
+<SwitchHeight>22</SwitchHeight>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

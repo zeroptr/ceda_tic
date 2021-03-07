@@ -1,0 +1,6 @@
+:Base TeeChart8.hlp
+:Title TeeChart Pro v8 VCL version
+:Index TeeChart Pro v8 Libraries=Teechart8.hlp
+:Index TeeChart Pro v8 User Guide=Teechart8Guide.hlp
+:include TeeChart8Guide.toc
+:include TeeChart8Lib.toc

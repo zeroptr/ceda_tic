@@ -1,0 +1,237 @@
+
+{                                                                              }
+{ IBA_StringList                                                               }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: This class is used heavily throughout IB Objects to store information that
+is keyed to a column name. Generally, it contains a list of strings, each
+comprising a column name connected by an '=' symbol to a value associated
+with it. Such a string is referred to as a "link entry".
+<br><br>
+It is possible for multiple values to be associated with a column in a single
+link entry. They are accessed by using link entry params. It can be thought of
+as parallel to command-line parameters, where there are multiple settings on one
+line of text.
+<br><br>
+This storage technique makes it very easy to preserve settings between sessions,
+to maintain user preferences.  Examine the code in the IB_SQL application to see
+how settings are streamed between the IB_Stringlists and the system registry
+from session to session.
+<br><br>
+IBF_Query should be the best example in this project. Be sure to look through
+IBF_Base to see how a foundation for streaming has been built. You will find
+the WriteStrings() and ReadStrings() methods very useful to put and get string
+list data in/out of the system registry.
+<br><br>
+Some stringlist properties that are referred to heavily are mirrored to
+variables for direct reading (via properties) without the overhead of parsing
+the link entries for an individual entry each time it is wanted. It may appear
+that duplication exists in the component interface but, in fact, IBO keeps the
+variables, including those which are writable, fully synchronized.
+<br><br>
+The BNF of the syntax for the link entries are as follows:
+<br><br>
+Since I don't exactly recall the proper syntax for this I'll give the key
+that I use:
+<br>
+<br>< > denotes a logical item of the BNF
+<br>[]  denotes an optional portion of an item
+<br>( | ) denotes that only one of the items separated by the | are valid
+<br>''  denote literal characters
+<font face="Courier New">
+<ul>
+<li>< link entry >      ::= < link name >< equal sign >< link value >
+<li>< link name >       ::= [< table name >< period >]< column name >
+<li>< link value >      ::= (< string literal >|< param list >)
+<li>< param list >      ::= < param name >[=< literal >]
+                                             [< param delimiter >< param list >]
+<li>< literal >         ::= < char list item >[< literal >]
+<li>< char list item >  ::= (< char >|< char pair >)
+<li>< char pair >       ::= ( '\=' | '\;' | '\\' | '\n' | '\0' )
+<li>< char >            ::= < any character except 2nd char of char pair >
+<li>< param delimiter > ::= ';'
+<li>< equal sign >      ::= '='
+<li>< period >          ::= '.'
+<li>< table name >      ::= < IB identifier >
+<li>< column name >     ::= < IB identifier >
+<li>< param name >      ::= < IB identifier >
+<li>< IB identifier >   ::= < string with no spaces or funky characters, etc. >
+</ul>
+</font>
+<br><br>
+The special characters are used in order to prevent the stringlist from
+becoming corrupted and to simplify parsing of each string list item.
+<br><br>
+Don't confuse the notion of "param" above with the input parameters of a
+SQL statement. They are used in a different context here.  Certain link entries
+can take a refining value (or a comma-separated list) as "parameters".  As an
+example, a ColumnAttributes link entry for a Boolean column might look like
+this:
+<br><br>
+MYCOLUMN=BOOLEAN='T','F'
+<br><br>
+Here, the values which IBO is to recognize as True and False are
+parameters to this link entry.
+<br><br>
+When using the properties to interface with the contents of the stringlist
+the special characters are all converted for you.  It is only if you access the
+raw contents of the list directly in your own code that you will need to take
+the special characters into consideration.
+<br><br>
+Please take care with punctuating these link entries. In general, avoid adding
+extra spaces since the parsing may not be so forgiving as to allow them.  In
+particular, do not leave spaces either side of the "=" symbol in a link entry.}
+TIB_StringList = class(TStringList)
+private
+  FAllowBlankLines: boolean;
+  FRemovingBlankLines: boolean;
+  FUpdateState: boolean;
+  FQuickSortParam: string;
+  FQuickSortNumeric: boolean;
+  function GetIndexName( Index: integer ): string;
+  function GetIndexNameRel( Index: integer ): string;
+  function GetIndexNameCol( Index: integer ): string;
+//  function GetIndexRelName( Index: integer ): string;
+  procedure SetIndexName( Index: integer; AValue: string );
+  function GetIndexValue( Index: integer ): string;
+  procedure SetIndexValue( Index: integer; AValue: string );
+  function GetLinkIndex( ALink: string ): integer;
+  function GetLinkValue( ALink: string ): string;
+  procedure SetLinkValue( ALink: string; AValue: string );
+  function GetIndexParamValue( Index: integer; AParam: string ): string;
+  procedure SetIndexParamValue( Index: integer; AParam, AValue: string );
+  function GetLinkParamValue( ALink, AParam: string ): string;
+  procedure SetLinkParamValue( ALink, AParam: string; AValue: string );
+  function GetLinkParamIsSet( ALink, AParam: string ): boolean;
+  procedure SetLinkParamIsSet( ALink, AParam: string; AValue: boolean );
+  function GetIndexParamIsSet( AIndex: integer; AParam: string ): boolean;
+  procedure SetIndexParamIsSet( AIndex: integer;
+                                AParam: string; AValue: boolean );
+  procedure SetAllowBlankLines( AValue: boolean );
+  function GetSafeCommaText: string;
+  procedure SetSafeCommaText( AValue: string );
+  procedure RemoveBlankLines;
+protected
+  procedure Changing; override;
+  procedure Changed; override;
+  procedure SetUpdateState(Updating: Boolean); override;
+  procedure Put(Index: Integer; const S: string); override;
+  property RemovingBlankLines: boolean read FRemovingBlankLines;
+  property UpdateState: boolean read FUpdateState;
+  procedure SysParamQuickSort( L, R: Integer );
+  function SysStringListParamSort( Index1, Index2: Integer ): Integer;
+public
+  constructor Create; virtual;
+
+{: Cover up a bug in Delphi 2.}
+  procedure SaveToStream(Stream: TStream); override;
+  procedure RemoveBlankEntries;
+{: This will allow you to order the entries in the string list according to a
+particular parameter in the link entries.}  
+  procedure ParamQuickSort( AParam: string; IsNumeric: boolean );
+{: Hook in needed functionality to this sub class by overriding.}  
+  function Add(const S: string): Integer; override;
+{: Allow checking for validity of returned value.  ie. A blank/null return
+string could mean that the attribute was defined as blank OR it could
+mean that the value was not found.  Use the IsSet parameter to check
+whether the attribute was truly found. }
+  function GetLinkParamValueEx(     ALink, AParam: string;
+                                var IsSet: boolean ): string;
+{: This property is used to trim out blank lines from the string list.}
+  property AllowBlankLines: boolean read FAllowBlankLines
+                                    write SetAllowBlankLines;
+{: Just what it implies. Safe from what? It has to do with the SQL Dialect 3
+capabilities. Because a comma is a valid part of a delimited identifier the
+comma text feature needs to be sensitive to that.}                                    
+  property SafeCommaText: string read GetSafeCommaText write SetSafeCommaText;
+{: If Sorted this will perform an optimized search for the Index of the name.}
+  function FindIndex( const AName: string; var AIndex: integer ): boolean;
+{: If Sorted this will perform an optimized search for the Value of the name.}
+  function FindValue( const AName: string; var AValue: string ): boolean;
+{: Indexed reference to the name portion of the link entry.}
+  property IndexNames[ Index: integer ]: string read GetIndexName
+                                                write SetIndexName;
+{: Indexed reference to the relation of the name portion of the link entry.}
+  property IndexNamesRel[ Index: integer ]: string read GetIndexNameRel;
+{: Indexed reference to the column of the name portion of the link entry.}
+  property IndexNamesCol[ Index: integer ]: string read GetIndexNameCol;
+{: Indexed reference to the value portion of the link entry.}
+  property IndexValues[ Index: integer ]: string read GetIndexValue
+                                                 write SetIndexValue;
+{: Value of a parameter from the value portions of a link entry that
+corresponds with the given index reference.}
+  property IndexParamValue[ Index: integer;
+                            AParam: string ]: string read GetIndexParamValue
+                                                     write SetIndexParamValue;
+{: Indicates whether, in the value portions of the link entry having the given
+index reference, a value exists corresponding to the given parameter.}
+  property IndexParamIsSet[ Index: integer;
+                            AParam: string ]: boolean read GetIndexParamIsSet
+                                                      write SetIndexParamIsSet;
+{: Index of the Link in the list of link entries.}
+  property LinkIndex[ ALink: string ]: integer read GetLinkIndex;
+{: Value portion associated with the Link in the list of link entries.}
+  property LinkValues[ ALink: string ]: string read GetLinkValue
+                                               write SetLinkValue;
+{: Value of a parameter from the value portions of a link entry that
+corresponds with the given link.}
+  property LinkParamValue[ ALink,
+                           AParam: string ]: string read GetLinkParamValue
+                                                    write SetLinkParamValue;
+{: Indicates whether, in the value portions of the link entry that corresponds
+to the given link, a value exists.}
+  property LinkParamIsSet[ ALink,
+                           AParam: string ]: boolean read GetLinkParamIsSet
+                                                     write SetLinkParamIsSet;
+end;
+
+{: This is used internally by various properties in IBO components. This class
+uses default values appropriate for what each property needs to accomplish.}
+TIB_StringProperty = class(TIB_StringList)
+public
+  constructor Create; override;
+end;
+
+{: This is used internally by various properties in IBO components. This class
+uses default values appropriate for what each property needs to accomplish.}
+TIB_StringCache = class(TIB_StringList)
+public
+  constructor Create; override;
+end;
+
+// IBA_StringList.IMP

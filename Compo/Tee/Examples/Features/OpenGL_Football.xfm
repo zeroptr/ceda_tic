@@ -1,0 +1,218 @@
+object OpenGLFootBall: TOpenGLFootBall
+  Left = 373
+  Top = 156
+  Width = 425
+  Height = 443
+  ActiveControl = Draw3D1
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Draw3D1: TDraw3D
+    Left = 0
+    Top = 137
+    Width = 417
+    Height = 279
+    Gradient.EndColor = 753908
+    Gradient.MidColor = 16059031
+    Gradient.StartColor = 14540754
+    Gradient.Visible = True
+    Shadow.HorizSize = 5
+    Shadow.VertSize = 5
+    View3DOptions.Elevation = 333
+    View3DOptions.HorizOffset = 100
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 45
+    View3DOptions.VertOffset = 10
+    OnPaint = Draw3D1Paint
+    Align = alClient
+    Color = 8284506
+    TabOrder = 0
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 0
+    Width = 417
+    Height = 33
+    Panel = Draw3D1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 1
+    LabelValues = False
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 33
+    Width = 417
+    Height = 104
+    Align = alTop
+    TabOrder = 2
+    object Label1: TLabel
+      Left = 309
+      Top = 40
+      Width = 41
+      Height = 13
+      Caption = 'Ball &size:'
+      FocusControl = TrackBar1
+    end
+    object Label2: TLabel
+      Left = 128
+      Top = 40
+      Width = 60
+      Height = 13
+      Caption = '&Perspective:'
+      FocusControl = TrackBar2
+    end
+    object Label3: TLabel
+      Left = 248
+      Top = 72
+      Width = 36
+      Height = 13
+      Caption = 'Light &X:'
+      FocusControl = TrackBar3
+    end
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Back...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 96
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Field color...'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 8
+      Top = 64
+      Width = 81
+      Height = 17
+      Caption = '&Draw seats'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+    object Button3: TButton
+      Left = 184
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Lines color...'
+      TabOrder = 3
+      OnClick = Button3Click
+    end
+    object Button4: TButton
+      Left = 272
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'B&all color...'
+      TabOrder = 4
+      OnClick = Button4Click
+    end
+    object TrackBar1: TTrackBar
+      Left = 358
+      Top = 38
+      Width = 48
+      Height = 22
+      Min = 1
+      Position = 2
+      TabOrder = 5
+      TickStyle = tsNone
+      OnChange = CheckBox2Click
+    end
+    object TrackBar2: TTrackBar
+      Left = 192
+      Top = 38
+      Width = 90
+      Height = 22
+      Max = 180
+      Min = 1
+      Position = 15
+      TabOrder = 6
+      TickStyle = tsNone
+      OnChange = TrackBar2Change
+    end
+    object TrackBar3: TTrackBar
+      Left = 288
+      Top = 64
+      Width = 118
+      Height = 27
+      Max = 200
+      Min = -200
+      Frequency = 20
+      Position = -100
+      TabOrder = 7
+      OnChange = TrackBar3Change
+    end
+    object CheckBox3: TCheckBox
+      Left = 96
+      Top = 64
+      Width = 81
+      Height = 17
+      Caption = 'Dra&w players'
+      Checked = True
+      State = cbChecked
+      TabOrder = 8
+      OnClick = CheckBox2Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 40
+      Width = 73
+      Height = 17
+      Caption = '&Animate !'
+      TabOrder = 9
+      OnClick = CheckBox1Click
+    end
+    object Button5: TButton
+      Left = 360
+      Top = 8
+      Width = 52
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 10
+      OnClick = Button5Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 104
+    Top = 169
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    Active = True
+    AmbientLight = 8
+    Light.Color = clGray
+    Light.Visible = True
+    Light.Position.X = -100.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Light1.Color = clGray
+    Light1.Visible = False
+    Light1.Position.X = -100.000000000000000000
+    Light1.Position.Y = -100.000000000000000000
+    Light1.Position.Z = -100.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Shininess = 0.500000000000000000
+    TeePanel = Draw3D1
+    Left = 192
+    Top = 168
+  end
+end

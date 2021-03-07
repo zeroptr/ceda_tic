@@ -1,0 +1,44 @@
+package DclTeeProStd87;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{ DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{ LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $42900000}
+{$DESCRIPTION 'TeeChart Pro 8 Components (For Delphi 7 Standard)'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+{$LIBSUFFIX ''}
+
+requires
+  vcl,
+  Teepro87,
+  DclTeeStd87,
+  Tee87,
+  TeeLanguage87,
+  TeeWorld87;
+
+contains
+  TeeChartPro in 'TeeChartPro.pas',
+  TeeDesignOptions in 'TeeDesignOptions.pas',
+  TeeSeriesDesign in 'TeeSeriesDesign.pas' {SeriesEditor},
+  TeeToolsGalleryDemos in 'TeeToolsGalleryDemos.pas';
+
+end.

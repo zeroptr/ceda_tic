@@ -1,0 +1,60 @@
+inherited FormatEditorDemo: TFormatEditorDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 65
+  end
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      'The Format Editor dialog provides an easy way to customize'
+      'numbers and dates formatting strings.'
+      ''
+      'Click the "Change" button to show the Format Editor.')
+  end
+  inherited Chart1: TChart
+    Top = 108
+    Height = 229
+    object Series1: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      ValueFormat = '#,##0.##'
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 67
+    object Label1: TLabel
+      Left = 9
+      Top = 12
+      Width = 35
+      Height = 13
+      Caption = '&Format:'
+    end
+    object Edit1: TEdit
+      Left = 56
+      Top = 8
+      Width = 121
+      Height = 21
+      TabOrder = 0
+      Text = 'Edit1'
+      OnChange = Edit1Change
+    end
+    object Button1: TButton
+      Left = 192
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Change...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

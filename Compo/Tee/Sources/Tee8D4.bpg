@@ -1,0 +1,55 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe -Q $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#----------------------------------------------------------------------------------
+PROJECTS = Tee84.bpl TeeUI84.bpl TeeDB84.bpl DclTee84.bpl TeeQR84.bpl \
+  DCLTQR84.bpl TeePro84.bpl TeeLanguage84.bpl DCLTeePro84.bpl TeeGL84.bpl \
+  DclTGL84.bpl TeeImage84.bpl
+#----------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Tee84.bpl: Tee84.dpk
+  $(DCC)
+
+TeeDB84.bpl: TeeDB84.dpk
+  $(DCC)
+
+TeeUI84.bpl: TeeUI84.dpk
+  $(DCC)
+
+DCLTee84.bpl: DCLTee84.dpk
+  $(DCC)
+
+TeeQR84.bpl: TeeQR84.dpk
+  $(DCC)
+
+DCLTQR84.bpl: DCLTQR84.dpk
+  $(DCC)
+
+TeePro84.bpl: TeePro84.dpk
+  $(DCC)
+
+TeeGL84.bpl: TeeGL84.dpk
+  $(DCC)
+
+DCLTeePro84.bpl: DCLTeePro84.dpk
+  $(DCC)
+
+DclTGL84.bpl: DclTGL84.dpk
+  $(DCC)
+
+TeeImage84.bpl: TeeImage84.dpk
+  $(DCC)
+
+TeeLanguage84.bpl: TeeLanguage84.dpk
+  $(DCC)
+
+

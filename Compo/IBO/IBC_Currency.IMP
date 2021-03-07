@@ -1,0 +1,582 @@
+// IBC_Currency.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Original Author: Marco Menardi <mmenaz@lycosmail.com>  2001/11/01           }
+{           Copyright (C) 2001 Marco Menardi                                   }
+{                                                                              }
+{******************************************************************************}
+
+function RoundCurrency(Value : currency; Places : integer; const ARoundMode: TIB_CurrencyRoundingMode ) : currency;
+  function Power10Int( const Exponent : integer ) : Extended;
+  var
+    i : integer;
+  begin
+    if Exponent <> 0 then
+    begin
+      Result := 1;
+      for i := 1 to abs(Exponent) do
+        Result := 10 * Result;
+      if Exponent < 0 then
+        Result := 1 / Result;
+    end
+    else
+      Result := 1;
+  end;
+var
+  RoundLeftPosition : integer;
+begin
+  RoundLeftPosition := 0;
+  if Places < 0 then
+  begin
+    RoundLeftPosition := Places;
+    Value := Value * Power10Int( RoundLeftPosition );
+    Places := 0;
+  end;
+  case ARoundMode of
+    crmNearUp:
+      Value := RoundNear(Value, Places);
+    crmNearBool:
+      Value := Round((Value * Power10Int(Places))) / Power10Int(Places);
+    crmDown:
+      Value := RoundDown(Value, Places);
+    crmUp:
+      Value := RoundUp(Value, Places);
+    crmTruncate:
+      begin
+        Value := Trunc((Value * Power10Int(Places))) / Power10Int(Places);
+      end;
+    else
+      ;
+  end;
+  if RoundLeftPosition < 0 then
+    Value := Value / Power10Int( RoundLeftPosition );
+  Result := Value;
+end;
+
+// deletes formatting chars that would prevent a StrToFloat() conversion
+function TextToValText( const S : string ) : string;
+var
+  x : integer;
+begin
+  Result := '';
+  for x := 1 to length( S ) do
+  begin
+    if (S[x] in ['0'..'9', '-', DecimalSeparator ]) then
+      Result := Result + S[x];
+  end;
+end;
+
+constructor TIB_Currency.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  inherited AlwaysShowButton := True;
+  inherited ButtonStyle := ebsNone; // ebsDropDown;
+  FAllowUnboundEdits := True;
+
+  FDecimalPlaces := 0;
+  FFormatting := False;
+  FDisplayEditingFormat := '';
+  FDisplayFormat := '';
+  FUnboundDisplayFormat := '';
+  FConversionRatio := 0;
+  FRoundMode := crmNearUp;
+  FRoundDecimalPos := -99; // takes actual currency locale decimals
+  FBeforeConversion := nil;
+  FConversionShortCut := ShortCut( Word('C'), [] ); // #67
+  FCalculatorKind := cucNone;
+  ResetInLineCalcStatus;
+end;
+
+procedure TIB_Currency.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams( Params );
+  // ES_MULTILINE necessary for right alignment
+  if not (csDesigning in ComponentState) then
+    Params.Style := Params.Style or ES_RIGHT or ES_MULTILINE;
+end;
+
+// gets number of decimal to use (is there a better event to chain with? Something fired when Column.DisplayFormat is changed?
+procedure TIB_Currency.CMEnter( var Message: TCMEnter );
+var
+  x: integer;
+  tmpStr: string;
+begin
+  inherited;
+  ResetInLineCalcStatus;
+  // don't put FDisplayEditingFormat := '', since for Unbound it's set by UpdateMask prior to this code
+  UpdateDisplayFormat;
+
+  tmpStr := TextToValText(Text);
+  if FDecimalPlaces = 0 then
+  begin
+    // truncates eventual decimal part of the string, separator included
+    x := pos( DecimalSeparator, tmpStr );
+    if x > 0 then tmpStr := copy( tmpStr, 1, (x-1) );
+  end;
+  FFormatting := True; // Text := xx does not always do a FormatCurrentText, so we ensure that it's done almost one time, but not two
+  Text := tmpStr;
+  FFormatting := False;
+  FormatCurrentText;
+  if AutoSelect and not (csLButtonDown in ControlState) then SelectAll;
+end;
+
+procedure TIB_Currency.CMExit(var Message: TCMExit);
+var
+  Key: char;
+begin
+  Key := #0;
+  if FCalcPending and (FCalculatorKind in [ cucInline, cucBoth ]) then
+  begin
+    Key := '=';
+    InLineCalc( Key );
+  end;
+{$IFDEF IBO_VCL40_OR_GREATER}
+  if not Assigned(Field) then
+    ValidateEdit;
+{$ENDIF};
+  if (not Assigned(Field)) then
+    inherited Text := FormatFloat(FUnboundDisplayFormat, Self.Value);
+
+  inherited;
+end;
+
+{ Formats text
+}
+procedure TIB_Currency.FormatCurrentText;
+  // deletes all substring occurrence from string
+  // I could have used StringReplace, but I don't know if
+  // it's available in all IBO supported Delphi versions.
+  function RemoveAllSubstr( const Substring, S : string ) : string;
+  var
+    x : integer;
+  begin
+    Result := S;
+    if Length(Substring) > 0 then
+    begin
+      repeat
+        x := pos( Substring, Result );
+        if x > 0 then Delete( Result, X, Length(Substring));
+      until x < 1;
+    end;
+  end;
+var
+  S: string;
+  D: string;
+  ST : string;
+  x: integer;
+  IsEmpty: Boolean;
+  OldLen, SelStart, SelStop: Integer;
+begin
+  FFormatting := True;
+  try
+    S := inherited Text;
+    D := '';
+    OldLen := Length(S);
+    IsEmpty := (OldLen = 0) or (S = '-');
+    if HandleAllocated then GetSel(SelStart, SelStop); // repositions cursor to the rightmost position
+    if (not IsEmpty) then S := RemoveAllSubstr( ThousandSeparator, S);
+    x := Pos(DecimalSeparator, S);
+    if x > 0 then
+    begin
+      D := copy( S, x, (Length(S) - x)  + 1);
+      S := copy( S, 1, x - 1 );
+      if FDecimalPlaces = 0 then
+        D := ''
+      else
+        D := copy(D, 1, (FDecimalPlaces + 1));
+    end;
+    if (S <> '') and (S <> '-') then
+    begin
+      try
+        ST := TextToValText(s);
+        if CheckCurrencyOverRange(ST) then // excessive number of digits!
+        begin
+          ST := copy(ST, 1, length(ST)-1);
+          MessageBeep(0);
+        end;
+        if ST <> '' then
+          { I don't use FormatCurr() since allows only the number of decimals defined in the Win locale, while we could manage foreign currency
+            S := FormatCurr( FDisplayEditingFormat, StrToCurr(ST) ) }
+          S := FormatFloat(FDisplayEditingFormat, StrToFloat(ST))
+        else
+          S := '';
+      except
+        S := '';
+      end;
+    end;
+    if (S = '') and (D <> '') then S := '0';
+    S := S + D;
+    inherited Text := S;
+    if HandleAllocated and (GetFocus = Handle) and not
+      (csDesigning in ComponentState) then
+    begin
+      Inc(SelStart, Length(S) - OldLen);
+      SetCursor(SelStart);
+    end;
+  finally
+    FFormatting := False;
+  end;
+end;
+
+procedure TIB_Currency.Change;
+begin
+  if (not FFormatting) then
+  begin
+    if (HandleAllocated) and (GetFocus = Handle) then
+    begin
+      FormatCurrentText;
+      invalidate;
+    end;
+  end;
+  inherited Change;
+end;
+
+procedure TIB_Currency.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  Msg: TMsg;
+begin
+  if (Key = VK_DELETE) then // Canc key
+  begin
+    Self.Value := 0;
+    Text := '';
+    ResetInLineCalcStatus;
+    Key := 0;
+  end
+  else if ShortCut( key, shift ) = FConversionShortCut then
+  begin
+    if Assigned( FBeforeConversion ) then
+      FBeforeConversion( Self );
+    ConvertCurrency;
+    SetCursor(Length(Text));
+    Key := 0; // stop further KeyDown processing (but does not avoids processing on KeyPress! VCL mystery)
+    PeekMessage( Msg, Handle, WM_CHAR, WM_CHAR, PM_REMOVE ); // stop eventual further processing by KeyPress (no, Key := 0 is not enough)
+  end;
+  inherited;
+end;
+
+procedure TIB_Currency.KeyPress(var Key: Char);
+begin
+  if (FCalculatorKind in [ cucInline, cucBoth ]) and
+     (Key in ['0'..'9', '+', '-', '*', '/', '%', '=' ]) then
+        InLineCalc( Key );
+  if Key = '.' then Key := DecimalSeparator; // needed for pre-processing and for unbound mode
+  if not Assigned( Field ) then
+  begin
+    if not (Key in [#0..#32, '0'..'9', '-', DecimalSeparator ]) then
+    begin
+      MessageBeep(0);
+      Key := #0;
+    end;
+  end;
+  // bound or unbound, reject decimal separator if we want a whole number
+  if (Key = DecimalSeparator) and (FDecimalPlaces <= 0) then
+  begin
+    MessageBeep(0);
+    Key := #0;
+  end;
+  inherited;
+end;
+
+function TIB_Currency.EditCanModify: Boolean;
+begin
+  if DataLink.IsParamEdit then
+    Result := true
+  else
+    Result := ( not Assigned( Field ) and not ReadOnly ) or
+              inherited EditCanModify;
+end;
+
+procedure TIB_Currency.UpdateMask( UnboundMask: string );
+begin
+  MaskChanging := true;
+  try
+    if (not Assigned(Field)) and (FDisplayEditingFormat = '') and (FDisplayFormat = '') then
+    begin
+      if RoundDecimalPos >= 0 then
+        FDecimalPlaces := RoundDecimalPos
+      else
+        FDecimalPlaces := CurrencyDecimals;
+
+      if FDecimalPlaces > 0 then
+      begin
+        FDisplayEditingFormat := ',0.' + StringOfChar('#', FDecimalPlaces);
+        FUnboundDisplayFormat := ',0.' + StringOfChar('0', FDecimalPlaces);
+      end
+      else
+      begin
+        FDisplayEditingFormat := ',0';
+        FUnboundDisplayFormat := FDisplayEditingFormat;
+      end;
+    end;
+  finally
+    MaskChanging := false;
+  end;
+  inherited;
+end;
+
+{$IFDEF IBO_VCL40_OR_GREATER}
+procedure TIB_Currency.ValidateEdit;
+var
+  tmpVal: string;
+begin
+  if not Assigned( Field ) then
+  begin
+    tmpVal := TextToValText( Text );
+    if tmpVal <> '' then
+    begin
+      try
+        StrToCurr( tmpVal );
+      except
+        if CanFocus then
+          SetFocus;
+        raise;
+      end;
+    end;
+  end;
+  inherited ValidateEdit;
+end;
+{$ENDIF}
+
+{ If in unbound mode, check if string has a value beyond currency range.
+  This prevents that while typing huge numbers are converted in exponential
+  notation and then back to numeric with wrong results
+  (i.e. 15E8 -> exiting is interpreted like 158)
+}
+function TIB_Currency.CheckCurrencyOverRange( S : string ) : boolean;
+begin
+  Result := False;
+  if not Assigned(Field) then
+  begin
+    try
+      StrToCurr(TextToValText(S))
+    except
+      Result := True;
+    end;
+  end;
+end;
+
+{ here the most problematic part of the component: numeric conversion and rounding.
+  I think I should avoid the use of extended types because there are some numbers that
+  don't have exact binary rapresentation, and this brings (slight) confusion when rounding.
+  Anyway provided rounding routine use extended, so we have to use them as well
+}
+procedure TIB_Currency.ConvertCurrency;
+var
+  ConvertedValue : currency;
+  Decimals : integer;
+  tmpStr : string;
+begin
+  if FConversionRatio <> 0 then
+  begin
+    //  actual := foreign / ratio
+    if (RoundDecimalPos = -99) then
+      Decimals := FDecimalPlaces
+    else
+      Decimals := RoundDecimalPos;
+    tmpStr := TextToValText( Text );
+    if tmpStr = '' then
+      Self.Value := 0
+    else
+    begin
+      ConvertedValue := RoundCurrency((StrToFloat(tmpStr) / FConversionRatio), Decimals, RoundMode);
+      if not Assigned(Field) then
+      begin
+        tmpStr := CurrToStr( ConvertedValue );
+        if CheckCurrencyOverRange(tmpStr) then // excessive number of digits!
+          MessageBeep(0)
+        else
+          Self.Value := ConvertedValue;
+      end
+      else
+        Self.Value := ConvertedValue;
+    end;
+  end;
+end;
+
+// writes control contents to the field
+procedure TIB_Currency.SysUpdateData;
+var
+  tmpText: string;
+begin
+  if Assigned( Field ) then
+  begin
+    if Modified then
+    begin
+      ValidateEdit;
+      tmpText := TextToValText( Text );
+      if tmpText = '' then tmpText := '0';
+      if Assigned(OnSetEditText) then
+         OnSetEditText(Self, tmpText);
+      DataLink.FieldText := tmpText;
+    end;
+  end
+  else if FAllowUnboundEdits then
+    ValidateEdit;
+  Modified := False;
+end;
+
+function TIB_Currency.GetValue : currency;
+var
+  tmpStr: string;
+begin
+  tmpStr := TextToValText( Text );
+  if tmpStr <> '' then
+    Result := StrToCurr( TextToValText( Text ) )
+  else
+    Result := 0;
+end;
+
+procedure TIB_Currency.SetValue( AValue : currency );
+begin
+  Text := CurrToStr( AValue );
+  if Assigned( Field ) then
+  begin
+    Field.AsCurrency := AValue; // enters in edit state, if in browse
+    Modified := true;
+    DataLink.ControlIsModified := true;
+    SysUpdateData( Field ); // calls OnSetEdit
+  end
+  else
+    inherited Text := FormatFloat(FUnboundDisplayFormat, Self.Value);
+  SetCursor(99); // cursor to rightmost position
+end;
+
+procedure TIB_Currency.SetDisplayFormat(const AValue: string);
+begin
+  if FDisplayFormat <> AValue then
+  begin
+    FDisplayFormat := AValue;
+    UpdateDisplayFormat;
+  end;
+end;
+
+procedure TIB_Currency.UpdateDisplayFormat;
+var
+  x: integer;
+begin
+  FDecimalPlaces := 0;
+  if (FDisplayFormat = '') and (Assigned(Field)) then
+    FDisplayEditingFormat := Field.DisplayFormat
+  else if (FDisplayFormat <> '') then
+  begin
+    FDisplayEditingFormat := FDisplayFormat;
+    FUnboundDisplayFormat := FDisplayFormat; // used for display (not while editing) format when unbound: no subsequent .00 -> .## change
+  end;
+  x := pos( '.', FDisplayEditingFormat );
+  if x > 0 then
+  begin
+    Inc(x);
+    while (length(FDisplayEditingFormat) >= x) and (FDisplayEditingFormat[x] in ['#', '0', '9']) do
+    begin
+      Inc(FDecimalPlaces);
+      // translates i.e. '.00' to '.##', since the former is bad for formatting during input
+      FDisplayEditingFormat[x] := '#';
+      Inc(x);
+    end;
+    // conventional (for IB_Currency) mask format like ',0.' interpreted as requiring Default or Field Scale number of decimals
+    if (FDecimalPlaces = 0) and (Assigned(Field)) then
+    begin
+      if CurrencyDecimals <= (-Field.SQLScale) then
+        FDecimalPlaces := CurrencyDecimals
+      else
+        FDecimalPlaces := -Field.SQLScale;
+      FDisplayEditingFormat := FDisplayEditingFormat + StringOfChar('#', FDecimalPlaces);
+    end;
+  end
+  else // No decimal separator included, I interpret this as a Whole number request
+    FDecimalPlaces := 0;
+end;
+
+// calculation, due to % calcs, have to be performed in extended and then rounded and converted to currency
+procedure TIB_Currency.InLineCalc( var Key: Char );
+var
+  FCurrentValue: extended;
+begin
+  try
+  case Key of
+    '0'..'9':
+    begin
+      if (FCalcClearDisplay) and (FCalcLastOp <> #0) then
+      begin
+        Text := '';
+        FCalcClearDisplay := False;
+        FCalcPending := True;
+      end;
+    end;
+  end;
+
+  // also checks if '-' is to be considered the sign or the subtraction operand
+  if (Key in ['=', '+', '-', '*', '/', '%']) and (not ((Key = '-') and (FCalcLastOp = #0) and (Self.Value = 0))) then
+  begin
+    if (FCalcLastOp <> #0) then  // Equals
+    begin
+      FCurrentValue := Self.Value;
+      if Key = '%' then
+      begin
+        case FCalcLastOp of
+          '+', '-': FCurrentValue := FCalcLastValue * FCurrentValue / 100.0;
+          '*', '/': FCurrentValue := FCurrentValue / 100.0;
+        end;
+      end;
+      case FCalcLastOp of
+        '+': FCurrentValue := FCalcLastValue + FCurrentValue;
+        '-': FCurrentValue := FCalcLastValue - FCurrentValue;
+        '*': FCurrentValue := FCalcLastValue * FCurrentValue;
+        '/': FCurrentValue := FCalcLastValue / FCurrentValue;
+      end;
+      FCalcPending := False;
+      Self.Value := RoundNear(FCurrentValue, FDecimalPlaces);
+    end;
+    FCalcLastValue := Self.Value;
+    FCalcClearDisplay := True;
+    FCalcLastOp := Key;
+    Key := #0;
+  end;
+
+  except
+    on E: Exception do
+    begin
+      ResetInLineCalcStatus;
+      MessageBeep(0);
+    end;
+  end;
+end;
+
+procedure TIB_Currency.ResetInLineCalcStatus;
+begin
+  FCalcLastValue := 0;
+  FCalcLastOp := #0;
+  FCalcClearDisplay := True;
+  FCalcPending := False;
+end;

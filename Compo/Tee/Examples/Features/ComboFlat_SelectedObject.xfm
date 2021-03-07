@@ -1,0 +1,150 @@
+inherited ComboFlatSelectedObject: TComboFlatSelectedObject
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The ComboFlat SelectedObject may be used to interact with the Ch' +
+        'art. Here setting the SelectedObject, a Series, to Active:'
+      'Example:'
+      'TChartSeries(cbSeries.SelectedObject).Active:=True;')
+  end
+  inherited Chart1: TChart
+    Border.Color = clNavy
+    Border.Width = 6
+    Border.Visible = True
+    BorderRound = 10
+    Gradient.EndColor = clGray
+    Gradient.Visible = True
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.Visible = True
+    BevelOuter = bvNone
+    ColorPaletteIndex = 2
+    object Series1: TLineSeries
+      Active = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Title = 'Line'
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000000000000000C05C4000000000004060400000000000805B40000000
+        0000406540000000000080664000000000004065400000000000D06B40000000
+        0000B0634000000000002052400000000000003E400000000000C04240000000
+        00004045400000000000C042400000000000C062400000000000407040000000
+        00008071400000000000C06C400000000000D06B400000000000B06840000000
+        000090704000000000001068400000000000C072400000000000787940000000
+        0000D071400000000000507940}
+    end
+    object Series2: TBarSeries
+      Active = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = True
+      Title = 'Bar'
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000D87D4000000000005C82400000000000E87C40000000
+        00009877400000000000B078400000000000307640}
+    end
+    object Series3: TAreaSeries
+      Active = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Title = 'Area'
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000000000000000408A4000000000004C88400000000000108840000000
+        000064894000000000002889400000000000A48A4000000000004C8840000000
+        000094864000000000002483400000000000D883400000000000648440000000
+        0000DC844000000000000C82400000000000487C400000000000187F40000000
+        0000407F400000000000CC804000000000004080400000000000207C40000000
+        0000287E400000000000A4804000000000005480400000000000848240000000
+        0000B885400000000000208240}
+    end
+    object Series4: TPointSeries
+      Active = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Title = 'Point'
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        001900000000000000004090400000000000A8914000000000009A9040000000
+        00004491400000000000CA924000000000003091400000000000869040000000
+        0000008E400000000000988C400000000000208C400000000000DC8940000000
+        000048874000000000000886400000000000C488400000000000948B40000000
+        0000C889400000000000248D400000000000C88E400000000000129140000000
+        00006C9140000000000080914000000000003A91400000000000B48E40000000
+        0000E08A400000000000C08C40}
+    end
+    object Series5: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = True
+      Title = 'Pie'
+      Active = False
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        0408000000000000000080824004436172730000000000B080400650686F6E65
+        730000000000688940065461626C65730000000000408040084D6F6E69746F72
+        730000000000606B40054C616D70730000000000A88740094B6579626F617264
+        7300000000000036400542696B6573000000000010774006436861697273}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 16
+      Top = 14
+      Width = 62
+      Height = 13
+      Caption = '&Series Type :'
+      FocusControl = cbSeries
+    end
+    object cbSeries: TComboFlat
+      Left = 89
+      Top = 10
+      Width = 113
+      TabOrder = 0
+      OnChange = cbSeriesChange
+    end
+  end
+end

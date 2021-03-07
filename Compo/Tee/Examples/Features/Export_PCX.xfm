@@ -1,0 +1,60 @@
+inherited PCXExportForm: TPCXExportForm
+  Left = 453
+  Top = 235
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Exporting to PCX graphic format is available using the Export Di' +
+        'alog'
+      'or by code at run-time. The PCX unit is required.'
+      
+        'PCX unit is Copyright Software Matters Inc. 1991-2000 www.smatte' +
+        'rs.com'
+      ''
+      'The TeePCX unit should be used. (Uses TeePCX).')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'Radar Series')
+    BottomAxis.Increment = 72
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TRadarSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      Pen.Color = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = '&Save to PCX...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 152
+      Top = 8
+      Width = 169
+      Height = 25
+      Caption = 'Show &Export dialog...'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+end

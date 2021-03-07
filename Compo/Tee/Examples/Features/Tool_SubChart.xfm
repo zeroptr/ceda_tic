@@ -1,0 +1,130 @@
+inherited SubChartToolForm: TSubChartToolForm
+  Left = 453
+  Top = 235
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      
+        'Charts within a Chart. The SubChart Tools adds unlimited nested ' +
+        'charts to the Chart component.')
+  end
+  inherited Chart1: TChart
+    Top = 113
+    Width = 525
+    Height = 332
+    Gradient.Direction = gdDiagonalUp
+    Gradient.EndColor = 4144959
+    Gradient.MidColor = 15335424
+    Gradient.StartColor = 8454016
+    Gradient.SubGradient.Balance = 56
+    Gradient.SubGradient.EndColor = 4128574
+    Gradient.SubGradient.StartColor = 16728128
+    Gradient.SubGradient.Transparency = 53
+    Gradient.SubGradient.Visible = True
+    Gradient.Visible = True
+    LeftWall.Visible = False
+    Legend.Visible = False
+    Title.Visible = False
+    LeftAxis.ExactDateTime = False
+    LeftAxis.Grid.ZPosition = 100.000000000000000000
+    LeftAxis.Increment = 30.000000000000000000
+    LeftAxis.ZPosition = 100.000000000000000000
+    View3DOptions.Elevation = 360
+    View3DOptions.HorizOffset = -163
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 176
+    View3DOptions.Rotation = 317
+    View3DOptions.VertOffset = 46
+    View3DOptions.Zoom = 61
+    TabOrder = 2
+    OnResize = Chart1Resize
+    object TeeCommander2: TTeeCommander
+      Left = 491
+      Top = 1
+      Width = 33
+      Height = 330
+      Panel = Chart1
+      Vertical = True
+      Align = alRight
+      ParentShowHint = False
+      TabOrder = 0
+    end
+    object Series1: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 6974207
+      BarStyle = bsCilinder
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000C0524000000000001063400000000000A05440000000
+        000080364000000000004055400000000000D06640}
+    end
+    object Series2: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 16740721
+      AreaLinesPen.Visible = False
+      DrawArea = True
+      LinePen.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 25
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        011900000000000000000000003433333333EF5240ABAAAAAAAAAACA3FCECCCC
+        CCCC1C4E40ABAAAAAAAAAADA3F9A99999999E15040000000000000E43F9A9999
+        9999DD4840ABAAAAAAAAAAEA3F9A999999994D4440ABAAAAAAAAAAF03F343333
+        3333EF4240000000000000F43FCECCCCCCCC684840555555555555F73FCECCCC
+        CCCC204640AAAAAAAAAAAAFA3F9B99999999014A40FFFFFFFFFFFFFD3F030000
+        0000F03F40AAAAAAAAAAAA004035333333335B46405555555555550240686666
+        6666BE4C4000000000000004403533333333374540ABAAAAAAAAAA0540020000
+        00003C4A4056555555555507409C99999999014A400100000000000940686666
+        6666565140ACAAAAAAAAAA0A40D0CCCCCCCC1C4E405755555555550C406A6666
+        66669A4B400200000000000E40D0CCCCCCCCB44240ADAAAAAAAAAA0F40363333
+        3333A74040ACAAAAAAAAAA10407266666666E625400100000000801140726666
+        6666062F405655555555551240D0CCCCCCCCB44240ABAAAAAAAA2A13406A6666
+        6666E24D4000000000000014400400000000F04F40}
+    end
+    object ChartTool1: TGridBandTool
+      Band1.Color = 16053492
+      Band2.Color = 16768991
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    Height = 38
+    TabOrder = 1
+    object TeeCommander1: TTeeCommander
+      Left = 1
+      Top = 1
+      Width = 523
+      Height = 33
+      Align = alTop
+      ParentShowHint = False
+      TabOrder = 0
+    end
+  end
+end

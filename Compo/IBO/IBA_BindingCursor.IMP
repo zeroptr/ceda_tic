@@ -1,0 +1,436 @@
+// IBA_BindingCursor.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+procedure TIB_BindingCursor.FreeServerResources;
+begin
+  Close;
+  inherited FreeServerResources;
+  FHavePrepare := false;
+end;
+
+procedure TIB_BindingCursor.DoCalculateField( ARow: TIB_Row;
+                                              AField: TIB_Column );
+begin
+  FBDataset.DoCalculateField( ARow, AField );
+end;
+
+function TIB_BindingCursor.GetStatementType: TIB_StatementType;
+begin
+  if HavePrepare then
+    Result := inherited GetStatementType
+  else
+    Result := stSelect;
+end;
+
+function TIB_BindingCursor.SysAllocate: boolean;
+begin
+  if NeedPrepare then
+    Result := inherited SysAllocate
+  else
+  begin
+    Result := true;
+    PstHandle^ := FakePointer;
+  end;
+end;
+
+function TIB_BindingCursor.API_Prepare(     Text: PChar;
+                                        var InVar,
+                                            OutVar: smallint ): integer;
+begin
+  if NeedPrepare then
+  begin
+    Result := inherited API_Prepare( Text, InVar, OutVar );
+    FHavePrepare := Result = 0;
+  end
+  else
+  begin
+    FHavePrepare := false;
+    if PstHandle^ <> FakePointer then
+    begin
+      SysDeallocate( true );
+      SysAllocate;
+    end;
+    OutVar := BDataset.CursorFields.PSQLDA.SQLd;
+    InVar := FSysParamNames.Count;
+    Result := 0;
+  end;
+end;
+
+procedure TIB_BindingCursor.SysDescribeVARList( ARow: TIB_Row );
+var
+  ii, jj: integer;
+  tmpCol: TIB_Column;
+begin
+  if NeedPrepare then
+    inherited SysDescribeVARList( ARow )
+  else
+  with ARow do
+  case RowType of
+    rtParam: begin
+      jj := 0;
+      if BDataset.FSysParamNames.Count > 0 then
+      begin
+        while ARow.FPSQLDA.SQLn - jj > BDataset.FKeyFieldsMap.Count do
+        begin
+          tmpCol := BDataset.FindParam( BDataset.FSysParamNames[jj] );
+          if Assigned( tmpCol ) then
+          begin
+            FPSQLDA.sqlvar[jj] := tmpCol.PSQLVAR^;
+            FPSQLDA.sqlvar[jj].SQLInd := nil;
+            FPSQLDA.sqlvar[jj].SQLData := nil;
+            Inc( jj );
+          end
+          else
+            Break;
+        end;
+      end;
+      if BDataset.FKeyFieldsMap.Count > 0 then
+      begin
+        for ii := 0 to ARow.FPSQLDA.SQLn - 1 - jj do
+        begin
+          FPSQLDA.sqlvar[ii+jj] :=
+            TIB_Column( BDataset.FKeyFieldsMap[ii] ).PSQLVAR^;
+          FPSQLDA.sqlvar[ii+jj].SQLInd := nil;
+          FPSQLDA.sqlvar[ii+jj].SQLData := nil;
+        end;
+      end;
+      NameParams;
+      UpdateBufferPointers;
+    end;
+    rtField: begin
+      for ii := 0 to ARow.FPSQLDA.SQLn - 1 do
+      begin
+        FPSQLDA.sqlvar[ii] := BDataset.CursorFields[ii].PSQLVAR^;
+        FPSQLDA.sqlvar[ii].SQLInd := nil;
+        FPSQLDA.sqlvar[ii].SQLData := nil;
+      end;
+      UpdateBufferPointers;
+    end;
+  end;
+end;
+
+procedure TIB_BindingCursor.GetPrepare;
+var
+  SaveCW: word;
+  MonitorText: string;
+begin
+  FNeedPrepare := true;
+  with IB_Session do
+  begin
+    if PstHandle^ = FakePointer then
+      PstHandle^ := nil; 
+    SysAllocate;
+    asm fstcw [SaveCW] end;
+    errcode := isc_dsql_prepare( @status,
+                                 PtrHandle,
+                                 PstHandle,
+                                 null_terminated,
+                                 PChar( FRefinedSQL ),
+                                 IB_Connection.SQLDialect,
+                                 CursorFields.PSQLDA );
+    asm fldcw [SaveCW] end;
+    //ADDED// CW 2000-06-06
+    if ( errcode = 0 ) and ClientMonitorHooksIn then
+    begin
+      MonitorText :=
+          '//>>> STATEMENT PREPARED <<<//'#13#10 +
+          'TIB_BindingCursor.GetPrepare()'#13#10 +
+          Self.ClassName + ': "';
+      if Assigned( Self.Owner ) and ( Self.Owner.Name <> '' ) then
+        MonitorText := MonitorText + Self.Owner.Name + '.';
+      MonitorText := MonitorText + Self.Name +
+          '" stHandle=' + IntToStr(Integer(PstHandle^)) + ' #BC';
+      if Assigned( BDataset ) then
+      begin
+        MonitorText := MonitorText +
+            #13#10#13#10'TIB_BindingCursor.BDataset ='#13#10'  ' +
+                BDataset.ClassName + ': "';
+        if Assigned( BDataset.Owner ) and ( BDataset.Owner.Name <> '' ) then
+          MonitorText := MonitorText + BDataset.Owner.Name + '.';
+        MonitorText := MonitorText + BDataset.Name + '"';
+      end;
+      OutputToMonitor( MonitorText );
+    end;
+    //ENDADDED//
+    if errcode = 0 then
+    begin
+      asm fstcw [SaveCW] end;
+      errcode := isc_dsql_describe_bind( @status,
+                                         PstHandle,
+                                         IB_Connection.SQLDialect,
+                                         Params.PSQLDA );
+      asm fldcw [SaveCW] end;
+    end;
+    if errcode <> 0 then HandleException( Self );
+  end;
+  Params.NameParams;
+  Params.UpdateBufferPointers;
+  FHavePrepare := true;
+end;
+
+procedure TIB_BindingCursor.GetParamsData;
+var
+  ii, jj: integer;
+  tmpInt: integer;
+  tmpCol: TIB_Column;
+begin
+  jj := -1;
+  tmpInt := 0;
+  FBindBufferOffset := 0;
+  if HavePrepare then
+    for ii := 0 to Params.ColumnCount - 1 do
+    begin
+      if ( FBindBufferOffset = 0 ) and
+         ( Params[ ii ].FieldName = IB_BINDLINK + '0' ) then
+      begin
+        FBindBufferOffset := tmpInt;
+        jj := 0;
+      end
+      else
+      if BDataset.Params.GetByName( Params[ii].FullFieldName,
+                                    tmpCol ) and
+                                ( Params[ ii ].DataSize = tmpCol.DataSize ) then
+      begin
+        Params[ ii ].ColData := tmpCol.ColData;
+        Inc( tmpInt, tmpCol.DataSize + SizeOf( smallint ));
+        jj := -1;
+      end;
+      if ( jj >= 0 ) and
+         ( jj < BDataset.KeyFields.ColumnCount ) then
+        with BDataset.KeyFields[ jj ].PSQLVAR^ do
+        begin
+          Params[ ii ].PSQLVAR.OwnName := OwnName;
+          Params[ ii ].PSQLVAR.RelName := RelName;
+          Params[ ii ].PSQLVAR.SQLName := SQLName;
+          Params[ ii ].PSQLVAR.OwnName_length := OwnName_length;
+          Params[ ii ].PSQLVAR.RelName_length := RelName_length;
+          Params[ ii ].PSQLVAR.SQLName_length := SQLName_length;
+          Inc( jj );
+        end;
+    end;
+end;
+
+function TIB_BindingCursor.QuickFetch( Node: PIB_Node;
+                                       NeedCursor,
+                                       KeepCursor: boolean ): boolean;
+var
+  tmpPtr: pointer;
+  tmpLen: longint;
+  FromServer: boolean;
+begin
+  FromServer := false;
+  Result := false;
+  if ( Node = nil ) or ( rfBof in Node.RowFlags ) or
+                       ( rfEof in Node.RowFlags ) then
+  begin
+    if NeedCursor then
+      raise EIB_DatasetError.Create( E_GET_CURSOR_ERROR );
+    if Prepared then
+    begin
+      CursorFields.ClearBuffers( rsNone );
+      CursorFields.FRowNode := nil;
+    end;
+    Result := true;
+    Exit;
+  end
+  else
+  begin
+    if NeedCursor and
+       ( BDataset.FetchWholeRows or ( BDataset.KeySQLSelect = '' )) and
+       not BDataset.KeyLinksExist then
+    begin
+      if KeepCursor then
+        raise EIB_DatasetError.Create( E_GET_CURSOR_ERROR );
+      NeedCursor := false;
+    end;
+    if not NeedCursor and
+       ( Node.RecordLen > 0 ) and
+       ( Node.OldRecLen >= 0 ) then
+    begin
+      CursorFields.FRowNode := Node;
+      Result := true;
+    end
+    else
+    if Assigned( Params.RowBuffer ) then
+    begin
+      with IB_Session do
+      begin
+        KillCursor;
+        CheckTransaction( true );
+        if not HavePrepare then
+        begin
+          GetPrepare;
+          GetParamsData;
+        end;
+        if Assigned( Node.OldKeyData ) then
+          Move( Node.OldKeyData^,
+                pointer(longint(Params.RowBuffer) + FBindBufferOffset)^,
+                BDataset.NodeList.KeyDataLength )
+        else
+          Move( Node.KeyData^,
+                pointer(longint(Params.RowBuffer) + FBindBufferOffset)^,
+                BDataset.NodeList.KeyDataLength );
+        if KeepCursor or BUG_EXEC2 then
+        begin
+          errcode := isc_dsql_row_fetch( @status,
+                                         PtrHandle,
+                                         PstHandle,
+                                         IB_Connection.SQLDialect,
+                                         Params.PSQLDA );
+          if errcode <> 0 then
+            HandleException( Self );
+          CheckCursorName;
+          errcode := isc_dsql_set_row_cursor_name( @status,
+                                                   PstHandle,
+                                                   PChar( CursorName ),
+                                                   0 );
+        end
+        else
+          errcode := isc_dsql_execute2( @status,
+                                        PtrHandle,
+                                        PstHandle,
+                                        IB_Connection.SQLDialect,
+                                        Params.PSQLDA,
+                                        CursorFields.PSQLDA );
+        if ( errcode <> 0 ) and ( errcode <> 100 ) then
+          HandleException( Self )
+        else
+        begin
+          FCursorIsOpen := true;
+          Inc( IB_transaction.FOpenCursors );
+        end;
+        FActive := true;
+        try
+          if KeepCursor or BUG_EXEC2 then
+          begin
+            errcode := isc_dsql_fetch( @status,
+                                       PstHandle,
+                                       IB_Connection.SQLDialect,
+                                       CursorFields.PSQLDA );
+            if ( errcode = 0 ) and not KeepCursor then
+            begin
+              errcode := isc_dsql_fetch( @status,
+                                         PstHandle,
+                                         IB_Connection.SQLDialect,
+                                         CursorFields.PSQLDA );
+              if errcode = 100 then
+                errcode := 0
+              else
+              begin
+                KillCursor;
+                raise EIB_DatasetError.Create(
+                  E_Multiple_Rows_In_Singleton +
+                  #13#10#13#10 +
+                  'Check KeyLinks and JoinLinks properties' +
+                  #13#10#13#10 +
+                  ServerSQL );
+              end;
+            end;
+          end;
+          Result := errcode = 0;
+          if Result then
+          begin
+            CursorFields.CleanBuffers( true );
+            CursorFields.FRowNode := Node;
+            FromServer := true;
+          end
+          else
+          if errcode = 100 then
+          begin
+            errcode := 0;
+            CursorFields.FRowNode := nil;
+          end
+          else
+          begin
+            KillCursor;
+            HandleException( Self );
+          end;
+        finally
+          if not NeedCursor or not KeepCursor then
+            KillCursor;
+        end;
+      end;
+    end
+    else
+      raise Exception.Create( 'Problem in BindingCursor' );
+  end;
+  if Result and Assigned( CursorFields.FRowNode ) then
+  begin
+    if FromServer then
+    begin
+      CursorFields.CalculateFields;
+      PutRecord( Node, CursorFields );
+      if Assigned( Node.OldRecData ) then
+      begin
+        if ( Node.OldRecLen < 0 ) then
+        begin
+          tmpPtr := Node.OldRecData;
+          tmpLen := Node.OldRecLen;
+          Node.OldRecData := Node.RecordData;
+          Node.OldRecLen := Node.RecordLen;
+          Node.RecordData := tmpPtr;
+          Node.RecordLen := Abs( tmpLen );
+        end;
+        CursorFields.LoadFromNode( true, false );
+      end
+      else
+        CursorFields.RefreshBuffers( true, false, true );
+    end
+    else
+      CursorFields.LoadFromNode( true, false );
+  end
+  else
+  begin
+    CursorFields.ClearBuffers( rsNone );
+    CursorFields.FRowNode := nil;
+  end;
+end;
+
+procedure TIB_BindingCursor.KillCursor;
+begin
+  if FCursorIsOpen then
+    with IB_Session do
+    begin
+      errcode := isc_dsql_free_row_statement( @status,
+                                              PstHandle,
+                                              DSQL_CLOSE );
+      FActive := false;
+      FCursorIsOpen := false;
+      Dec( IB_transaction.FOpenCursors );
+    end;
+end;
+

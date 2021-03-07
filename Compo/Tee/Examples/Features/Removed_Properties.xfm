@@ -1,0 +1,56 @@
+object RemovedProperties: TRemovedProperties
+  Left = 192
+  Top = 107
+  Width = 398
+  Height = 369
+  Color = clBtnFace
+  ParentFont = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 390
+    Height = 342
+    Align = alClient
+    Color = clBtnFace
+    Lines.Strings = (
+      'Several properties that exist in version 4 have been removed to'
+      'improve version 5 features. There is always an easy workaround.'
+      ''
+      '- TeeCommander mouse events'
+      ''
+      
+        'These events are not necessary in version 5. You can use the nor' +
+        'mal'
+      'mouse events of the Chart component instead of the TeeCommander.'
+      ''
+      '- Multiplier  ( Series1.YValues , XValues, etc)'
+      ''
+      
+        'The Multiplier property has been removed due to changing the int' +
+        'ernal'
+      
+        'series values to dynamic arrays. The TeeDefs.inc file has a cond' +
+        'itional'
+      
+        'define ( $DEFINE TEEMULTIPLIER ) to enable Multiplier.  The prob' +
+        'lem'
+      
+        'enabling Multiplier is speed, because it'#39's necessary a function ' +
+        'to access'
+      'series values instead of accesing the dynamic array directly.'
+      ''
+      'FOR Delphi 4 / C++ Builder 4 and below only:'
+      ''
+      '- Creating custom axes at run-time.'
+      'The parameter in the axis "Create" constructor has been changed:'
+      ''
+      'Old ->   MyAxis := TChartAxis.Create ( Chart1 )'
+      'New -> MyAxis := TChartAxis.Create( Chart1.CustomAxes )'
+      '')
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+end

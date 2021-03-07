@@ -1,0 +1,55 @@
+package IBO40TRT_D5;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'IB Objects Tools Runtime'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50,
+  vclx50,
+  IBO40CRT_D5;
+
+contains
+  IB_SyncCursor in 'IB_SyncCursor.pas',
+  IB_DataScan in 'IB_DataScan.pas',
+  IB_Events in 'IB_Events.pas',
+  IB_Export in 'IB_Export.pas',
+  IB_Import in 'IB_Import.pas',
+  IB_Monitor in 'IB_Monitor.pas',
+  IB_Process in 'IB_Process.pas',
+  IB_Profiler in 'IB_Profiler.pas',
+  IB_Script in 'IB_Script.pas',
+  IB_DataPump in 'IB_DataPump.pas',
+  IB_DDL_Utility in 'IB_DDL_Utility.pas',
+  IB_DDL_Entity in 'IB_DDL_Entity.pas',
+  IB_DDL_EntityList in 'IB_DDL_EntityList.pas',
+  IB_DDL_EntWithParams in 'IB_DDL_EntWithParams.pas',
+  IB_DDL_Formatter in 'IB_DDL_Formatter.pas',
+  IB_DDL_ParamList in 'IB_DDL_ParamList.pas',
+  IB_DDL_Controller in 'IB_DDL_Controller.pas',
+  IB_CodeFormatter in 'IB_CodeFormatter.pas',
+  IB_Metadata in 'IB_Metadata.pas';
+
+end.

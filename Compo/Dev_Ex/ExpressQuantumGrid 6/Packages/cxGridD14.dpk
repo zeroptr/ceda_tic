@@ -1,0 +1,72 @@
+package cxGridD14;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressQuantumGrid 6 by Developer Express Inc.'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  cxEditorsD14,
+  cxExportD14,
+  cxExtEditorsD14,
+  cxPageControlD14;
+
+contains
+  cxGridLevel,
+  cxDBExtLookupComboBox,
+  cxGridExportLink,
+  cxFilterDialog,
+  cxGrid,
+  cxGridBandedTableView,
+  cxGridCardView,
+  cxGridChartView,
+  cxGridCommon,
+  cxGridCustomPopupMenu,
+  cxGridCustomTableView,
+  cxGridCustomView,
+  cxGridDBBandedTableView,
+  cxGridDBCardView,
+  cxGridDBChartView,
+  cxGridDBDataDefinitions,
+  cxGridDBTableView,
+  cxGridDetailsSite,
+  cxGridFilterHelpers,
+  cxGridFooterPopupMenuItems,
+  cxGridHeaderPopupMenuItems,
+  cxGridGroupRowPopupMenuItems,
+  cxGridMenuOperations,
+  cxGridPopupMenu,
+  cxGridPopupMenuConsts,
+  cxGridRows,
+  cxGridStdPopupMenu,
+  cxGridStrs,
+  cxGridTableView,
+  cxGridUIBandedTableHelper,
+  cxGridUICardHelper,
+  cxGridUICustomTableHelper,
+  cxGridUIHelper,
+  cxGridUITableHelper;
+
+end.

@@ -1,0 +1,52 @@
+inherited CommanderCustomEditor: TCommanderCustomEditor
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'TeeCommander has two properties to customize which chart editor ' +
+        'and'
+      'print previewer dialogs to use.'
+      ''
+      
+        'Click on the Edit and Print Preview icons to show custom dialogs' +
+        '.')
+  end
+  inherited Chart1: TChart
+    PrintMargins = (
+      15
+      32
+      15
+      32)
+  end
+  inherited Panel1: TPanel
+    object TeeCommander1: TTeeCommander
+      Left = 1
+      Top = 1
+      Width = 477
+      Height = 33
+      Align = alTop
+      ParentShowHint = False
+      TabOrder = 0
+      ChartEditor = ChartEditor1
+      Previewer = ChartPreviewer1
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    OnShow = ChartEditor1Show
+    DefaultTab = cetWalls
+    HighLightTabs = True
+    Title = 'This is a custom chart editor dialog'
+    Left = 152
+    Top = 188
+  end
+  object ChartPreviewer1: TChartPreviewer
+    Chart = Chart1
+    PaperColor = 10085115
+    Title = 'This is custom preview dialog'
+    Left = 248
+    Top = 188
+  end
+end

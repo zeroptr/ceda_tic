@@ -1,0 +1,116 @@
+inherited SeriesDataSetForm: TSeriesDataSetForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The SeriesDataSet component is a link between any chart Series a' +
+        'nd'
+      'standard VCL data controls, like DBGrid, DBLabel, etc.'
+      ''
+      'Example: SeriesDataSet1.Series := Series1; SeriesDataSet1.Open;')
+  end
+  inherited Chart1: TChart
+    Left = 185
+    Width = 294
+    Legend.Visible = False
+    Title.Visible = False
+    Chart3DPercent = 80
+    ClipPoints = False
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 85
+    View3DOptions.Rotation = 326
+    View3DOptions.Zoom = 65
+    object Series1: TSurfaceSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 73
+      Height = 17
+      Caption = '&Open'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 114
+    Width = 185
+    Height = 223
+    Align = alLeft
+    BevelOuter = bvNone
+    Caption = 'Panel2'
+    TabOrder = 3
+    object DBGrid1: TDBGrid
+      Left = 0
+      Top = 0
+      Width = 185
+      Height = 200
+      Align = alClient
+      DataSource = DataSource1
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = []
+      OnDrawColumnCell = DBGrid1DrawColumnCell
+      OnEditButtonClick = DBGrid1EditButtonClick
+    end
+    object DBNavigator1: TDBNavigator
+      Left = 0
+      Top = 200
+      Width = 185
+      Height = 23
+      DataSource = DataSource1
+      VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+      Align = alBottom
+      Flat = True
+      TabOrder = 1
+    end
+  end
+  object SeriesDataSet1: TSeriesDataSet
+    Series = Series1
+    Left = 160
+    Top = 34
+    object SeriesDataSet1Color: TIntegerField
+      FieldName = 'Color'
+    end
+    object SeriesDataSet1X: TFloatField
+      FieldName = 'X'
+    end
+    object SeriesDataSet1Y: TFloatField
+      FieldName = 'Y'
+      DisplayFormat = '0.##'
+    end
+    object SeriesDataSet1Label: TStringField
+      FieldName = 'Label'
+      Size = 128
+    end
+    object SeriesDataSet1Z: TFloatField
+      FieldName = 'Z'
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = SeriesDataSet1
+    Left = 256
+    Top = 34
+  end
+end

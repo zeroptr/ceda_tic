@@ -1,0 +1,28 @@
+object ChartWizardDemo: TChartWizardDemo
+  Left = 281
+  Top = 204
+  Width = 455
+  Height = 311
+  Caption = 'ChartWizardDemo'
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 447
+    Height = 33
+    Align = alTop
+    Lines.Strings = (
+      
+        'The TeeChart Wizard now supports Microsoft ADO when generating d' +
+        'atabase Charts.'
+      
+        'Select "Database Chart" and select "Microsoft ADO"... (Enterpris' +
+        'e versions only).')
+    TabOrder = 0
+  end
+end

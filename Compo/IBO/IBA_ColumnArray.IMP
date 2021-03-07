@@ -1,0 +1,985 @@
+// IBA_ColumnArray.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_ColumnArray.Create( ARow: TIB_Row;
+                                    PSQLVAR: PXSQLVAR;
+                                    AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FIsArray := true;
+  Statement.CheckTransaction( true );
+  if not IsAttributeSet[ IB_BINARY ] then
+    FPadChar := #32;
+  with Statement.IB_Session do begin
+    errcode := isc_array_lookup_bounds( @status,
+                                        Statement.pdbHandle,
+                                        Statement.ptrHandle,
+                                        PSQLVAR.RelName,
+                                        PSQLVAR.SQLName,
+                                        @FArrayDesc );
+  end;
+end;
+
+function TIB_ColumnArray.GetSQLTypeSource: string;
+var
+  ii: integer;
+begin
+  with ArrayDesc do
+  begin
+    case byte( ArrayDesc.array_desc_dtype ) of
+      blr_text,
+      blr_text2,
+      blr_cstring,
+      blr_cstring2: Result := 'CHAR( ' + IntToStr(array_desc_length) + ' )';
+      blr_varying,
+      blr_varying2: Result := 'VARCHAR( ' + IntToStr(array_desc_length) + ' )';
+      blr_short: Result := 'SMALLINT';
+      blr_long: Result := 'INTEGER';
+      blr_float: Result := 'FLOAT';
+      blr_double,
+      blr_d_float: Result := 'DOUBLE PRECISION';
+      blr_date: Result := 'DATE';
+      else
+        Result := inherited GetSQLTypeSource;
+    end;
+    Result := Result + '[ ';
+    for ii := 0 to array_desc_dimensions - 1 do
+    begin
+      if ii > 0 then
+        Result := Result + ', ';
+      Result := Result + IntToStr( array_desc_bounds[ii].array_bound_upper );
+    end;
+    Result := Result + ' ]';
+  end;
+end;
+
+function TIB_ColumnArray.GetOldAsString: string;
+begin
+  if OldIsNull then
+    Result := '(array)'
+  else
+    Result := '(ARRAY)';
+end;
+
+function TIB_ColumnArray.GetAsString: string;
+begin
+  if IsNull then
+    Result := '(array)'
+  else
+    Result := '(ARRAY)';
+end;
+
+procedure TIB_ColumnArray.SetAsString( const NewValue: string);
+begin
+  raise EIB_ColumnError.Create( 'Unable to assign to array AsString' );
+end;
+
+function TIB_ColumnArray.GetArrayID: isc_quad;
+begin
+  Result := isc_quad( FNewColumnBuffer^ );
+end;
+
+function TIB_ColumnArray.GetOldArrayID: isc_quad;
+begin
+  Result := isc_quad( FOldColumnBuffer^ );
+end;
+
+procedure TIB_ColumnArray.Clear;
+begin
+  Statement.CreateBlobStream( Self, bsmWrite ).Free;
+end;
+
+function GetElementCnt( ArrayDesc: PISC_ARRAY_DESC ): integer;
+var
+  ii: integer;
+begin
+  Result := 1;
+  for ii := 0 to ArrayDesc.array_desc_dimensions - 1 do
+    with ArrayDesc.array_desc_bounds[ii] do
+      Result := Result * ( array_bound_upper - array_bound_lower + 1 );
+end;
+
+function GetElementSize( ArrayDesc: PISC_ARRAY_DESC ): integer;
+begin
+  Result := ArrayDesc.array_desc_length;
+  case byte(ArrayDesc.array_desc_dtype) of
+    blr_varying,
+    blr_varying2: Inc( Result, SizeOf( smallint ));
+  end;
+end;
+
+type
+  TArrayDims = array [0..15] of integer;
+
+function GetVarArrayElementValue( const Dims: integer;
+                                  const DimArray: variant;
+                                  const CurEle,
+                                        DimAdj: array of integer ): variant;
+begin
+  case Dims of
+     1: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ) ];
+     2: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ) ];
+     3: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ) ];
+     4: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ) ];
+     5: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ) ];
+     6: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ) ];
+     7: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ) ];
+     8: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ) ];
+     9: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ) ];
+    10: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ),
+                            ( CurEle[ 9] - DimAdj[ 9] ) ];
+    11: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ),
+                            ( CurEle[ 9] - DimAdj[ 9] ),
+                            ( CurEle[10] - DimAdj[10] ) ];
+    12: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ),
+                            ( CurEle[ 9] - DimAdj[ 9] ),
+                            ( CurEle[10] - DimAdj[10] ),
+                            ( CurEle[11] - DimAdj[11] ) ];
+    13: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ),
+                            ( CurEle[ 9] - DimAdj[ 9] ),
+                            ( CurEle[10] - DimAdj[10] ),
+                            ( CurEle[11] - DimAdj[11] ),
+                            ( CurEle[12] - DimAdj[12] ) ];
+    14: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ),
+                            ( CurEle[ 9] - DimAdj[ 9] ),
+                            ( CurEle[10] - DimAdj[10] ),
+                            ( CurEle[11] - DimAdj[11] ),
+                            ( CurEle[12] - DimAdj[12] ),
+                            ( CurEle[13] - DimAdj[13] ) ];
+    15: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ),
+                            ( CurEle[ 9] - DimAdj[ 9] ),
+                            ( CurEle[10] - DimAdj[10] ),
+                            ( CurEle[11] - DimAdj[11] ),
+                            ( CurEle[12] - DimAdj[12] ),
+                            ( CurEle[13] - DimAdj[13] ),
+                            ( CurEle[14] - DimAdj[14] ) ];
+    16: Result := DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                            ( CurEle[ 1] - DimAdj[ 1] ),
+                            ( CurEle[ 2] - DimAdj[ 2] ),
+                            ( CurEle[ 3] - DimAdj[ 3] ),
+                            ( CurEle[ 4] - DimAdj[ 4] ),
+                            ( CurEle[ 5] - DimAdj[ 5] ),
+                            ( CurEle[ 6] - DimAdj[ 6] ),
+                            ( CurEle[ 7] - DimAdj[ 7] ),
+                            ( CurEle[ 8] - DimAdj[ 8] ),
+                            ( CurEle[ 9] - DimAdj[ 9] ),
+                            ( CurEle[10] - DimAdj[10] ),
+                            ( CurEle[11] - DimAdj[11] ),
+                            ( CurEle[12] - DimAdj[12] ),
+                            ( CurEle[13] - DimAdj[13] ),
+                            ( CurEle[14] - DimAdj[14] ),
+                            ( CurEle[15] - DimAdj[15] ) ];
+    else Result := Unassigned;
+  end;
+end;
+
+procedure SetVarArrayElementValue( const Dims: integer;
+                                   var DimArray: variant;
+                                   const NewValue: variant;
+                                   var CurEle: TArrayDims;
+                                   const DimAdj: TArrayDims );
+begin
+  case Dims of
+     1: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ) ] := NewValue;
+     2: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ) ] := NewValue;
+     3: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ) ] := NewValue;
+     4: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ) ] := NewValue;
+     5: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ) ] := NewValue;
+     6: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ) ] := NewValue;
+     7: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ) ] := NewValue;
+     8: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ) ] := NewValue;
+     9: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ) ] := NewValue;
+    10: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ),
+                  ( CurEle[ 9] - DimAdj[ 9] ) ] := NewValue;
+    11: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ),
+                  ( CurEle[ 9] - DimAdj[ 9] ),
+                  ( CurEle[10] - DimAdj[10] ) ] := NewValue;
+    12: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ),
+                  ( CurEle[ 9] - DimAdj[ 9] ),
+                  ( CurEle[10] - DimAdj[10] ),
+                  ( CurEle[11] - DimAdj[11] ) ] := NewValue;
+    13: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ),
+                  ( CurEle[ 9] - DimAdj[ 9] ),
+                  ( CurEle[10] - DimAdj[10] ),
+                  ( CurEle[11] - DimAdj[11] ),
+                  ( CurEle[12] - DimAdj[12] ) ] := NewValue;
+    14: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ),
+                  ( CurEle[ 9] - DimAdj[ 9] ),
+                  ( CurEle[10] - DimAdj[10] ),
+                  ( CurEle[11] - DimAdj[11] ),
+                  ( CurEle[12] - DimAdj[12] ),
+                  ( CurEle[13] - DimAdj[13] ) ] := NewValue;
+    15: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ),
+                  ( CurEle[ 9] - DimAdj[ 9] ),
+                  ( CurEle[10] - DimAdj[10] ),
+                  ( CurEle[11] - DimAdj[11] ),
+                  ( CurEle[12] - DimAdj[12] ),
+                  ( CurEle[13] - DimAdj[13] ),
+                  ( CurEle[14] - DimAdj[14] ) ] := NewValue;
+    16: DimArray[ ( CurEle[ 0] - DimAdj[ 0] ),
+                  ( CurEle[ 1] - DimAdj[ 1] ),
+                  ( CurEle[ 2] - DimAdj[ 2] ),
+                  ( CurEle[ 3] - DimAdj[ 3] ),
+                  ( CurEle[ 4] - DimAdj[ 4] ),
+                  ( CurEle[ 5] - DimAdj[ 5] ),
+                  ( CurEle[ 6] - DimAdj[ 6] ),
+                  ( CurEle[ 7] - DimAdj[ 7] ),
+                  ( CurEle[ 8] - DimAdj[ 8] ),
+                  ( CurEle[ 9] - DimAdj[ 9] ),
+                  ( CurEle[10] - DimAdj[10] ),
+                  ( CurEle[11] - DimAdj[11] ),
+                  ( CurEle[12] - DimAdj[12] ),
+                  ( CurEle[13] - DimAdj[13] ),
+                  ( CurEle[14] - DimAdj[14] ),
+                  ( CurEle[15] - DimAdj[15] ) ] := NewValue;
+  end;
+end;
+
+function CreateVarArray( const DimCount: integer;
+                         const Bounds: array of integer;
+                         const VarType: integer ): variant;
+var
+  Dim01: array [0.. 1] of integer absolute Bounds;
+  Dim02: array [0.. 3] of integer absolute Bounds;
+  Dim03: array [0.. 5] of integer absolute Bounds;
+  Dim04: array [0.. 7] of integer absolute Bounds;
+  Dim05: array [0.. 9] of integer absolute Bounds;
+  Dim06: array [0..11] of integer absolute Bounds;
+  Dim07: array [0..13] of integer absolute Bounds;
+  Dim08: array [0..15] of integer absolute Bounds;
+  Dim09: array [0..17] of integer absolute Bounds;
+  Dim10: array [0..19] of integer absolute Bounds;
+  Dim11: array [0..21] of integer absolute Bounds;
+  Dim12: array [0..23] of integer absolute Bounds;
+  Dim13: array [0..25] of integer absolute Bounds;
+  Dim14: array [0..27] of integer absolute Bounds;
+  Dim15: array [0..29] of integer absolute Bounds;
+  Dim16: array [0..31] of integer absolute Bounds;
+begin
+  case DimCount of
+     1: Result := VarArrayCreate( Dim01, varType );
+     2: Result := VarArrayCreate( Dim02, varType );
+     3: Result := VarArrayCreate( Dim03, varType );
+     4: Result := VarArrayCreate( Dim04, varType );
+     5: Result := VarArrayCreate( Dim05, varType );
+     6: Result := VarArrayCreate( Dim06, varType );
+     7: Result := VarArrayCreate( Dim07, varType );
+     8: Result := VarArrayCreate( Dim08, varType );
+     9: Result := VarArrayCreate( Dim09, varType );
+    10: Result := VarArrayCreate( Dim10, varType );
+    11: Result := VarArrayCreate( Dim11, varType );
+    12: Result := VarArrayCreate( Dim12, varType );
+    13: Result := VarArrayCreate( Dim13, varType );
+    14: Result := VarArrayCreate( Dim14, varType );
+    15: Result := VarArrayCreate( Dim15, varType );
+    16: Result := VarArrayCreate( Dim16, varType );
+  end;
+end;
+
+function IncrementCurEle( const Dims, StartDim: integer;
+                          const DimUpper,
+                                DimLower: TArrayDims;
+                          var CurEle: TArrayDims ): boolean;
+begin
+  if StartDim > Dims then
+    Result := false
+  else
+  if CurEle[StartDim-1] = DimUpper[StartDim-1] then
+  begin
+    CurEle[StartDim-1] := DimLower[StartDim-1];
+    Result := IncrementCurEle( Dims, StartDim + 1, DimUpper, DimLower, CurEle );
+  end
+  else
+  begin
+    Inc( CurEle[StartDim-1] );
+    Result := true;
+  end;
+end;
+
+type
+  pcardinal = ^Cardinal;
+
+function SysGetVarArray( const ArrayDesc: ISC_ARRAY_DESC;
+                               ArrayReader: TIB_ArrayReader ): variant;
+var
+  EleNo: integer;
+  EleSize: integer;
+  ii: integer;
+  ABuf: pointer;
+  ABytes: integer;
+  tmpStr: string;
+  tmpQuad:ISC_QUAD;
+  DimLower: TArrayDims;
+  DimUpper: TArrayDims;
+  DimBounds: array[0..31] of integer;
+  DimEles: TArrayDims;
+  DimAdj: TArrayDims;
+  CurEle: TArrayDims;
+  tmpVal: variant;
+  vtype: integer;
+  AVarChr: PSQL_VARCHAR;
+begin
+  EleNo := GetElementCnt( @ArrayDesc );
+  EleSize := GetElementSize( @ArrayDesc );
+  ABuf := AllocMem( EleSize );
+  with ArrayDesc do
+  try
+    for ii := 0 to array_desc_dimensions - 1 do
+    begin
+      DimLower[ii] := array_desc_bounds[ii].array_bound_lower;
+      DimUpper[ii] := array_desc_bounds[ii].array_bound_upper;
+      DimBounds[ii*2] := array_desc_bounds[ii].array_bound_lower;
+      DimBounds[ii*2+1] := array_desc_bounds[ii].array_bound_upper;
+      DimEles[ii] := array_desc_bounds[ii].array_bound_upper -
+                     array_desc_bounds[ii].array_bound_lower + 1;
+      DimAdj[ii] := 0;
+      CurEle[ii] := array_desc_bounds[ii].array_bound_lower;
+    end;
+    case byte( array_desc_dtype ) of
+      blr_short: vtype := varSmallint;
+      blr_long: vtype := varInteger;
+      blr_float: vtype := varSingle;
+      blr_double,
+      blr_d_float: vtype := varDouble;
+      blr_date,blr_sql_date,blr_sql_time: vtype :=varDate;
+      else vtype := varVariant;
+    end;
+    Result := CreateVarArray( array_desc_dimensions, DimBounds, vtype );
+    repeat
+      ABytes := EleSize;
+      ArrayReader( ABuf^, ABytes );
+      case byte( array_desc_dtype ) of
+        blr_text,
+        blr_text2,
+        blr_cstring,
+        blr_cstring2:
+        begin
+          SetLength( tmpStr, EleSize );
+          Move( ABuf^, tmpStr[1], EleSize );
+          tmpVal := tmpStr;
+        end;
+        // Reading value.
+        blr_varying,
+        blr_varying2:
+        begin
+          AVarChr := PSQL_VARCHAR( ABuf );
+          SetLength( tmpStr, AVarChr.vary_len_high * 256 +
+                             AVarChr.vary_len_low );
+          Move( AVarChr.vary_string[0],
+                tmpStr[1],
+                AVarChr.vary_len_high * 256 +
+                AVarChr.vary_len_low );
+          tmpVal := tmpStr;
+        end;
+        blr_short: tmpVal := smallint( ABuf^ );
+        blr_long: tmpVal := integer( ABuf^ );
+        blr_float: tmpVal := single( ABuf^ );
+        blr_double,
+        blr_d_float: tmpVal := double( ABuf^ );
+        blr_date: tmpVal := isc_decode_TDateTime( pisc_quad( ABuf ));
+        blr_sql_date:
+        begin
+          tmpQuad.isc_quad_low := 0;
+          tmpQuad.isc_quad_high := pinteger( ABuf )^;
+          tmpVal := isc_decode_TDateTime( @tmpQuad );
+        end;
+        blr_sql_time:
+        begin
+          tmpQuad.isc_quad_low := pcardinal( ABuf )^;
+          tmpQuad.isc_quad_high := 15018; // results in year of value zero
+          tmpVal := isc_decode_TDateTime( @tmpQuad );
+        end
+        else
+          raise Exception.Create( 'Unsupported array variant conversion' );
+      end;
+      SetVarArrayElementValue( array_desc_dimensions,
+                               Result,
+                               tmpVal,
+                               CurEle,
+                               DimAdj );
+    until not IncrementCurEle( array_desc_dimensions,
+                               1,
+                               DimUpper,
+                               DimLower,
+                               CurEle ) or ( EleNo < 0 );
+  finally
+    FreeMem( ABuf );
+  end;
+end;
+
+procedure SysPutVarArray( const ArrayDesc: ISC_ARRAY_DESC;
+                                ArrayWriter: TIB_ArrayWriter;
+                                NewValue: variant;
+                                ArrayPadChar: char );
+var
+  EleNo: integer;
+  EleSize: integer;
+  ii: integer;
+  ABuf: pointer;
+  ABytes: integer;
+  tmpQuad:ISC_QUAD;
+  tmpStr: string;
+  StrLen: smallint;
+  tmpVal: variant;
+  DimLower: TArrayDims;
+  DimUpper: TArrayDims;
+  DimEles: TArrayDims;
+  DimAdj: TArrayDims;
+  CurEle: TArrayDims;
+  AVarChr: PSQL_VARCHAR;
+begin
+  EleNo := GetElementCnt( @ArrayDesc );
+  EleSize := GetElementSize( @ArrayDesc );
+  ABuf := AllocMem( EleSize );
+  SetLength( tmpStr, EleSize );
+  with ArrayDesc do
+  try
+    if array_desc_dimensions <> VarArrayDimCount( NewValue ) then
+      raise Exception.Create( 'Dimensions are different' );
+    for ii := 0 to array_desc_dimensions - 1 do
+    begin
+      DimLower[ii] := array_desc_bounds[ii].array_bound_lower;
+      DimUpper[ii] := array_desc_bounds[ii].array_bound_upper;
+      DimEles[ii] := DimUpper[ii] - DimLower[ii] + 1;
+      if ( VarArrayHighBound( NewValue, ii + 1 ) -
+           VarArrayLowBound( NewValue, ii + 1 ) + 1 ) <> DimEles[ii] then
+        raise Exception.Create( 'Dimension has different number of elements' );
+      DimAdj[ii] := DimLower[ii] - VarArrayLowBound( NewValue, ii + 1 );
+      CurEle[ii] := DimLower[ii];
+    end;
+    repeat
+      tmpVal := GetVarArrayElementValue( array_desc_dimensions,
+                                         NewValue,
+                                         CurEle,
+                                         DimAdj );
+      case byte( array_desc_dtype ) of
+        blr_cstring,
+        blr_cstring2:
+        begin
+          tmpStr := PadRight( tmpVal, ArrayPadChar, EleSize, true );
+          Move( tmpStr[1], ABuf^, EleSize );
+        end;
+        blr_text,
+        blr_text2:
+        begin
+          tmpStr := PadRight( tmpVal, ArrayPadChar, EleSize, true );
+          Move( tmpStr[1], ABuf^, EleSize );
+        end;
+        // Writing value.
+        blr_varying,
+        blr_varying2:
+        begin
+          tmpStr := tmpVal;
+          StrLen := Length( tmpStr );
+          if StrLen > integer(ArrayDesc.array_desc_length) then
+            StrLen := integer(ArrayDesc.array_desc_length);
+          AVarChr := PSQL_VARCHAR( ABuf );
+          FillChar( AVarChr.vary_string[0],
+                    ArrayDesc.array_desc_length,
+                    ArrayPadChar );
+          AVarChr.vary_len_low := StrLen mod 256;
+          AVarChr.vary_len_high := StrLen div 256;
+          Move( tmpStr[1], AVarChr.vary_string[0], StrLen );
+        end;
+        blr_short: psmallint( ABuf )^ := tmpVal;
+        blr_long: try
+          if Length( Trim( tmpVal )) = 0 then tmpVal := 0;
+          pinteger( ABuf )^ := StrToInt( Trim( tmpVal ));
+        except
+          pinteger( ABuf )^ := 0;
+        end;
+        blr_float: try
+          if Length( Trim( tmpVal )) = 0 then tmpVal := 0;
+          psingle( ABuf )^ := StrToFloat( Trim( tmpVal ));
+        except
+          psingle( ABuf )^ := 0;
+        end;
+        blr_double,
+        blr_d_float: try
+          if Length( Trim( tmpVal )) = 0 then tmpVal := 0;
+          pdouble( ABuf )^ := StrToFloat( Trim( tmpVal ));
+        except
+          pdouble( ABuf )^ := 0;
+        end;
+        blr_sql_date:
+        try
+          if (varType(tmpVal)=varOleStr) then
+            if (tmpVal<>'') then
+            begin
+              isc_encode_TDateTime( StrToDateTime(tmpVal), @tmpQuad);
+              pinteger(ABuf)^:=tmpQuad.isc_quad_high;
+            end
+            else
+              FillChar( ABuf^, EleSize, 0 )
+          else
+            isc_encode_TDateTime( tmpVal, pisc_quad( ABuf ));
+        except
+          FillChar( ABuf^, EleSize, 0 );
+        end;
+        blr_sql_time:
+        try
+          if (varType(tmpVal)=varOleStr) then
+            if (tmpVal<>'') then
+            begin
+              isc_encode_TDateTime( StrToDateTime(tmpVal), @tmpQuad);
+              pcardinal(ABuf)^:=tmpQuad.isc_quad_low;
+            end
+            else
+              FillChar( ABuf^, EleSize, 0 )
+          else
+            isc_encode_TDateTime( tmpVal, pisc_quad( ABuf ));
+        except
+          FillChar( ABuf^, EleSize, 0 );
+        end;
+        blr_date: try
+          if (varType(tmpVal)=varOleStr) then
+             if (tmpVal<>'') then
+                isc_encode_TDateTime( StrToDateTime(tmpVal), pisc_quad( ABuf ))
+             else
+                FillChar( ABuf^, EleSize, 0 )
+          else
+             isc_encode_TDateTime( tmpVal, pisc_quad( ABuf ));
+        except
+          FillChar( ABuf^, EleSize, 0 );
+        end
+        else
+          raise Exception.Create( 'Unsupported array variant conversion' );
+      end;
+      ABytes := EleSize;
+      ArrayWriter( ABuf^, ABytes );
+      Dec( EleNo );
+    until not IncrementCurEle( array_desc_dimensions,
+                               1,
+                               DimUpper,
+                               DimLower,
+                               CurEle ) or ( EleNo < 0 );
+  finally
+    FreeMem( ABuf );
+  end;
+end;
+
+function TIB_ColumnArray.GetAsVariant: variant;
+var
+  AStream: TStream;
+begin
+  if IsNull then
+    Result := Unassigned
+  else
+  begin
+    AStream := Statement.CreateBlobStream( Self, bsmRead );
+    try
+      Result := SysGetVarArray( FArrayDesc, AStream.ReadBuffer );
+    finally
+      AStream.Free;
+    end;
+  end;
+end;
+
+procedure TIB_ColumnArray.SetAsVariant( const NewValue: variant );
+var
+  AStream: TStream;
+begin
+  if VarIsEmpty( NewValue ) or VarIsNull( NewValue ) then
+    Clear
+  else
+  if VarIsArray( NewValue ) then
+  begin
+    SysBeforeModify;
+    AStream := Statement.CreateBlobStream( Self, bsmWrite );
+    try
+      SysPutVarArray( FArrayDesc, AStream.WriteBuffer, NewValue, FPadChar );
+    finally
+      AStream.Free;
+    end;
+    SysSetIsNull( false );
+    SysAfterModify;
+  end
+  else
+    raise Exception.Create( 'Variant must be of an array type' );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_ColumnArray.GetArray( PArrayBuffer: pointer;
+                                    PArraySize: pointer );
+begin GetSlice( @FArrayDesc, PArrayBuffer, PArraySize ); end;
+procedure TIB_ColumnArray.PutArray( PArrayBuffer: pointer;
+                                    PArraySize: pointer );
+begin PutSlice( @FArrayDesc, PArrayBuffer, PArraySize ); end;
+
+procedure TIB_ColumnArray.GetSlice( PArrayDesc: PISC_ARRAY_DESC;
+                                    PArrayBuffer: pointer;
+                                    PArraySize: pointer );
+begin
+  if IsNull then
+    raise EIB_ColumnError.Create( E_Array_Is_Null );
+  Statement.CheckTransaction( true );
+  with Statement.IB_Session do begin
+    errcode := isc_array_get_slice ( @status,
+                                     Statement.pDBHandle,
+                                     Statement.pTRHandle,
+                                     PSQLVAR.SQLData,
+                                     PArrayDesc,
+                                     PArrayBuffer,
+                                     PArraySize );
+    if errcode <> 0 then HandleException( Statement );
+  end;
+end;
+
+procedure TIB_ColumnArray.PutSlice( PArrayDesc: PISC_ARRAY_DESC;
+                                    PArrayBuffer: pointer;
+                                    PArraySize: pointer );
+begin
+  SysBeforeModify;
+  SysSetIsNull( false );
+  Statement.CheckTransaction( true );
+  with Statement.IB_Session do
+  begin
+    errcode := isc_array_put_slice ( @status,
+                                     Statement.pDBHandle,
+                                     Statement.pTRHandle,
+                                     PSQLVAR.SQLData,
+                                     PArrayDesc,
+                                     PArrayBuffer,
+                                     PArraySize );
+    if errcode <> 0 then HandleException( Statement );
+  end;
+  SysAfterModify;
+end;
+
+function TIB_ColumnArray.GetVarSlice( Dimensions: array of integer ): variant;
+var
+  des: ISC_ARRAY_DESC;
+  ii, jj: integer;
+  bufsize: integer;
+  AStream: TMemoryStream;
+begin
+  if IsNull then
+  begin
+    Result := Unassigned;
+    Exit;
+  end;
+  des := ArrayDesc;
+  if high( Dimensions ) <> 0 then begin
+    if not Odd( high( Dimensions )) then begin
+      raise Exception.Create( 'Invalid dimensions' );
+    end;
+    des.array_desc_dimensions := ( high( Dimensions ) + 1 ) div 2;
+    jj := 0;
+    for ii := 0 to ((( high( dimensions ) + 1 ) div 2 ) - 1 ) do begin
+      with des.array_desc_bounds[ii] do begin
+        if array_bound_lower > dimensions[jj] then begin
+          raise Exception.Create( 'Lower dimension out of bounds' );
+        end else begin
+          array_bound_lower := dimensions[jj];
+        end;
+        if array_bound_upper < dimensions[jj+1] then begin
+          raise Exception.Create( 'Upper dimension out of bounds' );
+        end else begin
+          array_bound_upper := dimensions[jj+1];
+        end;
+      end;
+      Inc( jj, 2 );
+    end;
+  end;
+  AStream := TMemoryStream.Create;
+  try
+    bufsize := GetArrayBufferLength( @des );
+    AStream.SetSize( bufsize );
+    Statement.CheckTransaction( true );
+    with Statement, IB_Session do begin
+      errcode := isc_array_get_slice( @status,
+                                      PdbHandle,
+                                      PTRHandle,
+                                      PSQLVAR.SQLData,
+                                      @des,
+                                      AStream.Memory,
+                                      @bufsize );
+      if errcode <> 0 then HandleException( Statement );
+    end;
+    Result := SysGetVarArray( des, AStream.ReadBuffer );
+  finally
+    AStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnArray.PutVarSlice( const Values: variant );
+var
+  ii, bufsize: integer;
+  Dims: integer;
+  LBnd, HBnd: integer;
+  AStream: TMemoryStream;
+  des: ISC_ARRAY_DESC;
+begin
+  SysBeforeModify;
+  des := ArrayDesc;
+  dims := VarArrayDimCount( Values );
+  for ii := 1 to Dims do begin
+    LBnd := VarArrayLowBound( Values, ii );
+    HBnd := VarArrayHighBound( Values, ii );
+    with des.array_desc_bounds[ii-1] do begin
+      if LBnd < array_bound_lower then begin
+        raise Exception.Create( 'Lower dimension out of bounds' );
+      end else begin
+        array_bound_lower := LBnd;
+      end;
+      if HBnd > array_bound_upper then begin
+        raise Exception.Create( 'Upper dimension out of bounds' );
+      end else begin
+        array_bound_upper := HBnd;
+      end;
+    end;
+  end;
+  AStream := TMemoryStream.Create;
+  try
+    bufsize := GetArrayBufferLength( @des );
+    AStream.SetSize( bufsize );
+    SysPutVarArray( des, AStream.WriteBuffer, Values, FPadChar );
+    Statement.CheckTransaction( true );
+    with Statement, IB_Session do begin
+      errcode := isc_array_put_slice( @status,
+                                      PdbHandle,
+                                      PTRHandle,
+                                      PSQLVAR.SQLData,
+                                      @des,
+                                      AStream.Memory,
+                                      @bufsize );
+      if errcode <> 0 then HandleException( Statement );
+    end;
+  finally
+    AStream.Free;
+  end;
+  SysSetIsNull( false );
+// Need to finish the auto re-fetch of the new ARRAY ID after this call is made.
+// Otherwise, and Invalid BLOB ID error is generated if a call to get_slice
+// is performed using the temporary Array ID that put slice creates.
+  SysAfterModify;
+end;
+
+function TIB_ColumnArray.IsEqualTo( AArray: TIB_ColumnArray ): boolean;
+var
+  st1, st2: TIB_BlobStream;
+begin
+  Result := false;
+  if IsNull <> AArray.IsNull then
+  else
+  if IsNull and AArray.IsNull then
+    Result := true
+  else
+  begin
+    st1 := Statement.CreateBlobStream( Self, bsmRead );
+    st2 := AArray.Statement.CreateBlobStream( AArray, bsmRead );
+    try
+      if st1.Size = st2.Size then
+        Result := BuffersEqual( st1.BlobNode.BlobBuffer,
+                                st2.BlobNode.BlobBuffer,
+                                st1.BlobNode.BlobSize );
+    finally
+      st1.Free;
+      st2.Free;
+    end;
+  end;
+end;
+

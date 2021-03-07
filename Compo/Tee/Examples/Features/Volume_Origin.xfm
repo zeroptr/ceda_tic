@@ -1,0 +1,74 @@
+inherited VolumeOrigin: TVolumeOrigin
+  Caption = 'VolumeOrigin'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Volume Series now introduces two new properties: UseYOrigin : Bo' +
+        'olean and YOrigin : Double '
+      
+        'When UseYOrigin is True, lines are displayed starting at YOrigin' +
+        ' value. '
+      'When False, lines start at minimum value.'
+      ''
+      
+        'Series1.YOrigin := 33 ;                Series1.UseYOrigin := Tru' +
+        'e ;')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Volume Series -- Using an Y origin value')
+    View3D = False
+    object Series1: TVolumeSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      UseYOrigin = True
+      VolumeValues.DateTime = False
+      VolumeValues.Name = 'Y'
+      VolumeValues.Order = loNone
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YOrigin = 33
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 10
+      Width = 97
+      Height = 17
+      Caption = 'Use &Y Origin:'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Edit1: TEdit
+      Left = 120
+      Top = 8
+      Width = 49
+      Height = 21
+      TabOrder = 1
+      Text = '33'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 169
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = -20000
+      Max = 20000
+      Position = 33
+      TabOrder = 2
+      Wrap = False
+    end
+  end
+end

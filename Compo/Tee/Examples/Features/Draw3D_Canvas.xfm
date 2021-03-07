@@ -1,0 +1,130 @@
+object Draw3DCanvas: TDraw3DCanvas
+  Left = 192
+  Top = 107
+  Width = 491
+  Height = 444
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 483
+    Height = 105
+    Align = alTop
+    TabOrder = 0
+    object Memo1: TMemo
+      Left = 8
+      Top = 8
+      Width = 281
+      Height = 89
+      Lines.Strings = (
+        'Draw3D is a small component intended to be used'
+        'for 3D drawing. It has no axis and no Series so it'#39's '
+        'an "smaller" alternative to a Chart component.'
+        'Supports printing, clipboard, exporting, zoom, scroll, '
+        'rotation, OpenGL 3D rendering, toolbar and many more '
+        'features.')
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      Left = 299
+      Top = 9
+      Width = 97
+      Height = 17
+      Caption = 'With &Shadows'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CheckBoxDrawAxes: TCheckBox
+      Left = 299
+      Top = 30
+      Width = 97
+      Height = 17
+      Caption = 'Draw &Axes'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBoxDrawAxesClick
+    end
+    object CheckBoxDrawRoom: TCheckBox
+      Left = 299
+      Top = 52
+      Width = 97
+      Height = 17
+      Caption = 'Draw &Room'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBoxDrawRoomClick
+    end
+    object CheckBoxGradient: TCheckBox
+      Left = 299
+      Top = 73
+      Width = 70
+      Height = 17
+      Caption = '&Gradient'
+      TabOrder = 4
+      OnClick = CheckBoxGradientClick
+    end
+    object CheckBox2: TCheckBox
+      Left = 376
+      Top = 73
+      Width = 65
+      Height = 17
+      Caption = '&OpenGL'
+      TabOrder = 5
+      OnClick = CheckBox2Click
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 105
+    Width = 483
+    Height = 33
+    Panel = Draw3D1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 1
+  end
+  object Draw3D1: TDraw3D
+    Left = 0
+    Top = 138
+    Width = 483
+    Height = 279
+    OnPaint = Draw3D1Paint
+    Align = alClient
+    TabOrder = 2
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    AmbientLight = 8
+    Light.Color = clGray
+    Light.Visible = True
+    Light.Position.X = -100.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Light1.Color = clGray
+    Light1.Visible = False
+    Light1.Position.X = -100.000000000000000000
+    Light1.Position.Y = -100.000000000000000000
+    Light1.Position.Z = -100.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Shininess = 0.500000000000000000
+    TeePanel = Draw3D1
+    Left = 240
+    Top = 186
+  end
+end

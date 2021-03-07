@@ -1,0 +1,143 @@
+inherited SeriesPointsHexagon: TSeriesPointsHexagon
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Series pointers can draw an hexagon shape with HorizSize and Ver' +
+        'tSize properties.'
+      ''
+      'Series1.Pointer.Style := psHexagon')
+  end
+  inherited Chart1: TChart
+    Gradient.EndColor = clNavy
+    Gradient.Visible = True
+    Legend.Visible = False
+    Title.Font.Color = clWhite
+    Title.Text.Strings = (
+      'Pointer as Hexagon')
+    BottomAxis.Axis.Width = 1
+    LeftAxis.Axis.Width = 1
+    LeftAxis.LabelsFont.Gradient.EndColor = clWhite
+    LeftAxis.LabelsFont.Gradient.StartColor = clBlack
+    View3D = False
+    ColorPaletteIndex = 1
+    object Series1: TLineSeries
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pointer.HorizSize = 10
+      Pointer.InflateMargins = True
+      Pointer.Pen.SmallDots = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 10
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00080000000000000000306B400000000000E06F400000000000607340000000
+        0000E06F40000000000048774000000000004075400000000000087B40000000
+        0000787440}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 113
+      Top = 14
+      Width = 29
+      Height = 13
+      Caption = '&Style :'
+    end
+    object Label2: TLabel
+      Left = 260
+      Top = 14
+      Width = 34
+      Height = 13
+      Caption = '&Width :'
+      FocusControl = Edit1
+    end
+    object Label3: TLabel
+      Left = 367
+      Top = 14
+      Width = 37
+      Height = 13
+      Caption = '&Height :'
+      FocusControl = Edit2
+    end
+    object cbVisible: TCheckBox
+      Left = 11
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Pointer Visible'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbVisibleClick
+    end
+    object cbStyle: TComboFlat
+      Left = 147
+      Top = 10
+      Width = 97
+      DropDownCount = 18
+      TabOrder = 1
+      OnChange = cbStyleChange
+      Items.Strings = (
+        'Square'
+        'Circle'
+        'Triangle'
+        'Down Triangle'
+        'Cross'
+        'Diagonal Cross'
+        'Star'
+        'Diamond'
+        'Small Dot'
+        'Nothing'
+        'Left Triangle'
+        'Right Triangle'
+        'Hexagon')
+    end
+    object Edit1: TEdit
+      Left = 299
+      Top = 11
+      Width = 33
+      Height = 21
+      TabOrder = 2
+      Text = '10'
+      OnChange = Edit1Change
+    end
+    object Edit2: TEdit
+      Left = 408
+      Top = 11
+      Width = 33
+      Height = 21
+      TabOrder = 3
+      Text = '10'
+      OnChange = Edit2Change
+    end
+    object UpDown1: TUpDown
+      Left = 332
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Max = 1000
+      Position = 10
+      TabOrder = 4
+    end
+    object UpDown2: TUpDown
+      Left = 441
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Max = 1000
+      Position = 10
+      TabOrder = 5
+    end
+  end
+end

@@ -1,0 +1,48 @@
+inherited GradientMiddle: TGradientMiddle
+  Caption = 'GradientMiddle'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Gradient object now fills using an optional Middle color.'
+      
+        'Several components have Gradient objects, like for example the C' +
+        'hart panel, '
+      'the Legend, Bar series, Titles, Marks, Back Wall, etc.')
+  end
+  inherited Chart1: TChart
+    Gradient.EndColor = clGray
+    Gradient.MidColor = 8454016
+    Gradient.StartColor = 16744703
+    Gradient.Visible = True
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 169
+      Height = 17
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'Panel Gradient Middle Color:'
+    end
+    object Shape1: TShape
+      Left = 189
+      Top = 10
+      Width = 33
+      Height = 25
+      Cursor = crHandPoint
+      OnMouseUp = Shape1MouseUp
+    end
+    object CheckBox1: TCheckBox
+      Left = 250
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&No Middle color'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

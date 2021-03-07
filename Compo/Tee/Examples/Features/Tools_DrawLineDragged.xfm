@@ -1,0 +1,89 @@
+inherited DrawLineOnDragged: TDrawLineOnDragged
+  Caption = 'DrawLineOnDragged'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 121
+  end
+  inherited Memo1: TMemo
+    Height = 64
+    Lines.Strings = (
+      'OnDraggedLine event at TDrawLineTool class.'
+      'This event is triggered when the user finishes dragging a line.'
+      
+        'Try drawing a line, then clicking and moving it. When finished, ' +
+        'the event is raised'
+      'and the label below shows the new line position.')
+  end
+  inherited Chart1: TChart
+    Top = 123
+    Height = 214
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TDrawLineTool
+      Lines = <>
+      OnDraggedLine = ChartTool1DraggedLine
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 64
+    Height = 57
+    object Label1: TLabel
+      Left = 10
+      Top = 8
+      Width = 102
+      Height = 13
+      Caption = 'Dragged line position:'
+    end
+    object LabelLinePos: TLabel
+      Left = 120
+      Top = 8
+      Width = 15
+      Height = 13
+      Caption = '0,0'
+    end
+    object Label2: TLabel
+      Left = 10
+      Top = 31
+      Width = 73
+      Height = 13
+      Caption = 'Click &tolerance:'
+      FocusControl = Edit1
+    end
+    object Label3: TLabel
+      Left = 136
+      Top = 31
+      Width = 26
+      Height = 13
+      Caption = 'pixels'
+    end
+    object Edit1: TEdit
+      Left = 89
+      Top = 28
+      Width = 25
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 114
+      Top = 28
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      TabOrder = 1
+    end
+  end
+end

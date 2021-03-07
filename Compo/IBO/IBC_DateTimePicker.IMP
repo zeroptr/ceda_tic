@@ -1,0 +1,142 @@
+// IBC_DateTimePicker.INT
+
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.IMP}
+{$UNDEF IB_AutoLabel}
+
+constructor TIB_CustomDateTimePicker.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  {$IFNDEF VER90}
+  FAutoLabel := TIB_AutoLabel.Create( Self );
+  {$ENDIF}
+  inherited Create(AOwner);
+  inherited ShowCheckbox := true;
+  ControlStyle := ControlStyle + [csReplicatable];
+  DataLink.Control := Self;
+  DataLink.OnStateChanged := StateChanged;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnUpdateData := UpdateData;
+  FBorderStyle := bsSingle;
+end;
+
+destructor TIB_CustomDateTimePicker.Destroy;
+begin
+  {$IFNDEF VER90}
+  FAutoLabel.Free;
+  FAutoLabel := nil;
+  {$ENDIF}
+  DataSource := nil;
+  with DataLink do begin
+    Control := nil;
+    OnStateChanged := nil;
+    OnEditingChanged := nil;
+    OnDataChange := nil;
+    OnUpdateData := nil;
+  end;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomDateTimePicker.Loaded;
+begin
+  inherited;
+  {$IFNDEF VER90}
+  RemakeAutoLabel;
+  {$ENDIF}
+end;
+
+procedure TIB_CustomDateTimePicker.CreateParams( var Params: TCreateParams );
+begin
+  inherited CreateParams( Params );
+  with Params do
+  begin
+    if ( DataLink.State = dssSearch ) or SearchAlways then
+      Style := Style or DTS_SHOWNONE;
+    FShowingCheckbox := ( Style = ( Style or DTS_SHOWNONE ));
+  end;
+end;
+
+procedure TIB_CustomDateTimePicker.SysDataChange;
+begin
+  with DataLink do begin
+    if ( FieldText <> '' ) and ( FieldText <> Name ) then begin
+      try
+        Date := StrToDateTime( FieldText );
+      except
+        Date := Trunc( now );
+      end;
+      Checked := true;
+    end else begin
+      Date := Trunc( now );
+      Checked := false;
+    end;
+  end;
+end;
+
+procedure TIB_CustomDateTimePicker.SysStateChanged;
+begin
+  if DataLink.ColorScheme then begin
+    inherited Color := DataLink.Color;
+  end;
+  if SearchAlways or ( DataLink.State = dssSearch ) then begin
+    if not FShowingCheckbox then begin
+      RecreateWnd;
+    end;
+  end else if not ShowCheckBox and FShowingCheckbox then begin
+    RecreateWnd;
+  end;
+  UpdateTabStop;
+end;
+
+procedure TIB_CustomDateTimePicker.SysUpdateData( IB_Field: TIB_Column );
+begin
+  if Checked then begin
+    DataLink.FieldText := DateTimeToStr( Trunc( Date ));
+  end else begin
+    DataLink.FieldText := '';
+  end;
+end;
+
+procedure TIB_CustomDateTimePicker.CMEnter(var Message: TCMEnter);
+begin
+  inherited;
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomDateTimePicker.CMExit(var Message: TCMExit);
+begin
+  try
+    DataLink.UpdateData;
+  except
+    SetFocus;
+    raise;
+  end;
+  inherited;
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomDateTimePicker.CNNotify(var Message: TWMNotify);
+begin
+  with Message, Message.NMHdr^ do
+  begin
+    Result := 0;
+    case code of
+    DTN_DATETIMECHANGE: if DataLink.IsParamEdit or DataLink.Modify then
+      begin
+        inherited;
+        DataLink.ControlIsModified := true;
+        SysUpdateData( nil );
+      end;
+    DTN_WMKEYDOWN: if DataLink.IsParamEdit or DataLink.Modify then
+      begin
+        inherited;
+        DataLink.ControlIsModified := true;
+        SysUpdateData( nil );
+      end
+      else
+        inherited;
+    else
+      inherited;
+    end;
+  end;
+end;

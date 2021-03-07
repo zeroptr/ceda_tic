@@ -1,0 +1,104 @@
+inherited FreeAllSeriesForm: TFreeAllSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'To remove and free Series of a certain class, pass the (optional' +
+        #39')'
+      
+        'parameter to FreeAllSeries method.  With no parameter, ALL serie' +
+        #39's'
+      'are removed as in previous version.'
+      ''
+      'Example: Chart1.FreeAllSeries( TLineSeries );')
+  end
+  inherited Chart1: TChart
+    View3D = False
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = False
+      SeriesColor = clYellow
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series4: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clBlue
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series5: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = False
+      SeriesColor = clWhite
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 161
+      Height = 25
+      Caption = '&Remove all LINE Series'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 200
+      Top = 8
+      Width = 161
+      Height = 25
+      Caption = 'Remove all &BAR Series'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+end

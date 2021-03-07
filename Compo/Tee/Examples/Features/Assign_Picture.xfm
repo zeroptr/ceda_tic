@@ -1,0 +1,60 @@
+inherited AssignPicture: TAssignPicture
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Image1: TImage
+    Left = 0
+    Top = 114
+    Width = 217
+    Height = 223
+    Align = alLeft
+  end
+  object Splitter1: TSplitter [1]
+    Left = 217
+    Top = 114
+    Width = 3
+    Height = 223
+    Cursor = crHSplit
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Charts can now be assigned to any TPicture (or descendant) objec' +
+        't.'
+      'The chart is assigned to pictures in bitmap format.'
+      ''
+      'Example:  Image1.Picture.Assign( Chart1 );')
+  end
+  inherited Chart1: TChart
+    Left = 220
+    Width = 259
+    BottomAxis.Increment = 72
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TRadarSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      Pen.Color = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 24
+      Top = 8
+      Width = 97
+      Height = 25
+      Caption = '&Assign to Image'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

@@ -1,0 +1,126 @@
+inherited FunctionsPeriod: TFunctionsPeriod
+  Left = 437
+  Top = 299
+  Width = 559
+  Height = 455
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 551
+  end
+  inherited Memo1: TMemo
+    Width = 551
+    Lines.Strings = (
+      'Use the PeriodAlign property to align the Function period.'
+      'Example:'
+      
+        'TeeFunction1.PeriodAlign:=TFunctionPeriodAlign(cbPeriodAlign.Ite' +
+        'mIndex);')
+  end
+  inherited Chart1: TChart
+    Width = 551
+    Height = 272
+    Legend.Alignment = laTop
+    Legend.Transparent = True
+    Title.VertMargin = 6
+    Title.Visible = False
+    Chart3DPercent = 55
+    View3DOptions.Elevation = 342
+    View3DOptions.OrthoAngle = 60
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 103
+    View3DOptions.Rotation = 343
+    View3DOptions.Zoom = 95
+    object Series1: TBarSeries
+      BarBrush.Color = clWhite
+      BarPen.Visible = False
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Title = 'Cilinder'
+      BarStyle = bsCilinder
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Barra'
+      YValues.Order = loNone
+      Data = {
+        00080000000000000000406F4000000000001068400000000000306140000000
+        0000C052400000000000605D4000000000009060400000000000001E40000000
+        0000004940}
+    end
+    object Series2: TLineSeries
+      Gradient.EndColor = clWhite
+      Gradient.StartColor = 4194432
+      Gradient.Visible = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = 4194432
+      Title = 'Exp.Mov.Ave.'
+      LineHeight = 8
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      YValues.ValueSource = 'Barra'
+      object TeeFunction1: TExpMovAveFunction
+        Period = 10.000000000000000000
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 551
+    object Label1: TLabel
+      Left = 200
+      Top = 14
+      Width = 33
+      Height = 13
+      Caption = '&Period:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 370
+      Top = 14
+      Width = 6
+      Height = 13
+      Caption = '5'
+    end
+    object Label3: TLabel
+      Left = 14
+      Top = 14
+      Width = 59
+      Height = 13
+      Caption = 'Period Align:'
+      FocusControl = cbPeriodAlign
+    end
+    object ScrollBar1: TScrollBar
+      Left = 242
+      Top = 12
+      Width = 121
+      Height = 17
+
+      Position = 4
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object cbPeriodAlign: TComboFlat
+      Left = 85
+      Top = 11
+      Width = 81
+      TabOrder = 1
+      OnChange = cbPeriodAlignChange
+      Items.Strings = (
+        'First'
+        'Center'
+        'Last')
+    end
+  end
+end

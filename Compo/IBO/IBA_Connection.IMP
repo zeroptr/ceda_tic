@@ -1,0 +1,2563 @@
+//IBA_Connection.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  27-Apr-2003                                                                 }
+{     Added extract of Firebird specific version info to characteristics.      }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  09-Sep-2001                                                                 }
+{     Added psKeyFromEnviron option to TIB_PasswordStorage type.               }
+{                                                                              }
+{  Wassim Haddad <lobolo2000@yahoo.com>                                        }
+{  22-Aug-2001                                                                 }
+{     Added support to import column defaults from the server upon request.    }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  10-Aug-2001                                                                 }
+{     Implemented new PasswordStorage property to control if and how the       }
+{     Password property is saved to the DFM (via the SavedPassword property).  }
+{     See TIB_PasswordStorage type for detailed explanation.                   }
+{     Deprecating PasswordRemembered - some special streaming implemented      }
+{     so that it can still be read, but now it simply sets PasswordStorage     }
+{     to psKeyFromUserReg.                                                     }
+{     SavedPassword property set back to public (from published) and special   }
+{     streaming code provided to read/write to/from the DFM.                   }
+{                                                                              }
+{  Norman Dunbar <norman@bountiful.demon.co.uk>                                }
+{  13-Aug-2002                                                                 }
+{     Change TIB_Connection.SysLogin to avoid an exception being raised if the }
+{     user hits the CANCEL button on the login dialogue.                       }
+{******************************************************************************}
+
+type
+  TIB_ConnectionPool = class
+  private
+    FPoolItems: TList;
+    FPoolLock: TRTLCriticalSection;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure ClearHandles;
+  end;
+
+  TIB_ConnectionPoolItem = class
+  private
+    FdbHandle: ISC_DB_HANDLE;
+    FDatabase: string;
+    FUsername: string;
+    FPassword: string;
+    FSQLRolename: string;
+  public
+    destructor Destroy; override;
+  end;
+
+var
+  ConnectionPool: TIB_ConnectionPool = nil;
+
+procedure ClearConnectionPool;
+begin
+  if Assigned( ConnectionPool ) then
+  begin
+    ConnectionPool.ClearHandles;
+    ConnectionPool.Free;
+    ConnectionPool := nil;
+  end;
+end;
+
+constructor TIB_Connection.Create( AOwner: TComponent );
+begin
+// Create this object.
+  inherited Create( AOwner );
+  FEscapeCharacter := '\';
+// Create objects used by this object.
+  FStatementList := TList.Create;
+  FDatasetList := TList.Create;
+  FTransactionList := TList.Create;
+  FActiveTransactionList := TList.Create;
+  FParams := TIB_StringList.Create;
+  FPasswordStorage := psNone;
+  FUsers := TIB_StringList.Create;
+  FSchemaCache := TIB_SchemaCache.Create( Self );
+  FColumnAttributes := TIB_StringProperty.Create;
+  FColumnAttributes.Sorted := true;
+  FDefaultValues := TIB_StringProperty.Create;
+  FDefaultValues.Sorted := true;
+  FFieldsAlignment := TIB_StringProperty.Create;
+  FFieldsAlignment.Sorted := true;
+  FFieldsCharCase := TIB_StringProperty.Create;
+  FFieldsCharCase.Sorted := true;
+  FFieldsDisplayLabel := TIB_StringProperty.Create;
+  FFieldsDisplayLabel.Sorted := true;
+  FFieldsGridLabel := TIB_StringProperty.Create;
+  FFieldsGridLabel.Sorted := true;
+  FFieldsDisplayFormat := TIB_StringProperty.Create;
+  FFieldsDisplayFormat.Sorted := true;
+  FFieldsDisplayWidth := TIB_StringProperty.Create;
+  FFieldsDisplayWidth.Sorted := true;
+  FFieldsEditMask := TIB_StringProperty.Create;
+  FFieldsEditMask.Sorted := true;
+  FFieldsReadOnly := TIB_StringProperty.Create;
+  FFieldsReadOnly.Sorted := true;
+  FFieldsTrimming := TIB_StringProperty.Create;
+  FFieldsTrimming.Sorted := true;
+  FFieldsVisible := TIB_StringProperty.Create;
+  FFieldsVisible.Sorted := true;
+  FGeneratorLinks := TIB_StringProperty.Create;
+  FGeneratorLinks.Sorted := true;
+// Initialize this object.
+  FdbHandle := nil;
+  FStmtHandleCache := nil;
+  SysInvalidateCachedInformation;
+  FCharacteristicsValid := false;
+  FLoginAttempts := 3;
+  FCacheStatementHandles := true;
+  FLastOpened := now;
+  FLastClosed := now;
+  FKeepConnection := true;
+  FMacroBegin := '<<';
+  FMacroEnd := '>>';
+end;
+
+destructor TIB_Connection.Destroy;
+begin
+  CloseTransactions;
+  Destroying;
+  try
+    SysDisconnect;
+  except
+  end;
+  while TransactionCount > 0 do
+    Transactions[ 0 ].SysRemoveConnection( Self );
+  while ConnectionLinkCount > 0 do
+    TIB_ConnectionLink( FConnectionLinkList.Items[ 0 ] ).IB_Connection := nil;
+  FParams.Free;
+  FParams := nil;
+  FUsers.Free;
+  FUsers := nil;
+  FTransactionList.Free;
+  FTransactionList := nil;
+  FActiveTransactionList.Free;
+  FActiveTransactionList := nil;
+  FStatementList.Free;
+  FStatementList := nil;
+  FDatasetList.Free;
+  FDatasetList := nil;
+  FSchemaCache.Free;
+  FSchemaCache := nil;
+  FColumnAttributes.Free;
+  FColumnAttributes := nil;
+  FDefaultValues.Free;
+  FDefaultValues := nil;
+  FFieldsAlignment.Free;
+  FFieldsCharCase.Free;
+  FFieldsDisplayLabel.Free;
+  FFieldsGridLabel.Free;
+  FFieldsDisplayFormat.Free;
+  FFieldsDisplayWidth.Free;
+  FFieldsEditMask.Free;
+  FFieldsReadOnly.Free;
+  FFieldsTrimming.Free;
+  FFieldsVisible.Free;
+  FFieldsAlignment := nil;
+  FFieldsCharCase := nil;
+  FFieldsDisplayLabel := nil;
+  FFieldsGridLabel := nil;
+  FFieldsDisplayFormat := nil;
+  FFieldsDisplayWidth := nil;
+  FFieldsEditMask := nil;
+  FFieldsReadOnly := nil;
+  FFieldsTrimming := nil;
+  FFieldsVisible := nil;
+  FGeneratorLinks.Free;
+  FGeneratorLinks := nil;
+  if Assigned( FAliasParams ) then
+  begin
+    FAliasParams.Free;
+    FAliasParams := nil;
+  end;
+  inherited Destroy;
+end;
+
+procedure TIB_Connection.GetSessionName( AReader: TReader );
+begin
+  AReader.ReadString;
+end;
+
+procedure TIB_Connection.LoadSavedPassword( AReader: TReader );
+begin
+  SavedPassword := AReader.ReadString;
+end;
+
+procedure TIB_Connection.StoreSavedPassword( AWriter: TWriter );
+begin
+  AWriter.WriteString( SavedPassword );
+end;
+
+// PasswordRemembered is defined here only to keep some backwards
+// compatibility - it will automatically set the matching PasswordStorage
+// option.  This function and its DefineProperty call below can be
+// removed in a month or two when everyone should have upgraded.
+//    Geoff Worboys 10-Aug-2001
+procedure TIB_Connection.LoadPasswordRemembered( AReader: TReader );
+var
+  TmpVal: boolean;
+begin
+  TmpVal := AReader.ReadBoolean;
+  if TmpVal then
+    PasswordStorage := psKeyFromUserReg;
+end;
+
+procedure TIB_Connection.DefineProperties( AFiler: TFiler );
+begin
+  inherited DefineProperties( AFiler );
+  AFiler.DefineProperty( 'SessionName', GetSessionName, nil, false );
+  AFiler.DefineProperty( 'SavedPassword', LoadSavedPassword,
+                         StoreSavedPassword, IsSavedPasswordStored );
+  AFiler.DefineProperty( 'PasswordRemembered', LoadPasswordRemembered, nil, false );
+end;
+
+procedure TIB_Connection.Loaded;
+begin
+  inherited Loaded;
+  SysConnectAfterLoad;
+end;
+
+procedure TIB_Connection.Notification( AComponent: TComponent;
+                                       Operation: TOperation);
+begin
+  if ( Operation = opRemove ) and ( AComponent = FDefaultTransaction ) then
+    FDefaultTransaction := nil;
+  inherited Notification( AComponent, Operation );
+end;
+
+function TIB_Connection.GetSchemaCacheDir: string;
+begin
+  Result := SchemaCache.LocalDir;
+end;
+
+procedure TIB_Connection.SetSchemaCacheDir( const AValue: string );
+begin
+  SchemaCache.LocalDir := AValue;
+end;
+
+procedure TIB_Connection.SysConnectAfterLoad;
+var
+  ii: integer;
+begin
+  try
+    if FConnectAfterLoad then begin
+      if SysConnect( false ) then begin
+        FConnectAfterLoad := false;
+        for ii := 0 to StatementCount - 1 do begin
+          Statements[ ii ].SysPrepareAfterLoad;
+        end;
+        for ii := 0 to DatasetCount - 1 do begin
+          Datasets[ ii ].SysOpenAfterLoad;
+        end;
+      end;
+    end;
+  except
+  // Throw away the exception here.
+  end;
+end;
+
+procedure TIB_Connection.Connect;
+begin
+  if Connected then
+    DoLinkEvent( cetConnectedChanged )
+  else
+    try
+      BeginBusy( false );
+      SysConnect( false );
+    finally
+      EndBusy;
+    end;
+end;
+
+procedure TIB_Connection.Disconnect;
+begin
+  if not Connected then
+    DoLinkEvent( cetConnectedChanged )
+  else
+    try
+      BeginBusy( false );
+      SysDisconnect;
+    finally
+      EndBusy;
+    end;
+end;
+
+procedure TIB_Connection.ForceDisconnect;
+var
+  ii: integer;
+begin
+  ii := 1;
+  while Connected and ( ii <= 3 ) do
+    try
+      Inc( ii );
+      Disconnect;
+    except
+    end;
+end;
+
+procedure TIB_Connection.Open;
+begin
+  Connect;
+end;
+
+procedure TIB_Connection.Close;
+begin
+  Disconnect;
+end;
+
+procedure TIB_Connection.CreateDatabase;
+begin
+  if Connected then begin
+    raise EIB_ConnectionError.Create( E_CONNECTED );
+  end else begin
+    try
+      BeginBusy( false );
+      SysCreateDatabase;
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+procedure TIB_Connection.DropDatabase;
+begin
+  if Connected then begin
+    try
+      BeginBusy( false );
+      SysDropDatabase;
+    finally
+      EndBusy;
+    end;
+  end else begin
+    raise EIB_ConnectionError.Create( E_NOT_CONNECTED );
+  end;
+end;
+
+procedure TIB_Connection.AlterUser( Action: TIB_AlterUserAction;
+                                    AUsername,
+                                    AUserPass,
+                                    AGroupName,
+                                    AFirstName,
+                                    AMiddleName,
+                                    ALastName: string );
+var
+  tmpSec: USER_SEC_DATA;
+  SaveCW: word;
+begin
+  tmpSec := IB_Session.GetUserSec( Action,
+                                   Protocol,
+                                   Server,
+                                   Username,
+                                   Password,
+                                   AUsername,
+                                   AUserPass,
+                                   AGroupName,
+                                   AFirstName,
+                                   AMiddleName,
+                                   ALastName );
+  with IB_Session do begin
+    asm fstcw [SaveCW] end;
+    case Action of
+      uaAddUser: errcode := dll_add_user( @status, @tmpSec );
+      uaDeleteUser: errcode := dll_delete_user( @status, @tmpSec );
+      uaModifyUser: errcode := dll_modify_user( @status, @tmpSec );
+    end;
+    asm fldcw [SaveCW] end;
+    if errcode <> 0 then begin
+      HandleException( Self );
+    end;
+  end;
+end;
+
+{  Property access routines                                                    }
+
+function TIB_Connection.IsConnectedStored: boolean;
+begin
+  Result := IB_Session.StoreActive and Connected;
+end;
+
+procedure TIB_Connection.SetCacheStatementHandles( AValue: boolean );
+begin
+  FCacheStatementHandles := AValue;
+  if not AValue then
+    FreeStmtHandleCache( 0 );
+end;
+
+procedure TIB_Connection.SetColumnAttributes( AValue: TIB_StringProperty );
+begin FColumnAttributes.Assign( AValue ); end;
+procedure TIB_Connection.SetDefaultValues( AValue: TIB_StringProperty );
+begin FDefaultValues.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsAlignment( AValue: TIB_StringProperty );
+begin FFieldsAlignment.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsCharCase( AValue: TIB_StringProperty );
+begin FFieldsCharCase.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsDisplayLabel( AValue: TIB_StringProperty );
+begin FFieldsDisplayLabel.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsGridLabel( AValue: TIB_StringProperty );
+begin FFieldsGridLabel.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsDisplayFormat( AValue: TIB_StringProperty );
+begin FFieldsDisplayFormat.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsDisplayWidth( AValue: TIB_StringProperty );
+begin FFieldsDisplayWidth.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsEditMask( AValue: TIB_StringProperty );
+begin FFieldsEditMask.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsReadOnly( AValue: TIB_StringProperty );
+begin FFieldsReadOnly.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsTrimming( AValue: TIB_StringProperty );
+begin FFieldsTrimming.Assign( AValue ); end;
+procedure TIB_Connection.SetFieldsVisible( AValue: TIB_StringProperty );
+begin FFieldsVisible.Assign( AValue ); end;
+procedure TIB_Connection.SetGeneratorLinks( AValue: TIB_StringProperty );
+begin FGeneratorLinks.Assign( AValue ); end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Connection.GetLoginUsername: string;
+var
+  tmpPos: integer;
+begin
+  Result := Username;
+  if ( Result <> '' ) and
+     ( Result <> 'SYSDBA' ) and
+     ( Result <> 'PUBLIC' ) then begin
+    tmpPos := Pos( LoginUsernamePrefix, Result );
+    if tmpPos > 0 then begin
+      Inc( tmpPos, Length( LoginUsernamePrefix ));
+      Result := Copy( Result, tmpPos, MaxInt );
+    end;
+  end;
+end;
+
+procedure TIB_Connection.SetLoginUsername( const AValue: string );
+begin
+  if ( AValue <> '' ) and
+     ( AValue <> 'SYSDBA' ) and
+     ( AValue <> 'PUBLIC' ) then
+    Username := LoginUsernamePrefix + AValue
+  else
+    Username := AValue;
+end;
+
+function TIB_Connection.GetLoginSQLRole: string;
+var
+  tmpPos: integer;
+begin
+  Result := SQLRole;
+  tmpPos := Pos( LoginSQLRolePrefix, Result );
+  if tmpPos > 0 then
+  begin
+    Inc( tmpPos, Length( LoginSQLRolePrefix ));
+    Result := Copy( Result, tmpPos, MaxInt );
+  end;
+end;
+
+procedure TIB_Connection.SetLoginSQLRole( const AValue: string );
+begin
+  if AValue = '' then begin
+    SQLRole := AValue;
+  end else begin
+    SQLRole := LoginSQLRolePrefix + AValue;
+  end;
+end;
+
+function TIB_Connection.GetHasActiveTransaction: boolean;
+var
+  ii: integer;
+begin
+  Result := false;
+  for ii := 0 to TransactionCount - 1 do begin
+    if Transactions[ ii ].TransactionIsActive then begin
+      Result := true;
+      Break;
+    end;
+  end;
+end;
+
+function TIB_Connection.GetUsers: TStrings;
+var
+  Results: array [0..8191] of Char;
+  Items: array [0..1] of Char;
+  Item: byte;
+  ItemLen: integer;
+  ItemPtr: integer;
+begin
+  Result := FUsers;
+  FUsers.Clear;
+  if not Connected then
+    Exit;
+  Items[ 0 ] := char( isc_info_user_names );
+  Items[ 1 ] := char( isc_info_end );
+  FillChar( Results, SizeOf(Results), #0 );
+  API_Database_Info( Items, Results );
+  ItemPtr := 0;
+  while byte( Results[ ItemPtr ] ) <> isc_info_end do
+  begin
+    Item := byte( Results[ ItemPtr ] );
+    Inc( ItemPtr, 1 );
+    ItemLen := isc_vax_integer( @Results[ ItemPtr ], 2 );
+    Inc( ItemPtr, 2 );
+    if Item = isc_info_user_names then
+      FUsers.Add( Copy(pchar(@Results[ItemPtr+1]), 1, byte(Results[ItemPtr])));
+    Inc( ItemPtr, ItemLen )
+  end;
+end;
+
+procedure TIB_Connection.SetConnected( Value: boolean);
+begin
+  if Value <> Connected then
+    if Value then
+      SysConnect( false )
+    else
+      SysDisconnect;
+end;
+
+function TIB_Connection.GetConnected: Boolean;
+begin
+  Result := FdbHandle <> nil;
+end;
+
+procedure TIB_Connection.SetDefaultTransaction( AValue: TIB_Transaction );
+begin
+  FDefaultTransaction := AValue;
+  if Assigned( AValue ) then
+    AValue.FreeNotification( Self );
+end;
+
+procedure TIB_Connection.SetParams( Value: TIB_StringList );
+var
+  tmpStr: string;
+begin
+  FParams.Text := Value.Text;
+  if csReading in ComponentState then
+  begin
+    tmpStr := FParams.Values[ IB_SERVER_NAME ];
+    if tmpStr <> '' then
+    begin
+      Database := tmpStr;
+      FParams.Values[ IB_SERVER_NAME ] := '';
+    end;
+    SetPrm( 2, '' ); // Make sure no value in password param
+  end;
+end;
+
+function TIB_Connection.GetPrm( Index: integer ): string;
+begin
+  Result := '';
+  case Index of
+    1: Result := Params.Values[ IB_USER_NAME ];
+    2:
+    begin
+      if Protocol = cpLocal then
+        Result := Params.Values[ IB_LOCAL_PASSWORD ];
+      if Result = '' then
+        Result := Params.Values[ IB_PASSWORD ];
+    end;
+    3: Result := Params.Values[ IB_SERVER ];
+    4:
+    begin
+      Result := Params.Values[ IB_ROLE_NAME ];
+      if Result = '' then
+      begin
+        Result := Params.Values[ IB_ROLE_ ];
+        if Result <> '' then
+        begin
+          Params.Values[ IB_ROLE_NAME ] := Result;
+          Params.Values[ IB_ROLE_ ] := '';
+        end;
+      end;
+      if Result = '' then
+      begin
+        Result := Params.Values[ IB_SQL_ROLE_NAME_ ];
+        if Result <> '' then
+        begin
+          Params.Values[ IB_ROLE_NAME ] := Result;
+          Params.Values[ IB_SQL_ROLE_NAME_ ] := '';
+        end;
+      end;
+    end;
+    5: Result := Params.Values[ IB_PATH ];
+    6: Result := Params.Values[ IB_LICENSE ];
+    7: Result := Params.Values[ IB_SYSDBA ];
+    8: Result := Params.Values[ IB_ENCRYPT_KEY ];
+    9: Result := Params.Values[ IB_CHARACTER_SET ];
+   10: Result := Params.Values[ IB_MESSAGE_FILE ];
+  end;
+end;
+
+procedure TIB_Connection.SetPrm( Index: integer; const Value: string );
+begin
+  if csDesigning in ComponentState then
+    Connected := false;
+  if Connected then
+    raise EIB_ConnectionError.Create( E_CANT_CHG_WITH_CONN )
+  else
+  case Index of
+    1: Params.Values[ IB_USER_NAME ] := Value;
+    2: begin
+      if ( Protocol = cpLocal ) and
+         ( Params.Values[ IB_LOCAL_PASSWORD ] <> '' ) then
+        Params.Values[ IB_LOCAL_PASSWORD ] := Value
+      else
+        Params.Values[ IB_PASSWORD ] := Value;
+    end;
+    3: Params.Values[ IB_SERVER ] := Value;
+    4:
+    begin
+      Params.Values[ IB_ROLE_NAME ] := Value;
+      Params.Values[ IB_ROLE_ ] := '';
+      Params.Values[ IB_SQL_ROLE_NAME_ ] := '';
+    end;
+    5: Params.Values[ IB_PATH ] := Value;
+    6: Params.Values[ IB_LICENSE ] := Value;
+    7: Params.Values[ IB_SYSDBA ] := Value;
+    8: Params.Values[ IB_ENCRYPT_KEY ] := Value;
+    9: Params.Values[ IB_CHARACTER_SET ] := Value;
+   10: Params.Values[ IB_MESSAGE_FILE ] := Value;
+  end;
+end;
+
+function TIB_Connection.GetPassword: string;
+begin
+  Result := FPassword;
+  if Result = '' then
+    Result := GetPrm( 2 );
+end;
+
+// Not protected, so can be cleared at runtime if desired.
+procedure TIB_Connection.SetPassword( AValue: string );
+begin
+  FPassword := AValue;
+  SetPrm( 2, '' ); // Make sure no value in params property
+end;
+
+function TIB_Connection.GetSavedPassword: string;
+var
+  tmpKey: HKEY;
+  tmpStr: string;
+begin
+  case PasswordStorage of
+    psNone: Result := '';
+    psKeyFromUserReg:
+    begin
+      // Dont step on other connections doing the same thing
+      EnterCriticalSection( AttachCS );
+      tmpKey := JumbleRegKey;
+      try
+        JumbleRegKey := HKEY_CURRENT_USER;
+        Result := JumbleString( Password, GetJumbleKey );
+      finally
+        JumbleRegKey := tmpKey;
+        LeaveCriticalSection( AttachCS );
+      end;
+    end;
+    psKeyFromMachineReg:
+    begin
+      // Dont step on other connections doing the same thing
+      EnterCriticalSection( AttachCS );
+      tmpKey := JumbleRegKey;
+      try
+        JumbleRegKey := HKEY_LOCAL_MACHINE;
+        Result := JumbleString( Password, GetJumbleKey );
+      finally
+        JumbleRegKey := tmpKey;
+        LeaveCriticalSection( AttachCS );
+      end;
+    end;
+    psNotSecure:
+    begin
+      // We use the JumblePrefix_v01 string from IB_Utils as the standard
+      // encryption key.  Does not make much difference what we use since
+      // this is inherently insecure.
+      Result := JumbleString( Password, JumblePrefix_v01 );
+    end;
+    psKeyFromEnviron:
+    begin
+      tmpStr := GetEnvVariable( 'IBO_PASSKEY' );
+      if tmpStr = '' then
+        tmpStr := JumblePrefix_v01; // default to psNotSecure
+      Result := JumbleString( Password, tmpStr );
+    end;
+  end;
+end;
+
+procedure TIB_Connection.SetSavedPassword( AValue: string );
+var
+  tmpKey: HKEY;
+  tmpStr: string;
+begin
+  case PasswordStorage of
+    psNone: Password := UnJumbleString( AValue, '' );
+    psKeyFromUserReg:
+    begin
+      // Dont step on other connections doing the same thing
+      EnterCriticalSection( AttachCS );
+      tmpKey := JumbleRegKey;
+      try
+        JumbleRegKey := HKEY_CURRENT_USER;
+        Password := UnJumbleString( AValue, GetJumbleKey );
+      finally
+        JumbleRegKey := tmpKey;
+        LeaveCriticalSection( AttachCS );
+      end;
+    end;
+    psKeyFromMachineReg:
+    begin
+      // Dont step on other connections doing the same thing
+      EnterCriticalSection( AttachCS );
+      tmpKey := JumbleRegKey;
+      try
+        JumbleRegKey := HKEY_LOCAL_MACHINE;
+        Password := UnJumbleString( AValue, GetJumbleKey );
+      finally
+        JumbleRegKey := tmpKey;
+        LeaveCriticalSection( AttachCS );
+      end;
+    end;
+    psNotSecure:
+    begin
+      // We use the JumblePrefix_v01 string from IB_Utils as the standard
+      // encryption key.  Does not make much difference what we use since
+      // this is inherently insecure.
+      Password := UnJumbleString( AValue, JumblePrefix_v01 );
+    end;
+    psKeyFromEnviron:
+    begin
+      tmpStr := GetEnvVariable( 'IBO_PASSKEY' );
+      if tmpStr = '' then
+        tmpStr := JumblePrefix_v01; // default to psNotSecure
+      Password := UnJumbleString( AValue, tmpStr );
+    end;
+  end;
+end;
+
+function TIB_Connection.IsSavedPasswordStored: boolean;
+begin
+  Result := ((PasswordStorage <> psNone) and (Password <> ''));
+end;
+
+procedure TIB_Connection.SetPasswordStorage( AVal: TIB_PasswordStorage );
+begin
+  if AVal <> FPasswordStorage then
+    FPasswordStorage := AVal;
+end;
+
+function TIB_Connection.GetForcedWrites: TIB_DPBFlag;
+begin
+  if Params.Values[ IB_FORCED_WRITES ] = IB_TRUE then
+    Result := dpbTrue
+  else
+  if Params.Values[ IB_FORCED_WRITES ] = IB_FALSE then
+    Result := dpbFalse
+  else
+    Result := dpbDefault;
+end;
+
+procedure TIB_Connection.SetForcedWrites( AValue: TIB_DPBFlag );
+begin
+  if ForcedWrites <> AValue then
+  begin
+    if csDesigning in ComponentState then
+      Connected := false;
+    if Connected then
+      raise EIB_ConnectionError.Create( E_CANT_CHG_WITH_CONN )
+    else
+      case AValue of
+        dpbTrue: Params.Values[ IB_FORCED_WRITES ] := IB_TRUE;
+        dpbFalse: Params.Values[ IB_FORCED_WRITES ] := IB_FALSE;
+        dpbDefault: Params.Values[ IB_FORCED_WRITES ] := '';
+      end;
+  end;
+end;
+
+function TIB_Connection.GetDBKeyScope: TIB_DPBFlag;
+begin
+  if Params.Values[ IB_DB_Key_SCOPE ] = IB_DB_Key_SCOPE_CONN then
+    Result := dpbTrue
+  else
+  if Params.Values[ IB_DB_Key_SCOPE ] = IB_DB_Key_SCOPE_TRAN then
+    Result := dpbFalse
+  else
+    Result := dpbDefault;
+end;
+
+procedure TIB_Connection.SetDBKeyScope( AValue: TIB_DPBFlag );
+begin
+  if DBKeyScope <> AValue then
+  begin
+    if csDesigning in ComponentState then
+      Connected := false;
+    if Connected then
+      raise EIB_ConnectionError.Create( E_CANT_CHG_WITH_CONN )
+    else
+    if AValue = dpbTrue then
+      Params.Values[ IB_DB_Key_SCOPE ] := IB_DB_Key_SCOPE_CONN
+    else
+    if AValue = dpbFalse then
+      Params.Values[ IB_DB_Key_SCOPE ] := IB_DB_Key_SCOPE_TRAN
+    else
+      Params.Values[ IB_DB_Key_SCOPE ] := '';
+  end;
+end;
+
+function TIB_Connection.GetReservePageSpace: TIB_DPBFlag;
+begin
+  if Params.Values[ IB_RESERVE_PAGE_SPACE ] = IB_TRUE then
+    Result := dpbTrue
+  else
+  if Params.Values[ IB_RESERVE_PAGE_SPACE ] = IB_FALSE then
+    Result := dpbFalse
+  else
+    Result := dpbDefault;
+end;
+
+procedure TIB_Connection.SetReservePageSpace( AValue: TIB_DPBFlag );
+begin
+  if ReservePageSpace <> AValue then
+  begin
+    if csDesigning in ComponentState then
+      Connected := false;
+    if Connected then
+      raise EIB_ConnectionError.Create( E_CANT_CHG_WITH_CONN )
+    else
+      case AValue of
+        dpbTrue:    Params.Values[ IB_RESERVE_PAGE_SPACE ] := IB_TRUE;
+        dpbFalse:   Params.Values[ IB_RESERVE_PAGE_SPACE ] := IB_FALSE;
+        dpbDefault: Params.Values[ IB_RESERVE_PAGE_SPACE ] := '';
+      end;
+  end;
+end;
+
+function TIB_Connection.GetPageSize: word;
+begin
+  if Connected then
+    Result := Characteristics.dbPage_Size
+  else
+  begin
+    if Params.Values[ IB_PAGE_SIZE ] = '' then
+      Result := 1024
+    else
+      Result := StrToInt( Params.Values[ IB_PAGE_SIZE ] );
+    if Result < 1024 then
+      Result := 1024
+    else
+      Result := ( Result div 1024 ) * 1024;
+  end;
+end;
+
+procedure TIB_Connection.SetPageSize( AValue: word );
+begin
+  if AValue < 1024 then
+    AValue := 1024
+  else
+    AValue := ( AValue div 1024 ) * 1024;
+  if ( Params.Values[ IB_PAGE_SIZE ] = '' ) or
+     ( StrToInt(Params.Values[ IB_PAGE_SIZE ]) <> AValue ) then
+  begin
+    if AValue = 1024 then
+      Params.Values[ IB_PAGE_SIZE ] := ''
+    else
+      Params.Values[ IB_PAGE_SIZE ] := IntToStr( AValue );
+  end;
+end;
+
+function TIB_Connection.GetSQLDialect: smallint;
+var
+  tmpStr: string;
+begin
+  if Connected then
+    Result := Characteristics.dbSQLDialect
+  else
+  begin
+    tmpStr := Params.Values[ IB_SQL_Dialect ];
+    if tmpStr = '' then
+      Result := 0
+    else
+      Result := StrToInt( tmpStr );
+  end;
+  if Result < 1 then
+    Result := 1;
+end;
+
+procedure TIB_Connection.SetSQLDialect( AValue: smallint );
+begin
+  if ( Params.Values[ IB_SQL_Dialect ] = EmptyStr ) or
+     ( StrToInt(Params.Values[ IB_SQL_Dialect ]) <> AValue ) then
+    if AValue <= 1 then
+      Params.Values[ IB_SQL_Dialect ] := EmptyStr
+    else
+      Params.Values[ IB_SQL_Dialect ] := IntToStr( AValue );
+end;
+
+function TIB_Connection.GetSweepInterval: word;
+begin
+  if Connected then
+    Result := Characteristics.dbSweep_Interval
+  else
+  if Params.Values[ IB_SWEEP_INTERVAL ] = '' then
+    Result := 0
+  else
+    Result := StrToInt( Params.Values[ IB_SWEEP_INTERVAL ] );
+end;
+
+procedure TIB_Connection.SetSweepInterval( AValue: word );
+begin
+  if ( Params.Values[ IB_SWEEP_INTERVAL ] = '' ) or
+     ( StrToInt(Params.Values[ IB_SWEEP_INTERVAL ]) <> AValue ) then
+    if AValue = 0 then
+      Params.Values[ IB_SWEEP_INTERVAL ] := ''
+    else
+      Params.Values[ IB_SWEEP_INTERVAL ] := IntToStr( AValue );
+end;
+
+function TIB_Connection.GetDatabase: string;
+begin
+  case Protocol of
+    cpNetBEUI: Result := '\\' + Server + '\' + Path;
+    cpTCP_IP:  Result := Server + ':' + Path;
+    cpNovell:  Result := Server + '@' + Path;
+    else       Result := Path;
+  end;
+end;
+
+procedure TIB_Connection.SetDatabase( const AValue: string );
+var
+  tmpStr: string;
+begin
+  if ( Length( AValue ) > 2 ) and
+     ( AValue[ 2 ] = ':' ) and
+     ( Pos( ':', Copy( AValue, 3, maxint )) = 0 ) then
+  begin
+    Path     := AValue;
+    Protocol := cpLocal;
+  end
+  else
+  if Pos( '\\', AValue ) <> 0 then
+  begin
+    tmpStr := Copy( AValue, 3, MaxInt );
+    Server   := Copy( tmpStr, 1, Pos( '\', tmpStr ) - 1);
+    Path     := Copy( tmpStr, Pos( '\', tmpStr ) + 1, MaxInt );
+    Protocol := cpNetBEUI;
+  end
+  else
+  if Pos( '@', AValue ) <> 0 then
+  begin
+    Server   := Copy( AValue, 1, Pos( '@', AValue ) - 1);
+    Path     := Copy( AValue, Pos( '@', AValue ) + 1, MaxInt );
+    Protocol := cpNovell;
+  end
+  else
+  if Pos( ':', AValue ) <> 0 then
+  begin
+    Server   := Copy( AValue, 1, Pos( ':', AValue ) - 1);
+    Path     := Copy( AValue, Pos( ':', AValue ) + 1, MaxInt );
+    Protocol := cpTCP_IP;
+  end
+  else
+  begin
+    Path     := AValue;
+    Protocol := cpLocal;
+  end;
+end;
+
+function TIB_Connection.GetDatabaseName: string;
+begin
+  if FDatabaseName <> '' then
+    Result := FDatabaseName
+  else
+    Result := Database;
+end;
+
+procedure TIB_Connection.SetDatabaseName( const AValue: string );
+var
+  tmpCN: TIB_Connection;
+  ii: integer;
+begin
+  if ( Pos( '.', AValue ) > 0 ) or
+     ( Pos( '\', AValue ) > 0 ) or
+     ( Pos( ':', AValue ) > 0 ) or
+     ( Pos( '@', AValue ) > 0 ) then
+  begin
+    Database := AValue;
+    FDatabaseName := '';
+  end
+  else
+  if FDatabaseName <> AValue then
+  begin
+    if IsValidIdent( AValue ) then
+    begin
+      tmpCN := IB_Session.GetConnectionByName( AValue );
+      ii := 0;
+      while ( tmpCN <> nil ) and ( tmpCN <> Self ) do
+      begin
+        Inc( ii );
+        tmpCN := IB_Session.GetConnectionByName( AValue + '_' + IntToStr( ii ));
+      end;
+      if ii > 0 then
+        FDatabaseName := AValue + '_' + IntToStr( ii )
+      else
+        FDatabaseName := AValue;
+    end
+    else
+      raise EIB_ConnectionError.Create( E_INVALID_DB_NAME );
+  end;
+end;
+
+function TIB_Connection.IsDatabaseNameStored: boolean;
+begin
+  Result := FDatabaseName <> '';
+end;
+
+function TIB_Connection.GetProtocol: TIB_Protocol;
+var
+  ProtocolString: string;
+begin
+  ProtocolString := Uppercase( Params.Values[ IB_PROTOCOL ] );
+  if ProtocolString = IB_PROTOCOL_NETBEUI then Result := cpNetBEUI else
+  if ProtocolString = IB_PROTOCOL_TCP_IP  then Result := cpTCP_IP else
+  if ProtocolString = IB_PROTOCOL_NOVELL  then Result := cpNovell else
+                                               Result := cpLocal;
+end;
+
+procedure TIB_Connection.SetProtocol( AValue: TIB_Protocol );
+begin
+  if Protocol <> AValue then
+  begin
+    if csDesigning in ComponentState then
+      Connected := false;
+    if Connected then
+      raise EIB_ConnectionError.Create( E_CANT_CHG_WITH_CONN )
+    else
+      case AValue of
+        cpNetBEUI: Params.Values[ IB_PROTOCOL ] := IB_PROTOCOL_NETBEUI;
+        cpTCP_IP:  Params.Values[ IB_PROTOCOL ] := IB_PROTOCOL_TCP_IP;
+        cpNovell:  Params.Values[ IB_PROTOCOL ] := IB_PROTOCOL_NOVELL;
+        else       Params.Values[ IB_PROTOCOL ] := '';
+      end;
+  end;
+end;
+
+function TIB_Connection.GetCharacteristics: TIB_ConnectCharacteristics;
+begin
+  if Connected then
+  begin
+    if not FCharacteristicsValid then
+      SysUpdateCharacteristics;
+  end
+  else
+    raise EIB_ConnectionError.Create( E_CANT_GET_CONN_CHR );
+  Result := FCharacteristics;
+end;
+
+function TIB_Connection.GetTransactionCount: integer;
+begin
+  if FTransactionList <> nil then
+    Result := FTransactionList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Connection.GetTransaction( Index: integer ): TIB_Transaction;
+begin
+  if (Index >= 0) and (Index <= TransactionCount - 1) then
+    Result := TIB_Transaction( FTransactionList.Items[ Index ] )
+  else
+    Result := nil;
+end;
+
+function TIB_Connection.GetStatementCount: integer;
+begin
+  if FStatementList <> nil then
+    Result := FStatementList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Connection.GetStatement( Index: integer ): TIB_Statement;
+begin
+  if (Index >= 0) and (Index <= StatementCount - 1) then
+    Result := TIB_Statement( FStatementList.Items[ Index ] )
+  else
+    Result := nil;
+end;
+
+function TIB_Connection.GetDatasetCount: integer;
+begin
+  if FDatasetList <> nil then
+    Result := FDatasetList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Connection.GetDataset( Index: integer ): TIB_Dataset;
+begin
+  if (Index >= 0) and (Index <= DatasetCount - 1) then
+    Result := TIB_Dataset( FDatasetList.Items[ Index ] )
+  else
+    Result := nil;
+end;
+
+function TIB_Connection.GetPdbHandle: pisc_db_handle;
+begin
+  Result := @FdbHandle;
+end;
+
+function TIB_Connection.GetConnectionLinkCount: integer;
+begin
+  if FConnectionLinkList <> nil then
+    Result := FConnectionLinkList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Connection.SysConnect( FromScript: boolean ): boolean;
+begin
+  if not Connected then
+  begin
+    FLoginWasUsed := false;
+    if ( csReading in ComponentState ) then
+    begin
+      FConnectionStatus := csConnectPending;
+      FConnectAfterLoad := true;
+    end
+    else
+    begin
+      if FromScript then
+        FConnectionStatus := csForcedConnectPending;
+      SysBeforeConnect;
+      if not FromScript and LoginPrompt then
+        SysLogin
+      else
+        API_Connect;
+      if Connected then
+        SysAfterConnect;
+    end;
+  end;
+  Result := Connected;
+end;
+
+procedure TIB_Connection.SysLogin;
+var
+  AttemptNo: word;
+begin
+  AttemptNo := 0;
+  FLoginAborted := false;
+  while not Connected and
+        not LoginAborted and ( AttemptNo < LoginAttempts ) do
+  begin
+    Inc( AttemptNo );
+    DoLogin;
+    if not LoginAborted then
+      try
+        API_Connect;
+      except
+        on E: Exception do Application.HandleException( E );
+      end;
+  end;
+  if not Connected then
+    // Changed by Norman Dunber 13-Aug-2002
+    if LoginAborted then
+      Abort
+    else
+      DoLoginFailure;
+end;
+
+procedure TIB_Connection.SysDisconnect;
+begin
+  if Connected then
+  begin
+    SysBeforeDisconnect;
+    API_Disconnect;
+    SysAfterDisconnect;
+  end;
+end;
+
+procedure TIB_Connection.SysCreateDatabase;
+begin
+  if not Connected then
+  begin
+    SysBeforeCreateDatabase;
+    API_Connect;
+    SysAfterCreateDatabase;
+  end;
+end;
+
+procedure TIB_Connection.SysDropDatabase;
+begin
+  if Connected then
+  begin
+    SysBeforeDropDatabase;
+    API_Disconnect;
+    SysAfterDropDatabase;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Connection.SysBeforeConnect;
+begin
+  if FConnectionStatus <> csForcedConnectPending then
+    FConnectionStatus := csConnectPending;
+  try
+    DoBeforeConnect;
+    DoLinkEvent( cetBeforeConnect );
+  except
+    if Connected then
+      FConnectionStatus := csConnected
+    else
+      FConnectionStatus := csDisconnected;
+    raise;
+  end;
+end;
+
+procedure TIB_Connection.SysBeforeDisconnect;
+begin
+  FConnectionStatus := csDisconnectPending;
+  try
+    DoBeforeDisconnect;
+    CloseTransactions;
+    DeallocateStatements;
+    DoLinkEvent( cetBeforeDisconnect );
+  except
+    if Connected then
+      FConnectionStatus := csConnected
+    else
+      FConnectionStatus := csDisconnected;
+    raise;
+  end;
+end;
+
+procedure TIB_Connection.SysAfterDisconnect;
+begin
+  FConnectionStatus := csDisconnected;
+  SysInvalidateCachedInformation;
+  DoLinkEvent( cetConnectedChanged );
+  DoLinkEvent( cetAfterDisconnect );
+  DoConnectedChanged;
+  DoAfterDisconnect;
+end;
+
+procedure TIB_Connection.SysBeforeCreateDatabase;
+begin
+  SysBeforeConnect;
+  FConnectionStatus := csCreatePending;
+  try
+    DoBeforeCreateDatabase;
+    DoLinkEvent( cetBeforeCreateDatabase );
+  except
+    if Connected then
+      FConnectionStatus := csConnected
+    else
+      FConnectionStatus := csDisconnected;
+    raise;
+  end;
+end;
+
+procedure TIB_Connection.SysBeforeDropDatabase;
+begin
+  SysBeforeDisconnect;
+  FConnectionStatus := csDropPending;
+  try
+    DoBeforeDropDatabase;
+    DoLinkEvent( cetBeforeDropDatabase );
+  except
+    if Connected then
+      FConnectionStatus := csConnected
+    else
+      FConnectionStatus := csDisconnected;
+    raise;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Connection.SysBeforeExecDDL;
+begin
+  DoBeforeExecDDL;
+  DoLinkEvent( cetBeforeExecDDL );
+end;
+
+procedure TIB_Connection.SysAfterExecDDL;
+begin
+  SchemaCache.DeleteLocalFiles;
+  SysInvalidateCachedInformation;
+  DoLinkEvent( cetAfterExecDDL );
+  DoAfterExecDDL;
+end;
+
+procedure TIB_Connection.SysAfterConnect;
+var
+  tmpStr: string;
+begin
+  if FLoginWasUsed then
+  begin
+    FLoginWasUsed := false;
+    if LoginRegKey = '%DEFAULT%' then
+    begin
+      tmpStr := ExtractFileName( Application.EXEName );
+      tmpStr := ChangeFileExt( tmpStr, '' );
+      tmpStr := 'Software\Apps\' + tmpStr;
+    end
+    else
+      tmpStr := LoginRegKey;
+    with TRegIniFile.Create( tmpStr ) do
+      try
+        WriteString( 'Settings', 'Database', Database );
+        WriteString( 'Settings', 'LastUser', Username );
+        WriteString( 'Settings', 'LastRole', SQLRole );
+      finally
+        Free;
+      end;
+  end;
+  FConnectionStatus := csConnected;
+  FCharacteristicsValid := false;
+  SysInvalidateCachedInformation;
+  DoLinkEvent( cetConnectedChanged );
+  DoLinkEvent( cetAfterConnect );
+  DoConnectedChanged;
+  DoAfterConnect;
+end;
+
+procedure TIB_Connection.SysAfterCreateDatabase;
+begin
+  FConnectionStatus := csConnected;
+  DoLinkEvent( cetAfterCreateDatabase );
+  DoAfterCreateDatabase;
+  SysAfterConnect;
+end;
+
+procedure TIB_Connection.SysAfterDropDatabase;
+begin
+  SysAfterDisconnect;
+  DoLinkEvent( cetAfterDropDatabase );
+  DoAfterDropDatabase;
+end;
+
+procedure TIB_Connection.SysInvalidateCachedInformation;
+begin
+  SchemaCache.InvalidateAllItems;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Connection.FlushSchemaCache;
+begin
+  SysAfterExecDDL;
+  FreeStmtHandleCache( 0 );
+end;
+
+procedure TIB_Connection.CloseTransactions;
+var
+  ii: integer;
+  tmpTrn: TIB_Transaction;
+begin
+  ii := 0;
+  while ii < TransactionCount do
+  begin
+    tmpTrn := Transactions[ ii ];
+    tmpTrn.Close;
+    if ( tmpTrn <> Transactions[ ii ] ) then
+      ii := 0
+    else
+      Inc( ii );
+  end;
+end;
+
+procedure TIB_Connection.DeallocateStatements;
+var
+  ii: integer;
+  tmpStmt: TIB_Statement;
+begin
+  ii := 0;
+  while ii < StatementCount do
+  begin
+    tmpStmt := Statements[ ii ];
+    tmpStmt.SysDeallocate( true );
+    if ( tmpStmt <> Statements[ ii ] ) then
+      ii := 0
+    else
+      Inc( ii );
+  end;
+  FreeStmtHandleCache( 0 );
+end;
+
+procedure TIB_Connection.SetMacroBegin(AValue: string);
+begin
+  if Trim( AValue ) = '' then
+    FMacroBegin := '<<'
+  else
+    FMacroBegin := AValue;
+end;
+
+procedure TIB_Connection.SetMacroEnd(AValue: string);
+begin
+  if Trim( AValue ) = '' then
+    FMacroEnd := '>>'
+  else
+    FMacroEnd := AValue;
+end;
+
+function TIB_Connection.IsMacroBeginStored: boolean;
+begin
+  Result := FMacroBegin <> '<<';
+end;
+
+function TIB_Connection.IsMacroEndStored: boolean;
+begin
+  Result := FMacroEnd <> '>>';
+end;
+
+{  Event dispatch routines                                                     }
+
+procedure TIB_Connection.DoBeforeExecDDL;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( BeforeExecDDL ) then
+      BeforeExecDDL( Self );
+end;
+
+procedure TIB_Connection.DoAfterExecDDL;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( AfterExecDDL ) then
+      AfterExecDDL( Self );
+end;
+
+procedure TIB_Connection.DoLogin;
+var
+  tmpUser: string;
+  tmpRole: string;
+  tmpDB: string;
+  tmpStr: string;
+begin
+  if LoginRegKey <> '' then
+  begin
+    tmpStr := ExtractFileName( Application.EXEName );
+    tmpStr := ChangeFileExt( tmpStr, '' );
+    if ( AnsiCompareText( tmpStr, 'Delphi32' ) <> 0 ) and
+       ( AnsiCompareText( tmpStr, 'BCB' ) <> 0 ) then
+    begin
+      if LoginRegKey = '%DEFAULT%' then
+        tmpStr := 'Software\Apps\' + tmpStr
+      else
+        tmpStr := LoginRegKey;
+      with TRegIniFile.Create( tmpStr ) do
+        try
+          tmpUser := ReadString( 'Settings', 'LastUser', '' );
+          tmpRole := ReadString( 'Settings', 'LastRole', '' );
+          tmpDB := ReadString( 'Settings', 'Database', '<empty>' );
+          if tmpDB = '<empty>' then
+          begin
+            tmpDB := Database;
+            WriteString( 'Settings', 'Database', Database );
+          end
+          else
+            Database := tmpDB;
+          if tmpUser <> '' then
+            Username := tmpUser;
+          if tmpRole <> '' then
+            SQLRole := tmpRole;
+          FLoginWasUsed := true;
+        finally
+          Free;
+        end;
+    end;
+  end;
+  if Assigned( OnLogin ) then
+    OnLogin( Self, FLoginAborted )
+  else
+  with TdlgLogin.Create( Application ) do
+    try
+      if LoginCaption <> '' then
+        Caption := LoginCaption;
+      DatabaseReadOnly := LoginDBReadOnly;
+      edDatabase.Text := Database;
+      edUsername.Text := LoginUsername;
+      cbSQLRole.Text := LoginSQLRole;
+      edPassword.Text := Password;
+      if LoginHelpContext <> 0 then
+      begin
+        HelpBtn.HelpContext := LoginHelpContext;
+        HelpBtn.Visible := true;
+      end;
+      ExtractFieldsIntoList( LoginSQLRoleList, cbSQLRole.Items );
+      if ShowModal = idcancel then
+        FLoginAborted := true
+      else
+      begin
+        Database := edDatabase.Text;
+        LoginUsername := edUsername.Text;
+        Password := edPassword.Text;
+        LoginSQLRole := cbSQLRole.Text;
+      end;
+    finally
+      Free;
+    end;
+end;
+
+procedure TIB_Connection.DoLoginFailure;
+begin
+  if Assigned( OnLoginFailure ) then
+    OnLoginFailure( Self )
+  else
+    raise EIB_ConnectionError.Create( E_LOGIN_FAILED );
+end;
+
+procedure TIB_Connection.DoBeforeConnect;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( BeforeConnect ) then
+      BeforeConnect( Self );
+end;
+
+procedure TIB_Connection.DoAfterConnect;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( AfterConnect ) then
+      AfterConnect( Self );
+end;
+
+procedure TIB_Connection.DoBeforeCreateDatabase;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( BeforeCreateDatabase ) then
+      BeforeCreateDatabase( Self );
+end;
+
+procedure TIB_Connection.DoAfterCreateDatabase;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( AfterCreateDatabase ) then
+      AfterCreateDatabase( Self );
+end;
+
+procedure TIB_Connection.DoBeforeDisconnect;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( BeforeDisconnect ) then
+      BeforeDisconnect( Self );
+end;
+
+procedure TIB_Connection.DoAfterDisconnect;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( AfterDisconnect ) then
+      AfterDisconnect( Self );
+end;
+
+procedure TIB_Connection.DoBeforeDropDatabase;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( BeforeDropDatabase ) then
+      BeforeDropDatabase( Self );
+end;
+
+procedure TIB_Connection.DoAfterDropDatabase;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( AfterDropDatabase ) then
+      AfterDropDatabase( Self );
+end;
+
+procedure TIB_Connection.DoConnectedChanged;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( OnConnectedChanged ) then
+      OnConnectedChanged( Self );
+end;
+
+procedure TIB_Connection.DoProcessSearchBuffer(     IB_Field: TIB_Column;
+                                                var SearchBuffer: string;
+                                                    WhereClause,
+                                                    Parameters,
+                                                    Macros: TStrings;
+                                                var DefaultHandling: boolean );
+begin
+  if Assigned( OnProcessSearchBuffer ) then
+    OnProcessSearchBuffer( Self,
+                           IB_Field,
+                           SearchBuffer,
+                           WhereClause,
+                           Parameters,
+                           Macros,
+                           DefaultHandling );
+end;
+
+function TIB_Connection.GetSoundEx( SourceStr: string ): string;
+begin
+  DoSoundExParse( SourceStr, Result );
+end;
+
+function TIB_Connection.GetSoundExMax( SourceStr: string ): string;
+begin
+  DoSoundExMaxParse( SourceStr, Result );
+end;
+
+procedure TIB_Connection.DoSoundExParse( const SourceStr: string;
+                                           var ResultStr: string );
+begin
+  if Assigned( OnSoundExParse ) then
+    OnSoundExParse( Self,
+                    SourceStr,
+                    ResultStr )
+  else
+    ResultStr := IntToStr( TC_SoundEx( SourceStr ) );
+end;
+
+procedure TIB_Connection.DoSoundExMaxParse( const SourceStr: string;
+                                              var ResultStr: string );
+begin
+  if Assigned( OnSoundExMaxParse ) then
+    OnSoundExMaxParse( Self,
+                       SourceStr,
+                       ResultStr )
+  else
+  if Assigned( OnSoundExParse ) then
+    OnSoundExParse( Self,
+                    SourceStr,
+                    ResultStr )
+  else
+    ResultStr := IntToStr( TC_SoundExMax( SourceStr ) );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Connection.AddConnectionLink( NewLink: TObject );
+begin
+  if FConnectionLinkList = nil then
+    FConnectionLinkList := TList.Create;
+  FConnectionLinkList.Add( NewLink );
+end;
+
+procedure TIB_Connection.RemoveConnectionLink( OldLink: TObject );
+begin
+  if FConnectionLinkList <> nil then
+  begin
+    FConnectionLinkList.Remove( OldLink );
+    if FConnectionLinkList.Count = 0 then
+    begin
+      FConnectionLinkList.Free;
+      FConnectionLinkList := nil;
+    end;
+  end;
+end;
+
+{  API Methods                                                                 }
+
+procedure TIB_Connection.BuildDPB( var BufPtr: integer;
+                                   var Buffer: array of char;
+                                       Item: byte;
+                                       Contents: string);
+var
+  Dest: Pointer;                                 
+begin
+  if Length( Contents ) > 255 then
+    raise EIB_ConnectionError.Create( E_Invalid_DPB_Over_255 );
+  if Length( Contents ) = 0 then
+    Exit;
+  buffer[ bufptr ] := Char(Item);
+  Inc( bufptr );
+  buffer[ bufptr ] := Char(Length(Contents));
+  Inc( bufptr );
+  Dest := @buffer[ bufptr ];
+  Move(Contents[1], Dest^, Length(Contents));
+  Inc( bufptr, Length( Contents ));
+end;
+{
+  PasswordInEnv := GetEnvVariable( 'ISC_PASSWORD', nil, 0 ) > 0;
+  UsernameInEnv := GetEnvVariable( 'ISC_USER',     nil, 0 ) > 0;
+  DatabaseInEnv := GetEnvVariable( 'ISC_DATABASE', nil, 0 ) > 0;
+}
+procedure TIB_Connection.API_Connect;
+var
+  bufptr: integer;
+  buffer: array[0..1023] of char;
+  SaveCW: word;
+  tmpPos: integer;
+  ii: integer;
+  tmpPI: TIB_ConnectionPoolItem;
+begin
+  if Connected then
+    Exit;
+// Cause the alias to be re-read each time an attempt to connect is made.
+  if Assigned( FAliasParams ) then
+  begin
+    FAliasParams.Free;
+    FAliasParams := nil;
+  end;
+  FConnectedDataBase := FParams.Values[ 'FORCED_DATABASE' ];
+  if FConnectedDatabase = '' then
+    FConnectedDatabase := Database;
+  if Trim( FConnectedDatabase ) = '' then
+  begin
+    FConnectedDatabase := FParams.Values[ IB_SERVER_NAME ];
+    if FConnectedDatabase = '' then
+    begin
+      if ( AliasName <> '' ) then
+        FConnectedDatabase := Trim( AliasParams.Values[ BDE_SERVER_NAME ] );
+    end
+    else
+    begin
+      Database := FConnectedDatabase;
+      FParams.Values[ IB_SERVER_NAME ] := '';
+    end;
+  end;
+  FConnectedUsername := Trim( Username );
+  if FConnectedUsername = '' then
+    if ( AliasName <> '' ) then
+      FConnectedUsername := Trim( AliasParams.Values[ BDE_USER_NAME ] );
+  FConnectedPassword := Password;
+  if FConnectedPassword = '' then
+    if ( AliasName <> '' ) then
+      FConnectedPassword := Trim( AliasParams.Values[ BDE_PASSWORD ] );
+  FConnectedSQLRoleName := SQLRole;
+  if FConnectedSQLRoleName = '' then
+    if ( AliasName <> '' ) then
+      FConnectedSQLRoleName := Trim( AliasParams.Values[ BDE_ROLE_NAME ] );
+  if ( FConnectedDatabase = '' ) and
+     ( GetEnvVariable( 'ISC_DATABASE' ) = '' ) then
+    raise EIB_ConnectionError.Create( E_DATABASE_BLANK );
+  tmpPos := getLitSafePos( ':', Path, 1 );
+  if tmpPos > 0 then
+    if ( Length( Path ) > tmpPos ) and
+       not ( Path[ tmpPos + 1 ] in ['\','/'] ) then
+      raise EIB_ConnectionError.Create( E_Invalid_conn_path );
+  if Assigned( FAliasParams ) then
+  begin
+    FAliasParams.Free;
+    FAliasParams := nil;
+  end;
+  FillChar( buffer, SizeOf( buffer ), #0 );
+  bufptr := 0;
+  buffer[bufptr] := Char( isc_dpb_version1 );
+  Inc( bufptr );
+  BuildDPB( bufptr, buffer, isc_dpb_user_name, FConnectedUsername );
+  BuildDPB( bufptr, buffer, isc_dpb_password, FConnectedPassword );
+  if FConnectedSQLRoleName <> '' then
+    BuildDPB( bufptr, buffer, isc_dpb_sql_role_name, FConnectedSQLRoleName );
+// I took this out because there seems to be confusion about what it is and
+// what it isn't. If people really want to make this setting they can put in
+// the simple code in the OnCustomizeDPB event.    
+//  if FParams.Values[ IB_Buffers ] <> '' then
+//    BuildDPB( bufptr, buffer, isc_dpb_num_buffers, Buffers );
+  if ConnectionStatus = csCreatePending then
+    IB_Session.CreateDatabase( FConnectedDatabase,
+                               FConnectedUsername,
+                               FConnectedPassword,
+                               PageSize,
+                               CharSet,
+                               SQLDialect )
+  else
+  if Assigned( ConnectionPool ) then
+  begin
+    with ConnectionPool do
+    begin
+      EnterCriticalSection( FPoolLock );
+      try
+        ii := 0;
+        while ii < FPoolItems.Count do
+        begin
+          tmpPI := TIB_ConnectionPoolItem( FPoolItems[ii] );
+          if ( FConnectedDatabase = tmpPi.FDatabase ) and
+             ( FConnectedUsername = tmpPi.FUsername ) and
+             ( FConnectedPassword = tmpPi.FPassword ) and
+             ( FConnectedSQLRoleName = tmpPi.FSQLRolename ) then
+          begin
+            FdbHandle := tmpPI.FdbHandle;
+            tmpPI.FdbHandle := nil;
+            FPoolItems.Delete( ii );
+            tmpPI.Free;
+            if VerifyConnection then
+            begin
+              FLastConnected := now;
+              Break;
+            end
+            else
+              FdbHandle := nil;
+          end
+          else
+            Inc( ii );
+        end;
+      finally
+        LeaveCriticalSection( FPoolLock );
+      end;
+    end;
+  end;
+  if not Assigned( FdbHandle ) then
+  begin
+    case DBKeyScope of
+      dpbTrue:  BuildDPB( bufptr, buffer, isc_dpb_dbkey_scope, #1 );
+      dpbFalse: BuildDPB( bufptr, buffer, isc_dpb_dbkey_scope, #0 );
+    end;
+    case ForcedWrites of
+      dpbTrue:  BuildDPB( bufptr, buffer, isc_dpb_force_write, #1 );// Synch.
+      dpbFalse: BuildDPB( bufptr, buffer, isc_dpb_force_write, #0 );// Async.
+    end;
+    case ReservePageSpace of
+      dpbTrue:  BuildDPB( bufptr, buffer, isc_dpb_no_reserve, #0 );
+      dpbFalse: BuildDPB( bufptr, buffer, isc_dpb_no_reserve, #1 );
+    end;
+    if CharSet <> '' then
+      BuildDPB( bufptr, buffer, isc_dpb_lc_ctype, CharSet );
+    if SysDBA <> '' then
+      BuildDPB( bufptr, buffer, isc_dpb_sys_user_name, SysDBA );
+    if License <> '' then
+      BuildDPB( bufptr, buffer, isc_dpb_license, License );
+    if MessageFile <> '' then
+      BuildDPB( bufptr, buffer, isc_dpb_lc_messages, MessageFile );
+    //isc_dpb_set_page_buffers
+    DoCustomizeDPB( bufptr, buffer );
+    with IB_Session do
+    begin
+      if not Assigned( isc_attach_database ) then
+      begin
+        AcquireOriginalHooks;
+        RevertToOriginalHooks;
+      end;
+      if Assigned( isc_attach_database ) then
+      begin
+        EnterCriticalSection( AttachCS );
+        try
+          asm fstcw [SaveCW] end;
+          errCode := isc_attach_database( @Status,
+                                          null_terminated,
+                                          PChar( FConnectedDatabase ),
+                                          PdbHandle,
+                                          bufptr,
+                                          @buffer );
+          asm fldcw [SaveCW] end;
+        finally
+          LeaveCriticalSection( AttachCS );
+        end;
+      end
+      else
+        errcode := -1;
+      if errCode = 0 then
+        FLastConnected := now
+      else
+        HandleException( Self );
+    end;
+  end;
+  FIsHandleShared := false;
+  FRequestReconnect := false;
+  FLastOpened := now;
+  FConnectionWasLost := false;
+  IB_Session.ResetTimerNotification( Self );
+end;
+
+function TIB_Connection.NeedTimerNotifications: boolean;
+begin
+  Result := ( Assigned( FdbHandle ) and ( FdbHandle <> FakePointer )) or
+            inherited NeedTimerNotifications;
+end;
+
+procedure TIB_Connection.DoCustomizeDPB( var BufPtr: integer;
+                                         var Buffer: array of char );
+begin
+  if Assigned( FOnCustomizeDPB ) then
+    FOnCustomizeDPB( Self, BufPtr, Buffer );
+end;
+
+procedure TIB_Connection.API_Disconnect;
+var
+  SaveCW: word;
+begin
+  if not IsHandleShared then
+    if not FConnectionWasLost then
+      with IB_Session do
+      begin
+        if ConnectionStatus = csDropPending then
+        begin
+          asm fstcw [SaveCW] end;
+          errCode := isc_drop_database( @Status, PdbHandle );
+          asm fldcw [SaveCW] end;
+          if errCode <> 0 then HandleException( Self );
+        end
+        else
+        begin
+          asm fstcw [SaveCW] end;
+          errCode := isc_detach_database( @Status, PdbHandle );
+          asm fldcw [SaveCW] end;
+          if ( errCode = 0 ) and FRequestReconnect then
+          begin
+            API_Connect;
+            asm fstcw [SaveCW] end;
+            errCode := isc_detach_database( @Status, PdbHandle );
+            asm fldcw [SaveCW] end;
+          end;
+        end;
+        ErrCode := 0;
+      end;
+  FdbHandle := nil;
+  FIsHandleShared := false;
+  FLastClosed := now;
+end;
+
+procedure TIB_Connection.API_Database_Info( var Items:  array of Char;
+                                            var Buffer: array of Char );
+var
+  SaveCW: word;
+begin
+  with IB_Session do
+  begin
+    asm fstcw [SaveCW] end;
+    errcode := isc_database_info( @status,
+                                  PdbHandle,
+                                  SizeOf( Items ),
+                                  Items,
+                                  SizeOf( Buffer ),
+                                  @Buffer );
+    asm fldcw [SaveCW] end;
+    if errcode <> 0 then
+      HandleException( Self );
+  end;
+end;
+
+procedure TIB_Connection.SysUpdateCharacteristics;
+var
+  Results: array [0..4095] of Char;
+  Items: array [0..255] of Char;
+  Item: byte;
+  ItemLen: integer;
+  ItemPtr: integer;
+  procedure AddInfoItem( C: byte ); begin Items[ItemPtr] := char(C);
+                                          Inc( ItemPtr ); end;
+begin
+  FillChar( Results, SizeOf(Results), #0 );
+  FillChar( Items, SizeOf(Items), #0 );
+  ItemPtr := 0;
+  AddInfoItem( isc_info_allocation );
+  AddInfoItem( isc_info_base_level );
+  AddInfoItem( isc_info_db_id );
+  AddInfoItem( isc_info_implementation );
+  AddInfoItem( isc_info_no_reserve );
+  AddInfoItem( isc_info_forced_writes );
+  AddInfoItem( isc_info_ods_minor_version );
+  AddInfoItem( isc_info_ods_version );
+  AddInfoItem( isc_info_page_size );
+  AddInfoItem( isc_info_version ); // this is the isc/ib verrsion string
+  AddInfoItem( isc_info_firebird_version ); // this is the FB specific ver str
+  AddInfoItem( isc_info_sweep_interval );
+  AddInfoItem( isc_info_set_page_buffers );
+  AddInfoItem( isc_info_db_SQL_Dialect ); FCharacteristics.dbSQLDialect := 0;
+  AddInfoItem( isc_info_db_read_only ); FCharacteristics.dbReadOnly := false;
+  AddInfoItem( isc_info_db_size_in_pages ); FCharacteristics.dbSizeInPages := 0;
+  AddInfoItem( isc_info_end );
+  API_Database_Info( Items, Results );
+  ItemPtr := 0;
+  // reset the FB stuff specifically, we may not get any values
+  FCharacteristics.dbFBVersionPrefix := 0;
+  FCharacteristics.dbFBVersion := '';
+  while ( byte( Results[ ItemPtr ] ) <> isc_info_end ) and
+        ( byte( Results[ ItemPtr ] ) <> isc_info_truncated ) do
+  begin
+    Item := byte( Results[ ItemPtr ] );
+    Inc( ItemPtr, 1 );
+    ItemLen := {IB_Session.}isc_vax_integer( @Results[ ItemPtr ], 2 );
+    Inc( ItemPtr, 2 );
+    with IB_Session, FCharacteristics do case Item of
+      isc_info_allocation:
+        dbAllocation := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_base_level:
+      begin
+        dbLevelPrefix := byte( Results[ ItemPtr ] );
+        dbBase_Level := byte( Results[ ItemPtr + 1 ] );
+      end;
+      isc_info_db_id:
+      begin
+        dbFilePrefix := byte(Results[ItemPtr]);
+        dbFile := Copy(pchar(@Results[ItemPtr+2]), 1,
+                       byte( Results[ItemPtr+1]) );
+        dbSite := Copy(pchar(@Results[ItemPtr+
+                       byte( Results[ItemPtr+1])+3]),1,
+                       byte( Results[ItemPtr+
+                       byte( Results[ItemPtr+1])+2]));
+      end;
+      isc_info_implementation:
+      begin
+        dbImplementationPrefix := byte( Results[ ItemPtr + 0 ] );
+        dbImplementation       := byte( Results[ ItemPtr + 1 ] );
+        dbClass                := byte( Results[ ItemPtr + 2 ] );
+      end;
+      isc_info_no_reserve:
+        dbNo_Reserve := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_forced_writes:
+        dbForced_Writes := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_ods_minor_version:
+        dbODS_Minor_Version := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_ods_version:
+        dbODS_Version := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_page_size:
+        dbPage_Size := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_version:
+      begin
+        dbVersionPrefix := byte(Results[ItemPtr]);
+        dbVersion := Copy(pchar(@Results[ItemPtr+2]), 1,
+                          byte( Results[ItemPtr+1]) );
+      end;
+      isc_info_firebird_version:
+      begin
+        dbFBVersionPrefix := byte(Results[ItemPtr]);
+        dbFBVersion := Copy(pchar(@Results[ItemPtr+2]), 1,
+                          byte( Results[ItemPtr+1]) );
+      end;
+      isc_info_sweep_interval:
+        dbSweep_Interval := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_set_page_buffers:
+        dbPage_Buffers := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_db_SQL_Dialect:
+        dbSQLDialect := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+      isc_info_db_read_only:
+        dbReadOnly := boolean( isc_vax_integer( @Results[ ItemPtr ], ItemLen ));
+      isc_info_db_size_in_pages:
+        dbSizeInPages := isc_vax_integer( @Results[ ItemPtr ], ItemLen );
+    end;
+    Inc( ItemPtr, ItemLen )
+  end;
+  if byte( Results[ ItemPtr ] ) = isc_info_truncated then
+    raise Exception.Create('Database information return buffer was truncated');
+  FCharacteristicsValid := true;
+end;
+
+procedure TIB_Connection.AllocateStmtHandle( const PstHandle: pisc_stmt_handle);
+var
+  SaveCW: word;
+  tmpPtr: pisc_stmt_handle;
+  newSize: integer;
+begin
+  newSize := FStmtHandleCapacity;
+  if Assigned( PstHandle ) and (( PstHandle^ = nil ) or
+                                ( PstHandle^ = FakePointer )) then
+  begin
+    PstHandle^ := nil;
+    if FStmtHandleCount = 0 then
+    begin
+      newSize := 0;
+      with IB_Session do
+      begin
+        asm fstcw [SaveCW] end;
+        errcode := isc_dsql_allocate_statement(
+//        errcode := isc_dsql_alloc_statement2(
+                                                @status,
+                                                PdbHandle,
+                                                PstHandle );
+        asm fldcw [SaveCW] end;
+        if errcode <> 0 then HandleException( Self );
+      end;
+    end
+    else
+    begin
+      Dec( FStmtHandleCount );
+      tmpPtr := pisc_stmt_handle( longint( FStmtHandleCache ) +
+                                  FStmtHandleCount * SizeOf( isc_stmt_handle ));
+      PstHandle^ := tmpPtr^;
+      tmpPtr^ := nil;
+      if FStmtHandleCapacity > FStmtHandleCount + 10 then
+        newSize := FStmtHandleCapacity - 10;
+      if ( newSize < 0 ) or ( FStmtHandleCount = 0 ) then
+        newSize := 0;
+    end;
+  end;
+  if newSize <> FStmtHandleCapacity then
+  begin
+    IB_ReallocMem( FStmtHandleCache,
+                   FStmtHandleCapacity * SizeOf(isc_stmt_handle),
+                   newSize             * SizeOf(isc_stmt_handle));
+    FStmtHandleCapacity := newSize;
+  end;
+end;
+
+procedure TIB_Connection.DeallocateStmtHandle(const PstHandle:pisc_stmt_handle);
+var
+  SaveCW: word;
+begin
+  if Assigned( PstHandle ) then
+  begin
+    if ( PstHandle^ <> nil ) and
+       ( PstHandle^ <> FakePointer ) then
+    begin
+      if CacheStatementHandles then
+      begin
+        Inc( FStmtHandleCount );
+        if ( FStmtHandleCount >= FStmtHandleCapacity ) then
+        begin
+          IB_ReallocMem( FStmtHandleCache,
+                        ( FStmtHandleCapacity      ) * SizeOf(isc_stmt_handle),
+                        ( FStmtHandleCapacity + 10 ) * SizeOf(isc_stmt_handle));
+          Inc( FStmtHandleCapacity, 10 );
+        end;
+        pisc_stmt_handle( longint( FStmtHandleCache ) +
+              (FStmtHandleCount - 1) * SizeOf(isc_stmt_handle))^ := PstHandle^;
+      end
+      else
+      with IB_Session do
+      begin
+        asm fstcw [SaveCW] end;
+        errcode := isc_dsql_free_statement( @status, PstHandle, DSQL_DROP );
+        asm fldcw [SaveCW] end;
+      end;
+    end;
+    PstHandle^ := nil;
+  end;
+end;
+
+function TIB_Connection.IsSQLBased: boolean;
+begin
+  Result := true;
+end;
+
+procedure TIB_Connection.SetLostConnection;
+var
+  ii: integer;
+begin
+  FConnectionWasLost := true;
+  for ii := 0 to TransactionCount - 1 do
+    Transactions[ii].FConnectionWasLost := true;
+end;
+
+procedure TIB_Connection.FreeStmtHandleCache( MaxHandles: integer );
+var
+  ii: integer;
+  tmpPtr: pisc_stmt_handle;
+  SaveCW: word;
+begin
+  if MaxHandles < 0 then
+    MaxHandles := 0;
+  if MaxHandles = 0 then
+    SchemaCache.FreeResources;
+  if FStmtHandleCount > MaxHandles then
+  begin
+    for ii := FStmtHandleCount - 1 downto MaxHandles do
+    begin
+      tmpPtr := pisc_stmt_handle( longint( FStmtHandleCache ) +
+                                  ii * SizeOf( isc_stmt_handle ));
+      if Assigned( tmpPtr^ ) then
+      begin
+        try
+          with IB_Session do
+          begin
+            asm fstcw [SaveCW] end;
+            errcode := isc_dsql_free_statement( @status, tmpPtr, DSQL_DROP );
+            asm fldcw [SaveCW] end;
+            if errcode <> 0 then
+              raise Exception.Create( 'This is a potential problem: ' +
+                                      IntToStr( errcode ));
+          end;
+          tmpPtr^ := nil;
+        except
+        end;
+      end;
+    end;
+    FStmtHandleCount := MaxHandles;
+  end;
+  if FStmtHandleCapacity > FStmtHandleCount then
+  begin
+    IB_ReallocMem( FStmtHandleCache,
+                   FStmtHandleCapacity * SizeOf(isc_stmt_handle),
+                   FStmtHandleCount    * SizeOf(isc_stmt_handle));
+    FStmtHandleCapacity := FStmtHandleCount;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Connection.RequestReconnect;
+begin
+  FRequestReconnect := true;
+end;
+
+procedure TIB_Connection.ProcessDMLCacheItem(
+  var AKeyFieldNames: string;
+  var AKeyFieldValues: variant;
+  var ADMLCacheItemType: TIB_DMLCacheItemType);
+var
+  Accept: boolean;
+begin
+  Accept := true;
+  if Assigned( OnReceiveDMLCache ) then
+    OnReceiveDMLCache( Self,
+                       AKeyFieldNames,
+                       AKeyFieldValues,
+                       ADMLCacheItemType,
+                       Accept );
+  if Accept then
+    SchemaCache.Transaction.AddDMLCacheItem( Self,
+                                             nil,
+                                             AKeyFieldNames,
+                                             AKeyFieldValues,
+                                             ADMLCacheItemType );
+end;
+
+function TIB_Connection.VerifyConnection: boolean;
+var
+  Results: array [0..1023] of Char;
+  Items: array [0..1] of Char;
+begin
+  Result := true;
+  if not Connected then Exit;
+  FillChar( Results, SizeOf(Results), #0 );
+  Items[ 0 ] := char( isc_info_forced_writes );
+  Items[ 1 ] := char( isc_info_end );
+  with IB_Session do
+  begin
+    errcode := isc_database_info( @status,
+                                  PdbHandle,
+                                  SizeOf( Items ),
+                                  Items,
+                                  SizeOf( Results ),
+                                  @Results );
+
+    Result := errcode = 0;
+    if ConnectionLostErrCode( errcode ) then
+      SetLostConnection;
+  end;
+end;
+
+procedure TIB_Connection.SetFocus;
+begin
+  IB_Session.FocusedConnection := Self;
+end;
+
+procedure TIB_Connection.DoGainFocus;
+begin
+  if not ( csReading    in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( OnGainFocus ) then
+      OnGainFocus( Self );
+end;
+
+procedure TIB_Connection.DoLoseFocus;
+begin
+  if not ( csReading    in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( OnLoseFocus ) then
+      OnLoseFocus( Self );
+end;
+
+procedure TIB_Connection.SetdbHandleShared( AValue: isc_db_handle );
+begin
+  if dbHandle <> AValue then
+  begin
+    if Assigned( AValue ) then
+    begin
+      dbHandle := AValue;
+      FIsHandleShared := true;
+    end
+    else
+      dbHandle := AValue;
+  end;
+end;
+
+procedure TIB_Connection.SetdbHandle( AValue: isc_db_handle );
+var
+  ii: integer;
+begin
+  if FdbHandle = AValue then Exit;
+  if Assigned( AValue ) and Connected and not IsHandleShared then
+    for ii := 0 to IB_Session.Session_Connections.Count - 1 do
+      with TIB_Connection( IB_Session.Session_Connections.Items[ ii ] ) do
+        if AValue = dbHandle then
+        begin
+          Self.FIsHandleShared := true;
+          Break;
+        end;
+  Connected := false; //  A nil value being passed in forces a disconnect.
+  if AValue <> nil then
+  begin
+    FConnectionStatus := csForcedConnectPending;
+    SysBeforeConnect;
+  end;
+  FdbHandle := AValue;
+  if Connected then
+  begin
+  // Get the database information associated to this new handle and put it
+  // in the TIB_Connection instance to preserve integrity.
+    SysUpdateCharacteristics;
+    Params.Values[ IB_SERVER ] := Characteristics.dbSite;
+    Params.Values[ IB_PATH ] := Characteristics.dbFile;
+    Params.Values[ IB_RESERVE_PAGE_SPACE ] := '';
+    Params.Values[ IB_FORCED_WRITES ] := '';
+    Params.Values[ IB_PAGE_SIZE ] := '';
+  // I cannot get the protocol from a raw handle!
+  // Default it to TCP/IP if necessary.
+    if Characteristics.dbFilePrefix <> 2 then // Is a remote connection!
+      if ( Params.Values[ IB_PROTOCOL ] = EmptyStr          ) or
+         ( Params.Values[ IB_PROTOCOL ] = IB_PROTOCOL_LOCAL ) then
+        Params.Values[ IB_PROTOCOL ] := IB_PROTOCOL_TCP_IP;
+    FLoginWasUsed := false;
+    FLastConnected := now;
+    SysAfterConnect;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Connection.DoLinkEvent( AEvent: TIB_ConnectionEventType );
+var
+  ii: integer;
+begin
+  for ii := ConnectionLinkCount - 1 downto 0 do
+    with TIB_ConnectionLink( FConnectionLinkList.Items[ ii ] ) do
+      ProcessEvent( AEvent );
+end;
+
+procedure TIB_Connection.SetAnnounceFocus( AValue: boolean );
+begin
+  if AnnounceFocus <> AValue then
+  begin
+    FAnnounceFocus := AValue;
+    if AnnounceFocus then
+      IB_Session.FocusedConnection := Self;
+  end;
+end;
+
+procedure TIB_Connection.SetAliasName( const AValue: string );
+begin
+  if AliasName <> AValue then
+  begin
+    FAliasName := AValue;
+    if Assigned( FAliasParams ) then
+    begin
+      FAliasParams.Free;
+      FAliasParams := nil;
+    end;
+  end;
+end;
+
+function TIB_Connection.GetAliasParams: TIB_StringList;
+begin
+  if not Assigned( FAliasParams ) then
+  begin
+    FAliasParams := TIB_StringList.Create;
+    if AliasName <> '' then
+      GetBDEAliasInfo( 'ALIAS', AliasName, FAliasParams );
+  end;
+  Result := FAliasParams;
+end;
+
+procedure TIB_Connection.SetKeepConnection( AValue: boolean );
+begin
+// Do nothing for now here. Needs to stay true.
+end;
+
+procedure TIB_Connection.ProcessPassiveTasks( var IsDone,
+                                                  IsWaiting,
+                                                  Terminate: boolean );
+var
+  ii: integer;
+  SaveCW: word;
+begin
+  IsDone := true;
+  Exit;
+// Be sure to be sensitive to events and shared connection handles.
+//IBO4!!!
+  if Connected and not IsHandleShared and ( FStartedTransactionCount = 0 ) then
+    if ( now - FLastOpened ) > ( 10 / 88400 ) { 10 seconds for testing} then
+    begin
+      for ii := 0 to StatementCount - 1 do
+        with Statements[ ii ] do
+        begin
+          if Assigned( PstHandle^ ) and ( PstHandle^ <> FakePointer ) then
+          begin
+            with IB_Session do
+            begin
+              asm fstcw [SaveCW] end;
+              errcode := isc_dsql_free_statement(@status, PstHandle, DSQL_DROP);
+              asm fldcw [SaveCW] end;
+            end;
+            PstHandle^ := FakePointer;
+            InvalidateSQL;
+          end;
+        end;
+      FreeStmtHandleCache( 0 );
+      API_Disconnect;
+      DoLinkEvent( cetConnectedChanged )
+    end;
+end;
+
+function TIB_Connection.Gen_ID( const AGenerator: string;
+                                      Increment: integer ): ISC_INT64;
+begin
+  if not GetGeneratorValue( Self,
+                            Self.SchemaCache.Transaction,
+                            mkIdent( AGenerator ),
+                            Increment,
+                            Result ) then
+    raise EIB_StatementError.Create( E_GeneratorFailed );
+end;
+
+function TIB_Connection.mkIdent( const AString: string ): string;
+begin
+  Result := IB_Parse.mkIdent( SQLDialect,
+                              Characteristics.dbODS_Version,
+                              Characteristics.dbODS_Minor_Version,
+                              AString );
+
+end;
+
+function TIB_Connection.mkFldLst( const AString: string ): string;
+begin
+  Result := IB_Parse.mkFldLst( SQLDialect,
+                               Characteristics.dbODS_Version,
+                               Characteristics.dbODS_Minor_Version,
+                               AString );
+end;
+
+function TIB_Connection.mkVarIdent( const AString: string ): string;
+begin
+  Result := IB_Parse.mkVarIdent( SQLDialect,
+                                 Characteristics.dbODS_Version,
+                                 Characteristics.dbODS_Minor_Version,
+                                 AString );
+end;
+
+procedure TIB_Connection.ImportServerDefaults;
+var
+  ii, jj: integer;
+  IB_Query: TIB_Query;
+  ConnectedState: boolean;
+begin
+	ConnectedState := Connected;
+	if not Connected then
+    Connect;
+	DefaultValues.Clear;
+	IB_Query := TIB_Query.Create( Self );
+  try
+    BeginBusy( true );
+    for ii := 0 to SchemaCache.TableNames.Count - 1 do
+    begin
+      IB_Query.SQL.Clear;
+      IB_Query.SQL.Add( 'SELECT * FROM ' + SchemaCache.TableNames[ ii ] );
+      IB_Query.DefaultValues.Clear;
+      IB_Query.Prepare;
+      IB_Query.ImportServerDefaults;
+      for jj := 0 to IB_Query.DefaultValues.Count-1 do
+        DefaultValues.Add( IB_Query.DefaultValues[ jj ] );
+      IB_Query.Unprepare;
+    end;
+  finally
+	  IB_Query.Free;
+    EndBusy;
+  end;
+  if not ConnectedState then
+    Connected := False;
+end;
+
+procedure TIB_Connection.DisconnectToPool;
+var
+  tmpPI: TIB_ConnectionPoolItem;
+begin
+  if not Assigned( ConnectionPool ) then
+    ConnectionPool := TIB_ConnectionPool.Create;
+  if Connected and not IsHandleShared then
+  begin
+    with ConnectionPool do
+    begin
+      tmpPI := TIB_ConnectionPoolItem.Create;
+      tmpPI.FdbHandle := dbHandle;
+      tmpPI.FDatabase := FConnectedDatabase;
+      tmpPI.FUsername := FConnectedUsername;
+      tmpPI.FPassword := FConnectedPassword;
+      tmpPI.FSQLRoleName := FConnectedSQLRoleName;
+      FIsHandleShared := true;
+      try
+        Disconnect;
+        EnterCriticalSection( FPoolLock );
+        try
+          FPoolItems.Add( tmpPI );
+        finally
+          LeaveCriticalSection( FPoolLock );
+        end;
+      except
+        tmpPI.Free;
+        raise;
+      end;
+    end;
+  end
+  else
+    Disconnect;
+end;
+
+destructor TIB_ConnectionPoolItem.Destroy;
+var
+  status: status_vector;
+begin
+  if Assigned( FdbHandle ) then
+    dll_detach_database( @status, @FdbHandle );
+  inherited Destroy;
+end;
+
+constructor TIB_ConnectionPool.Create;
+begin
+  inherited Create;
+  ReserveSessionHookRef;
+  FPoolItems := TList.Create;
+  InitializeCriticalSection( FPoolLock );
+end;
+
+destructor TIB_ConnectionPool.Destroy;
+begin
+  try
+    ClearHandles;
+  except
+  // Ignore
+  end;
+  ReleaseSessionHookRef;
+  FPoolItems.Free;
+  DeleteCriticalSection( FPoolLock );
+  inherited Destroy;
+end;
+
+procedure TIB_ConnectionPool.ClearHandles;
+var
+  tmpPI: TIB_ConnectionPoolItem;
+begin
+  EnterCriticalSection( FPoolLock );
+  try
+    while FPoolItems.Count > 0 do
+    begin
+      tmpPI := TIB_ConnectionPoolItem( FPoolItems[0] );
+      tmpPI.Free;
+      FPoolItems.Delete( 0 );
+    end;
+  finally
+    LeaveCriticalSection( FPoolLock );
+  end;
+end;
+

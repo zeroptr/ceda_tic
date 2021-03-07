@@ -1,0 +1,517 @@
+object TprTxReport
+  DesignerFormMode = fmMDIChild
+  PreviewFormMode = fmMDIChild
+  FromPage = 1
+  ToPage = 1
+  Values = <
+    item
+      Name = 'topla'
+      AggFunction = prafSum
+      Formula = 'qryFaturaD.TUTAR_VPB'
+      ResetOn = rvtPage
+      CalcOn = cvtDataSetNext
+      DataSetName = 'qryFaturaD'
+      Accumulate = True
+    end
+    item
+      Name = 'cikar'
+      AggFunction = prafSum
+      Formula = 'qryFaturaD.TUTAR_VPB'
+      ResetOn = rvtPage
+      CalcOn = cvtDataSetNext
+      DataSetName = 'qryFaturaD'
+    end>
+  Variables = <>
+  PrinterName = 'IBM Proprinter III'
+  ESCModelName = 'Epson printers'
+  RecodeTableName = 'Auto_857_to_1254'
+  EjectPageAfterPrint = False
+  LinesOnPage = 10
+  Left = 330
+  Top = 72
+  SystemInfo = (
+    'OS: WIN32_NT 5.0.2195 Service Pack 4'
+    ''
+    'PageSize: 4096'
+    'ActiveProcessorMask: $1000'
+    'NumberOfProcessors: 1'
+    'ProcessorType: 586'
+    ''
+    'Compiler version: Delphi7'
+    'PReport version: 1.9.4')
+  object prTxPage1: TprTxPage
+    PageType = tptPage
+    LineNum = 60
+    ColNum = 80
+    DefTxFontStyleEx = tfsNormal
+    object prTxHDetailBand2: TprTxHDetailBand
+      Height = 1
+      UseVerticalBands = False
+      DataSetName = 'qryFaturaD'
+      ColCount = 0
+      ColDirection = prcdTopBottomLeftRight
+      Bands = (
+        'prTxHDetailFooterBand1'
+        'prTxHDetailHeaderBand1')
+      object prTxMemoObj1: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryFaturaD.URUN_KOD]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 5
+        dRec.Top = 0
+        dRec.Right = 14
+        dRec.Bottom = 1
+        Visible = False
+      end
+      object prTxMemoObj2: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryFaturaD.ACIKLAMA]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 14
+        dRec.Top = 0
+        dRec.Right = 49
+        dRec.Bottom = 1
+        Visible = False
+      end
+      object prTxMemoObj24: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryFaturaD.MIKTAR]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhRight
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 49
+        dRec.Top = 0
+        dRec.Right = 54
+        dRec.Bottom = 1
+        Visible = False
+      end
+      object prTxMemoObj25: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[:<#.#,#>qryFaturaD.TUTAR_VPB]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhRight
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 55
+        dRec.Top = 0
+        dRec.Right = 78
+        dRec.Bottom = 1
+        Visible = False
+      end
+    end
+    object prTxHDetailFooterBand1: TprTxHDetailFooterBand
+      Height = 1
+      UseVerticalBands = False
+      DetailBand = prTxHDetailBand2
+      ColCount = 1
+      ColDirection = prcdTopBottomLeftRight
+      LinkToDetail = False
+    end
+    object prTxHPageHeaderBand1: TprTxHPageHeaderBand
+      Height = 1
+      UseVerticalBands = False
+      PrintOnFirstPage = False
+      object prTxMemoObj6: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Formula = '[topla-cikar]'
+            Visible = True
+            Memo.Strings = (
+              '[:<#.#,#>topla-cikar]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhRight
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 57
+        dRec.Top = 0
+        dRec.Right = 78
+        dRec.Bottom = 1
+        Visible = False
+      end
+      object prTxMemoObj7: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              'YEK'#220'N :')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 46
+        dRec.Top = 0
+        dRec.Right = 52
+        dRec.Bottom = 1
+        Visible = False
+      end
+    end
+    object prTxHTitleBand1: TprTxHTitleBand
+      Height = 25
+      UseVerticalBands = False
+      object prTxMemoObj3: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryFatura.PROJE_KOD]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 54
+        dRec.Top = 18
+        dRec.Right = 71
+        dRec.Bottom = 19
+        Visible = False
+      end
+      object prTxMemoObj9: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryCari.CARI_AD]'
+              '[qryCari.ADRES_1]'
+              '[qryCari.ADRES_2]'
+              '[qryCari.ILCE]-[qryCari.SEHIR]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = True
+            CanResizeY = True
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = True
+          end>
+        dRec.Left = 6
+        dRec.Top = 15
+        dRec.Right = 36
+        dRec.Bottom = 22
+        Visible = False
+      end
+      object prTxMemoObj14: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryCari.VERDAIRE]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 50
+        dRec.Top = 23
+        dRec.Right = 63
+        dRec.Bottom = 24
+        Visible = False
+      end
+      object prTxMemoObj15: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryCari.VERNO]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 64
+        dRec.Top = 23
+        dRec.Right = 78
+        dRec.Bottom = 24
+        Visible = False
+      end
+      object prTxMemoObj4: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryFatura.TARIH]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 63
+        dRec.Top = 12
+        dRec.Right = 79
+        dRec.Bottom = 13
+        Visible = False
+      end
+      object prTxMemoObj16: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryFatura.MASRAF_MERK]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhCenter
+            vAlign = prvCenter
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 6
+        dRec.Top = 12
+        dRec.Right = 36
+        dRec.Bottom = 13
+        Visible = False
+      end
+    end
+    object prTxHPageFooterBand1: TprTxHPageFooterBand
+      Height = 8
+      UseVerticalBands = False
+      PrintOnFirstPage = True
+      PrintOnLastPage = True
+      PrintAfterLastBandOnPage = False
+      object prTxMemoObj5: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              'TOPLAM')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 5
+        dRec.Top = 3
+        dRec.Right = 12
+        dRec.Bottom = 4
+        Visible = False
+      end
+      object prTxMemoObj8: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              'YALNIZ [qryFatura.GTYAZILE]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = True
+            CanResizeY = True
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = True
+          end>
+        dRec.Left = 5
+        dRec.Top = 4
+        dRec.Right = 79
+        dRec.Bottom = 6
+        Visible = False
+      end
+      object prTxMemoObj10: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              'KDV')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 5
+        dRec.Top = 2
+        dRec.Right = 12
+        dRec.Bottom = 3
+        Visible = False
+      end
+      object prTxMemoObj11: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[:<#,#,#>qryFatura.GENEL_TOP]#'
+              ''
+              '')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhRight
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 60
+        dRec.Top = 3
+        dRec.Right = 79
+        dRec.Bottom = 4
+        Visible = False
+      end
+      object prTxMemoObj12: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[:<#,#,#>qryFatura.KDV_TOP]#'
+              ''
+              '')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhRight
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 60
+        dRec.Top = 2
+        dRec.Right = 79
+        dRec.Bottom = 3
+        Visible = False
+      end
+      object prTxMemoObj17: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              'YALNIZ [qryFatura.GTYTLILE]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 5
+        dRec.Top = 6
+        dRec.Right = 79
+        dRec.Bottom = 7
+        Visible = False
+      end
+    end
+    object prTxHDetailHeaderBand1: TprTxHDetailHeaderBand
+      Height = 3
+      UseVerticalBands = False
+      DetailBand = prTxHDetailBand2
+      ColCount = 0
+      ColDirection = prcdTopBottomLeftRight
+      ReprintOnEachPage = False
+      LinkToDetail = False
+      object prTxMemoObj13: TprTxMemoObj
+        dRec.DefVersion = 0
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryFatura.ACIKLAMA]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 5
+        dRec.Top = 2
+        dRec.Right = 49
+        dRec.Bottom = 3
+        Visible = False
+      end
+    end
+  end
+end

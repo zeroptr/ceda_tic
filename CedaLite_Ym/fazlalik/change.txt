@@ -1,0 +1,61 @@
+procedure TfrmFAT_Tran.rdIskontoChange(Sender: TObject);
+begin
+//****************************************************************************//
+  if rdIskonto.ItemIndex=0 then
+  begin
+     txtIskontoOran.Enabled := True;
+     txtIskontoTutar.Enabled := False;
+  end
+  else
+  begin
+    txtIskontoTutar.Enabled := True;
+    txtIskontoOran.Enabled := False;
+  end;
+//****************************************************************************//
+  if qryURUNHAR.State in [dssEdit,dssInsert] Then
+  begin
+    with qryURUNHAR do
+    begin
+      FieldByName('ISKONTO_ORAN').AsString := '';
+      FieldByName('ISKONTO_TUTAR').AsString := '';
+    end;
+  end;
+//****************************************************************************//
+end;
+
+
+
+grid Alaný
+oran
+Tutar
+
+0
+1
+
+
+
+iskonto surun visible ayarlanacak
+
+
+grid dov kodlarý items e eklecek
+
+
+
+
+
+procedure TfrmFAT_Tran.edtDOVKURExit(Sender: TObject);
+begin
+  if not (qryURUNHAR.State in [dssInsert,dssEdit]) then
+  begin
+    exit;
+  end;
+
+  if (qryURUNHAR.FieldByName('DOVKUR').AsCurrency <= 0) then
+  begin
+    Showmessage('Döviz kuru sýfýra eþit yada sýfýrdan küçük olamaz.Lütfen kontrol ediniz.');
+    qryURUNHAR.FieldByName('DOVKUR').AsCurrency := 1;
+    edtDOVKUR.SetFocus;
+    exit;
+  end;
+  my_Active_Comp.Brush.Color := clWindow;
+end;

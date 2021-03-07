@@ -1,0 +1,105 @@
+inherited NearestToolDemo: TNearestToolDemo
+  Left = 221
+  Top = 155
+  Width = 467
+  Height = 449
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Width = 459
+    Lines.Strings = (
+      
+        'This tool draws "hints" (circles or rectangles) around Series po' +
+        'ints.'
+      'When moving the mouse the "hint" locates the nearest point and'
+      'displays the hint shape.'
+      ''
+      'It can be customized (border, pattern, style, etc).')
+  end
+  inherited Chart1: TChart
+    Width = 459
+    Height = 308
+    View3D = False
+    object Series1: TPointSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TNearestTool
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      Pen.Color = clWhite
+      Pen.Style = psDot
+      Series = Series1
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 459
+    object Label1: TLabel
+      Left = 21
+      Top = 12
+      Width = 26
+      Height = 13
+      Caption = '&Style:'
+      FocusControl = ComboBox1
+    end
+    object ComboBox1: TComboBox
+      Left = 53
+      Top = 9
+      Width = 89
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 0
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'None'
+        'Circle'
+        'Rectangle'
+        'Diamond')
+    end
+    object CheckBox1: TCheckBox
+      Left = 160
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Active'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 232
+      Top = 11
+      Width = 73
+      Height = 17
+      Caption = '&Draw line'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+    object Button1: TButton
+      Left = 320
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 3
+      OnClick = Button1Click
+    end
+  end
+end

@@ -1,0 +1,182 @@
+inherited SARFunctionForm: TSARFunctionForm
+  Left = 278
+  Top = 217
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      '"Stop And Reverse" financial function.'
+      ''
+      'More info:'
+      ''
+      'http://www.linnsoft.com/tour/techind/sar.htm'
+      ''
+      'http://calderone.eresmas.com/parabolic_sar.htm'
+      ''
+      'http://es.biz.yahoo.com/edu/tech/osciladores1014.html')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 289
+    BackWall.Gradient.Balance = 0
+    BackWall.Gradient.EndColor = clNavy
+    BackWall.Gradient.StartColor = 16777088
+    BackWall.Gradient.Visible = True
+    BackWall.Pen.Visible = False
+    BackWall.Transparent = False
+    Gradient.Balance = 100
+    Gradient.Direction = gdDiagonalDown
+    Gradient.EndColor = 16777088
+    Gradient.MidColor = 16777088
+    Gradient.StartColor = 4194304
+    Gradient.SubGradient.Balance = 74
+    Gradient.SubGradient.Direction = gdFromTopLeft
+    Gradient.SubGradient.EndColor = 4194304
+    Gradient.SubGradient.StartColor = clAqua
+    Legend.Alignment = laBottom
+    Legend.Font.Color = 10485760
+    Legend.Font.Style = [fsBold]
+    Legend.Frame.Visible = False
+    Legend.TopPos = 0
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = clBlack
+    BottomAxis.Grid.Visible = False
+    BottomAxis.LabelsFont.Color = 10485760
+    BottomAxis.LabelsFont.Style = [fsBold]
+    BottomAxis.MaximumOffset = 26
+    BottomAxis.MinimumOffset = 10
+    Frame.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clBlack
+    LeftAxis.Grid.Visible = False
+    LeftAxis.LabelsFont.Color = 10485760
+    LeftAxis.LabelsFont.Style = [fsBold]
+    LeftAxis.LabelsSeparation = 80
+    LeftAxis.MinorTicks.Visible = False
+    View3D = False
+    TabOrder = 2
+    object Series1: TCandleSeries
+      CloseValues.Name = 'Close'
+      CloseValues.Order = loNone
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      OpenValues.Name = 'Open'
+      OpenValues.Order = loNone
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Title = 'Candles '
+      DownCloseColor = 174
+      DownCloseGradient.StartColor = 174
+      DownCloseGradient.Visible = True
+      HighLowPen.Color = clDefault
+      UpCloseGradient.EndColor = clGray
+      UpCloseGradient.Visible = True
+      Pen.Visible = False
+      Data = {
+        010A00000000000000E011E3400000000000F080400000000000F88040000000
+        0000D880400000000000D88040000000000012E3400000000000688140000000
+        00008881400000000000E080400000000000008140000000002012E340000000
+        0000E081400000000000F8814000000000005881400000000000708140000000
+        004012E3400000000000D8814000000000000882400000000000D88140000000
+        0000008240000000006012E3400000000000D881400000000000E88140000000
+        0000D081400000000000E08140000000008012E3400000000000388240000000
+        00005882400000000000B081400000000000D0814000000000A012E340000000
+        0000D08240000000000000834000000000001882400000000000488240000000
+        00C012E340000000000000834000000000000883400000000000E08240000000
+        0000E0824000000000E012E34000000000008082400000000000108340000000
+        00006082400000000000F08240000000000013E3400000000000E08240000000
+        0000F8824000000000006082400000000000808240}
+    end
+    object Series2: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Clip = True
+      Marks.Font.Color = clYellow
+      Marks.Transparent = True
+      Marks.Visible = True
+      DataSource = Series1
+      SeriesColor = clYellow
+      Title = 'SAR'
+      LinePen.Width = 2
+      Pointer.HorizSize = 3
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 3
+      Pointer.Visible = True
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      YValues.ValueSource = 'Close'
+      object TeeFunction1: TSARFunction
+        AccelerationFactor = 0.100000000000000000
+        MaxStep = 0.200000000000000000
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 13
+      Top = 14
+      Width = 98
+      Height = 13
+      Caption = '&Acceleration Factor :'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 117
+      Top = 11
+      Width = 68
+      Height = 21
+      TabOrder = 0
+      Text = 'Edit1'
+      OnChange = Edit1Change
+    end
+    object TrackBar1: TTrackBar
+      Left = 200
+      Top = 8
+      Width = 89
+      Height = 22
+      LineSize = 5
+      Max = 100
+      Frequency = 10
+      Position = 10
+      TabOrder = 1
+
+      OnChange = TrackBar1Change
+    end
+    object TrackBar2: TTrackBar
+      Left = 304
+      Top = 8
+      Width = 89
+      Height = 22
+      LineSize = 5
+      Max = 100
+      Frequency = 10
+      Position = 20
+      TabOrder = 2
+
+      OnChange = TrackBar2Change
+    end
+  end
+end

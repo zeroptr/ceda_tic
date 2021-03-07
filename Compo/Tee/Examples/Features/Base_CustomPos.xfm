@@ -1,0 +1,58 @@
+inherited BaseCustomPos: TBaseCustomPos
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 128
+      Top = 13
+      Width = 21
+      Height = 13
+      Caption = '&Left:'
+      FocusControl = TrackBar1
+    end
+    object Label2: TLabel
+      Left = 248
+      Top = 13
+      Width = 22
+      Height = 13
+      Caption = '&Top:'
+      FocusControl = TrackBar2
+    end
+    object CheckBox1: TCheckBox
+      Left = 12
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Custom position'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object TrackBar1: TTrackBar
+      Left = 152
+      Top = 8
+      Width = 89
+      Height = 26
+      Max = 300
+      Orientation = trHorizontal
+      Frequency = 25
+      Position = 0
+      TabOrder = 1
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+    end
+    object TrackBar2: TTrackBar
+      Left = 272
+      Top = 7
+      Width = 89
+      Height = 26
+      Max = 300
+      Orientation = trHorizontal
+      Frequency = 25
+      Position = 0
+      TabOrder = 2
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+    end
+  end
+end

@@ -1,0 +1,83 @@
+inherited GridBandToolEdit: TGridBandToolEdit
+  ClientHeight = 265
+  ClientWidth = 333
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited PanelTop: TPanel
+    Width = 333
+    Height = 35
+  end
+  object TabControl1: TTabControl
+    Left = 0
+    Top = 35
+    Width = 333
+    Height = 230
+    Align = alClient
+    TabOrder = 1
+    OnChange = TabControl1Change
+    object Label2: TLabel
+      Left = 80
+      Top = 80
+      Width = 68
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Transparency:'
+    end
+    object BBand1: TButton
+      Left = 8
+      Top = 40
+      Width = 75
+      Height = 25
+      HelpContext = 1873
+      Caption = '&Pattern...'
+      TabOrder = 0
+      OnClick = BBand1Click
+    end
+    object Draw3D1: TDraw3D
+      Left = 96
+      Top = 40
+      Width = 25
+      Height = 25
+      Cursor = crHandPoint
+      HelpContext = 1873
+      OnAfterDraw = Draw3D1AfterDraw
+      TabOrder = 1
+      OnClick = Draw3D1Click
+    end
+    object ButtonColor1: TButtonColor
+      Left = 136
+      Top = 40
+      HelpContext = 1875
+      Caption = 'Ba&ck...'
+      TabOrder = 2
+      OnClick = ButtonColor1Click
+    end
+    object Edit1: TEdit
+      Left = 153
+      Top = 77
+      Width = 40
+      Height = 21
+      HelpContext = 1876
+      TabOrder = 3
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 193
+      Top = 77
+      Width = 15
+      Height = 21
+      HelpContext = 1876
+      Associate = Edit1
+      TabOrder = 4
+    end
+    object ButtonGradient1: TButtonGradient
+      Left = 122
+      Top = 104
+      Width = 89
+      Caption = '&Gradient...'
+      TabOrder = 5
+      OnClick = ButtonGradient1Click
+    end
+  end
+end

@@ -1,0 +1,64 @@
+inherited CandleOpenClose: TCandleOpenClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'A new Candle style ( Open Close ) shows each candle point as a'
+      'rectangle or 3D cube using the Open and Close values.'
+      ''
+      'Example: Series1.CandleStyle:=csOpenClose;')
+  end
+  inherited Chart1: TChart
+    Chart3DPercent = 5
+    object Series1: TCandleSeries
+      CloseValues.DateTime = False
+      CloseValues.Name = 'Close'
+      CloseValues.Order = loNone
+      DateValues.DateTime = True
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.DateTime = False
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.DateTime = False
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      OpenValues.DateTime = False
+      OpenValues.Name = 'Open'
+      OpenValues.Order = loNone
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Draw3D = True
+    end
+  end
+  inherited Panel1: TPanel
+    object RadioGroup1: TRadioGroup
+      Left = 8
+      Top = 1
+      Width = 313
+      Height = 35
+      Caption = 'Candle style:'
+      Columns = 3
+      ItemIndex = 2
+      Items.Strings = (
+        '&Stick'
+        '&Bar'
+        '&Open Close')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 328
+      Top = 13
+      Width = 57
+      Height = 17
+      Caption = '&3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

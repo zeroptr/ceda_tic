@@ -1,0 +1,15 @@
+
+{                                                                              }
+{  IBC_CustomEdit.INT                                                          }
+{                                                                              }
+
+{$DEFINE IB_CustomEdit}
+{$I IB_WinControl.INT}
+{$UNDEF IB_CustomEdit}
+
+protected
+
+procedure EditingChanged( Sender: TIB_DataLink;
+                          IB_DataSource: TIB_DataSource ); virtual;
+
+//IBC_CustomEdit.IMP

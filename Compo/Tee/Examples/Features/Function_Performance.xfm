@@ -1,0 +1,71 @@
+inherited PerfFuncDemo: TPerfFuncDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 71
+  end
+  inherited Memo1: TMemo
+    Height = 71
+    Lines.Strings = (
+      
+        'Performance function calculate the percentage of difference betw' +
+        'een'
+      'each source point and the first source point.'
+      ''
+      'Calculation starts always at zero.')
+  end
+  inherited Chart1: TChart
+    Top = 114
+    Height = 223
+    Legend.Alignment = laBottom
+    Title.Text.Strings = (
+      'Performance function')
+    RightAxis.Automatic = False
+    RightAxis.AutomaticMaximum = False
+    RightAxis.AutomaticMinimum = False
+    RightAxis.Grid.Visible = False
+    RightAxis.Maximum = 100.000000000000000000
+    RightAxis.Minimum = -100.000000000000000000
+    View3D = False
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Barra'
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clBlue
+      Title = 'Performance'
+      VertAxis = aRightAxis
+      LinePen.Color = clBlue
+      LinePen.Width = 2
+      LinePen.EndStyle = esFlat
+      Pointer.Brush.Color = clWhite
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.ValueSource = 'Barra'
+      object TeeFunction1: TPerformanceFunction
+        Period = 1.000000000000000000
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 73
+    Visible = False
+  end
+end

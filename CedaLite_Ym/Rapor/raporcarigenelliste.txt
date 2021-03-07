@@ -1,0 +1,246 @@
+procedure TfrmRaporGenelCariListesi.Btn_FastClick(Sender: TObject);
+var
+CaristrSQL,SubeID:String;
+begin
+     IB_Query1.Close;
+     IB_Query1.Sql.Clear;
+
+      CaristrSQL:=
+      'select '+
+      '    cari.cari_kod, '+
+      '    cari.cari_ad, '+
+      '    cari.ilce, '+
+      '    cari.sehir, ';
+     if cmbParaBirimi.Text=glb_DEFCUR then
+     begin
+          if chkDEVIR.Checked then
+          CaristrSQL:=CaristrSQL+
+          '    cari.borc+cari.devreden_borc as borc, '+
+          '    cari.Alacak+cari.devreden_Alacak as alacak, '+
+          '    (CASE '+
+          '    WHEN (cari.borc+cari.devreden_borc>cari.Alacak+cari.devreden_Alacak) THEN '+
+          '    ''B'' '+
+          '    WHEN (cari.borc+cari.devreden_borc<cari.Alacak+cari.devreden_Alacak) THEN '+
+          '    ''A'' '+
+          '    ELSE '+
+          '    ''-'' '+
+          '    END) Tip, '+
+          '    (CASE '+
+          '    WHEN (cari.borc+cari.devreden_borc>cari.Alacak+cari.devreden_Alacak) THEN '+
+          '    (cari.borc+cari.devreden_borc)-(cari.Alacak+cari.devreden_Alacak) '+
+          '    else '+
+          '    (cari.Alacak+cari.devreden_Alacak)-(cari.borc+cari.devreden_borc) '+
+          '    END) Bakiye '
+          else
+          CaristrSQL:=CaristrSQL+
+          '    cari.borc as borc, '+
+          '    cari.Alacak as alacak, '+
+          '    (CASE '+
+          '    WHEN (cari.borc>cari.Alacak) THEN '+
+          '    ''B'' '+
+          '    WHEN (cari.borc<cari.Alacak) THEN '+
+          '    ''A'' '+
+          '    ELSE '+
+          '    ''-'' '+
+          '    END) Tip, '+
+          '    (CASE '+
+          '    WHEN (cari.borc>cari.Alacak) THEN '+
+          '    (cari.borc)-(cari.Alacak) '+
+          '    else '+
+          '    (cari.Alacak)-(cari.borc) '+
+          '    END) Bakiye ';
+     end
+     else
+     begin
+          if chkDEVIR.Checked then
+          CaristrSQL:=CaristrSQL+
+          '    cari_dov.borc+cari_dov.devreden_borc as borc, '+
+          '    cari_dov.Alacak+cari_dov.devreden_Alacak as alacak, '+
+          '    (CASE '+
+          '    WHEN (cari_dov.borc+cari_dov.devreden_borc>cari_dov.Alacak+cari_dov.devreden_Alacak) THEN '+
+          '    ''B'' '+
+          '    WHEN (cari_dov.borc+cari_dov.devreden_borc<cari_dov.Alacak+cari_dov.devreden_Alacak) THEN '+
+          '    ''A'' '+
+          '    ELSE '+
+          '    ''-'' '+
+          '    END) Tip, '+
+          '    (CASE '+
+          '    WHEN (cari_dov.borc+cari_dov.devreden_borc>cari_dov.Alacak+cari_dov.devreden_Alacak) THEN '+
+          '    (cari_dov.borc+cari_dov.devreden_borc)-(cari_dov.Alacak+cari_dov.devreden_Alacak) '+
+          '    else '+
+          '    (cari_dov.Alacak+cari_dov.devreden_Alacak)-(cari_dov.borc+cari_dov.devreden_borc) '+
+          '    END) Bakiye '
+          else
+          CaristrSQL:=CaristrSQL+
+          '    cari_dov.borc as borc, '+
+          '    cari_dov.Alacak as alacak, '+
+          '    (CASE '+
+          '    WHEN (cari_dov.borc>cari_dov.Alacak) THEN '+
+          '    ''B'' '+
+          '    WHEN (cari_dov.borc<cari_dov.Alacak) THEN '+
+          '    ''A'' '+
+          '    ELSE '+
+          '    ''-'' '+
+          '    END) Tip, '+
+          '    (CASE '+
+          '    WHEN (cari_dov.borc>cari_dov.Alacak) THEN '+
+          '    (cari_dov.borc)-(cari_dov.Alacak) '+
+          '    else '+
+          '    (cari_dov.Alacak)-(cari_dov.borc) '+
+          '    END) Bakiye ';
+     end;
+
+
+     CaristrSQL:=CaristrSQL+ ' from cari ';
+
+     if cmbParaBirimi.Text<>glb_DEFCUR then
+     CaristrSQL:=CaristrSQL+
+     ' left outer join cari_dov on (cari.cari_kod=cari_dov.cari_kod)';
+
+
+
+     if cmbGrup.ItemIndex=0 then
+     if Trim(txtGrpKod.Text)<>'' then
+     CaristrSQL:=CaristrSQL+
+     ' left outer join cari_grup_uye on (cari.cari_kod=cari_grup_uye.cari_kod)';
+
+
+     CaristrSQL:=CaristrSQL+
+     ' where Cari.cari_kod<>'''' ';
+
+     if cb_Firma_Tipi.Checked then
+     begin
+
+         if cmb_yurtdisi.ItemIndex=0 then
+         CaristrSQL:=CaristrSQL+
+         ' and cari.yurtdisi=0 ';
+         if cmb_yurtdisi.ItemIndex=1 then
+         CaristrSQL:=CaristrSQL+
+         ' and cari.yurtdisi=1 ';
+
+     end;
+
+     if Cb_Cari_Tipi.Checked then
+     if cmbTip.Itemindex<>5 then
+     CaristrSQL:=CaristrSQL+
+     ' and cari.Tip= '+Inttostr(cmbTip.Itemindex+1);
+
+     {if cmb_Bakiye.itemIndex=0 then
+     CaristrSQL:=CaristrSQL+
+     ' and Tip=''B''';
+
+     if cmb_Bakiye.itemIndex=1 then
+     CaristrSQL:=CaristrSQL+
+     ' and Tip=''A''';
+     }
+     if (cmb_Bakiye.itemIndex=0) or (cmb_Bakiye.itemIndex=1)  then
+     if cmbParaBirimi.Text=glb_DEFCUR then
+     begin
+          if chkDEVIR.Checked then
+          begin
+              if cmb_Bakiye.itemIndex=0 then
+              CaristrSQL:=CaristrSQL+ ' and (cari.borc+cari.devreden_borc>cari.Alacak+cari.devreden_Alacak) ';
+              if cmb_Bakiye.itemIndex=1 then
+              CaristrSQL:=CaristrSQL+ ' and (cari.Alacak+cari.devreden_Alacak>cari.borc+cari.devreden_borc) ';
+
+          end
+          else
+          begin
+              if cmb_Bakiye.itemIndex=0 then
+              CaristrSQL:=CaristrSQL+ ' and (cari.borc>cari.Alacak) ';
+              if cmb_Bakiye.itemIndex=1 then
+              CaristrSQL:=CaristrSQL+ ' and (cari.Alacak>cari.borc) ';
+
+          end;
+     end
+     else
+     begin
+          if chkDEVIR.Checked then
+          begin
+             if cmb_Bakiye.itemIndex=0 then
+             CaristrSQL:=CaristrSQL+ ' and (cari_dov.borc+cari_dov.devreden_borc>cari_dov.Alacak+cari_dov.devreden_Alacak) ';
+             if cmb_Bakiye.itemIndex=1 then
+             CaristrSQL:=CaristrSQL+ ' and (cari_dov.Alacak+cari_dov.devreden_Alacak>cari_dov.borc+cari_dov.devreden_borc) ';
+
+          end
+          else
+          begin
+             if cmb_Bakiye.itemIndex=0 then
+             CaristrSQL:=CaristrSQL+ ' and (cari_dov.borc>cari_dov.Alacak) ';
+             if cmb_Bakiye.itemIndex=1 then
+             CaristrSQL:=CaristrSQL+ ' and (cari_dov.Alacak>cari_dov.borc) ';
+
+          end;
+     end;
+
+     SubeID := DataMod.SubeAd2ID(cmbSube.Text);
+     if (SubeID <> '0') and (Trim(SubeID)<>'') then
+     begin
+       CaristrSQL:=CaristrSQL+ ' and cari.sid = '+ SubeID;
+     end;
+
+     if (Trim(txtCariKod1.Text)<>'') and (Trim(txtCariKod2.Text)<>'') then
+       CaristrSQL:=CaristrSQL+ ' and (cari.cari_kod between '+Sql_Katar(txtCariKod1.Text)+ ' and ' +Sql_Katar(txtCariKod2.Text)+')';
+
+
+     if cmbGrup.ItemIndex=0 then
+     CaristrSQL:=CaristrSQL+ ' and cari_grup_uye.Cari_Grup_Kod='+Sql_Katar(txtGrpKod.Text);
+
+     if cmbGrup.ItemIndex=1 then
+       CaristrSQL:=CaristrSQL+ ' and (cari.cari_kod not in (select cari_kod from cari_grup_uye)) ';
+
+     if cmbParaBirimi.Text<>glb_DEFCUR then
+       CaristrSQL:=CaristrSQL+ ' and (cari_dov.dovkod= '+Sql_Katar(cmbParaBirimi.Text)+')';
+
+     if cmbParaBirimi.Text=glb_DEFCUR then
+     begin
+          if cbBakiye.checked then
+          if chkDEVIR.Checked then
+          CaristrSQL:=CaristrSQL+
+          ' and (cari.borc>0 or cari.devreden_borc>0 or '+
+          'cari.Alacak>0 or cari.devreden_Alacak>0) ';
+
+          if cbBakiye.checked then
+          if not chkDEVIR.Checked then
+          CaristrSQL:=CaristrSQL+
+          ' and (cari.borc>0 or '+
+          'cari.Alacak>0) ';
+     end
+     else
+     begin
+          if cbBakiye.checked then
+          if chkDEVIR.Checked then
+          CaristrSQL:=CaristrSQL+
+          ' and (cari_dov.bor>0 or cari_dov.devreden_borc>0 or '+
+          'cari_dov.Alacak>0 or cari_dov.devreden_Alacak>0) ';
+
+          if cbBakiye.checked then
+          if not chkDEVIR.Checked then
+          CaristrSQL:=CaristrSQL+
+          ' and (cari_dov.borc>0 or  '+
+          'cari_dov.Alacak>0) ';
+     end;
+
+
+     if cmb_sirala.ItemIndex=0 then
+       CaristrSQL:=CaristrSQL+ ' Order By Cari.Cari_Kod ';
+     if cmb_sirala.ItemIndex=1 then
+       CaristrSQL:=CaristrSQL+ ' Order By Cari.Cari_Ad ';
+
+     IB_Query1.Sql.Add(CaristrSQL);
+     IB_Query1.Open;
+
+     Prv_Yazdirildi:=False;
+     //frxReport1.LoadFromFile(glb_REPORTS_DIR+'\Cari_Listesi.fr3');
+     frxReport1.LoadFromFile(glb_REPORTS_DIR+'\Cari_Listesi_iis.fr3');
+     //frxReport1.PrepareReport();
+     { a:=(frxReport1.FindComponent('Memo_Rapor_Adi') as TfrxMemoView);
+      a.memo.Text:='Cari Hareket Toplamý';
+      if chk_devir.Checked then
+      a.memo.Text:='Devirli Cari Hareket Toplamý';
+      }
+     frxReport1.showReport;
+     Exit;
+
+end;
+

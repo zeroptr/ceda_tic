@@ -1,0 +1,90 @@
+inherited SeriesTypeIsoSurface: TSeriesTypeIsoSurface
+  Left = 222
+  Top = 232
+  Width = 802
+  Height = 508
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 794
+  end
+  inherited Memo1: TMemo
+    Width = 794
+    Lines.Strings = (
+      'The Iso-Surface series is very similar to a TSurfaceSeries.'
+      
+        'It draws a 3D XYZ mesh of X by Z regular-spaced grid elements us' +
+        'ing the Y value as elevation value.'
+      ''
+      
+        'The difference between a Surface and Iso-Surface series is that ' +
+        'Iso-Surface fill each "cell" in a different way then Surface.'
+      
+        'Surface series simply paints the interior of a cell using a calc' +
+        'ulated color based on each cell Y value.'
+      ''
+      
+        'Iso-surface, in contrast, fills each cell with "horizontal" band' +
+        's of multiple colors depending on the cell slope and the number ' +
+        'of palette colors.'
+      ''
+      
+        'An iso-surface series can be seen like a filled contour series d' +
+        'isplayed in 3D mode.')
+  end
+  inherited Chart1: TChart
+    Width = 794
+    Height = 325
+    Gradient.EndColor = 2694905
+    Gradient.MidColor = 12241889
+    Gradient.StartColor = 4981532
+    Gradient.Visible = True
+    Legend.Transparent = True
+    Legend.Visible = False
+    MarginLeft = 22
+    Title.Font.Color = clBlack
+    Title.Text.Strings = (
+      'ISoSurface Series')
+    BottomAxis.LabelsFont.Color = clSilver
+    Chart3DPercent = 100
+    View3DOptions.Elevation = 348
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 130
+    View3DOptions.Rotation = 320
+    View3DOptions.Zoom = 61
+    object ChartTool1: TLegendPaletteTool
+      Border.Visible = True
+      Pen.Visible = False
+      Transparent = True
+    end
+    object ChartTool2: TRotateTool
+      Inertia = 21
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 794
+    object bEdit: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = bEditClick
+    end
+    object ButtonPen1: TButtonPen
+      Left = 104
+      Top = 8
+      Caption = '&Lines...'
+      TabOrder = 1
+    end
+    object ButtonPen2: TButtonPen
+      Left = 192
+      Top = 8
+      Caption = '&Sides...'
+      TabOrder = 2
+    end
+  end
+end

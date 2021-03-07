@@ -1,0 +1,57 @@
+inherited PrintPreviewDialog: TPrintPreviewDialog
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Print Preview dialog displays a TeeChart over a printer pape' +
+        #39'r'
+      
+        'and allows customization of printing parameters like choosing th' +
+        #39'e'
+      
+        'printer and printer settings, changing margins and chart positio' +
+        'n, '
+      'paper orientation and detail resolution.')
+  end
+  inherited Chart1: TChart
+    Chart3DPercent = 20
+    PrintMargins = (
+      15
+      30
+      15
+      30)
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      BarStyle = bsCilinder
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = '&Print Preview...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+  object ChartPreviewer1: TChartPreviewer
+    Chart = Chart1
+    Title = 'This is the Chart Preview dialog.'
+    Left = 344
+    Top = 24
+  end
+end

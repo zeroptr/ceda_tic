@@ -1,0 +1,11 @@
+geldiði yer 
+gittiði yer
+açýklama taným veya girilen kayýtlar içinden combo box dan seçilebilir
+
+rutubet oraný yeni oran olarak eklenebilir ne için kullnýldýgý araþtýrýlmalý
+kasa adedi  yeni oran olarak eklenebilir ne için kullnýldýgý araþtýrýlmalý
+
+ücreti tanýmlarý yapýlmalý vey girilenler içinden seçilmeli
+
+
+makbuz no giriþ ve çýkýþ için otomatik artan alan olmalý

@@ -1,0 +1,17 @@
+
+{                                                                              }
+{  IBA_DataScan.PBL                                                            }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+published
+
+  property CloneCursor;
+  
+  property AfterFetchRow;
+  property AfterFetchEof;
+  property BeforeFetchFirstRow;
+  property OnAdjustCursor;
+
+{$ENDIF}

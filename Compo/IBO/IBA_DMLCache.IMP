@@ -1,0 +1,196 @@
+// IBA_DMLCache.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_TransactionDMLCache.Create( ATransaction: TIB_Transaction );
+begin
+  inherited Create( TIB_DMLCacheItem );
+  FTransaction := ATransaction;
+end;
+
+destructor TIB_TransactionDMLCache.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TIB_TransactionDMLCache.Add: TIB_DMLCacheItem;
+begin
+  Result := TIB_DMLCacheItem( inherited Add );
+end;
+
+function TIB_TransactionDMLCache.GetDMLItem( Index: integer ): TIB_DMLCacheItem;
+begin
+  Result := TIB_DMLCacheItem( inherited Items[Index] );
+end;
+
+procedure TIB_TransactionDMLCache.SetDMLItem( Index: Integer;
+                                              Value: TIB_DMLCacheItem );
+begin
+  TIB_DMLCacheItem( inherited Items[Index] ).Assign( Value );
+end;
+
+procedure TIB_TransactionDMLCache.AddItem(
+  AConnection: TIB_Connection;
+  ADataset: TIB_Dataset;
+  AKeyFieldNames: string;
+  AKeyFieldValues: variant;
+  ADMLCacheItemType: TIB_DMLCacheItemType );
+var
+  tmpItem: TIB_DMLCacheItem;
+begin
+  tmpItem := Add;
+  with tmpItem do
+  begin
+    if Assigned( ADataset ) then
+      FConnection := ADataset.IB_Connection
+    else
+      FConnection := AConnection;
+    FKeyFieldNames := AKeyFieldNames;
+    FKeyFieldValues := AKeyFieldValues;
+    FDMLCacheItemType := ADMLCacheItemType;
+  end;
+  if not Assigned( ADataset ) then
+  begin
+  // This item is from an external source and should be processed immediatly.
+    try
+      tmpItem.AnnounceToConnection;
+    except
+      on E: Exception do Application.HandleException( E );
+    end;
+    tmpItem.Free;
+  end
+  else
+  if Assigned( Transaction ) then
+  begin
+  // This item is from an internal source and should be processed immediatly
+  // within its own transaction but cached until committed before being
+  // processed for the rest of the datasets in the connection.
+    tmpItem.AnnounceToTransaction( Transaction, ADataset );
+  end;
+end;
+
+procedure TIB_TransactionDMLCache.ProcessItems( Announce: boolean );
+begin
+  while Count > 0 do
+    if Announce then
+      ProcessItem( Items[0] )
+    else
+      Items[0].Free;
+end;
+
+procedure TIB_TransactionDMLCache.ProcessItem( const AItem: TIB_DMLCacheItem );
+var
+  ii: integer;
+  tmpDataset: TIB_Dataset;
+begin
+  with AItem do
+  begin
+    Collection := nil;
+    if Assigned( Connection ) then
+    try
+      if Assigned( Transaction ) then
+      begin
+        if Transaction.GetConnectionIndex( Connection ) <> - 1 then
+        begin
+          for ii := 0 to Connection.DatasetCount - 1 do
+          begin
+            tmpDataset := Connection.Datasets[ ii ];
+            if ( Assigned( tmpDataset )) and
+               ( tmpDataset.Active ) and
+               ( tmpDataset.IB_Transaction <> Transaction ) and
+               ( tmpDataset.IB_Transaction.Isolation = tiCommitted ) then
+              AnnounceToDataset( tmpDataset );
+          end;
+        end;
+      end;
+    except
+      on E: Exception do Application.HandleException( E );
+    end;
+    Free;
+  end;
+end;
+
+{---}
+
+procedure TIB_DMLCacheItem.AnnounceToConnection;
+var
+  ii: integer;
+  tmpDataset: TIB_Dataset;
+begin
+  if Assigned( Connection ) then with Connection do
+  begin
+    for ii := 0 to DatasetCount - 1 do
+    begin
+      tmpDataset := Datasets[ ii ];
+      if ( Assigned( tmpDataset )) and
+         ( tmpDataset.Active ) and
+         ( tmpDataset.IB_Transaction.Isolation = tiCommitted ) then
+        AnnounceToDataset( tmpDataset );
+    end;
+  end;
+end;
+
+procedure TIB_DMLCacheItem.AnnounceToDataset( const DS: TIB_Dataset );
+begin
+  if Assigned( DS ) and
+     not Assigned( DS.FBindingCursor ) and
+     ( DS.DMLCacheFlags <> [] ) then begin
+    case DMLCacheItemType of
+      ditEdit:   if not (dcfReceiveEdit   in DS.DMLCacheFlags) then Exit;
+      ditInsert: if not (dcfReceiveInsert in DS.DMLCacheFlags) then Exit;
+      ditDelete: if not (dcfReceiveDelete in DS.DMLCacheFlags) then Exit;
+    end;
+    DS.DoDMLCacheReceiveItem( Self );
+  end;
+end;
+
+procedure TIB_DMLCacheItem.AnnounceToTransaction( const TS: TIB_Transaction;
+                                                  const ExcludeDS: TIB_Dataset);
+var
+  ii: integer;
+  tmpDataset: TIB_Dataset;
+begin
+  if Assigned( TS ) then with TS do begin
+    for ii := 0 to DatasetCount - 1 do begin
+      tmpDataset := Datasets[ ii ];
+      if ( Assigned( tmpDataset )) and
+         ( tmpDataset.Active ) and
+         ( tmpDataset <> ExcludeDS ) then
+        AnnounceToDataset( tmpDataset );
+    end;
+  end;
+end;
+

@@ -1,0 +1,133 @@
+inherited VarianceDemo: TVarianceDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 49
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'The Variance function returns how spread out a distribution is.'
+      
+        'The Standard Deviation function is the square root of the varian' +
+        'ce.')
+  end
+  inherited Chart1: TChart
+    Top = 92
+    Height = 245
+    BackWall.Color = clWhite
+    BackWall.Transparent = False
+    Border.Visible = True
+    LeftWall.Color = clWhite
+    Legend.Font.Height = -12
+    Legend.Font.Name = 'Lucida Console'
+    Legend.Shadow.Color = clGray
+    RightWall.Color = clWhite
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    Title.Font.Name = 'Lucida Console'
+    Title.Font.Style = [fsBold]
+    BottomAxis.Grid.Color = 12895428
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.Grid.Visible = False
+    BottomAxis.LabelsFont.Name = 'Lucida Console'
+    BottomAxis.MinorTickLength = -3
+    BottomAxis.MinorTicks.Color = clBlack
+    BottomAxis.TickInnerLength = 6
+    BottomAxis.TickLength = 0
+    BottomAxis.TicksInner.Color = clBlack
+    Chart3DPercent = 15
+    DepthAxis.Grid.Color = 12895428
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Name = 'Lucida Console'
+    DepthAxis.MinorTickLength = -3
+    DepthAxis.MinorTicks.Color = clBlack
+    DepthAxis.TickInnerLength = 6
+    DepthAxis.TickLength = 0
+    DepthAxis.TicksInner.Color = clBlack
+    DepthTopAxis.Grid.Color = 12895428
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Name = 'Lucida Console'
+    DepthTopAxis.MinorTickLength = -3
+    DepthTopAxis.MinorTicks.Color = clBlack
+    DepthTopAxis.TickInnerLength = 6
+    DepthTopAxis.TickLength = 0
+    DepthTopAxis.TicksInner.Color = clBlack
+    LeftAxis.Grid.Color = 12895428
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Name = 'Lucida Console'
+    LeftAxis.MinorTickLength = -3
+    LeftAxis.MinorTicks.Color = clBlack
+    LeftAxis.TickInnerLength = 6
+    LeftAxis.TickLength = 0
+    LeftAxis.TicksInner.Color = clBlack
+    RightAxis.Grid.Color = 12895428
+    RightAxis.Grid.Style = psSolid
+    RightAxis.LabelsFont.Name = 'Lucida Console'
+    RightAxis.MinorTickLength = -3
+    RightAxis.MinorTicks.Color = clBlack
+    RightAxis.TickInnerLength = 6
+    RightAxis.TickLength = 0
+    RightAxis.TicksInner.Color = clBlack
+    TopAxis.Grid.Color = 12895428
+    TopAxis.Grid.Style = psSolid
+    TopAxis.Grid.Visible = False
+    TopAxis.LabelsFont.Name = 'Lucida Console'
+    TopAxis.MinorTickLength = -3
+    TopAxis.MinorTicks.Color = clBlack
+    TopAxis.TickInnerLength = 6
+    TopAxis.TickLength = 0
+    TopAxis.TicksInner.Color = clBlack
+    View3D = False
+    BevelOuter = bvNone
+    Color = 12895428
+    ColorPaletteIndex = 6
+    object Series1: TPointSeries
+      Marks.ArrowLength = 0
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 0
+      Marks.Font.Name = 'Lucida Console'
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Font.Name = 'Lucida Console'
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      DataSource = Series1
+      Title = 'Variance'
+      VertAxis = aRightAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      object TeeFunction1: TVarianceFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 51
+    object Button1: TButton
+      Left = 24
+      Top = 8
+      Width = 153
+      Height = 25
+      Caption = 'New &random values'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

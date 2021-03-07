@@ -1,0 +1,13 @@
+IIF(SUM(<frxIBOHarTar."PRM_CARI_BORC">,MasterData1,2)>SUM(<frxIBOHarTar."PRM_CARI_ALACAK">,MasterData1,2),
+SUM(<frxIBOHarTar."PRM_CARI_BORC">,MasterData1,2)-SUM(<frxIBOHarTar."PRM_CARI_ALACAK">,MasterData1,2),
+SUM(<frxIBOHarTar."PRM_CARI_ALACAK">,MasterData1,2)-SUM(<frxIBOHarTar."PRM_CARI_BORC">,MasterData1,2))
+
+
+[(<Bak>)]
+
+
+
+
+IIF(SUM(<frxIBODataset1."ALICI_BORC_VPB">,MasterData1)>SUM(<frxIBODataset1."SATICI_ALACAK_VPB">,MasterData1),'Borc',IIF(SUM(<frxIBODataset1."SATICI_ALACAK_VPB">,MasterData1)>SUM(<frxIBODataset1."ALICI_BORC_VPB">,MasterData1),'Alacak',''))
+
+[(<Ba>)]

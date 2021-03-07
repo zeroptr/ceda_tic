@@ -1,0 +1,159 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{dd78f737-c52e-4e60-825d-445bec6f9e48}</ProjectGuid>
+    <MainSource>IB_SQL.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>IB_SQL.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">IB_SQL.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="IB_SQL.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="IBD_About.pas">
+      <Form>dlgAbout</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_CancelQuery.pas">
+      <Form>dlgCancelQuery</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_CreateOrdering.pas">
+      <Form>dlgCLBoxEdit</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_Credits.pas">
+      <Form>dlgCredits</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_Error.pas">
+      <Form>dlgError</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_IBMemoEdit.pas">
+      <Form>dlgIBMemoEdit</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_Loading.pas">
+      <Form>dlgLoading</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_Login.pas">
+      <Form>dlgLogin</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_MemoEdit.pas">
+      <Form>dlgMemoEdit</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_Ordering.pas">
+      <Form>dlgOrdering</Form>
+    </DCCReference>
+    <DCCReference Include="IBD_USearch.pas">
+      <Form>frmUSearch</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Base.pas">
+      <Form>frmBase</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Browse.pas">
+      <Form>frmBrowse</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_DataDump.pas">
+      <Form>frmDataDump</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_DataPump.pas">
+      <Form>frmDataPump</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_DSQL.pas">
+      <Form>frmDSQL</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Events.pas">
+      <Form>frmEvents</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Export.pas">
+      <Form>frmExport</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_GenCalcFields.pas">
+      <Form>frmGenCalcFields</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_GenCustomSQL.pas">
+      <Form>frmGenCustomSQL</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Lookup.pas">
+      <Form>frmLookup</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Metadata.pas">
+      <Form>frmMetadataExtract</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Monitor.pas">
+      <Form>frmMonitor</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Parameters.pas">
+      <Form>frmParameters</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Profiler.pas">
+      <Form>frmProfiler</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Query.pas">
+      <Form>frmQuery</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Script.pas">
+      <Form>frmScript</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_SQL.pas">
+      <Form>frmSQL</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Users.pas">
+      <Form>frmUsers</Form>
+    </DCCReference>
+    <DCCReference Include="IBF_Who.pas">
+      <Form>frmWho</Form>
+    </DCCReference>
+    <DCCReference Include="IB_Components.pas" />
+    <DCCReference Include="IB_ConnectionBar.pas" />
+    <DCCReference Include="IB_ConnectionSource.pas" />
+    <DCCReference Include="IB_Constants.pas" />
+    <DCCReference Include="IB_CursorGrid.pas" />
+    <DCCReference Include="IB_DataPump.pas" />
+    <DCCReference Include="IB_DataScan.pas" />
+    <DCCReference Include="IB_DatasetBar.pas" />
+    <DCCReference Include="IB_Events.pas" />
+    <DCCReference Include="IB_Export.pas" />
+    <DCCReference Include="IB_FieldDataLink.pas" />
+    <DCCReference Include="IB_Grid.pas" />
+    <DCCReference Include="IB_Header.pas" />
+    <DCCReference Include="IB_IncSearch.pas" />
+    <DCCReference Include="IB_Monitor.pas" />
+    <DCCReference Include="IB_NavigationBar.pas" />
+    <DCCReference Include="IB_ParamEdit.pas" />
+    <DCCReference Include="IB_Parse.pas" />
+    <DCCReference Include="IB_Process.pas" />
+    <DCCReference Include="IB_Profiler.pas" />
+    <DCCReference Include="IB_Schema.pas" />
+    <DCCReference Include="IB_Script.pas" />
+    <DCCReference Include="IB_SearchBar.pas" />
+    <DCCReference Include="IB_SearchEdit.pas" />
+    <DCCReference Include="IB_SearchPanel.pas" />
+    <DCCReference Include="IB_Session.pas" />
+    <DCCReference Include="IB_SessionProps.pas" />
+    <DCCReference Include="IB_StatementBar.pas" />
+    <DCCReference Include="IB_StatementGrid.pas" />
+    <DCCReference Include="IB_StatementSource.pas" />
+    <DCCReference Include="IB_StoredProc.pas" />
+    <DCCReference Include="IB_TransactionBar.pas" />
+    <DCCReference Include="IB_TransactionSource.pas" />
+    <DCCReference Include="IB_UpdateBar.pas" />
+    <DCCReference Include="IB_UtilityBar.pas" />
+    <DCCReference Include="IB_Utils.pas" />
+  </ItemGroup>
+</Project>

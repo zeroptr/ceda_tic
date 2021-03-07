@@ -1,0 +1,655 @@
+// IBA_StringList.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_StringList.Create;
+begin
+  inherited Create;
+  FAllowBlankLines := true;
+end;
+
+constructor TIB_StringProperty.Create;
+begin
+  inherited Create;
+  FAllowBlankLines := false;
+end;
+
+constructor TIB_StringCache.Create;
+begin
+  inherited Create;
+  inherited Sorted := true;
+end;
+
+procedure TIB_StringList.SaveToStream(Stream: TStream);
+var
+  S: string;
+begin
+  if Assigned( Stream ) then
+  begin
+    S := GetTextStr;
+    Stream.WriteBuffer(Pointer(S)^, Length(S));
+  end;
+end;
+
+function TIB_StringList.Add(const S: string): Integer;
+begin
+  if RemovingBlankLines or ( Length( Trim( S )) > 0 ) then
+    Result := inherited Add( S )
+  else
+  begin
+// This makes it so that a blank line can be explicitely added.
+// It is to allow the way the TStrings.SetValue() method works.
+    FRemovingBlankLines := true;
+    try
+      Result := inherited Add( S );
+    finally
+      FRemovingBlankLines := false;
+    end;
+  end;
+end;
+
+//ADDED// CW 2000-08-11
+{
+The normal implementation (at least for Delphi 3) of TStringList.Put()
+does not support sorted lists.  This method override allows Put() to
+work with a sorted TIB_StringList by reverting to the behaviour of
+the TStrings.Put() method when the stringlist is sorted.
+}
+procedure TIB_StringList.Put(Index: Integer; const S: string);
+var
+  TempObject: TObject;
+begin
+  if not Sorted then
+    inherited
+  else
+  begin
+    TempObject := GetObject( Index );
+    Delete( Index );
+    AddObject( S, TempObject );
+  end;
+end;
+
+function TIB_StringList.GetIndexName( Index: integer ): string;
+var
+  APos: longint;
+begin
+  Result := Get(Index);
+  APos := getLitSafePos( '=', Result, 1 );
+  if APos <> 0 then
+    SetLength( Result, APos - 1 );
+end;
+
+function TIB_StringList.GetIndexNameRel( Index: integer ): string;
+var
+  tmpPos: integer;
+begin
+  Result := '';
+  if ( Index >= 0 ) and ( Index < Count ) then
+  begin
+    Result := IndexNames[ Index ];
+    tmpPos := getLitSafePos( '.', Result, 1 );
+    if tmpPos > 0 then
+      Result := Copy( Result, 1, tmpPos - 1 );
+  end;
+end;
+
+function TIB_StringList.GetIndexNameCol( Index: integer ): string;
+var
+  tmpPos: integer;
+begin
+  if ( Index >= 0 ) and ( Index < Count ) then
+  begin
+    Result := IndexNames[ Index ];
+    tmpPos := getLitSafePos( '.', Result, 1 );
+    if tmpPos > 0 then
+      Result := Copy( Result, tmpPos + 1, MaxInt );
+  end
+  else
+    Result := '';
+end;
+
+procedure TIB_StringList.SetIndexName( Index: integer; AValue: string );
+var
+  tmpPos: longint;
+  tmpStr: string;
+begin
+  if AValue = '' then
+    Delete( Index )
+  else
+  begin
+    tmpStr := Get(Index);
+    tmpPos := getLitSafePos( '=', tmpStr, 1 );
+    if tmpPos > 0 then
+      tmpStr := AValue + Copy( tmpStr, tmpPos, MaxInt )
+    else
+      tmpStr := AValue;
+    Put( Index, tmpStr );
+  end;
+end;
+
+function TIB_StringList.GetIndexValue( Index: integer ): string;
+var
+  tmpPos: longint;
+begin
+  Result := Get( Index );
+  tmpPos := getLitSafePos( '=', Result, 1 );
+  if tmpPos > 0 then
+    Result := Copy( Result, tmpPos + 1, MaxInt )
+  else
+    SetLength( Result, 0 );
+end;
+
+procedure TIB_StringList.SetIndexValue( Index: integer; AValue: string );
+var
+  tmpPos: longint;
+  tmpStr: string;
+begin
+  tmpStr := Get(Index);
+  tmpPos := getLitSafePos( '=', tmpStr, 1 );
+  if tmpPos > 0 then
+    tmpStr := Copy(tmpStr, 1, tmpPos) + AValue
+  else
+    tmpStr := tmpStr + '=' + AValue;
+  Put(Index, tmpStr);
+end;
+
+function TIB_StringList.GetLinkIndex( ALink: string ): integer;
+var
+  tmpPos: longint;
+  tmpStr: string;
+  ii: integer;
+begin
+  if Sorted then
+    FindIndex( ALink, Result )
+  else
+    Result := IndexOfName( ALink );
+  if Result = -1 then
+    Result := IndexOf( ALink );
+  if Result = -1 then
+  begin
+    tmpPos := getLitSafePos( '.', ALink, 1 );
+    if tmpPos <> 0 then
+    begin
+      ALink := Copy( ALink, tmpPos + 1, MaxInt );
+      if Sorted then
+        FindIndex( ALink, Result )
+      else
+        Result := IndexOfName( ALink );
+      if Result = -1 then
+        Result := IndexOf( ALink );
+    end
+    else
+    begin
+      for ii := 0 to Count - 1 do
+      begin
+        tmpStr := Names[ ii ];
+        tmpPos := getLitSafePos( '.', tmpStr, 1 );
+        if tmpPos > 0 then
+        begin
+          tmpStr := Copy( tmpStr, tmpPos + 1, MaxInt );
+          if AnsiCompareText( ALink, tmpStr ) = 0 then
+          begin
+            Result := ii;
+            Break;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TIB_StringList.GetLinkValue( ALink: string ): string;
+var
+  tmpPos: longint;
+  ii: integer;
+  tmpStr: string;
+begin
+  if Sorted then
+    FindValue( ALink, Result )
+  else
+    Result := Values[ ALink ];
+  if Result = '' then
+  begin
+    tmpPos := getLitSafePos( '.', ALink, 1 );
+    if tmpPos <> 0 then
+    begin
+      ALink := Copy( ALink, tmpPos + 1, MaxInt );
+      if Sorted then
+        FindValue( ALink, Result )
+      else
+        Result := Values[ ALink ];
+    end else for ii := 0 to Count - 1 do
+    begin
+      tmpStr := Names[ ii ];
+      tmpPos := getLitSafePos( '.', tmpStr, 1 );
+      if tmpPos > 0 then
+      begin
+        tmpStr := Copy( tmpStr, tmpPos + 1, MaxInt );
+        if AnsiCompareText( ALink, tmpStr ) = 0 then
+        begin
+          Result := IndexValues[ ii ];
+          Break;
+          // Check for ambiguous settings?
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_StringList.SetLinkValue( ALink: string; AValue: string );
+var
+  tmpPos: longint;
+  tmpStr: string;
+  ii: integer;
+  tmpInd: integer;
+begin
+  if Sorted then
+    FindIndex( ALink, tmpInd )
+  else
+    tmpInd := IndexOfName( ALink );
+  if tmpInd = -1 then
+    tmpInd := IndexOf( ALink );
+  if tmpInd = -1 then
+  begin
+    tmpPos := getLitSafePos( '.', ALink, 1 );
+    if tmpPos <> 0 then
+    begin
+      ALink := Copy( ALink, tmpPos + 1, MaxInt );
+      if Sorted then
+        FindIndex( ALink, tmpInd )
+      else
+        tmpInd := IndexOfName( ALink );
+      if tmpInd = -1 then
+        tmpInd := IndexOf( ALink );
+    end
+    else
+    begin
+      for ii := 0 to Count - 1 do
+      begin
+        tmpStr := Names[ ii ];
+        tmpPos := getLitSafePos( '.', tmpStr, 1 );
+        if tmpPos > 0 then
+        begin
+          tmpStr := Copy( tmpStr, tmpPos + 1, MaxInt );
+          if AnsiCompareText( ALink, tmpStr ) = 0 then
+          begin
+            tmpInd := ii;
+            tmpStr := Get( tmpInd );
+            Put( tmpInd, Copy( tmpStr, 1,
+                               getLitSafePos( '=', tmpStr, 1 )) + AValue );
+          end;
+        end;
+      end;
+      if tmpInd <> -1 then
+        Exit;
+    end;
+  end;
+  if tmpInd = -1 then
+    Add( ALink + '=' + AValue )
+  else
+  begin
+    tmpStr := Get( tmpInd );
+    Put( tmpInd, Copy( tmpStr, 1, getLitSafePos( '=', tmpStr, 1 )) + AValue );
+  end;
+end;
+
+function TIB_StringList.GetIndexParamValue( Index: integer;
+                                            AParam: string ): string;
+var
+  BeginPos, EndPos: longint;
+begin
+  ExtractListLinkParam( IndexValues[Index], AParam, BeginPos, EndPos, Result );
+end;
+
+procedure TIB_StringList.SetIndexParamValue( Index: integer;
+                                             AParam: string; AValue: string );
+var
+  tmpStr: string;
+begin
+  tmpStr := IndexValues[ Index ];
+  if SetListLinkParamValue( tmpStr, AParam, AValue ) then
+    IndexValues[ Index ] := tmpStr;
+end;
+
+function TIB_StringList.GetLinkParamValueEx( ALink, AParam: string;
+  var IsSet: boolean ): string;
+var
+  BeginPos, EndPos: longint;
+begin
+  ExtractListLinkParam( LinkValues[ ALink ], AParam, BeginPos, EndPos, Result );
+  IsSet := BeginPos <> ParseLineInvalid;
+end;
+
+function TIB_StringList.GetLinkParamValue( ALink, AParam: string ): string;
+var
+  BeginPos, EndPos: longint;
+begin
+  ExtractListLinkParam( LinkValues[ ALink ], AParam, BeginPos, EndPos, Result );
+end;
+
+procedure TIB_StringList.SetLinkParamValue( ALink, AParam, AValue: string );
+var
+  tmpStr: string;
+begin
+  tmpStr := LinkValues[ ALink ];
+  if SetListLinkParamValue( tmpStr, AParam, AValue ) then 
+    LinkValues[ ALink ] := tmpStr;
+end;
+
+function TIB_StringList.GetLinkParamIsSet( ALink, AParam: string ): boolean;
+var
+  tmpStr: string;
+  BeginPos, EndPos: longint;
+begin
+  ExtractListLinkParam( LinkValues[ ALink ], AParam, BeginPos, EndPos, tmpStr );
+  Result := BeginPos <> ParseLineInvalid;
+end;
+
+procedure TIB_StringList.SetLinkParamIsSet( ALink, AParam: string;
+                                            AValue: boolean );
+var
+  tmpStr: string;
+begin
+  tmpStr := LinkValues[ ALink ];
+  if SetListLinkParamIsSet( tmpStr, AParam, AValue ) then begin
+    LinkValues[ ALink ] := tmpStr;
+  end;
+end;
+
+function TIB_StringList.GetIndexParamIsSet( AIndex: integer;
+                                            AParam: string ): boolean;
+var
+  tmpStr: string;
+  BeginPos, EndPos: longint;
+begin
+  ExtractListLinkParam( IndexValues[AIndex], AParam, BeginPos, EndPos, tmpStr );
+  Result := BeginPos <> ParseLineInvalid;
+end;
+
+procedure TIB_StringList.SetIndexParamIsSet( AIndex: integer;
+                                             AParam: string; AValue: boolean );
+var
+  tmpStr: string;
+begin
+  tmpStr := IndexValues[ AIndex ];
+  if SetListLinkParamIsSet( tmpStr, AParam, AValue ) then begin
+    IndexValues[ AIndex ] := tmpStr;
+  end;
+end;
+
+procedure TIB_StringList.RemoveBlankLines;
+var
+  ii: integer;
+begin
+  if not RemovingBlankLines then
+  begin
+    FRemovingBlankLines := true;
+    try
+      ii := Count - 1;
+      while ii >= 0 do
+      begin
+        if ii < Count then
+        begin
+          if Trim( Get( ii )) = '' then
+          begin
+            Delete( ii );
+          end;
+        end;
+        Dec( ii );
+      end;
+    finally
+      FRemovingBlankLines := false;
+    end;
+  end;
+end;
+
+procedure TIB_StringList.RemoveBlankEntries;
+var
+  ii: integer;
+  tmpStr: string;
+  tmpPos: integer;
+begin
+  if not RemovingBlankLines then
+  begin
+    FRemovingBlankLines := true;
+    try
+      ii := Count - 1;
+      while ii >= 0 do
+      begin
+        if ii < Count then
+        begin
+          tmpStr := Trim( Get( ii ));
+          tmpPos := getLitSafePos( '=', tmpStr, 1 );
+          if tmpPos = Length( tmpStr ) then
+          begin
+            Delete( ii );
+          end;
+        end;
+        Dec( ii );
+      end;
+    finally
+      FRemovingBlankLines := false;
+    end;
+  end;
+end;
+
+procedure TIB_StringList.SetAllowBlankLines( AValue: boolean );
+begin
+  if AllowBlankLines <> AValue then
+  begin
+    FAllowBlankLines := AValue;
+    if AllowBlankLines then
+      RemoveBlankLines;
+  end;
+end;
+
+procedure TIB_StringList.Changing;
+begin
+  if not RemovingBlankLines then
+    inherited Changing;
+end;
+
+procedure TIB_StringList.Changed;
+begin
+  if not RemovingBlankLines and not UpdateState then
+  begin
+    if ( Count > 0 ) and not AllowBlankLines then
+      RemoveBlankLines;
+    inherited Changed;
+  end;
+end;
+
+procedure TIB_StringList.SetUpdateState(Updating: Boolean);
+begin
+  FUpdateState := Updating;
+  inherited SetUpdateState(Updating );
+end;
+
+function TIB_StringList.FindIndex( const AName: string;
+                                     var AIndex: integer ): boolean;
+var
+  L, H, I, C: Integer;
+begin
+  Result := False;
+  if Sorted then
+  begin
+    L := 0;
+    H := Count - 1;
+    while L <= H do
+    begin
+      I := (L + H) shr 1;
+      C := AnsiCompareText( Copy( Get(I), 1, Length(AName) + 1 ), AName + '=' );
+      if C < 0 then
+      begin
+        L := I + 1;
+      end else
+      begin
+        H := I - 1;
+        if C = 0 then
+        begin
+          Result := True;
+          if Duplicates <> dupAccept then
+          begin
+            L := I;
+          end;
+        end;
+      end;
+    end;
+    AIndex := L;
+  end
+  else
+    raise Exception.Create( E_Stringlist_Not_Sorted );
+  if not Result then
+    AIndex := -1;
+end;
+
+function TIB_StringList.FindValue( const AName: string;
+                                     var AValue: string ): boolean;
+var
+  tmpInd: integer;
+begin
+  AValue := '';
+  Result := FindIndex( AName, tmpInd );
+  if Result then
+    AValue := IndexValues[ tmpInd ];
+end;
+
+function TIB_StringList.GetSafeCommaText: string;
+var
+  ii: integer;
+begin
+  if ( Count = 1 ) and ( Get(0) = '' ) then
+    Result := '""'
+  else
+  begin
+    Result := '';
+    for ii := 0 to Count - 1 do
+      Result := Result + Get( ii ) + ',';
+    System.Delete( Result, Length( Result ), 1 );
+  end;
+end;
+
+procedure TIB_StringList.SetSafeCommaText( AValue: string );
+var
+  ii: integer;
+  tmpPos: integer;
+begin
+  tmpPos := 0;
+  BeginUpdate;
+  try
+    Clear;
+    if AValue <> '' then
+      repeat
+        Inc( tmpPos );
+        ii := tmpPos;
+        tmpPos := getLitSafePos( ',', AValue, tmpPos );
+        if tmpPos > 0 then
+          Add( Trim( Copy( AValue, ii, tmpPos - ii )))
+        else
+          Add( Trim( Copy( AValue, ii, MaxInt )));
+      until tmpPos = 0;
+  finally
+    EndUpdate;
+  end;
+end;
+
+function TIB_StringList.SysStringListParamSort( Index1,
+                                                Index2: Integer ): Integer;
+var
+  tmp1: string;
+  tmp2: string;
+begin
+  if FQuickSortParam <> '' then
+  begin
+    tmp1 := IndexParamValue[ Index1, FQuickSortParam ];
+    tmp2 := IndexParamValue[ Index2, FQuickSortParam ];
+  end
+  else
+  begin
+    tmp1 := IndexValues[ Index1 ];
+    tmp2 := IndexValues[ Index2 ];
+  end;
+  if FQuickSortNumeric then
+  begin
+    if StrToFloat( tmp1 ) = StrToFloat( tmp2 ) then
+      Result := 0
+    else
+    if StrToFloat( tmp1 ) < StrToFloat( tmp2 ) then
+      Result := -1
+    else
+      Result := 1;
+  end
+  else
+    Result := AnsiCompareText( tmp1, tmp2 );
+end;
+
+procedure TIB_StringList.SysParamQuickSort( L, R: Integer );
+var
+  I, J: Integer;
+  P: Integer;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := ( L + R ) shr 1;
+    repeat
+      while SysStringListParamSort( I, P ) < 0 do
+        Inc( I );
+      while SysStringListParamSort( J, P ) > 0 do
+        Dec( J );
+      if I <= J then
+      begin
+        Exchange( I, J );
+        Inc( I );
+        Dec( J );
+      end;
+    until I > J;
+    if L < J then
+      SysParamQuickSort( L, J );
+    L := I;
+  until I >= R;
+end;
+
+procedure TIB_StringList.ParamQuickSort( AParam: string; IsNumeric: boolean );
+begin
+  FQuickSortParam := AParam;
+  FQuickSortNumeric := IsNumeric;
+  if Count > 1 then
+    SysParamQuickSort( 0, Count - 1 );
+end;
+
+
+

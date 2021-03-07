@@ -1,0 +1,1127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{ddea07f8-8671-4ab0-8285-4fbb925596f8}</ProjectGuid>
+    <MainSource>CedaLite.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\Temp\CedaLite.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Hints>False</DCC_Hints>
+    <DCC_Warnings>False</DCC_Warnings>
+    <DCC_ExeOutput>C:\CedaLite_Ym\Temp</DCC_ExeOutput>
+    <DCC_DcuOutput>C:\CedaLite_Ym\Temp</DCC_DcuOutput>
+    <DCC_ObjOutput>C:\CedaLite_Ym\Temp</DCC_ObjOutput>
+    <DCC_HppOutput>C:\CedaLite_Ym\Temp</DCC_HppOutput>
+    <DCC_UnitSearchPath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\CommonControls\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\PReport\Source</DCC_UnitSearchPath>
+    <DCC_ResourcePath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\CommonControls\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\PReport\Source</DCC_ResourcePath>
+    <DCC_ObjPath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\CommonControls\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\PReport\Source</DCC_ObjPath>
+    <DCC_IncludePath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\CommonControls\Source;C:\Program Files\CodeGear\RAD Studio\5.0\comps\PReport196SRC\PReport\Source</DCC_IncludePath>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Hints>False</DCC_Hints>
+    <DCC_Warnings>False</DCC_Warnings>
+    <DCC_ExeOutput>C:\CedaLite_Ym\Temp</DCC_ExeOutput>
+    <DCC_DcuOutput>C:\CedaLite_Ym\Temp</DCC_DcuOutput>
+    <DCC_ObjOutput>C:\CedaLite_Ym\Temp</DCC_ObjOutput>
+    <DCC_HppOutput>C:\CedaLite_Ym\Temp</DCC_HppOutput>
+    <DCC_UnitSearchPath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source</DCC_UnitSearchPath>
+    <DCC_ResourcePath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source</DCC_ResourcePath>
+    <DCC_ObjPath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source</DCC_ObjPath>
+    <DCC_IncludePath>C:\Program Files\CodeGear\RAD Studio\5.0\comps\IBO_4_2_I;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\01_XP Theme Manager\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\04_ExpressCommon Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\03_ExpressLibrary\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\02_ExpressGDI+ Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\05_ExpressDataController\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\06_ExpressEditors Library 5\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\23_ExpressPrinting System\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\20_ExpressSpreadSheet\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\08_ExpressExport Library\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\DEVEXPRESS\11_ExpressMemData\Sources;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastQB;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\FastScript;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\LibD11;C:\Program Files\CodeGear\RAD Studio\5.0\comps\fast433\Source</DCC_IncludePath>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="RunParams">nouser YONETICI BOS</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">True</VersionInfo><VersionInfo Name="MajorVer">2</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">74</VersionInfo><VersionInfo Name="Debug">True</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1055</VersionInfo><VersionInfo Name="CodePage">1254</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">Ceda Yazılım</VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">2.0.0.74</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">CedaLite.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dcldxSkinsCoreD11.bpl">ExpressSkins Library by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dcldxSkinsDesignHelperD11.bpl">ExpressSkins Library Uses Clause Auto Fill Helper by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\WINDOWS\system32\dxSkinscxPCPainterD11.bpl">ExpressSkins Library Painter for PageControl by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\WINDOWS\system32\dxSkinsdxLCPainterD11.bpl">ExpressSkins Library Painter for LayoutControl by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\WINDOWS\system32\dxSkinscxScheduler3PainterD11.bpl">ExpressSkins Library Painter for Scheduler 3 by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\WINDOWS\system32\dxSkinsdxNavBar2PainterD11.bpl">ExpressSkins Library Painter for NavBar 2 by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\WINDOWS\system32\dxSkinsdxDLPainterD11.bpl">ExpressSkins Library Painter for Docking Library by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\WINDOWS\system32\dxSkinsdxRibbonPainterD11.bpl">ExpressSkins Library Painter for Ribbon by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\WINDOWS\system32\dxSkinsdxBarPainterD11.bpl">ExpressSkins Library Painter for Bars by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dcldxSkinscxPCPainterD11.bpl">ExpressSkins Library Uses Clause Auto Fill Helper for PageControl Painter by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dcldxSkinsdxLCPainterD11.bpl">ExpressSkins Library Uses Clause Auto Fill Helper for LayoutControl Painter by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dcldxSkinscxScheduler3PainterD11.bpl">ExpressSkins Library Uses Clause Auto Fill Helper for Scheduler 3 Painter by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dcldxSkinsdxNavBar2PainterD11.bpl">ExpressSkins Library Uses Clause Auto Fill Helper for NavBar 2 Painter by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dcldxSkinsdxBarsPaintersD11.bpl">ExpressSkins Library Uses Clause Auto Fill Helper for Bars Painters by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinBlackD11.bpl">ExpressSkins - Black Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinBlueD11.bpl">ExpressSkins - Blue Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinSilverD11.bpl">ExpressSkins - Silver Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinStardustD11.bpl">ExpressSkins - Stardust Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinValentineD11.bpl">ExpressSkins - Valentine Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinXmas2008BlueD11.bpl">ExpressSkins - Xmas2008Blue Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinCaramelD11.bpl">ExpressSkins - Caramel Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinPumpkinD11.bpl">ExpressSkins - Pumpkin Skin</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinDarkSideD11.bpl">ExpressSkins - DarkSide Skin</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinCoffeeD11.bpl">ExpressSkins - Coffee Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinGlassOceansD11.bpl">ExpressSkins - GlassOceans Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkiniMaginaryD11.bpl">ExpressSkins - iMaginary Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinLilianD11.bpl">ExpressSkins - Lilian Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinMcSkinD11.bpl">ExpressSkins - McSkin Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinLiquidSkyD11.bpl">ExpressSkins - LiquidSky Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinLondonLiquidSkyD11.bpl">ExpressSkins - LondonLiquidSky Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinMoneyTwinsD11.bpl">ExpressSkins - MoneyTwins Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinOffice2007BlackD11.bpl">ExpressSkins - Office2007Black Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinOffice2007BlueD11.bpl">ExpressSkins - Office2007Blue Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinOffice2007GreenD11.bpl">ExpressSkins - Office2007Green Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinOffice2007PinkD11.bpl">ExpressSkins - Office2007Pink Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinOffice2007SilverD11.bpl">ExpressSkins - Office2007Silver Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinSummer2008D11.bpl">ExpressSkins - Summer2008 Skin</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinSpringTimeD11.bpl">ExpressSkins - Springtime Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinSevenD11.bpl">ExpressSkins - Seven Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinFoggyD11.bpl">ExpressSkins - Foggy Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinDarkRoomD11.bpl">ExpressSkins - DarkRoom Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="C:\Compo\Dev_Ex\Library\Delphi11\dxSkinSharpD11.bpl">ExpressSkins - Sharp Skin by Developer Express Inc.</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality><ModelSupport>False</ModelSupport></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="CedaLite.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\Rapor\ufrmRaporCariAylikBA.pas">
+      <Form>frmRaporCariAylikBA</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporCariBakiyeliHareket.pas">
+      <Form>frmRaporCariBakiyeliHareket</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporCariBakiyeliHareketTarihli.pas">
+      <Form>frmRaporCariBakiyeliHareketTarihli</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporCariBakiyeliHareketToplam.pas">
+      <Form>frmRaporCariBakiyeliHareketToplam</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporCekSenet.pas">
+      <Form>frmRaporCekSenet</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporCiktisi.pas">
+      <Form>frmRaporCiktisi</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporDepoUrunListesi.pas">
+      <Form>frmRaporDepoUrunListesi</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporDovizKurlari.pas">
+      <Form>frmRaporDovizKurlari</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporGenelCariListesi.pas">
+      <Form>frmRaporGenelCariListesi</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporGrupCBakiyeliHar.pas">
+      <Form>frmRaporGrupCBakiyeliHar</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporKasaAralikliHareket.pas">
+      <Form>frmRaporKasaAralikliHareket</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporKasaAylik.pas">
+      <Form>frmRaporKasaAylik</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporKasaTekGunlukHareket.pas">
+      <Form>frmRaporKasaTekGunlukHareket</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporKullaniciHak.pas">
+      <Form>frmRaporKullaniciHak</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporMasrafHareket.pas">
+      <Form>frmRaporMasrafHareket</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporMasrafHareketTarihli.pas">
+      <Form>frmRaporMasrafHareketTarihli</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporMasrafListesi.pas">
+      <Form>frmRaporMasrafListesi</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporPlasiyerHareketleri.pas">
+      <Form>frmRaporPlasiyerHareketleri</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporPlasiyerListesi.pas">
+      <Form>frmRaporPlasiyerListesi</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporProjeHareketleri.pas">
+      <Form>frmRaporProjeHareketleri</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporProjeListesi.pas">
+      <Form>frmRaporProjeListesi</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporSerbestDekont.pas">
+      <Form>frmRaporSerbestDekont</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporUrunFatura.pas">
+      <Form>frmRaporUrunFatura</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporUrunFiyatListesi.pas">
+      <Form>frmRaporUrunFiyatListesi</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporUrunHareketleri.pas">
+      <Form>frmRaporUrunHareketleri</Form>
+    </DCCReference>
+    <DCCReference Include="..\Rapor\ufrmRaporUrunListesi.pas">
+      <Form>frmRaporUrunListesi</Form>
+    </DCCReference>
+    <DCCReference Include="about.pas">
+      <Form>AboutBox</Form>
+    </DCCReference>
+    <DCCReference Include="Antrepo\ufrmANT_CIKIS.pas">
+      <Form>frmANT_CIKIS</Form>
+    </DCCReference>
+    <DCCReference Include="Antrepo\ufrmANT_GIRIS.pas">
+      <Form>frmANT_GIRIS</Form>
+    </DCCReference>
+    <DCCReference Include="Antrepo\ufrmANT_REPORT.pas">
+      <Form>frmANT_REPORT</Form>
+    </DCCReference>
+    <DCCReference Include="Antrepo\ufrmANT_SDLG.pas">
+      <Form>frmANT_SDLG</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmArac.pas">
+      <Form>frmArac</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmAracMasrafSDGL.pas">
+      <Form>frmAracMasrafSDGL</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmArac_Masraf.pas">
+      <Form>frmArac_Masraf</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmButunluk_Kotrolu.pas">
+      <Form>frmButunluk_Kotrolu</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmESYA_TAN.pas">
+      <Form>frmESYA_TAN</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmFAT_Tran.pas">
+      <Form>frmFAT_Tran</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmMazot.pas">
+      <Form>frmMazot</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmMazotSDLG.pas">
+      <Form>frmMazotSDLG</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmPersonel.pas">
+      <Form>frmPersonel</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporAracHareketleriListesi.pas">
+      <Form>frmRaporAracHareketleriListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporAracListesi.pas">
+      <Form>frmRaporAracListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporAracPersonelListesi.pas">
+      <Form>frmRaporAracPersonelListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporFatura_Mazot.pas">
+      <Form>frmRaporFatura_Mazot</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporFatura_Sefer.pas">
+      <Form>frmRaporFatura_Sefer</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporIlisigiKesilmisPersonelListesi.pas">
+      <Form>frmRaporIlisigiKesilmisPersonelListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporMazotAracListesi.pas">
+      <Form>frmRaporMazotAracListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporPersonelHareketleriListesi.pas">
+      <Form>frmRaporPersonelHareketleriListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporPersonelHareketleri_KasaliListesi.pas">
+      <Form>frmRaporPersonelHareketleri_KasaliListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporPersonelListesi.pas">
+      <Form>frmRaporPersonelListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporSefer.pas">
+      <Form>frmRaporSefer</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporSeferKasali.pas">
+      <Form>frmRaporSeferKasali</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporSefer_Mazot.pas">
+      <Form>frmRaporSefer_Mazot</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporSefer_Mazot1.pas">
+      <Form>frmRaporSefer_Mazot1</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporSkAracHareketleriRaporu.pas">
+      <Form>frmRaporSkAracHareketleriRaporu</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporSoforListesi.pas">
+      <Form>frmRaporSoforListesi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmRaporToplamArac.pas">
+      <Form>frmRaporToplamArac</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmResimTamEkran.pas">
+      <Form>frmResimTamEkran</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmSefer.pas">
+      <Form>frmSefer</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmSeferSDLG.pas">
+      <Form>frmSeferSDLG</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmSefer_Takip.pas">
+      <Form>frmSefer_Takip</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmSefer_TakipSDLG.pas">
+      <Form>frmSefer_TakipSDLG</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmSofor.pas">
+      <Form>frmSofor</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmUrun_Masraf_Merkezi.pas">
+      <Form>frmUrun_Masraf_Merkezi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmYukleme_Fisi.pas">
+      <Form>frmYukleme_Fisi</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrmYuk_Fis_SDLG.pas">
+      <Form>frmYuk_Fis_SDLG</Form>
+    </DCCReference>
+    <DCCReference Include="Arac\ufrnRAPOR_SEF_AYRINTI.pas">
+      <Form>frnRAPOR_SEF_AYRINTI</Form>
+    </DCCReference>
+    <DCCReference Include="GenTypes.pas" />
+    <DCCReference Include="Kantar\ufrmPlaka.pas">
+      <Form>frmPlaka</Form>
+    </DCCReference>
+    <DCCReference Include="Kantar\ufrm_Kantar.pas">
+      <Form>frm_Kantar</Form>
+    </DCCReference>
+    <DCCReference Include="Kantar\ufrm_Kantar_Cikis.pas">
+      <Form>frm_Kantar_Cikis</Form>
+    </DCCReference>
+    <DCCReference Include="Kantar\ufrm_Kantar_Degistir.pas">
+      <Form>frm_Kantar_Degistir</Form>
+    </DCCReference>
+    <DCCReference Include="Kantar\ufrm_Kantar_Sdlg.pas">
+      <Form>frm_Kantar_Sdlg</Form>
+    </DCCReference>
+    <DCCReference Include="main.pas">
+      <Form>MainForm</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmArac_Marka.pas">
+      <Form>frmArac_Marka</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmArac_Srv.pas">
+      <Form>frmArac_Srv</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmAriza.pas">
+      <Form>frmAriza</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmBayi.pas">
+      <Form>frmBayi</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmFAT_Srv.pas">
+      <Form>frmFAT_Srv</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmGelis_Neden.pas">
+      <Form>frmGelis_Neden</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmOnarim.pas">
+      <Form>frmOnarim</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmOnarim_Fatura.pas">
+      <Form>frmOnarim_Fatura</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmOnarim_Fatura_Bir.pas">
+      <Form>frmOnarim_Fatura_Bir</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmOnarim_SDLG.pas">
+      <Form>frmOnarim_SDLG</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmRaporSrvAracListesi.pas">
+      <Form>frmRaporSrvAracListesi</Form>
+    </DCCReference>
+    <DCCReference Include="servis\ufrmSigorta.pas">
+      <Form>frmSigorta</Form>
+    </DCCReference>
+    <DCCReference Include="UDm1_Fast_Report.pas">
+      <Form>Dm1_Fast_Report</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="UDm_Fast_Report.pas">
+      <Form>Dm_Fast_Report</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="ufrmBAKIM.pas">
+      <Form>frmBAKIM</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmBakiyeDevret.pas">
+      <Form>frmBakiyeDevret</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmBELGE_YAZ.pas">
+      <Form>frmBELGE_YAZ</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCARHAR_AKT.pas">
+      <Form>frmCARHAR_AKT</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCariGroup.pas">
+      <Form>frmCariGroup</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCariKart.pas">
+      <Form>frmCariKart</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCariSDLG.pas">
+      <Form>frmCariSDLG</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCek.pas">
+      <Form>frm_Cek</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCekSenHarSDGL.pas">
+      <Form>frmCekSenHarSDGL</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCekSenSDLG.pas">
+      <Form>frmCekSenSDLG</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCEKSEN_BCEK_ODEME.pas">
+      <Form>frmCEKSEN_BCEK_ODEME</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCEKSEN_CIRO.pas">
+      <Form>frmCEKSEN_CIRO</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCEKSEN_IADE.pas">
+      <Form>frmCEKSEN_IADE</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCEKSEN_KARS.pas">
+      <Form>frmCEKSEN_KARS</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCEKSEN_KASA.pas">
+      <Form>frmCEKSEN_KASA</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCEKSEN_SIL.pas">
+      <Form>frmCEKSEN_SIL</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmCEKSEN_TAHSILVER.pas">
+      <Form>frmCEKSEN_TAHSILVER</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDekontSDLG.pas">
+      <Form>frmDekontSDLG</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDEKONTT.pas">
+      <Form>frmDEKONTT</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDEKONT_AUT.pas">
+      <Form>frmDEKONT_AUT</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDepo.pas">
+      <Form>frmDepo</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDEVIRKAY.pas">
+      <Form>frmDEVIRKAY</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDevirSifre.pas">
+      <Form>frmDevirSifre</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDovKart.pas">
+      <Form>frmDovKart</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmDovTan.pas">
+      <Form>frmDovTan</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmFastRe_Giris.pas">
+      <Form>frmFastRe_Giris</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmFatParams.pas">
+      <Form>frmFatParams</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmFAT_IRS.pas">
+      <Form>frmFAT_IRS</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmFAT_IRS_SDLG.pas">
+      <Form>frmFAT_IRS_SDLG</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmFoto_Ana.pas">
+      <Form>frmFoto_Ana</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmIRSALIYE.pas">
+      <Form>frmIRSALIYE</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmIrsaliye_Fatura.pas">
+      <Form>frmIrsaliye_Fatura</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmISN_ERRORS.pas">
+      <Form>frmISN_ERRORS</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKasa.pas">
+      <Form>frmKasa</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKasalarArasiTransfer.pas">
+      <Form>frmKasalarArasiTransfer</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKasaSDGL.pas">
+      <Form>frmKasaSDGL</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKASA_CARI.pas">
+      <Form>frmKASA_CARI</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKASA_MUHTELIF.pas">
+      <Form>frmKASA_MUHTELIF</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKayitTarihAyarla.pas">
+      <Form>frmKayitTarihAyarla</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKulHakTanim.pas">
+      <Form>frm_Kul_Hak_Tanim</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKullaniciTanimlama.pas">
+      <Form>frm_Kullanici_Tanimlama</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmKulSifreDegis.pas">
+      <Form>frmKulSifreDegis</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmLisans.pas">
+      <Form>frmLisans</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmLOGIN.pas">
+      <Form>frmLOGIN</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmMAIN_NEW.pas">
+      <Form>frmMAIN_NEW</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmMasrafGroup.pas">
+      <Form>frmMasrafGroup</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmMasrafTan.pas">
+      <Form>frmMasrafTan</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmModul.pas">
+      <Form>frmModul</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmMUHKODTanim.pas">
+      <Form>frmMUHKODTanim</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmOlcuTip.pas">
+      <Form>frmOlcuTip</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmPaket.pas">
+      <Form>frmPaket</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmParameters.pas">
+      <Form>frmParameters</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmParametersTab.pas">
+      <Form>frmParametersTab</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmPlasiyer.pas">
+      <Form>frmPlasiyer</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmProgramHizmetleri.pas">
+      <Form>frmProgramHizmetleri</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmProje.pas">
+      <Form>frmProje</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSDLG.pas">
+      <Form>frmSrcDlg</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSENET.pas">
+      <Form>frm_SENET</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSiparis.pas">
+      <Form>frmSiparis</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSiparis_Fatura.pas">
+      <Form>frmSiparis_Fatura</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSIP_SDLG.pas">
+      <Form>frmSIP_SDLG</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSirketTanim.pas">
+      <Form>frm_Sirket_Tanim</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSirket_Expert.pas">
+      <Form>frmSirket_Expert</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmSube.pas">
+      <Form>frm_Sube</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmTERM_FF.pas">
+      <Form>frmTERM_FF</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmUrunGroup.pas">
+      <Form>frmUrunGroup</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmUrunSDLG.pas">
+      <Form>frmUrunSDLG</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmUrunTanA.pas">
+      <Form>frmUrunTanA</Form>
+    </DCCReference>
+    <DCCReference Include="ufrmYeniYil_Devri.pas">
+      <Form>frmYeniYil_Devri</Form>
+    </DCCReference>
+    <DCCReference Include="unCEKSENHAR.pas">
+      <Form>dmCEKSENHAR</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="unDataMod.pas">
+      <Form>DataMod</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="unDEKONT_AUT.pas">
+      <Form>DEKONT_AUT</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="unDmYonet.pas">
+      <Form>DmYonet</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="unFUNC.pas" />
+    <DCCReference Include="unHARFUNCS.pas">
+      <Form>dmHARFUNCS</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="unLogger.pas">
+      <Form>dmLOGGER</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="unRegistry.pas" />
+    <DCCReference Include="UnSec.pas" />
+    <DCCReference Include="unYazici.pas">
+      <Form>Yazici</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Un_Kul_Con_Fb.pas" />
+    <None Include="directive.inc" />
+  </ItemGroup>
+</Project>
+<!-- EurekaLog First Line
+[Exception Log]
+EurekaLog Version=6020
+Activate=0
+Activate Handle=1
+Save Log File=1
+Foreground Tab=0
+Freeze Activate=0
+Freeze Timeout=0
+SMTP From=eurekalog@email.com
+SMTP Host=
+SMTP Port=25
+SMTP UserID=
+SMTP Password=
+Append to Log=0
+TerminateBtn Operation=2
+Errors Number=32
+Errors Terminate=3
+Email Address=
+Email Object=
+Email Send Options=0
+Output Path=
+Encrypt Password=
+AutoCloseDialogSecs=0
+WebSendMode=0
+SupportULR=
+HTMLLayout Count=15
+HTMLLine0="%3Chtml%3E"
+HTMLLine1="  %3Chead%3E"
+HTMLLine2="  %3C/head%3E"
+HTMLLine3="  %3Cbody TopMargin=10 LeftMargin=10%3E"
+HTMLLine4="    %3Ctable width="100%%" border="0"%3E"
+HTMLLine5="      %3Ctr%3E"
+HTMLLine6="        %3Ctd nowrap%3E"
+HTMLLine7="          %3Cfont face="Lucida Console, Courier" size="2"%3E"
+HTMLLine8="            %3C%%HTML_TAG%%%3E"
+HTMLLine9="          %3C/font%3E"
+HTMLLine10="        %3C/td%3E"
+HTMLLine11="      %3C/tr%3E"
+HTMLLine12="    %3C/table%3E"
+HTMLLine13="  %3C/body%3E"
+HTMLLine14="%3C/html%3E"
+AutoCrashOperation=2
+AutoCrashNumber=10
+AutoCrashMinutes=1
+WebURL=
+WebUserID=
+WebPassword=
+WebPort=0
+AttachedFiles=
+ProxyURL=
+ProxyUser=
+ProxyPassword=
+ProxyPort=8080
+TrakerUser=
+TrakerPassword=
+TrakerAssignTo=
+TrakerProject=
+TrakerCategory=
+TrakerTrialID=
+ZipPassword=
+PreBuildEvent=
+PostSuccessfulBuildEvent=
+PostFailureBuildEvent=
+ExceptionDialogType=2
+Count=0
+EMail Message Line Count=0
+loNoDuplicateErrors=0
+loAppendReproduceText=0
+loDeleteLogAtVersionChange=0
+loAddComputerNameInLogFileName=0
+loSaveModulesAndProcessesSections=1
+loSaveAssemblerAndCPUSections=1
+soAppStartDate=1
+soAppName=1
+soAppVersionNumber=1
+soAppParameters=1
+soAppCompilationDate=1
+soAppUpTime=1
+soExcDate=1
+soExcAddress=1
+soExcModuleName=1
+soExcModuleVersion=1
+soExcType=1
+soExcMessage=1
+soExcID=1
+soExcCount=1
+soExcStatus=1
+soExcNote=1
+soUserID=1
+soUserName=1
+soUserEmail=1
+soUserPrivileges=1
+soUserCompany=1
+soActCtlsFormClass=1
+soActCtlsFormText=1
+soActCtlsControlClass=1
+soActCtlsControlText=1
+soCmpName=1
+soCmpTotalMemory=1
+soCmpFreeMemory=1
+soCmpTotalDisk=1
+soCmpFreeDisk=1
+soCmpSysUpTime=1
+soCmpProcessor=1
+soCmpDisplayMode=1
+soCmpDisplayDPI=1
+soCmpVideoCard=1
+soCmpPrinter=1
+soOSType=1
+soOSBuildN=1
+soOSUpdate=1
+soOSLanguage=1
+soOSCharset=1
+soNetIP=1
+soNetSubmask=1
+soNetGateway=1
+soNetDNS1=1
+soNetDNS2=1
+soNetDHCP=1
+soCustomData=1
+sndShowSendDialog=1
+sndShowSuccessFailureMsg=0
+sndSendEntireLog=0
+sndSendXMLLogCopy=0
+sndSendScreenshot=1
+sndUseOnlyActiveWindow=0
+sndSendLastHTMLPage=1
+sndSendInSeparatedThread=0
+sndAddDateInFileName=0
+sndAddComputerNameInFileName=0
+edoSendErrorReportChecked=1
+edoAttachScreenshotChecked=1
+edoShowCopyToClipOption=1
+edoShowDetailsButton=1
+edoShowInDetailedMode=0
+edoShowInTopMostMode=0
+edoUseEurekaLogLookAndFeel=0
+edoShowSendErrorReportOption=1
+edoShowAttachScreenshotOption=1
+edoShowCustomButton=0
+csoShowDLLs=1
+csoShowBPLs=1
+csoShowBorlandThreads=1
+csoShowWindowsThreads=1
+csoDoNotStoreProcNames=0
+boPauseBorlandThreads=0
+boDoNotPauseMainThread=0
+boPauseWindowsThreads=0
+boUseMainModuleOptions=1
+boCopyLogInCaseOfError=1
+boSaveCompressedCopyInCaseOfError=0
+boHandleSafeCallExceptions=1
+boCallRTLExceptionEvent=0
+boCatchHandledExceptions=0
+loCatchLeaks=0
+loGroupsSonLeaks=1
+loHideBorlandLeaks=1
+loFreeAllLeaks=1
+loCatchLeaksExceptions=1
+cfoReduceFileSize=1
+cfoCheckFileCorruption=0
+Count mtInformationMsgCaption=1
+mtInformationMsgCaption0="Information."
+Count mtQuestionMsgCaption=1
+mtQuestionMsgCaption0="Question."
+Count mtErrorMsgCaption=1
+mtErrorMsgCaption0="Error."
+Count mtDialog_Caption=1
+mtDialog_Caption0="Error occurred"
+Count mtDialog_ErrorMsgCaption=2
+mtDialog_ErrorMsgCaption0="An error has occurred during program execution."
+mtDialog_ErrorMsgCaption1="Please read the following information for further details."
+Count mtDialog_GeneralCaption=1
+mtDialog_GeneralCaption0="General"
+Count mtDialog_GeneralHeader=1
+mtDialog_GeneralHeader0="General Information"
+Count mtDialog_CallStackCaption=1
+mtDialog_CallStackCaption0="Call Stack"
+Count mtDialog_CallStackHeader=1
+mtDialog_CallStackHeader0="Call Stack Information"
+Count mtDialog_ModulesCaption=1
+mtDialog_ModulesCaption0="Modules"
+Count mtDialog_ModulesHeader=1
+mtDialog_ModulesHeader0="Modules Information"
+Count mtDialog_ProcessesCaption=1
+mtDialog_ProcessesCaption0="Processes"
+Count mtDialog_ProcessesHeader=1
+mtDialog_ProcessesHeader0="Processes Information"
+Count mtDialog_AsmCaption=1
+mtDialog_AsmCaption0="Assembler"
+Count mtDialog_AsmHeader=1
+mtDialog_AsmHeader0="Assembler Information"
+Count mtDialog_CPUCaption=1
+mtDialog_CPUCaption0="CPU"
+Count mtDialog_CPUHeader=1
+mtDialog_CPUHeader0="CPU Information"
+Count mtDialog_OKButtonCaption=1
+mtDialog_OKButtonCaption0="%26OK"
+Count mtDialog_TerminateButtonCaption=1
+mtDialog_TerminateButtonCaption0="%26Terminate"
+Count mtDialog_RestartButtonCaption=1
+mtDialog_RestartButtonCaption0="%26Restart"
+Count mtDialog_DetailsButtonCaption=1
+mtDialog_DetailsButtonCaption0="%26Details"
+Count mtDialog_CustomButtonCaption=1
+mtDialog_CustomButtonCaption0="%26Help"
+Count mtDialog_SendMessage=1
+mtDialog_SendMessage0="%26Send this error via Internet"
+Count mtDialog_ScreenshotMessage=1
+mtDialog_ScreenshotMessage0="%26Attach a Screenshot image"
+Count mtDialog_CopyMessage=1
+mtDialog_CopyMessage0="%26Copy to Clipboard"
+Count mtDialog_SupportMessage=1
+mtDialog_SupportMessage0="Go to the Support Page"
+Count mtMSDialog_ErrorMsgCaption=1
+mtMSDialog_ErrorMsgCaption0="The application has encountered a problem. We are sorry for the inconvenience."
+Count mtMSDialog_RestartCaption=1
+mtMSDialog_RestartCaption0="Restart application."
+Count mtMSDialog_TerminateCaption=1
+mtMSDialog_TerminateCaption0="Terminate application."
+Count mtMSDialog_PleaseCaption=1
+mtMSDialog_PleaseCaption0="Please tell us about this problem."
+Count mtMSDialog_DescriptionCaption=1
+mtMSDialog_DescriptionCaption0="We have created an error report that you can send to us. We will treat this report as confidential and anonymous."
+Count mtMSDialog_SeeDetailsCaption=1
+mtMSDialog_SeeDetailsCaption0="To see what data the error report contains,"
+Count mtMSDialog_SeeClickCaption=1
+mtMSDialog_SeeClickCaption0="click here."
+Count mtMSDialog_HowToReproduceCaption=1
+mtMSDialog_HowToReproduceCaption0="What were you doing when the problem happened (optional)?"
+Count mtMSDialog_EmailCaption=1
+mtMSDialog_EmailCaption0="Email address (optional):"
+Count mtMSDialog_SendButtonCaption=1
+mtMSDialog_SendButtonCaption0="%26Send Error Report"
+Count mtMSDialog_NoSendButtonCaption=1
+mtMSDialog_NoSendButtonCaption0="%26Don't Send"
+Count mtLog_AppHeader=1
+mtLog_AppHeader0="Application"
+Count mtLog_AppStartDate=1
+mtLog_AppStartDate0="Start Date"
+Count mtLog_AppName=1
+mtLog_AppName0="Name/Description"
+Count mtLog_AppVersionNumber=1
+mtLog_AppVersionNumber0="Version Number"
+Count mtLog_AppParameters=1
+mtLog_AppParameters0="Parameters"
+Count mtLog_AppCompilationDate=1
+mtLog_AppCompilationDate0="Compilation Date"
+Count mtLog_AppUpTime=1
+mtLog_AppUpTime0="Up Time"
+Count mtLog_ExcHeader=1
+mtLog_ExcHeader0="Exception"
+Count mtLog_ExcDate=1
+mtLog_ExcDate0="Date"
+Count mtLog_ExcAddress=1
+mtLog_ExcAddress0="Address"
+Count mtLog_ExcModuleName=1
+mtLog_ExcModuleName0="Module Name"
+Count mtLog_ExcModuleVersion=1
+mtLog_ExcModuleVersion0="Module Version"
+Count mtLog_ExcType=1
+mtLog_ExcType0="Type"
+Count mtLog_ExcMessage=1
+mtLog_ExcMessage0="Message"
+Count mtLog_ExcID=1
+mtLog_ExcID0="ID"
+Count mtLog_ExcCount=1
+mtLog_ExcCount0="Count"
+Count mtLog_ExcStatus=1
+mtLog_ExcStatus0="Status"
+Count mtLog_ExcNote=1
+mtLog_ExcNote0="Note"
+Count mtLog_UserHeader=1
+mtLog_UserHeader0="User"
+Count mtLog_UserID=1
+mtLog_UserID0="ID"
+Count mtLog_UserName=1
+mtLog_UserName0="Name"
+Count mtLog_UserEmail=1
+mtLog_UserEmail0="Email"
+Count mtLog_UserCompany=1
+mtLog_UserCompany0="Company"
+Count mtLog_UserPrivileges=1
+mtLog_UserPrivileges0="Privileges"
+Count mtLog_ActCtrlsHeader=1
+mtLog_ActCtrlsHeader0="Active Controls"
+Count mtLog_ActCtrlsFormClass=1
+mtLog_ActCtrlsFormClass0="Form Class"
+Count mtLog_ActCtrlsFormText=1
+mtLog_ActCtrlsFormText0="Form Text"
+Count mtLog_ActCtrlsControlClass=1
+mtLog_ActCtrlsControlClass0="Control Class"
+Count mtLog_ActCtrlsControlText=1
+mtLog_ActCtrlsControlText0="Control Text"
+Count mtLog_CmpHeader=1
+mtLog_CmpHeader0="Computer"
+Count mtLog_CmpName=1
+mtLog_CmpName0="Name"
+Count mtLog_CmpTotalMemory=1
+mtLog_CmpTotalMemory0="Total Memory"
+Count mtLog_CmpFreeMemory=1
+mtLog_CmpFreeMemory0="Free Memory"
+Count mtLog_CmpTotalDisk=1
+mtLog_CmpTotalDisk0="Total Disk"
+Count mtLog_CmpFreeDisk=1
+mtLog_CmpFreeDisk0="Free Disk"
+Count mtLog_CmpSystemUpTime=1
+mtLog_CmpSystemUpTime0="System Up Time"
+Count mtLog_CmpProcessor=1
+mtLog_CmpProcessor0="Processor"
+Count mtLog_CmpDisplayMode=1
+mtLog_CmpDisplayMode0="Display Mode"
+Count mtLog_CmpDisplayDPI=1
+mtLog_CmpDisplayDPI0="Display DPI"
+Count mtLog_CmpVideoCard=1
+mtLog_CmpVideoCard0="Video Card"
+Count mtLog_CmpPrinter=1
+mtLog_CmpPrinter0="Printer"
+Count mtLog_OSHeader=1
+mtLog_OSHeader0="Operating System"
+Count mtLog_OSType=1
+mtLog_OSType0="Type"
+Count mtLog_OSBuildN=1
+mtLog_OSBuildN0="Build #"
+Count mtLog_OSUpdate=1
+mtLog_OSUpdate0="Update"
+Count mtLog_OSLanguage=1
+mtLog_OSLanguage0="Language"
+Count mtLog_OSCharset=1
+mtLog_OSCharset0="Charset"
+Count mtLog_NetHeader=1
+mtLog_NetHeader0="Network"
+Count mtLog_NetIP=1
+mtLog_NetIP0="IP Address"
+Count mtLog_NetSubmask=1
+mtLog_NetSubmask0="Submask"
+Count mtLog_NetGateway=1
+mtLog_NetGateway0="Gateway"
+Count mtLog_NetDNS1=1
+mtLog_NetDNS10="DNS 1"
+Count mtLog_NetDNS2=1
+mtLog_NetDNS20="DNS 2"
+Count mtLog_NetDHCP=1
+mtLog_NetDHCP0="DHCP"
+Count mtLog_CustInfoHeader=1
+mtLog_CustInfoHeader0="Custom Information"
+Count mtCallStack_Address=1
+mtCallStack_Address0="Address"
+Count mtCallStack_Name=1
+mtCallStack_Name0="Module"
+Count mtCallStack_Unit=1
+mtCallStack_Unit0="Unit"
+Count mtCallStack_Class=1
+mtCallStack_Class0="Class"
+Count mtCallStack_Procedure=1
+mtCallStack_Procedure0="Procedure/Method"
+Count mtCallStack_Line=1
+mtCallStack_Line0="Line"
+Count mtCallStack_MainThread=1
+mtCallStack_MainThread0="Main"
+Count mtCallStack_ExceptionThread=1
+mtCallStack_ExceptionThread0="Exception Thread"
+Count mtCallStack_RunningThread=1
+mtCallStack_RunningThread0="Running Thread"
+Count mtCallStack_CallingThread=1
+mtCallStack_CallingThread0="Calling Thread"
+Count mtCallStack_ThreadID=1
+mtCallStack_ThreadID0="ID"
+Count mtCallStack_ThreadPriority=1
+mtCallStack_ThreadPriority0="Priority"
+Count mtCallStack_ThreadClass=1
+mtCallStack_ThreadClass0="Class"
+Count mtCallStack_LeakCaption=1
+mtCallStack_LeakCaption0="Memory Leak"
+Count mtCallStack_LeakData=1
+mtCallStack_LeakData0="Data"
+Count mtCallStack_LeakType=1
+mtCallStack_LeakType0="Type"
+Count mtCallStack_LeakSize=1
+mtCallStack_LeakSize0="Total size"
+Count mtCallStack_LeakCount=1
+mtCallStack_LeakCount0="Count"
+Count mtSendDialog_Caption=1
+mtSendDialog_Caption0="Send."
+Count mtSendDialog_Message=1
+mtSendDialog_Message0="Message"
+Count mtSendDialog_Resolving=1
+mtSendDialog_Resolving0="Resolving DNS..."
+Count mtSendDialog_Login=1
+mtSendDialog_Login0="Login..."
+Count mtSendDialog_Connecting=1
+mtSendDialog_Connecting0="Connecting with server..."
+Count mtSendDialog_Connected=1
+mtSendDialog_Connected0="Connected with server."
+Count mtSendDialog_Sending=1
+mtSendDialog_Sending0="Sending message..."
+Count mtSendDialog_Sent=1
+mtSendDialog_Sent0="Message sent."
+Count mtSendDialog_SelectProject=1
+mtSendDialog_SelectProject0="Select project..."
+Count mtSendDialog_Searching=1
+mtSendDialog_Searching0="Searching..."
+Count mtSendDialog_Modifying=1
+mtSendDialog_Modifying0="Modifying..."
+Count mtSendDialog_Disconnecting=1
+mtSendDialog_Disconnecting0="Disconnecting..."
+Count mtSendDialog_Disconnected=1
+mtSendDialog_Disconnected0="Disconnected."
+Count mtReproduceDialog_Caption=1
+mtReproduceDialog_Caption0="Request"
+Count mtReproduceDialog_Request=1
+mtReproduceDialog_Request0="Please describe the steps to reproduce the error:"
+Count mtReproduceDialog_OKButtonCaption=1
+mtReproduceDialog_OKButtonCaption0="%26OK"
+Count mtModules_Handle=1
+mtModules_Handle0="Handle"
+Count mtModules_Name=1
+mtModules_Name0="Name"
+Count mtModules_Description=1
+mtModules_Description0="Description"
+Count mtModules_Version=1
+mtModules_Version0="Version"
+Count mtModules_Size=1
+mtModules_Size0="Size"
+Count mtModules_LastModified=1
+mtModules_LastModified0="Modified"
+Count mtModules_Path=1
+mtModules_Path0="Path"
+Count mtProcesses_ID=1
+mtProcesses_ID0="ID"
+Count mtProcesses_Name=1
+mtProcesses_Name0="Name"
+Count mtProcesses_Description=1
+mtProcesses_Description0="Description"
+Count mtProcesses_Version=1
+mtProcesses_Version0="Version"
+Count mtProcesses_Memory=1
+mtProcesses_Memory0="Memory"
+Count mtProcesses_Priority=1
+mtProcesses_Priority0="Priority"
+Count mtProcesses_Threads=1
+mtProcesses_Threads0="Threads"
+Count mtProcesses_Path=1
+mtProcesses_Path0="Path"
+Count mtCPU_Registers=1
+mtCPU_Registers0="Registers"
+Count mtCPU_Stack=1
+mtCPU_Stack0="Stack"
+Count mtCPU_MemoryDump=1
+mtCPU_MemoryDump0="Memory Dump"
+Count mtSend_SuccessMsg=1
+mtSend_SuccessMsg0="The message was sent successfully."
+Count mtSend_FailureMsg=1
+mtSend_FailureMsg0="Sorry, sending the message didn't work."
+Count mtSend_BugClosedMsg=2
+mtSend_BugClosedMsg0="These BUG is just closed."
+mtSend_BugClosedMsg1="Contact the program support to obtain an update."
+Count mtSend_UnknownErrorMsg=1
+mtSend_UnknownErrorMsg0="Unknown error."
+Count mtSend_InvalidLoginMsg=1
+mtSend_InvalidLoginMsg0="Invalid login request."
+Count mtSend_InvalidSearchMsg=1
+mtSend_InvalidSearchMsg0="Invalid search request."
+Count mtSend_InvalidSelectionMsg=1
+mtSend_InvalidSelectionMsg0="Invalid selection request."
+Count mtSend_InvalidInsertMsg=1
+mtSend_InvalidInsertMsg0="Invalid insert request."
+Count mtSend_InvalidModifyMsg=1
+mtSend_InvalidModifyMsg0="Invalid modify request."
+Count mtFileCrackedMsg=2
+mtFileCrackedMsg0="This file is cracked."
+mtFileCrackedMsg1="The application will be closed."
+Count mtException_LeakMultiFree=1
+mtException_LeakMultiFree0="Multi Free memory leak."
+Count mtException_LeakMemoryOverrun=1
+mtException_LeakMemoryOverrun0="Memory Overrun leak."
+Count mtException_AntiFreeze=1
+mtException_AntiFreeze0="The application seems to be frozen."
+Count mtInvalidEmailMsg=1
+mtInvalidEmailMsg0="Invalid email."
+TextsCollection=English
+EurekaLog Last Line -->

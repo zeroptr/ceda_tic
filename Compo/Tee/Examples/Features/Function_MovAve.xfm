@@ -1,0 +1,296 @@
+inherited MovAveFunctionForm: TMovAveFunctionForm
+  Width = 486
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 116
+    Width = 478
+  end
+  inherited Memo1: TMemo
+    Width = 478
+    Height = 57
+    Lines.Strings = (
+      'Moving Averages calculate values as follows:'
+      ''
+      
+        'Value(N) = ( Value(N-1)+Value(N-2)+Value(N-3)...+Value(N-Period)' +
+        ' ) / N')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 118
+    Width = 478
+    Height = 219
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    BackWall.Gradient.EndColor = clGray
+    BackWall.Gradient.StartColor = clSilver
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Foot.Alignment = taLeftJustify
+    Foot.Font.Height = -12
+    Foot.Frame.Color = clScrollBar
+    Foot.Text.Strings = (
+      
+        'Left drag (Up/Down) to Zoom. Right drag to Scroll. Invert Zoom r' +
+        'ectangle to reset.')
+    Foot.Visible = False
+    Gradient.Direction = gdRightLeft
+    Gradient.EndColor = 16744448
+    Gradient.MidColor = clSilver
+    Gradient.StartColor = 8454016
+    Gradient.Visible = True
+    Legend.Alignment = laLeft
+    Legend.Gradient.Visible = True
+    Legend.ShapeStyle = fosRoundRectangle
+    Title.Font.Color = clWhite
+    Title.Font.Height = -13
+    Title.Frame.Color = clScrollBar
+    Title.Text.Strings = (
+      'Moving Averages')
+    BottomAxis.DateTimeFormat = 'dd-mmm'
+    BottomAxis.Increment = 3.000000000000000000
+    BottomAxis.LabelsAngle = 90
+    BottomAxis.LabelsFont.Color = clTeal
+    BottomAxis.Title.Caption = 'Stock Market Date'
+    BottomAxis.Title.Font.Color = clGreen
+    BottomAxis.Title.Font.Height = -12
+    BottomAxis.Title.Font.Style = [fsItalic]
+    LeftAxis.LabelsFont.Color = clWhite
+    LeftAxis.LabelsFont.Height = -12
+    LeftAxis.Title.Caption = 'Stock Price'
+    LeftAxis.Title.Font.Color = clNavy
+    LeftAxis.Title.Font.Height = -12
+    LeftAxis.Title.Font.Style = [fsBold]
+    View3D = False
+    Zoom.Animated = True
+    BevelInner = bvLowered
+    BevelOuter = bvLowered
+    BorderWidth = 4
+    Color = clSilver
+    TabOrder = 0
+    object PriceLine: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Frame.Color = 8454143
+      Marks.Visible = False
+      SeriesColor = clRed
+      Title = 'Price'
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Left = 92
+      Top = 80
+    end
+    object Curve1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = PriceLine
+      SeriesColor = clAqua
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TCurveFittingFunction
+        Period = 1.000000000000000000
+      end
+    end
+    object MovingAve1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = PriceLine
+      SeriesColor = clLime
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object MovingAverageFunction1: TMovingAverageFunction
+        Period = 20.000000000000000000
+      end
+    end
+    object ExpAve1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = PriceLine
+      SeriesColor = clBlue
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object ExpAverageFunction1: TExpAverageFunction
+        Period = 1.000000000000000000
+        Weight = 0.200000000000000000
+      end
+    end
+    object MovingAve2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = PriceLine
+      SeriesColor = clYellow
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object MovingAverageFunction2: TMovingAverageFunction
+        Period = 40.000000000000000000
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    Width = 478
+    Height = 59
+    object Label1: TLabel
+      Left = 93
+      Top = 13
+      Width = 65
+      Height = 13
+      Caption = 'Green Period:'
+    end
+    object Label2: TLabel
+      Left = 91
+      Top = 35
+      Width = 67
+      Height = 13
+      Caption = 'Yellow Period:'
+    end
+    object Label3: TLabel
+      Left = 242
+      Top = 25
+      Width = 72
+      Height = 13
+      Caption = '&Blue Weight %:'
+      FocusControl = Edit1
+    end
+    object CheckBox1: TCheckBox
+      Left = 12
+      Top = 20
+      Width = 77
+      Height = 17
+      Caption = '&Animate'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 382
+      Top = 24
+      Width = 51
+      Height = 17
+      Caption = '&Fun !'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = CheckBox3Click
+    end
+    object Edit1: TEdit
+      Left = 318
+      Top = 21
+      Width = 33
+      Height = 21
+      TabOrder = 2
+      Text = '20'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 351
+      Top = 21
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Increment = 5
+      Position = 20
+      TabOrder = 3
+    end
+    object Edit2: TEdit
+      Left = 166
+      Top = 9
+      Width = 33
+      Height = 21
+      TabOrder = 4
+      Text = '20'
+      OnChange = Edit2Change
+    end
+    object UpDown2: TUpDown
+      Left = 199
+      Top = 9
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Increment = 5
+      Position = 20
+      TabOrder = 5
+    end
+    object Edit3: TEdit
+      Left = 166
+      Top = 33
+      Width = 33
+      Height = 21
+      TabOrder = 6
+      Text = '40'
+      OnChange = Edit3Change
+    end
+    object UpDown3: TUpDown
+      Left = 199
+      Top = 33
+      Width = 15
+      Height = 21
+      Associate = Edit3
+      Increment = 5
+      Position = 40
+      TabOrder = 7
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 80
+    Top = 32
+  end
+end

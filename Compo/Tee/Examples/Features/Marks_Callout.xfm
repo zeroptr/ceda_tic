@@ -1,0 +1,87 @@
+inherited MarksCallouts: TMarksCallouts
+  Left = 358
+  Top = 292
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Series Marks new CallOut property, to change the appearance'
+      'of lines connecting marks to series points.'
+      
+        'New styles: Callout, rectangle, ellipse... and new properties: s' +
+        'ize,'
+      'brush, distance.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Series Marks Callouts')
+    Chart3DPercent = 20
+    object Series1: TBarSeries
+      Marks.ArrowLength = 21
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Visible = True
+      Marks.Callout.Distance = 13
+      Marks.Callout.Length = 21
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 14
+      Top = 13
+      Width = 26
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Style:'
+      FocusControl = CBArrowStyle
+    end
+    object CBArrowStyle: TComboFlat
+      Left = 40
+      Top = 10
+      Width = 137
+      TabOrder = 0
+      OnChange = CBArrowStyleChange
+      Items.Strings = (
+        'Square'
+        'Circle'
+        'Triangle'
+        'Down Triangle'
+        'Cross'
+        'Diagonal Cross'
+        'Star'
+        'Diamond'
+        'Small Dot'
+        'Nothing'
+        'Left Triangle'
+        'Right Triangle')
+    end
+    object Button1: TButton
+      Left = 192
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 278
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Visible'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox1Click
+    end
+  end
+end

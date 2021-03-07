@@ -1,0 +1,184 @@
+object MiscVersion6: TMiscVersion6
+  Left = 192
+  Top = 107
+  Width = 571
+  Height = 580
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 563
+    Height = 553
+    Align = alClient
+    Lines.Strings = (
+      'Miscellaneous changes and additions in version 6:'
+      ''
+      '- Supports Delphi 7.'
+      ''
+      '- Delphi 3 support removed. Use previous TeeChart v5.'
+      ''
+      '- Removed functions MaxLong, MaxDouble, MinLong, MinDouble'
+      
+        '  from TeeProcs unit. Use Delphi'#39's RTL Math unit Max and Min ins' +
+        'tead.'
+      ''
+      '- New overload method: Series1.Clicked( P : TPoint )'
+      '  This method is equivalent to call Series1.Clicked( P.X, P.Y ).'
+      ''
+      '- New function Series1.YValues.ToString( 123 )'
+      
+        '  This function is equivalent to call FloatToStr( Series1.YValue' +
+        's[ 123 ] )'
+      ''
+      '- Grid 3D series (surface, contour, etc)'
+      
+        '  Removed size limit ( was before: 2000 x 2000 ). Now it uses Dy' +
+        'namic Arrays.'
+      ''
+      
+        '- Base class TTeeShape includes now a Shadow property of class T' +
+        'TeeShadow.'
+      
+        '  Shadow has now Transparency and different properties for horiz' +
+        'ontal and vertical'
+      
+        '  shadow sizes. This change benefits Titles, Legend, Calendar ce' +
+        'lls, etc.'
+      ''
+      '- Area series displays gradients when Stairs mode is True.'
+      ''
+      '- ColorGrid series design change.'
+      '  It now displays a grid-cell for each series point.'
+      '  Before, it wasn'#39't showing the last x column and z row.'
+      ''
+      
+        '- All Series have a new SetNull method to easy setting invisible' +
+        ' points:'
+      '  Series1.SetNull(3) <--- hide point'
+      ''
+      
+        '- Removed special DEFINE TEENOCHECKOVER (to speed up axes calcul' +
+        'ations).'
+      '  Now axes have a property:  Chart1.Axes.FastCalc:=True;'
+      ''
+      '- Annotation tool:'
+      '  Now includes a TextAlignment property (Left,Center or Right).'
+      ''
+      
+        '- Export data formats (XML,Text,Excel,HTML) can now export serie' +
+        's colors.'
+      ''
+      
+        '- TeeCommander new property: EnablePieExploding (boolean, defaul' +
+        't True).'
+      
+        '  This new property controls whether Pie series will be exploded' +
+        ' or'
+      '  not when dragging them with the mouse.'
+      ''
+      '- Axis LogarithmicBase property is now of type "double", thus'
+      '  allowing for example logarithmic axis of base "e" (2.71...)'
+      ''
+      '- ADX function provides two new properties of type TChartPen:'
+      
+        '  DownLinePen and UpLinePen, to control display of ADX upper and' +
+        ' lower lines.'
+      ''
+      '- Candle series improvement in Clicked function.'
+      
+        '  Correctly calculates if mouse XY is over a candle or candle-st' +
+        'ick point.'
+      ''
+      
+        '- ColorPalette[] array (TeeProcs.pas unit) is now a dynamic arra' +
+        'y variable to'
+      
+        '  allow changing colors and expand the number of predefined colo' +
+        'rs for points'
+      '  and series.  (ie: When Series ColorEachPoint is True).'
+      ''
+      
+        '- Histogram and HighLow series now correctly implement Clicked f' +
+        'unction, for'
+      '  mouse hit detection, cursor, etc.'
+      ''
+      
+        '- Bar and Horizontal Bar Series with "Rect.Gradient" style, disp' +
+        'lay in 3D.'
+      ''
+      '- New OnClick event at Axis Arrow tool.'
+      ''
+      '- Donut series can now display in 3D.'
+      ''
+      '- Canvas provides new method to draw images with 3D rotation:'
+      ''
+      '     Canvas.StretchDraw(... , Z);'
+      ''
+      
+        '  The Chart BackImage (in Inside mode), ColorGrid series and Cha' +
+        'rtImage tool'
+      '  benefit from this new method.'
+      ''
+      
+        '- TeeChart Wizard now installed at Delphi / C++ Builder Help men' +
+        'u.'
+      
+        '  It now allows loading Chart templates (*.tee files) at design-' +
+        'time.'
+      ''
+      
+        '- New ChartAxis PositionUnits property to specify PositionPercen' +
+        't as'
+      '  percentage or pixels.'
+      ''
+      
+        '- TChartEditor component has a new "RememberPosition" boolean pr' +
+        'operty'
+      
+        '  to persist the chart editor dialog position at runtime into re' +
+        'gistry.'
+      ''
+      
+        '- ColorLine tool automatically sets line position to axis Minimu' +
+        'm,'
+      '  Maximum or Center.  ( Use new ColorLine "Style" property ).'
+      ''
+      
+        '- Pie Series includes a new property DarkPen (Boolean) to displa' +
+        'y pie slice'
+      '  borders using a darker slice color.'
+      ''
+      
+        '- New Candle series drawing style "csLine" to display a simple l' +
+        'ine using'
+      '  Close values. '
+      ''
+      
+        '- TChartEditor component includes a new Series property to show ' +
+        'desired'
+      
+        '  Series editor when setting DefaultTab property to "General" or' +
+        ' "Marks".'
+      ''
+      '- Polar and Radar series, support for Logarithmic axis.'
+      ''
+      
+        '- Bar and Horiz.Bar series new bar style: "bsBevel" and BevelSiz' +
+        'e property,'
+      
+        '  to draw a rectangular bevel (in 2D and orthogonal 3D modes onl' +
+        'y).'
+      '')
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 0
+  end
+end

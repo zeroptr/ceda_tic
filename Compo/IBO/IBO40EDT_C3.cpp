@@ -1,0 +1,22 @@
+//---------------------------------------------------------------------------
+#include <vcl.h>
+#pragma hdrstop
+USERES("IBO40_C3.res");
+USEUNIT("IB_Editors.pas");
+USEFORMNS("IB_LedgerEditor.pas", Ib_ledgereditor, dlgIB_LedgerSetup);
+USEPACKAGE("vcl35.bpi");
+USEPACKAGE("vclx35.bpi");
+USEPACKAGE("IBO40CRT_C3.bpi");
+USEPACKAGE("IBO40TRT_C3.bpi");
+USEPACKAGE("IBO40VRT_C3.bpi");
+USEPACKAGE("IBO40FRT_C3.bpi");
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+//---------------------------------------------------------------------------
+//   Package source.
+//---------------------------------------------------------------------------
+int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
+{
+    return 1;
+}
+//---------------------------------------------------------------------------

@@ -1,0 +1,133 @@
+inherited CursorToolDemo: TCursorToolDemo
+  Left = 280
+  Top = 185
+  Width = 457
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 90
+    Width = 449
+  end
+  inherited Memo1: TMemo
+    Width = 449
+    Height = 49
+    Lines.Strings = (
+      
+        'Cursor Tool is used to display vertical and / or horizontal line' +
+        's on top of charts.'
+      'Cursors can be dragged by mouse or by code at runtime.'
+      'They notify position changes with the OnChange event.')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 92
+    Width = 449
+    Height = 245
+    Title.Text.Strings = (
+      'Cursors example')
+    CustomAxes = <
+      item
+        Horizontal = False
+        OtherSide = False
+        LabelsOnAxis = False
+        StartPosition = 50.000000000000000000
+      end>
+    LeftAxis.Automatic = False
+    LeftAxis.AutomaticMinimum = False
+    LeftAxis.EndPosition = 50.000000000000000000
+    View3D = False
+    TabOrder = 0
+    object Series1: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clGreen
+      LinePen.Color = clGreen
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = 4227327
+      VertAxis = aCustomVertAxis
+      LinePen.Color = 4227327
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomVertAxis = 0
+    end
+    object ChartTool1: TCursorTool
+      Pen.Color = clRed
+      Pen.Style = psDot
+      Series = Series1
+      OnChange = ChartTool1Change
+    end
+    object ChartTool2: TCursorTool
+      FollowMouse = True
+      Pen.Color = clBlue
+      Series = Series2
+      OnChange = ChartTool2Change
+    end
+    object ChartTool3: TColorLineTool
+      Pen.Color = 8421440
+      Pen.Width = 2
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    Width = 449
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 32
+      Height = 13
+      Caption = 'Label1'
+    end
+    object Label2: TLabel
+      Left = 104
+      Top = 16
+      Width = 32
+      Height = 13
+      Caption = 'Label2'
+    end
+    object CheckBox2: TCheckBox
+      Left = 216
+      Top = 12
+      Width = 57
+      Height = 17
+      Caption = 'Snap'
+      TabOrder = 0
+      OnClick = CheckBox2Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 280
+      Top = 12
+      Width = 65
+      Height = 17
+      Caption = 'Active'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 360
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 376
+    Top = 186
+  end
+end

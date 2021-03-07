@@ -1,0 +1,220 @@
+// IBA_Database.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_Database.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  FIB_Transaction := TIB_TransactionDefault.Create( Self );
+  FIB_Transaction.IB_Connection := Self;
+  FDefaultTransaction := FIB_Transaction;
+end;
+procedure TIB_Database.ApplyUpdates( const ADatasets: array of TIB_BDataset );
+begin FIB_Transaction.ApplyUpdates( ADatasets ); end;
+procedure TIB_Database.CancelUpdates( const ADatasets: array of TIB_BDataset );
+begin FIB_Transaction.CancelUpdates( ADatasets ); end;
+procedure TIB_Database.StartTransaction;
+begin FIB_Transaction.StartTransaction; end;
+procedure TIB_Database.Commit;
+begin FIB_Transaction.Commit; end;
+procedure TIB_Database.Rollback;
+begin FIB_Transaction.Rollback; end;
+procedure TIB_Database.RollbackRetaining;
+begin FIB_Transaction.RollbackRetaining; end;
+procedure TIB_Database.Refresh( CommitChanges: boolean );
+begin FIB_Transaction.Refresh( CommitChanges ); end;
+procedure TIB_Database.CommitRetaining;
+begin FIB_Transaction.CommitRetaining; end;
+procedure TIB_Database.Savepoint;
+begin FIB_Transaction.Savepoint; end;
+procedure TIB_Database.Activate;
+begin FIB_Transaction.Activate; end;
+function TIB_Database.CloseWithConfirm: {$IFNDEF IBO4_BETA}TModalResult
+                                        {$ELSE}integer{$ENDIF};
+begin Result := FIB_Transaction.CloseWithConfirm; end;
+function TIB_Database.EndWithConfirm: {$IFNDEF IBO4_BETA}TModalResult
+                                      {$ELSE}integer{$ENDIF};
+begin Result := FIB_Transaction.EndWithConfirm; end;
+procedure TIB_Database.PostAll;
+begin FIB_Transaction.PostAll; end;
+procedure TIB_Database.CancelAll;
+begin FIB_Transaction.CancelAll; end;
+procedure TIB_Database.UpdateStatus;
+begin FIB_Transaction.UpdateStatus; end;
+function TIB_Database.GetInTransaction: boolean;
+begin Result := FIB_Transaction.InTransaction; end;
+function TIB_Database.GetTransactionIsActive: boolean;
+begin Result := FIB_Transaction.TransactionIsActive; end;
+function TIB_Database.GetPtrHandle: pisc_tr_handle;
+begin Result := FIB_Transaction.PtrHandle; end;
+function TIB_Database.GetTransactionState: TIB_TransactionState;
+begin Result := FIB_Transaction.TransactionState; end;
+function TIB_Database.GetPostPendingCount: integer;
+begin Result := FIB_Transaction.PostPendingCount; end;
+function TIB_Database.GetCachedUpdatePendingCount: integer;
+begin Result := FIB_Transaction.CachedUpdatePendingCount; end;
+function TIB_Database.GetStarted: boolean;
+begin Result := FIB_Transaction.Started; end;
+procedure TIB_Database.SetStarted( AValue: boolean );
+begin FIB_Transaction.Started := AValue; end;
+function TIB_Database.GetAutoCommit: boolean;
+begin Result := FIB_Transaction.AutoCommit; end;
+procedure TIB_Database.SetAutoCommit( AValue: boolean );
+begin FIB_Transaction.AutoCommit := AValue; end;
+procedure TIB_Database.SetName( const NewName: TComponentName );
+begin
+  inherited SetName( NewName );
+  FIB_Transaction.Name := 'tr' + NewName;
+end;
+function TIB_Database.GetTransactionLinkCount: integer;
+begin Result := FIB_Transaction.TransactionLinkCount; end;
+function TIB_Database.GetBeforeStart: TIB_TransactionEvent;
+begin Result := FIB_Transaction.BeforeStart; end;
+procedure TIB_Database.SetBeforeStart( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.BeforeStart := AValue; end;
+function TIB_Database.GetAfterStart: TIB_TransactionEvent;
+begin Result := FIB_Transaction.AfterStart; end;
+procedure TIB_Database.SetAfterStart( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.AfterStart := AValue; end;
+function TIB_Database.GetBeforeCommit: TIB_TransactionEvent;
+begin Result := FIB_Transaction.BeforeCommit; end;
+procedure TIB_Database.SetBeforeCommit( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.BeforeCommit := AValue; end;
+function TIB_Database.GetAfterCommit: TIB_TransactionEvent;
+begin Result := FIB_Transaction.AfterCommit; end;
+procedure TIB_Database.SetAfterCommit( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.AfterCommit := AValue; end;
+function TIB_Database.GetBeforeCommitRetaining: TIB_TransactionEvent;
+begin Result := FIB_Transaction.BeforeCommitRetaining; end;
+procedure TIB_Database.SetBeforeCommitRetaining( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.BeforeCommitRetaining := AValue; end;
+function TIB_Database.GetAfterCommitRetaining: TIB_TransactionEvent;
+begin Result := FIB_Transaction.AfterCommitRetaining; end;
+procedure TIB_Database.SetAfterCommitRetaining( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.AfterCommitRetaining := AValue; end;
+function TIB_Database.GetBeforeRollbackRetaining: TIB_TransactionEvent;
+begin Result := FIB_Transaction.BeforeRollbackRetaining; end;
+procedure TIB_Database.SetBeforeRollbackRetaining(AValue: TIB_TransactionEvent);
+begin FIB_Transaction.BeforeRollbackRetaining := AValue; end;
+function TIB_Database.GetAfterRollbackRetaining: TIB_TransactionEvent;
+begin Result := FIB_Transaction.AfterRollbackRetaining; end;
+procedure TIB_Database.SetAfterRollbackRetaining( AValue: TIB_TransactionEvent);
+begin FIB_Transaction.AfterRollbackRetaining := AValue; end;
+function TIB_Database.GetBeforeRollback: TIB_TransactionEvent;
+begin Result := FIB_Transaction.BeforeRollback; end;
+procedure TIB_Database.SetBeforeRollback( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.BeforeRollback := AValue; end;
+function TIB_Database.GetAfterRollback: TIB_TransactionEvent;
+begin Result := FIB_Transaction.AfterRollback; end;
+procedure TIB_Database.SetAfterRollback( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.AfterRollback := AValue; end;
+function TIB_Database.GetBeforeEnd: TIB_TransactionEvent;
+begin Result := FIB_Transaction.BeforeEnd; end;
+procedure TIB_Database.SetBeforeEnd( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.BeforeEnd := AValue; end;
+function TIB_Database.GetAfterEnd: TIB_TransactionEvent;
+begin Result := FIB_Transaction.AfterEnd; end;
+procedure TIB_Database.SetAfterEnd( AValue: TIB_TransactionEvent );
+begin FIB_Transaction.AfterEnd := AValue; end;
+function TIB_Database.GetOnSessionTimer: TIB_SessionTimerEvent;
+begin Result := FIB_Transaction.OnSessionTimer; end;
+procedure TIB_Database.SetOnSessionTimer( AValue: TIB_SessionTimerEvent );
+begin FIB_Transaction.OnSessionTimer := AValue; end;
+procedure TIB_Database.SetAnnounceFocus( AValue: boolean );
+begin
+  FIB_Transaction.AnnounceFocus := AValue;
+  inherited SetAnnounceFocus( AValue );
+end;
+procedure TIB_Database.SetFocus;
+begin
+  FIB_Transaction.SetFocus;
+  inherited SetFocus;
+end;
+function TIB_Database.GetReadOnly: boolean;
+begin Result := FIB_Transaction.ReadOnly; end;
+procedure TIB_Database.SetReadOnly( AValue: boolean );
+begin FIB_Transaction.ReadOnly := AValue; end;
+function TIB_Database.GetIsolation: TIB_Isolation;
+begin Result := FIB_Transaction.Isolation; end;
+procedure TIB_Database.SetIsolation( AValue: TIB_Isolation );
+begin FIB_Transaction.Isolation := AValue; end;
+function TIB_Database.GetRecVersion: boolean;
+begin Result := FIB_Transaction.RecVersion; end;
+procedure TIB_Database.SetRecVersion( AValue: boolean );
+begin FIB_Transaction.RecVersion := AValue; end;
+function TIB_Database.GetLockWait: boolean;
+begin Result := FIB_Transaction.LockWait; end;
+procedure TIB_Database.SetLockWait( AValue: boolean );
+begin FIB_Transaction.LockWait := AValue; end;
+function TIB_Database.GetTimeOutProps: TIB_TimeoutProps;
+begin Result := FIB_Transaction.TimeOutProps; end;
+procedure TIB_Database.SetTimeOutProps( AValue: TIB_TimeoutProps );
+begin FIB_Transaction.SetTimeOutProps( AValue ); end;
+procedure TIB_Database.SetDefaultTransaction( AValue: TIB_Transaction );
+begin
+  if ( AValue <> nil ) and ( AValue <> FDefaultTransaction ) then
+    raise EIB_ConnectionError.Create( E_Cant_Repl_Int_Tr );
+end;
+
+procedure TIB_Database.GetTransIsolation( AReader: TReader );
+var
+  tmpStr: string;
+begin
+  tmpStr := AReader.ReadIdent;
+  if tmpStr = 'tiDirtyRead' then
+  begin
+    Isolation := tiConcurrency;
+    RecVersion := false;
+  end
+  else if tmpStr = 'tiReadCommitted' then
+  begin
+    Isolation := tiConcurrency;
+    RecVersion := true;
+  end
+  else if tmpStr = 'tiRepeatableRead' then
+    Isolation := tiConcurrency;
+end;
+
+procedure TIB_Database.DefineProperties( AFiler: TFiler );
+begin
+  inherited DefineProperties( AFiler );
+  AFiler.DefineProperty( 'TransIsolation', GetTransIsolation, nil, false );
+end;
+
+function TIB_DataBase.GetDriverName: string;
+begin
+  Result := 'INTRBASE';
+end;

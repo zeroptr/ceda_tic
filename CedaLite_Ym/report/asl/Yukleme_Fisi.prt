@@ -1,0 +1,324 @@
+object TprTxReport
+  DesignerFormMode = fmMDIChild
+  PreviewFormMode = fmMDIChild
+  FromPage = 1
+  ToPage = 1
+  Values = <>
+  Variables = <
+    item
+      Name = 'esers'
+      ValueType = 'prvvtString'
+      Value = 'tttttttttttttttttttt'
+    end>
+  PrinterName = 'IBM Proprinter III'
+  ESCModelName = 'Epson printers'
+  RecodeTableName = 'Auto_857_to_1254'
+  WrapAfterColumn = 0
+  EjectPageAfterPrint = False
+  LinesOnPage = 10
+  FromLine = 1
+  ToLine = 54
+  Left = 330
+  Top = 12
+  SystemInfo = (
+    'OS: WIN32_NT 5.1.2600 Service Pack 2'
+    ''
+    'PageSize: 4096'
+    'ActiveProcessorMask: $1000'
+    'NumberOfProcessors: 1'
+    'ProcessorType: 586'
+    ''
+    'Compiler version: Delphi7'
+    'PReport version: 1.9.6')
+  object prTxPage1: TprTxPage
+    PageType = tptPage
+    LineNum = 60
+    ColNum = 80
+    DefTxFontStyleEx = tfsNormal
+    object prTxHTitleBand1: TprTxHTitleBand
+      Height = 55
+      object prTxMemoObj5: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Formula = 'qryKOMISYON.GONDEREN_FIRMA'
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.GONDEREN_FIRMA]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 9
+        dRec.Right = 48
+        dRec.Bottom = 10
+      end
+      object prTxMemoObj1: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.TARIH]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 64
+        dRec.Top = 6
+        dRec.Right = 75
+        dRec.Bottom = 7
+      end
+      object prTxMemoObj3: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.SOFOR_ADI_SOY]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 11
+        dRec.Right = 48
+        dRec.Bottom = 12
+      end
+      object prTxMemoObj4: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.ARAC_PLAKA]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 15
+        dRec.Right = 37
+        dRec.Bottom = 16
+      end
+      object prTxMemoObj6: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.SOFOR_EHLIYET_NO]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 17
+        dRec.Right = 68
+        dRec.Bottom = 18
+      end
+      object prTxMemoObj7: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.SOFOR_VERGI_DA]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 19
+        dRec.Right = 48
+        dRec.Bottom = 20
+      end
+      object prTxMemoObj8: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.SOFOR_ADRESI]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 21
+        dRec.Right = 72
+        dRec.Bottom = 22
+      end
+      object prTxMemoObj9: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.SOFOR_TEL]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 23
+        dRec.Right = 72
+        dRec.Bottom = 24
+      end
+      object prTxMemoObj10: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.YUK_KILO]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 25
+        dRec.Right = 50
+        dRec.Bottom = 26
+      end
+      object prTxMemoObj2: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Formula = 'qryKOMISYON.ARAC_MODEL'
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.ARAC_MODEL]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 38
+        dRec.Top = 15
+        dRec.Right = 67
+        dRec.Bottom = 16
+      end
+      object prTxMemoObj11: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.SOFOR_VERGI_DA_NO]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 49
+        dRec.Top = 19
+        dRec.Right = 72
+        dRec.Bottom = 20
+      end
+      object prTxMemoObj12: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.GIDECEGI_YER]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 27
+        dRec.Right = 50
+        dRec.Bottom = 28
+      end
+      object prTxMemoObj13: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.YUK_CINSI]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 29
+        dRec.Right = 50
+        dRec.Bottom = 30
+      end
+      object prTxMemoObj14: TprTxMemoObj
+        dRec.Versions = <
+          item
+            Visible = True
+            Memo.Strings = (
+              '[qryKOMISYON.TOPLAM_UCRET]')
+            DeleteEmptyLinesAtEnd = False
+            DeleteEmptyLines = False
+            CanResizeX = False
+            CanResizeY = False
+            hAlign = prhLeft
+            vAlign = prvTop
+            DefaultFont = False
+            WordWrap = False
+          end>
+        dRec.Left = 25
+        dRec.Top = 31
+        dRec.Right = 50
+        dRec.Bottom = 32
+      end
+    end
+  end
+end

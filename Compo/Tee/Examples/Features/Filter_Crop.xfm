@@ -1,0 +1,127 @@
+inherited FilterCrop: TFilterCrop
+  Left = 412
+  Top = 192
+  Width = 515
+  Height = 418
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 499
+  end
+  inherited Memo1: TMemo
+    Width = 499
+    Lines.Strings = (
+      
+        'This filter allows to plot only the selected rectangular area. W' +
+        'idth and Height properties must be '
+      'assigned.'
+      ''
+      'Example :'
+      '  with CropFilter do'
+      '  begin'
+      '    Width:=250;'
+      '    Height:=200;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 499
+    Height = 226
+    Chart3DPercent = 100
+    View3DOptions.HorizOffset = 14
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 174
+    View3DOptions.Rotation = 33
+    View3DOptions.Zoom = 90
+    object Series1: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.HorizSize = 23
+      Pointer.InflateMargins = True
+      Pointer.Style = psTriangle
+      Pointer.VertSize = 19
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0005000000000000000080614000000000000069400000000000C06240000000
+        0000A05E400000000000506E40}
+    end
+    object ChartTool1: TAntiAliasTool
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 499
+    object Label1: TLabel
+      Left = 96
+      Top = 16
+      Width = 31
+      Height = 13
+      Caption = '&Width:'
+      FocusControl = tbWidth
+    end
+    object Label2: TLabel
+      Left = 208
+      Top = 16
+      Width = 34
+      Height = 13
+      Caption = '&Height:'
+      FocusControl = tbHeight
+    end
+    object CheckBox1: TCheckBox
+      Left = 13
+      Top = 15
+      Width = 60
+      Height = 17
+      Caption = '&Active'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object tbWidth: TEdit
+      Left = 134
+      Top = 13
+      Width = 33
+      Height = 21
+      TabOrder = 1
+      Text = '250'
+      OnChange = tbWidthChange
+    end
+    object udWidth: TUpDown
+      Left = 167
+      Top = 13
+      Width = 16
+      Height = 21
+      Associate = tbWidth
+      Max = 10000
+      Increment = 10
+      Position = 250
+      TabOrder = 2
+    end
+    object tbHeight: TEdit
+      Left = 248
+      Top = 13
+      Width = 31
+      Height = 21
+      TabOrder = 3
+      Text = '200'
+      OnChange = tbHeightChange
+    end
+    object udHeight: TUpDown
+      Left = 279
+      Top = 13
+      Width = 16
+      Height = 21
+      Associate = tbHeight
+      Max = 10000
+      Increment = 10
+      Position = 200
+      TabOrder = 4
+    end
+  end
+end

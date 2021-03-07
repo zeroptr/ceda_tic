@@ -1,0 +1,120 @@
+inherited Bar3DDepth: TBar3DDepth
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Bar and Horizontal bar series "DepthPercent" property contro' +
+        'ls the'
+      'size of bars in 3D (Z depth) direction.'
+      ''
+      'Series1.DepthPercent := 50 ;   // % of 3D depth')
+  end
+  inherited Chart1: TChart
+    BackWall.Color = clRed
+    BackWall.Size = 7
+    BackWall.Transparent = False
+    BottomWall.Size = 7
+    LeftWall.Color = 16770815
+    LeftWall.Dark3D = False
+    LeftWall.Size = 7
+    RightWall.Size = 7
+    View3DOptions.Elevation = 342
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 92
+    View3DOptions.Rotation = 317
+    View3DOptions.Zoom = 61
+    ColorPaletteIndex = 3
+    object Series1: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series3: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series4: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series5: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 11
+      Top = 16
+      Width = 32
+      Height = 13
+      Caption = '&Depth:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 216
+      Top = 16
+      Width = 31
+      Height = 13
+      Caption = '&Width:'
+      FocusControl = ScrollBar2
+    end
+    object ScrollBar1: TScrollBar
+      Left = 51
+      Top = 14
+      Width = 145
+      Height = 16
+
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object ScrollBar2: TScrollBar
+      Left = 256
+      Top = 14
+      Width = 175
+      Height = 16
+
+      TabOrder = 1
+      OnChange = ScrollBar2Change
+    end
+  end
+end

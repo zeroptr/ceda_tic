@@ -1,0 +1,100 @@
+:Base IocompVCL.hlp>Main
+:Title Iocomp Component Help
+1 Iocomp Component Help
+2 Help Overview=Help_Overview
+2 Components
+3 Components by Category
+4 LED Indicator Components=LED_Indicator_Components
+4 Knob and Slider Components=Knob_and_Slider_Components
+4 Switch Components=Switch_Components
+4 Gauge Components=Gauge_Components
+4 Percent-Based Components=Percent_Based_Components
+4 Miscellaneous Components=Miscellaneous_Components
+4 Compass Components=Compass_Components
+4 Tank, Valve, and Pipe Components=Tank_and_Valve_Components
+4 Plot and Charting Components=Plot_Components
+4 Specialized Components
+5 Object Canvas Component=Object_Canvas_Component
+5 Spectrum Display Component=Spectrum_Display_Component
+5 OPC Manager Component=TiOPCManager
+3 Components by Class Name
+4 TiAnalogDisplay=TiAnalogDisplay
+4 TiAnalogOutput=TiAnalogOutput
+4 TiAngularGauge=TiAngularGauge
+4 TiAngularLogGauge=TiAngularLogGauge
+4 TiCompass=TiCompass
+4 TiDualCompass=TiDualCompass
+4 TiEdit=TiEdit
+4 TiImageDisplay=TiImageDisplay
+4 TiIntegerOutput=TiIntegerOutput
+4 TiGradient=TiGradient
+4 TiKeyBoard=TiKeyBoard
+4 TiKnob=TiKnob
+4 TiLabel=TiLabel
+4 TiLCDMatrix=TiLCDMatrix
+4 TiLedArrow=TiLedArrow
+4 TiLedBar=TiLedBar
+4 TiLedDiamond=TiLedDiamond
+4 TiLedMatrix=TiLedMatrix
+4 TiLedRectangle=TiLedRectangle
+4 TiLedRound=TiLedRound
+4 TiLedSpiral=TiLedSpiral
+4 TiLinearGauge=TiLinearGauge
+4 TiLogGauge=TiLogGauge
+4 TiModeComboBox=TiModeComboBox
+4 TiMotor=TiMotor
+4 TiObjectCanvas=TiObjectCanvas
+4 TiOdometer=TiOdometer
+4 TiOPCManager=TiOPCManager
+4 TiPanel=TiPanel
+4 TiPercentBar=TiPercentBar
+4 TiPhonePad=TiPhonePad
+4 TiPieChart=TiPieChart
+4 TiPipe=TiPipe
+4 TiPipeJoint=TiPipeJoint
+4 TiPlot=TiPlot
+4 TiRotationDisplay=TiRotationDisplay
+4 TiScope=TiScope
+4 TiSevenSegmentAnalog=TiSevenSegmentAnalog
+4 TiSevenSegmentBinary=TiSevenSegmentBinary
+4 TiSevenSegmentCharacter=TiSevenSegmentCharacter
+4 TiSevenSegmentClock=TiSevenSegmentClock
+4 TiSevenSegmentClockSMPTE=TiSevenSegmentClockSMPTE
+4 TiSevenSegmentHexadecimal=TiSevenSegmentHexadecimal
+4 TiSevenSegmentInteger=TiSevenSegmentInteger
+4 TiSlider=TiSlider
+4 TiSlidingCompass=TiSlidingCompass
+4 TiSlidingScale=TiSlidingScale
+4 TiSpectrumDisplay=TiSpectrumDisplay
+4 TiSwitchLed=TiSwitchLed
+4 TiSwitchLever=TiSwitchLever
+4 TiSwitchPanel=TiSwitchPanel
+4 TiSwitchQuad=TiSwitchQuad
+4 TiSwitchRocker=TiSwitchRocker
+4 TiSwitchRocker3Way=TiSwitchRocker3Way
+4 TiSwitchRotary=TiSwitchRotary
+4 TiSwitchSlider=TiSwitchSlider
+4 TiSwitchToggle=TiSwitchToggle
+4 TiTank=TiTank
+4 TiThermometer=TiThermometer
+4 TiThreadTimers=TiThreadTimers
+4 TiTimers=TiTimers
+4 TiValve=TiValve
+4 TiXYPlot=TiXYPlot
+3 Components by Product
+4 Instrumentation Pack Components=Instrumentation_Pack_Components
+4 Professional Pack Components=Professional_Pack_Components
+4 Plot Pack Components=Plot_Pack_Components
+4 OPC Common Components=TiOPCManager
+2 Advanced Topics
+3 OPC (OLE for Process Control)
+4 OPC Overview=OPC_Overview
+4 OPC Distribution=OPC_Distribution
+4 OPC Supported Components=OPC_Supported_Components
+3 Memory Usage
+4 Plot Pack Component Memory Usage=Plot_Pack_Component_Memory_Usage
+4 Resource Memory vs. RAM Memory=Resource_Memory_vs._RAM_Memory
+3 Reference
+4 Color Constants=Color_Constants
+4 Keyboard Virtual Key Codes=Keyboard_Virtual_Key_Codes
+4 Working With Variants and Variant Arrays=Working_With_Variants_and_Variant_Arrays

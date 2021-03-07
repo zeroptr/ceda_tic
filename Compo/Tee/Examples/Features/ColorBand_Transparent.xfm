@@ -1,0 +1,99 @@
+inherited ColorBandTransp: TColorBandTransp
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Color Bands can also be shown with transparency, thus'
+      'displaying the background under the band.'
+      ''
+      'Example: ColorBand1.Transparency := 50 ;   <--- 50% ')
+  end
+  inherited Chart1: TChart
+    Gradient.EndColor = clGray
+    Gradient.MidColor = 8454143
+    Gradient.Visible = True
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Color Band transparency')
+    View3D = False
+    object Series1: TAreaSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      AreaLinesPen.SmallDots = True
+      DrawArea = True
+      LinePen.Color = clBlue
+      LinePen.Width = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TColorBandTool
+      Brush.Color = clNavy
+      Brush.Image.Data = {
+        07544269746D61707E000000424D7E000000000000003E000000280000001000
+        0000100000000100010000000000400000000000000000000000020000000200
+        000000000000FFFFFF007DF70000BAEB0000D75D0000EFBE00007DF70000BAEB
+        0000D75D0000EFBE00007DF70000BAEB0000D75D0000EFBE00007DF70000BAEB
+        0000D75D0000EFBE0000}
+      Color = 8454143
+      DrawBehind = False
+      EndValue = 100.000000000000000000
+      StartValue = 30.000000000000000000
+      Transparency = 50
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 14
+      Top = 13
+      Width = 68
+      Height = 13
+      Caption = '&Transparency:'
+      FocusControl = TrackBar1
+    end
+    object TrackBar1: TTrackBar
+      Left = 88
+      Top = 8
+      Width = 150
+      Height = 25
+      LineSize = 5
+      Max = 100
+      Orientation = trHorizontal
+      Frequency = 5
+      Position = 30
+
+
+      TabOrder = 0
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+      OnChange = TrackBar1Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 248
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Draw Behind'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 343
+      Top = 11
+      Width = 58
+      Height = 17
+      Caption = '&3D'
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+  end
+end

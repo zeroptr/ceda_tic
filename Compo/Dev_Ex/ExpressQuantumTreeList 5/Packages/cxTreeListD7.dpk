@@ -1,0 +1,46 @@
+package cxTreeListD7;
+
+{$R *.res}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressQuantumTreeList 5 (VCL Edition) by Developer Express Inc.'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  dxCoreD7,
+  cxDataD7,
+  cxEditorsVCLD7,
+  cxExportVCLD7,
+  cxLibraryVCLD7,
+  dxThemeD7,
+  cxExtEditorsVCLD7,
+  cxPageControlVCLD7;
+
+contains
+  cxTL,
+  cxTLStrs,
+  cxDBTL,
+  cxTLExportLink,
+  cxTLData;
+
+end.

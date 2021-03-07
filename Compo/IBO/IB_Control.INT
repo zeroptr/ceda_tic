@@ -1,0 +1,129 @@
+
+{                                                                              }
+{  IB_Control.INT                                                              }
+{                                                                              }
+
+private
+
+{$IFDEF IBG_LookupCombo}
+FDataLink: TIB_ControlDataLink;
+{$ELSE}{$IFDEF IBG_CustomGrid}
+FIB_DataLink: TIB_CustomGridLink;
+{$ELSE}
+FIB_FieldDataLink: TIB_FieldDataLink;
+{$ENDIF}{$ENDIF}
+{$IFDEF IB_AutoLabel}
+{$IFNDEF VER90}
+FAutoLabel: TIB_AutoLabel;
+{$ENDIF}
+{$ENDIF}
+{$IFDEF IB_FieldControl}
+procedure SetSearchBuffer( AValue: string );
+function GetSearchBuffer: string;
+procedure SetSearchWithMask( AValue: boolean );
+function GetSearchWithMask: boolean;
+procedure SetSearchAlways( AValue: boolean );
+function GetSearchAlways: boolean;
+procedure SetDataField( const AValue: string );
+function GetDataField: string;
+function GetField: TIB_Column;
+{$ENDIF}
+procedure SetDataSource( AValue: TIB_DataSource );
+function GetDataSource: TIB_DataSource;
+procedure SetIgnoreColorScheme( AValue: boolean );
+function GetIgnoreColorScheme: boolean;
+procedure SetOnPrepareSQL( AValue: TIB_DataLinkEvent);
+function GetOnPrepareSQL: TIB_DataLinkEvent;
+procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
+procedure DataChange( Sender: TIB_DataLink;
+                      IB_DataSource: TIB_DataSource;
+                      IB_Field: TIB_Column );
+procedure StateChanged( Sender: TIB_DataLink;
+                        IB_DataSource: TIB_DataSource );
+{$IFDEF IB_AutoLabel}
+{$IFDEF IBO_VCL30_OR_GREATER}
+procedure WMWindowPosChanged( var Message: TWMWindowPosChanged );
+                                                    message WM_WINDOWPOSCHANGED;
+{$ENDIF}
+{$ENDIF}
+
+protected
+
+{$IFDEF IBO_VCL30_OR_GREATER}
+{$IFDEF IB_AutoLabel}
+procedure RemakeAutoLabel;
+{$IFDEF IBO_VCL40_OR_GREATER}
+procedure SetEnabled(Value: Boolean); override;
+{$ELSE}
+procedure SetEnabled(Value: Boolean);
+public
+property Enabled write SetEnabled;
+protected
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+
+procedure SysDataChange( IB_Field: TIB_Column ); virtual;
+procedure SysStateChanged; virtual;
+
+{$IFDEF IBG_LookupCombo}
+property DataLink: TIB_ControlDataLink read FDataLink;
+{$ELSE}{$IFDEF IBG_CustomGrid}
+property DataLink: TIB_CustomGridLink read FIB_DataLink;
+{$ELSE}
+property DataLink: TIB_FieldDataLink read FIB_FieldDataLink;
+
+public
+
+{: Name of the column to which this control is bound.}
+property DataField: string read GetDataField write SetDataField;
+
+{: Reference to the column to which this control is bound.}
+property Field: TIB_Column read GetField;
+
+{: Reference to the SearchBuffer for this data bound control.
+<br><br>
+This is the search criterion that is parsed into the WHERE clause of the
+underlying SELECT statement of the dataset.}
+property SearchBuffer: string read GetSearchBuffer write SetSearchBuffer;
+
+{: Setting this property True causes IBO to continue to enforce the Editmask
+setting for the column even when in search mode.}
+property SearchWithMask: boolean read GetSearchWithMask
+                                 write SetSearchWithMask
+                                 default false;
+{: This property can make the control act as though it were always in search
+mode.}
+property SearchAlways: boolean read GetSearchAlways
+                               write SetSearchAlways
+                               default false;
+{$ENDIF}{$ENDIF}
+
+public
+
+{$IFNDEF VER90}
+{$IFDEF IB_AutoLabel}
+{: Control display of automatic label. }
+property AutoLabel: TIB_AutoLabel read FAutoLabel write FAutoLabel;
+{$ENDIF}
+{$ENDIF}
+
+{: Reference to the datasource to which this control is bound.}
+property DataSource: TIB_DataSource read GetDataSource write SetDataSource;
+
+{: This property causes the control to ignore the coloring scheme and allow its
+color to be maintained manually by the application developer.}
+property IgnoreColorScheme: boolean read GetIgnoreColorScheme
+                                    write SetIgnoreColorScheme
+                                    default false;
+{$IFDEF IBC_Image}
+property ParentColor default false;
+{$ENDIF}
+
+{: This event allows for custom alterations to be made to the SELECT
+statement's WHERE clause at prepare time.}
+property OnPrepareSQL: TIB_DataLinkEvent read GetOnPrepareSQL
+                                         write SetOnPrepareSQL;
+
+//IB_WinControl.IMP
+//IB_Control.IMP

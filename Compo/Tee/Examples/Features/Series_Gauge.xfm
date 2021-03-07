@@ -1,0 +1,86 @@
+inherited GaugeDemo: TGaugeDemo
+  Left = 315
+  Top = 230
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Gauge series displays industrial instrumentation controls.'
+      'Lots of properties allow fully customization.')
+  end
+  inherited Chart1: TChart
+    BackWall.Pen.Visible = False
+    Title.Text.Strings = (
+      'Volts')
+    BottomAxis.MinorTickLength = 6
+    BottomAxis.TickLength = 14
+    Frame.Visible = False
+    LeftAxis.Increment = 10.000000000000000000
+    LeftAxis.MinorTickLength = 6
+    LeftAxis.TickLength = 14
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    View3DWalls = False
+    object Series1: TGaugeSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Center.Brush.Color = clBlack
+      Center.Gradient.EndColor = clBlack
+      Center.Gradient.Visible = True
+      Center.HorizSize = 8
+      Center.InflateMargins = True
+      Center.Style = psCircle
+      Center.VertSize = 8
+      Center.Visible = True
+      EndPoint.Brush.Color = clWhite
+      EndPoint.HorizSize = 3
+      EndPoint.InflateMargins = True
+      EndPoint.Style = psCircle
+      EndPoint.VertSize = 3
+      EndPoint.Visible = False
+      Maximum = 100.000000000000000000
+      TotalAngle = 90.000000000000000000
+      Value = 85.050084698013960000
+      OnChange = Series1Change
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 96
+      Top = 16
+      Width = 30
+      Height = 13
+      Caption = '&Value:'
+    end
+    object Label2: TLabel
+      Left = 264
+      Top = 16
+      Width = 32
+      Height = 13
+      Caption = 'Label2'
+    end
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ScrollBar1: TScrollBar
+      Left = 136
+      Top = 15
+      Width = 121
+      Height = 16
+
+      Position = 15
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+  end
+end

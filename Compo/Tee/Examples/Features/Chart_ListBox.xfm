@@ -1,0 +1,229 @@
+inherited ChartListBoxForm: TChartListBoxForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 105
+  end
+  object Splitter1: TSplitter [1]
+    Left = 121
+    Top = 168
+    Height = 169
+  end
+  inherited Memo1: TMemo
+    Height = 105
+    Lines.Strings = (
+      
+        'The ChartListBox component now has additional properties to cont' +
+        'rol if the'
+      
+        'end-user can change a Series type or Series color, if Series can' +
+        ' be'
+      
+        're-ordered by dragging, and if Series can be deleted pressing th' +
+        'e Del key.'
+      ''
+      'Example: Series1.EnableChangeColor:=False;'
+      ''
+      
+        'ChartListBox now also synchronizes when Series are added or dele' +
+        'ted programatically.')
+  end
+  inherited Chart1: TChart
+    Left = 124
+    Top = 168
+    Width = 355
+    Height = 169
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'TeeChart')
+    Chart3DPercent = 20
+    object Series1: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TPointSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clYellow
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series4: TBubbleSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.HorizSize = 6
+      Pointer.InflateMargins = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 107
+    Height = 61
+    object Label1: TLabel
+      Left = 8
+      Top = 8
+      Width = 36
+      Height = 13
+      Caption = 'Enable:'
+    end
+    object CheckBox1: TCheckBox
+      Left = 48
+      Top = 8
+      Width = 89
+      Height = 17
+      Caption = 'Change &Color'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 144
+      Top = 8
+      Width = 89
+      Height = 17
+      Caption = 'Change &Type'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 224
+      Top = 33
+      Width = 81
+      Height = 17
+      Caption = '&Drag Series'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+    object CheckBox4: TCheckBox
+      Left = 48
+      Top = 33
+      Width = 81
+      Height = 17
+      Caption = '&Delete key'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox4Click
+    end
+    object CheckBox5: TCheckBox
+      Left = 144
+      Top = 33
+      Width = 73
+      Height = 17
+      Caption = '&Insert key'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = CheckBox5Click
+    end
+    object GroupBox1: TGroupBox
+      Left = 336
+      Top = 1
+      Width = 129
+      Height = 54
+      Caption = 'Show:'
+      TabOrder = 5
+      object CheckBox6: TCheckBox
+        Left = 10
+        Top = 14
+        Width = 49
+        Height = 17
+        Caption = 'Icon'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnClick = CheckBox6Click
+      end
+      object CheckBox7: TCheckBox
+        Left = 66
+        Top = 14
+        Width = 54
+        Height = 17
+        Caption = 'Check'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = CheckBox7Click
+      end
+      object CheckBox8: TCheckBox
+        Left = 10
+        Top = 32
+        Width = 49
+        Height = 17
+        Caption = 'Color'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
+        OnClick = CheckBox8Click
+      end
+      object CheckBox9: TCheckBox
+        Left = 66
+        Top = 32
+        Width = 54
+        Height = 17
+        Caption = 'Title'
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+        OnClick = CheckBox9Click
+      end
+    end
+    object Button1: TButton
+      Left = 245
+      Top = 5
+      Width = 75
+      Height = 25
+      Caption = '&Rename...'
+      TabOrder = 6
+      OnClick = Button1Click
+    end
+  end
+  object ChartListBox1: TChartListBox
+    Left = 0
+    Top = 168
+    Width = 121
+    Height = 169
+    Chart = Chart1
+    Align = alLeft
+    ItemHeight = 24
+    TabOrder = 3
+  end
+end

@@ -1,0 +1,77 @@
+inherited ColorLineDragRepaint: TColorLineDragRepaint
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'To increase dragging speed, the Color-Line tool now does not '
+      'repaint the whole chart when dragging it.'
+      
+        'Set the DragRepaint boolean property (default False) to True if ' +
+        'you wish'
+      'to do a full-repaint when dragging.'
+      'Try dragging the lines with the mouse...')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      '3 Color-Line tools, drag them !')
+    View3D = False
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+    object ChartTool1: TColorLineTool
+      Pen.Color = clYellow
+      Pen.Width = 2
+      Value = 100.000000000000000000
+      AxisID = 2
+    end
+    object ChartTool2: TColorLineTool
+      Pen.Style = psDot
+      Pen.Width = 3
+      Value = 300.000000000000000000
+      AxisID = 2
+    end
+    object ChartTool3: TColorLineTool
+      Pen.Color = clLime
+      Value = 500.000000000000000000
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 12
+      Width = 153
+      Height = 17
+      Caption = 'Repaint all when dragging'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 184
+      Top = 12
+      Width = 49
+      Height = 17
+      Caption = '&3D'
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 252
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = 'Draw &Behind'
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+  end
+end

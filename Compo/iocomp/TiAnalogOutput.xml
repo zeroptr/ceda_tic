@@ -1,0 +1,234 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<Alignment>2</Alignment>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSelect>1</AutoSelect>
+<AutoSize>1</AutoSize>
+<BeepOnError>0</BeepOnError>
+<BorderStyle>2</BorderStyle>
+<Color>-2147483643</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Style>1</ErrorFont.Style>
+<ErrorFont.Color>255</ErrorFont.Color>
+<ErrorFont.Name>MS Sans Serif</ErrorFont.Name>
+<ErrorFont.Size>8</ErrorFont.Size>
+<ErrorText>Error</ErrorText>
+<FilterStyle>1</FilterStyle>
+<Font.Style>1</Font.Style>
+<Font.Color>-2147483640</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>8</Font.Size>
+<MaxLength>0</MaxLength>
+<Precision>1</Precision>
+<UndoOnError>1</UndoOnError>
+<UnitsText></UnitsText>
+<ValueMax>0</ValueMax>
+<ValueMin>0</ValueMin>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Black on White [Default]</Name>
+<Properties>
+<Color>-2147483643</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>-2147483640</Font.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<Color>0</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>65535</Font.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<Color>0</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>16777215</Font.Color>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>User Interface Scheme</Name>
+<Scheme>
+<Name>Undo On Error [Default]</Name>
+<Properties>
+<BeepOnError>0</BeepOnError>
+<FilterStyle>1</FilterStyle>
+<UndoOnError>1</UndoOnError>
+<AutoSelect>1</AutoSelect>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Undo and Beep On Error</Name>
+<Properties>
+<BeepOnError>1</BeepOnError>
+<FilterStyle>1</FilterStyle>
+<UndoOnError>1</UndoOnError>
+<AutoSelect>1</AutoSelect>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Beep On Error</Name>
+<Properties>
+<BeepOnError>1</BeepOnError>
+<FilterStyle>1</FilterStyle>
+<UndoOnError>0</UndoOnError>
+<AutoSelect>1</AutoSelect>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>No Error Detection</Name>
+<Properties>
+<BeepOnError>0</BeepOnError>
+<FilterStyle>0</FilterStyle>
+<UndoOnError>0</UndoOnError>
+<AutoSelect>1</AutoSelect>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Units Scheme</Name>
+<Scheme>
+<Name>No Units [Default]</Name>
+<Properties>
+<UnitsText></UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Celcius (°C)</Name>
+<Properties>
+<UnitsText> °C</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Farenheight (°F)</Name>
+<Properties>
+<UnitsText> °F</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Kelvin (°K)</Name>
+<Properties>
+<UnitsText> °K</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Amps (A)</Name>
+<Properties>
+<UnitsText> A</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Milliamps (mA)</Name>
+<Properties>
+<UnitsText> mA</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Microamps (µA)</Name>
+<Properties>
+<UnitsText> µA</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Volts (V)</Name>
+<Properties>
+<UnitsText> V</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Kilovolts (kV)</Name>
+<Properties>
+<UnitsText> kV</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Millivolts (mV)</Name>
+<Properties>
+<UnitsText> mV</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Microvolts (µV)</Name>
+<Properties>
+<UnitsText> µV</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Watts (W)</Name>
+<Properties>
+<UnitsText> W</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Killowatts (kW)</Name>
+<Properties>
+<UnitsText> kW</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Megawatts (MW)</Name>
+<Properties>
+<UnitsText> MW</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Kilometers (km)</Name>
+<Properties>
+<UnitsText> km</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Centimeters (cm)</Name>
+<Properties>
+<UnitsText> cm</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Millimeters (mm)</Name>
+<Properties>
+<UnitsText> mm</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Micrometers (µm)</Name>
+<Properties>
+<UnitsText> µm</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Angstroms (Å)</Name>
+<Properties>
+<UnitsText> Å</UnitsText>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Error Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Style>1</ErrorFont.Style>
+<ErrorFont.Color>255</ErrorFont.Color>
+<ErrorFont.Name>MS Sans Serif</ErrorFont.Name>
+<ErrorFont.Size>8</ErrorFont.Size>
+<ErrorText>Error</ErrorText>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

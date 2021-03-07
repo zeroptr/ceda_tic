@@ -1,0 +1,185 @@
+object Release8OtherChanges: TRelease8OtherChanges
+  Left = 192
+  Top = 107
+  Width = 852
+  Height = 790
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 844
+    Height = 763
+    Align = alClient
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Courier New'
+    Font.Style = []
+    Lines.Strings = (
+      'Version 8.03'
+      '============'
+      ''
+      '* Support for Embarcadero CodeGear RAD Studio 2009'
+      ''
+      
+        '* Fixed bug with Line series when the first point is null. TV520' +
+        '12779'
+      
+        '* Fixed bug when printing clipped polygons (Access Violation) TV' +
+        '52012770'
+      
+        '* Fixed bug with Legend colors when drawing many series. TV52012' +
+        '988'
+      '* Fixed bug with Line series and multiple colors. TV52013171'
+      
+        '* Fixed bug with ColorGrid series with indexes starting from zer' +
+        'o. TV52012634'
+      
+        '* Fixed bug with CrossPoints function adding one extra point. TV' +
+        '52010196'
+      '* Fixed bug with Area series and Transparency. TV52010523'
+      
+        '* Fixed bug with Bar series and Legend showing checkboxes. TV520' +
+        '12533'
+      
+        '* Fixed bug with LinearGauge series settings in design-time. TV5' +
+        '2012914'
+      '* Fixed bug with Axis labels Increment calculations. TV52011721'
+      '* Fixed bug with CrossPoints function when X=0. TV52010079'
+      
+        '* Fixed bug with Bar series overlapping when BarWidthPercent=100' +
+        '. TV52012332'
+      
+        '* Fixed bug with Contour series at design-time endlessly repaint' +
+        'ing. TV52011431'
+      '* Fixed bug changing a Circular gauge to Linear. TV52012495'
+      '* Fixed bug with HighLow series not adding labels. TV52013025'
+      ''
+      ''
+      'Version 8.02'
+      '============'
+      ''
+      
+        '* New TLinearGauge Horizontal property (and new vertical Linear ' +
+        'Gauge series)'
+      
+        '* New Gauges Frame Gradient property in Brush and Inner, Outer a' +
+        'nd Middle brushes.'
+      '* New GradientBright property for TPieSeries.'
+      '* TOrgSeries can now be loaded from datasets using DBChart.'
+      
+        '* Fixed visual bug of shadows with negative horizontal or vertic' +
+        'al sizes.'
+      
+        '* Fixed bug packages could not be installed in Windows 95 / 98 /' +
+        ' Me.'
+      
+        '* Fixed bug removing Series having TChartEditorPanel controls vi' +
+        'sible.'
+      
+        '* Fixed bug in RGBToHLS function returning bad Hue in some cases' +
+        '.'
+      ''
+      ''
+      'Version 8.01'
+      '============'
+      ''
+      '* Support for CodeGear RAD Studio 2007 (including VCL.Net)'
+      ''
+      '* New TLinkTool component'
+      '* New TPageNumTool properties, and editor dialog'
+      '* New TFlexCanvas export format (Adobe Flex / Flash)'
+      '* New TCustomBarSeries DarkPen property'
+      '* New Canvas PolygonGradient method'
+      '* New TeeGotoURL global procedure'
+      '* New TNumericGauge, TLinearGauge and TCircularGauge series'
+      '* New Elektra and Digital embedded fonts'
+      
+        '* New Color, Gradient and Shadow properties for TLegendPaletteTo' +
+        'ol'
+      '* New "Opera" visual theme'
+      '* New ppCenter alignment for Annotation tools'
+      '* Improvement on TXAMLCanvas export format (Silverlight / WPF)'
+      
+        '* TNearestTool new Style "hsSeries" (for example to use with a P' +
+        'ie or TWorldSeries)'
+      
+        '* TWorldSeries now persists polygon "Z" values, and has a new ed' +
+        'itor dialog.'
+      '* New TFibonacciTool to draw Fibonacci financial arcs and fans'
+      
+        '* Improved TAntiAliasCanvas (Ellipse method, lines with Pen.Widt' +
+        'h > 1 and ClipEllipse)'
+      '* TeeTree nodes smooth Shadow new property.'
+      
+        '* New TSeriesMarks, TAnnotationTool and TOrgSeriesItem Margins s' +
+        'ubproperty'
+      '* New TMapSeries (and TWorldSeries) smooth Shadow property'
+      '* New TContourSeries LegendLines and LinesColor properties'
+      '* New TSeriesPointer Shadow property'
+      
+        '* New TDataTableTool OnFilterSeries event to select specific ser' +
+        'ies to show'
+      
+        '* New TChartAxisTitle.Clicked function, works with rotated axis ' +
+        'titles'
+      '* New TCustomBoxSeries.Clicked function'
+      ''
+      '* Fixed bugs:'
+      '    o TPageNumTool wrong display fixed.'
+      
+        '    o Exporting series data to text with some series with less n' +
+        'umber of points than others.'
+      
+        '    o TSeriesBandTool not clipping drawings when gradient visibl' +
+        'e.'
+      
+        '    o Mousewheel scrolling not calling OnAllowScroll event and n' +
+        'ot using AllowPanning property.'
+      '    o TColorBandTool Gradient now using transparency property.'
+      '    o Duplicate grid lines on logarithmic axes'
+      
+        '    o Rotated Axis Title and axis labels improved display when T' +
+        'ransparent = False, better Clicked'
+      
+        '    o TSelectorTool not deselecting series when series go invisi' +
+        'ble'
+      
+        '    o Font editor dialog not updating font name when changing it' +
+        ' using Windows font editor dialog.'
+      
+        '    o TDataTableTool not working fine when Chart MaxPointsPerPag' +
+        'e <> 0'
+      '    o Form inheritance not working when Chart has SeriesGroups.'
+      
+        '    o TTeeInspector not allowing manually entering floating poin' +
+        't values on "iiDouble" items.'
+      ''
+      'Version 8.0'
+      '==========='
+      ''
+      '* Custom3DPalette series: Custom palette persistence.'
+      '* Custom3DGrid series:  Improved speed when IrregularGrid = True'
+      
+        '* CustomSeries series:  Improved Clicked function (Arrow, Polar,' +
+        ' Pyramid, Volume)'
+      '* Area series: Improved Clicked function'
+      '* QuickReport v4 support'
+      '* XML native template persistence (*.tee in XML format)'
+      '* Improved Chinese Simplified language translation'
+      '* Rectangle Tool class: Corner resizing improved'
+      '')
+    ParentFont = False
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+end

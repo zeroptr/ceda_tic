@@ -1,0 +1,119 @@
+inherited SeriesContourFilled: TSeriesContourFilled
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Contour series can optionally fill the space between levels.'
+      ''
+      
+        'Internally, Contour series uses a TIsoSurfaceSeries to fill each' +
+        ' 3D grid cell.'
+      ''
+      
+        'The Brush.Style property controls if cells should be filled or n' +
+        'ot:'
+      ''
+      'Series1.Brush.Style := bsSolid ;')
+  end
+  inherited Chart1: TChart
+    Legend.Color = 4085568
+    Legend.Font.Color = clWhite
+    Title.Text.Strings = (
+      'Contour series with filled levels')
+    View3D = False
+    object Series1: TContourSeries
+      ColorEachPoint = False
+      Frame.Color = 309014
+      Frame.Width = 3
+      Frame.EndStyle = esFlat
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Transparent = True
+      Marks.Visible = True
+      NumLevels = 11
+      PaletteSteps = 12
+      PaletteStyle = psCustom
+      Pen.SmallDots = True
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = False
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YPosition = 0.189598284286995300
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+      CustomPalette = {
+        0C00000073C72CCBA92BEABF990000000B75FF06254FE4BFC30000004545A485
+        40E5DCBFEE00000074A049FD362CD1BFFF1A000090EEBBD3B5CCB5BFFF460000
+        B2A4AE4D7017B93FFF730000FD4DC69BE5FED13FFF9F0000CEF22024EFB7DD3F
+        FFCB0000CFCB3D567CB8E43FFFF70000371E6B1A0195EA3FE3F4080050384CEF
+        C238F03FC3E7110084E162510527F33FA3DA1B00}
+    end
+    object ChartTool1: TRotateTool
+      Inertia = 90
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 13
+      Top = 12
+      Width = 84
+      Height = 17
+      Caption = '&Filled'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 96
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 184
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Pattern...'
+      TabOrder = 2
+      OnClick = Button2Click
+    end
+    object ButtonPen1: TButtonPen
+      Left = 272
+      Top = 8
+      Caption = 'Fr&ame...'
+      TabOrder = 3
+    end
+    object CheckBox2: TCheckBox
+      Left = 363
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Legend lines'
+      TabOrder = 4
+      OnClick = CheckBox2Click
+    end
+    object ButtonColor1: TButtonColor
+      Left = 464
+      Top = 8
+      Caption = 'L&ines...'
+      TabOrder = 5
+      OnClick = ButtonColor1Click
+    end
+  end
+end

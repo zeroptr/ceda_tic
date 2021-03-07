@@ -1,0 +1,94 @@
+inherited CanvasSmoothStretch: TCanvasSmoothStretch
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 49
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'SmoothStretch performs a similar function as Canvas StretchDraw,'
+      'but using a smooth algorithm for better antialiased results.'
+      ''
+      '       SmoothStrecth( SourceBitmap, DestBitmap ) ;')
+  end
+  inherited Chart1: TChart
+    Top = 95
+    Width = 409
+    Height = 226
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    Align = alNone
+    object Series1: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Symbol.Shadow.Smooth = False
+      Marks.Visible = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        04080000000000000000388440044361727300000000003081400650686F6E65
+        730000000000388A40065461626C65730000000000806E40084D6F6E69746F72
+        730000000000E88C40054C616D70730000000000001440094B6579626F617264
+        7300000000004059400542696B65730000000000188A4006436861697273}
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 51
+    Height = 44
+    object RadioGroup1: TRadioGroup
+      Left = 11
+      Top = 3
+      Width = 225
+      Height = 36
+      Caption = 'Stretch &method:'
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        '&Smooth'
+        '&Normal')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 95
+    Width = 479
+    Height = 242
+    Align = alClient
+    TabOrder = 3
+    object Image1: TImage
+      Left = 8
+      Top = 8
+      Width = 228
+      Height = 174
+      AutoSize = True
+    end
+    object Label1: TLabel
+      Left = 96
+      Top = 192
+      Width = 51
+      Height = 13
+      Caption = 'ORIGINAL'
+    end
+    object Label2: TLabel
+      Left = 288
+      Top = 120
+      Width = 103
+      Height = 13
+      Caption = 'SMOOTH REDUCED'
+    end
+    object Image2: TImage
+      Left = 248
+      Top = 8
+      Width = 177
+      Height = 105
+      AutoSize = True
+    end
+  end
+end

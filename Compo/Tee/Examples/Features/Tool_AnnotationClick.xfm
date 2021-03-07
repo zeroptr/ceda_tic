@@ -1,0 +1,55 @@
+inherited AnnotationClick: TAnnotationClick
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'Annotation tools now include a Cursor property and OnClick event' +
+        #39'.'
+      'Move the mouse over annotations and click them...')
+  end
+  inherited Chart1: TChart
+    Top = 90
+    Height = 247
+    Title.Text.Strings = (
+      'Annotation tools.'
+      'Click and Cursor example.')
+    OnMouseMove = Chart1MouseMove
+    object ChartTool1: TAnnotationTool
+      OnClick = ChartTool1Click
+      Text = 'ABCD'
+    end
+    object ChartTool2: TAnnotationTool
+      OnClick = ChartTool1Click
+      Shape.Color = 8454143
+      Shape.CustomPosition = True
+      Shape.Font.InterCharSize = 2
+      Shape.Font.Shadow.HorizSize = 1
+      Shape.Font.Shadow.VertSize = 1
+      Shape.Left = 60
+      Shape.Top = 80
+      Text = 'Hello'#13'World !'
+    end
+    object ChartTool3: TAnnotationTool
+      OnClick = ChartTool1Click
+      Position = ppRightTop
+      Shape.Color = 8240895
+      Shape.Font.Color = clNavy
+      Shape.Font.Height = -16
+      Shape.Font.Style = [fsBold]
+      Text = '1234567'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    object Label1: TLabel
+      Left = 16
+      Top = 8
+      Width = 32
+      Height = 13
+      Caption = 'Label1'
+    end
+  end
+end

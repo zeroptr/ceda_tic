@@ -1,0 +1,58 @@
+inherited ExportChartsForm: TExportChartsForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 129
+    Lines.Strings = (
+      'Exporting capabilities have been greatly increased.'
+      
+        'Now it'#39's posible to export chart series data to Text, Excel, HTM' +
+        'L and XML formats.'
+      ''
+      'The Export Dialog can also be used at run-time.'
+      ''
+      
+        'By including the TeeJPEG unit, Charts can be exported to JPEG fo' +
+        'rmat.'
+      
+        'By including the TeeGIF unit, Charts can be exported to GIF form' +
+        'at.'
+      
+        'By including the TeePNG unit, Charts can be exported to PNG form' +
+        'at.'
+      
+        'By including the TeePCX unit, Charts can be exported to PCX form' +
+        'at.')
+  end
+  inherited Chart1: TChart
+    Top = 170
+    Height = 167
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 129
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 137
+      Height = 25
+      Caption = '&Show Export dialog...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

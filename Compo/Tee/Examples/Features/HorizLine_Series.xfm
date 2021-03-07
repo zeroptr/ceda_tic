@@ -1,0 +1,57 @@
+inherited HorizLineForm: THorizLineForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 41
+    Lines.Strings = (
+      
+        'Horizontal Line series is like a line series that draws points s' +
+        'orted on '
+      'their Y values instead of the X values.')
+  end
+  inherited Chart1: TChart
+    Top = 115
+    Height = 222
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: THorizLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.Brush.Color = 33023
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loAscending
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 41
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Stairs'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 82
+    Width = 479
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 3
+  end
+end

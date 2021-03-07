@@ -1,0 +1,75 @@
+inherited AreaOriginForm: TAreaOriginForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Area series can now specify the "Y Origin". This is the Y value ' +
+        'that'
+      'defines the bottom position for area points.'
+      ''
+      'Example: Series1.UseYOrigin:=True ;  Series1.YOrigin:=200 ;')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: TAreaSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 125
+      Top = 15
+      Width = 30
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Origin:'
+      FocusControl = EOrigin
+    end
+    object CBUseOrigin: TCheckBox
+      Left = 12
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Use Origin'
+      TabOrder = 0
+      OnClick = CBUseOriginClick
+    end
+    object EOrigin: TEdit
+      Left = 160
+      Top = 11
+      Width = 57
+      Height = 21
+      TabOrder = 1
+      Text = '200'
+      OnChange = EOriginChange
+    end
+    object UDOrigin: TUpDown
+      Left = 217
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = EOrigin
+      Min = -30000
+      Max = 30000
+      Position = 200
+      TabOrder = 2
+      Wrap = False
+    end
+  end
+end

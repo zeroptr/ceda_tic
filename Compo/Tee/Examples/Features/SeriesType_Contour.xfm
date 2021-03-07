@@ -1,0 +1,144 @@
+inherited ContourSeriesForm: TContourSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Contour Series displays lines corresponding to "Level" value' +
+        's on '
+      '3D XYZ data.'
+      'The number of levels, the Level intervals, the Levels positions,'
+      
+        'colors and Legend can be fully customized.  It can also be viewe' +
+        'd in 2D, '
+      'or rotated in 3D mode.')
+  end
+  inherited Chart1: TChart
+    Top = 107
+    Height = 230
+    BackWall.Brush.Color = clWhite
+    BackWall.Color = 8454143
+    BackWall.Size = 10
+    BottomWall.Color = 16777088
+    BottomWall.Size = 10
+    LeftWall.Size = 10
+    Legend.Alignment = laLeft
+    Legend.ColorWidth = 30
+    Legend.LegendStyle = lsValues
+    Legend.Symbol.Width = 30
+    MarginLeft = 5
+    MarginTop = 5
+    Title.Visible = False
+    Chart3DPercent = 80
+    DepthAxis.Visible = True
+    View3DOptions.Elevation = 342
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 55
+    View3DOptions.Rotation = 317
+    View3DOptions.Zoom = 72
+    object SurfaceSeries: TSurfaceSeries
+      Active = False
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      ShowInLegend = False
+      NumXValues = 15
+      NumZValues = 15
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+    object ContourSeries: TContourSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      NumXValues = 15
+      NumZValues = 15
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YPosition = 0.206876466725847000
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+      OnGetLevel = ContourSeriesGetLevel
+    end
+    object ChartTool1: TRotateTool
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 32
+    object CheckBox1: TCheckBox
+      Left = 12
+      Top = 8
+      Width = 49
+      Height = 17
+      Caption = '2&D'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox5: TCheckBox
+      Left = 68
+      Top = 8
+      Width = 85
+      Height = 17
+      Caption = 'Show &Walls'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox5Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 158
+      Top = 8
+      Width = 107
+      Height = 17
+      Caption = '&Color Each Level'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+    object CheckBox4: TCheckBox
+      Left = 276
+      Top = 8
+      Width = 78
+      Height = 17
+      Caption = '&Levels at Y'
+      TabOrder = 3
+      OnClick = CheckBox4Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 358
+      Top = 8
+      Width = 67
+      Height = 17
+      Caption = '&Surface'
+      TabOrder = 4
+      OnClick = CheckBox3Click
+    end
+  end
+  object ScrollBar1: TScrollBar
+    Left = 463
+    Top = 105
+    Width = 16
+    Height = 232
+    Kind = sbVertical
+    Max = 1000
+
+    TabOrder = 3
+    OnChange = ScrollBar1Change
+  end
+end

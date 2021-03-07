@@ -1,0 +1,44 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe -DNOUSE_BDE $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = Tee86.bpl TeeUI86.bpl DclTeeStd86.bpl TeePro86.bpl \
+  TeeImage86.bpl TeeLanguage86.bpl DCLTeeProStd86.bpl TeeGL86.bpl DclTGL86.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Tee86.bpl: Tee86.dpk
+  $(DCC)
+
+TeeUI86.bpl: TeeUI86.dpk
+  $(DCC)
+
+DclTeeStd86.bpl: DclTeeStd86.dpk
+  $(DCC)
+
+TeePro86.bpl: TeePro86.dpk
+  $(DCC)
+
+TeeGL86.bpl: TeeGL86.dpk
+  $(DCC)
+
+TeeLanguage86.bpl: TeeLanguage86.dpk
+  $(DCC)
+
+DCLTeeProStd86.bpl: DCLTeeProStd86.dpk
+  $(DCC)
+
+DclTGL86.bpl: DclTGL86.dpk
+  $(DCC)
+
+TeeImage86.bpl: TeeImage86.dpk
+  $(DCC)
+

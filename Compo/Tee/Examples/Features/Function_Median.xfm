@@ -1,0 +1,50 @@
+inherited MedianFunctionDemo: TMedianFunctionDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Median function calculates the value that is in the middle i' +
+        'f the'
+      'source values were sorted.'
+      
+        'If two values are in the middle, the function does a simple aver' +
+        'age on them.'
+      ''
+      'Null source values can be included or not in the calculation.')
+  end
+  inherited Chart1: TChart
+    Chart3DPercent = 25
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Median'
+      LinePen.Color = clGreen
+      LinePen.Width = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      object TeeFunction1: TMedianTeeFunction
+      end
+    end
+  end
+end

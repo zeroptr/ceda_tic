@@ -1,0 +1,19 @@
+inherited PointTreatNulls: TPointTreatNulls
+  Left = 579
+  Top = 306
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    inherited Label1: TLabel
+      Left = 281
+      Width = 52
+      Caption = 'Point 3   Y:'
+    end
+    inherited RadioGroup1: TRadioGroup
+      Left = 6
+    end
+    inherited Edit1: TEdit
+      Left = 344
+    end
+  end
+end

@@ -1,0 +1,66 @@
+inherited ChartWebSourceForm: TChartWebSourceForm
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 67
+    Lines.Strings = (
+      
+        'The ChartWebSource component is used to load native TeeChart fil' +
+        'es'
+      
+        '(*.tee) from Internet, using http protocol and Microsoft'#39's WinIn' +
+        'et library.'
+      ''
+      
+        'It'#39's also possible to load responses from CGI / ISAPI / ASP scri' +
+        'pts.')
+  end
+  inherited Chart1: TChart
+    Top = 141
+    Height = 196
+  end
+  inherited Panel1: TPanel
+    Top = 67
+    object Label1: TLabel
+      Left = 16
+      Top = 11
+      Width = 66
+      Height = 13
+      Caption = '&Web address:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 96
+      Top = 8
+      Width = 185
+      Height = 21
+      TabOrder = 0
+      Text = 'http://www.steema.com/demo.tee'
+    end
+    object Button1: TButton
+      Left = 296
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Load Chart !'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 108
+    Width = 479
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 3
+  end
+  object ChartWebSource1: TChartWebSource
+    Chart = Chart1
+    URL = 'http://www.steema.com/demo.tee'
+    Left = 144
+    Top = 218
+  end
+end

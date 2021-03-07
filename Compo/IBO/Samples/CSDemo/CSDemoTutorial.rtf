@@ -1,0 +1,159 @@
+{\rtf1\ansi\ansicpg1252\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\froman\fprq2 Times New Roman;}{\f3\froman Times New Roman;}}
+{\colortbl\red0\green0\blue0;\red0\green0\blue128;}
+\deflang1033\horzdoc{\*\fchars }{\*\lchars }\pard\qc\plain\f2\fs32\b C/S demo tutorial
+\par \pard\li720\plain\f2\fs24 Well, now we have IBObjects properly installed and can select any of components from component's palette. Go to (DIRECTORY WHERE IBObjects INSTALLED)\\Samples\\CSDemo directory and try to open CSDemo project, if you can't find this project \endash  don't worry, we'll create it step-by step, but it's useful to see target for comparing your progress. Press F9 key to compile project, and take look on main form: our program will contain example of five main concepts: View, Trigger, Stored Procedure with SELECT statement, Executable stored procedure and Transaction editing. To view background process we'll add SQL monitor.
+\par \pard\plain\f2\fs24 \tab Let's start our own C/S program. Create new project in separate directory (e.g. C:\\My Prog\\CSDemoMy) and call it CSDemoMy (that means your ;). Rename Form1 to frmLauncher, place seven buttons on it, resize, change caption etc. ( I omit this steps for your taste) Items, that we need are: "Show a View in action", "Salary Change Trigger Demo",  "Query Stored Procedure Demo", "Executable Stored Procedure Demo", "Transaction Editing Demo", "SQL Monitor" and of course "Exit".
+\par \pard\qc\plain\f2\fs24\b Connecting to database.
+\par \pard\plain\f2\fs24 \tab First of all, we must decide what data will be used in our program and take detailed view on database. Best tool for it is IB_WSQL included in IBObjects package.
+\par First of all you must have an active connection with a database. This can be accomplished on the "Connection" page of the IB_WSQL main window. Type the database name or select database file using Lookup\'85 button. In our sample we will use the Employee.gdb file that comes with Delphi and/or InterBase as a sample database. 
+\par 
+\par \pard\li720\plain\f2\fs24 After that specify your Username and Password, SQL Role and CharSet if necessary, click the "Connect Database" button on the toolbar. Once a connection is established you'll see some database parameters and   the "Connect Database" button changes to a "Disconnect Database" button. If something was incorrectly entered an error dialog will be displayed. It possibly means that you need to: a) check path to your database, b) verify your username and password, c) start InterBase server ;)
+\par \pard\plain\f2\fs24 
+\par \pard\li720\plain\f2\fs24 If you want to browse the contents of a database just click the Browse button on toolbar. In here you can learn the tables, views, stored procedures, etc. and their structures. This information can be used to make decisions about how to obtain necessary data.
+\par 
+\par \pard\li720\qc\plain\f2\fs24\b Step #1: Creating data module.
+\par \pard\li720\plain\f2\fs24 Let's add a DataModule to our project. Select "File\\New Data Module" from menu, rename new module to dmEmployee, finally save our project, there are not naming limitations for *.PAS units but I'm recommend to use:
+\par DmCSDemo for dmEmployee
+\par FrmMain       for frmLauncher
+\par 
+\par \pard\plain\f2\fs24 Place TIB_Database component on our DataModule and set properties:
+\par   Name        - cnEmployee
+\par *Username - SYSDBA 
+\par *Password  - masterkey 
+\par *Path          - C:\\Program Files\\Borland\\Delphi 3\\Demos\\DATA\\Employee.gdb
+\par 
+\par *Note: if your settings differ from default, please change it.
+\par 
+\par Try change property Connected to True \endash  Great, we are connected!
+\par 
+\par To make our program more flexible just add BeforeConnect event to cnEmployee:
+\par In this event we try establish a connection to database if path differ from our by using TOpenDialog. Place TOpenDialog  on DataModule, and change it property: 
+\par 
+\par Name              - odGDB
+\par DefaultExt      - GDB
+\par 
+\par Then, we add BeforeConnect event handler to our IB_DataBase :
+\par 
+\par \plain\f2\fs24\b procedure\plain\f2\fs24  TDmEmployee.cnEmployeeBeforeConnect(Sender: TIB_Connection);
+\par \plain\f2\fs24\b begin
+\par \plain\f2\fs24\cf1\i\ul // Allow a quick change of path if the file about to be opened is not found.
+\par // Do not try and supply a GDB file over a mapped drive! If you do be sure to
+\par // change it's path so that the server process can resolve the file's location\plain\f2\fs24 .
+\par   \plain\f2\fs24\b with\plain\f2\fs24  cnEmployee, odGDB \plain\f2\fs24\b do begin\plain\f2\fs24 
+\par     \plain\f2\fs24\b if \plain\f2\fs24 ( Protocol = cpLocal ) \plain\f2\fs24\b and not\plain\f2\fs24  FileExists( Database ) \plain\f2\fs24\b then begin\plain\f2\fs24 
+\par       FileName := Database;
+\par \plain\f2\fs24\b       if\plain\f2\fs24  Execute \plain\f2\fs24\b then begin\plain\f2\fs24 
+\par         Database := FileName;
+\par       \plain\f2\fs24\b end else begin
+\par \plain\f2\fs24         SysUtils.Abort;
+\par \plain\f2\fs24\b       end;
+\par     end;
+\par   end;
+\par end;
+\par 
+\par \plain\f2\fs24 Note: before compile please check units included:
+\par   IB_Session,
+\par   IB_Components,
+\par   IB_BDataSet,
+\par   IB_StoredProc,
+\par in DmCSDemo unit uses clause if not,  then add it.
+\par 
+\par \pard\li720\qc\plain\f2\fs24\b Step #2: View in action.
+\par \pard\plain\f2\fs24 Often or seldom but sometimes is necessary to create data representations witch have "smart" interface: show/hiding part of data in table is one of them.
+\par For this sample we'll need additional form. Select "File\\NewForm" from menu. Set form's  properties as follow:
+\par Name             - FrmViewDemo,
+\par Caption          - Table/View Switcher;
+\par Place on form two IB_Query components, IB_DataSource,  IB_Grid, IB_UpdateBar, IB_NavigatorBar, two SpeedButtons (they will be a switch), and BitBtn. For best look you can use Panel components, but it's not necessary.
+\par 
+\par Take a brief look on EMPLOYEE table:
+\par 
+\par /* Extract Table EMPLOYEE */
+\par /* Domain definitions */
+\par CREATE DOMAIN EMPNO AS SMALLINT;
+\par CREATE DOMAIN FIRSTNAME AS VARCHAR(15);
+\par CREATE DOMAIN LASTNAME AS VARCHAR(20);
+\par CREATE DOMAIN DEPTNO AS CHAR(3)
+\par          CHECK (VALUE = '000' OR (VALUE > '0' AND VALUE <= '999') OR VALUE IS NULL);
+\par CREATE DOMAIN JOBCODE AS VARCHAR(5)
+\par          CHECK (VALUE > '99999');
+\par CREATE DOMAIN JOBGRADE AS SMALLINT
+\par          CHECK (VALUE BETWEEN 0 AND 6);
+\par CREATE DOMAIN COUNTRYNAME AS VARCHAR(15);
+\par CREATE DOMAIN SALARY AS NUMERIC(15, 2)
+\par          DEFAULT 0
+\par 
+\par          CHECK (VALUE > 0);
+\par 
+\par /* Table: EMPLOYEE, Owner: SYSDBA */
+\par CREATE TABLE EMPLOYEE (EMP_NO EMPNO NOT NULL,
+\par         FIRST_NAME FIRSTNAME NOT NULL,
+\par         LAST_NAME LASTNAME NOT NULL,
+\par         PHONE_EXT VARCHAR(4),
+\par         HIRE_DATE DATE DEFAULT 'NOW'
+\par  NOT NULL,
+\par         DEPT_NO DEPTNO NOT NULL,
+\par         JOB_CODE JOBCODE NOT NULL,
+\par         JOB_GRADE JOBGRADE NOT NULL,
+\par         JOB_COUNTRY COUNTRYNAME NOT NULL,
+\par         SALARY SALARY NOT NULL,
+\par         FULL_NAME COMPUTED BY (last_name || ', ' || first_name),
+\par PRIMARY KEY (EMP_NO));
+\par 
+\par 
+\par Setting up data-components:
+\par Add DmCSDemo to uses list , and save our job, new unit name (FrmViewDemo) \endash  FrmViews; 
+\par Rename IB_Query1 to EmpTable, set IB_Connection property to DmEmployee.cnEmployee and IB_Transaction to cnEmployee.trcnEmployee,
+\par and double click on it. We'll see property editor for IB_Query. Let's fill it step-by step:
+\par 
+\par \pard\li360\fi-360\tx360\plain\f2\fs24 1.\tab Type on SQL page of SQL page: 
+\par \pard\tx360\plain\f2\fs24 SELECT *
+\par \pard\li360\fi-360\tx360\plain\f2\fs24 FROM EMPLOYEE
+\par ORDER BY EMP_NO 
+\par (without any brackets), then press Prepare DataSet button. In the bottom memo a 
+\par " PLAN (EMPLOYEE ORDER RDB$PRIMARY7)" message appears. Great! Go to 
+\par page Data and see result! Don't confuse, to see all data use Goto Last Row button on 
+\par taskbar. Dependently of size your monitor you can see part of grid containing RAW 
+\par data in default presentation. Let's try improving its view.
+\par \pard\plain\f2\fs24 
+\par \pard\li360\fi-360\tx360\plain\f2\fs24 2.\tab To be able edit our data set key links to  EMPLOYEE.EMP_NO, for this just type on KeyLinks page of SQL page "EMPLOYEE.EMP_NO" without brackets;
+\par \pard\plain\f2\fs24 Note: EMP_NO is primary key for table EMPLOYEE;
+\par  
+\par \pard\li360\fi-360\tx360\plain\f2\fs24 3.\tab Ordering is used for ability to change sort order in run-time. Stay on SQL page 
+\par \pard\plain\f2\fs24 and go to Ordering page, this page consists of two parts: OrderingItems and OrderingLinks. Set its properties like this:
+\par 
+\par \plain\f2\fs24\ul OrderingItems
+\par \plain\f2\fs24 EMP_NO=EMP_NO; EMP_NO DESC
+\par NAME=LAST_NAME, FIRST_NAME; LAST_NAME DESC, FIRST_NAME 
+\par FIRST NAME=FIRST_NAME; FIRST_NAME DESC
+\par PHONE_EXT=PHONE_EXT; PHONE_EXT DESC
+\par 
+\par \plain\f2\fs24\ul OrderingLinks
+\par \plain\f2\fs24 EMP_NO=1
+\par LAST_NAME=2
+\par FIRST_NAME=3
+\par PHONE_EXT=4 
+\par 
+\par To set default ordering to EMP_NO, set OrderingItemNo to 1, easy and simple! isn't it?
+\par Note: no spaces between field name and "=" sign.
+\par 
+\par \pard\li360\fi-360\tx360\plain\f2\fs24 4.\tab Finally set DisplayLabel property like this:
+\par \pard\plain\f2\fs24 EMP_NO=No
+\par FIRST_NAME=First Name
+\par LAST_NAME=Last Name
+\par HIRE_DATE=HireDate
+\par DEPT_NO=Dep. No
+\par JOB_CODE=Job Code
+\par JOB_GRADE=Job Grade
+\par JOB_COUNTRY=Job Country
+\par SALARY=Salary
+\par FULL_NAME=Full Name
+\par LOCATION=Location
+\par PHONE_NO=Phone No.
+\par PHONE_EXT=Phone Ext.
+\par 
+\par And size fields width to make best look for it. 
+\par 
+\par To be continued\'85
+\par 
+\par }
+ 

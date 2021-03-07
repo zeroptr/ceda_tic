@@ -1,0 +1,77 @@
+inherited CandleCustomColors: TCandleCustomColors
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Candle Series can now display points with custom colors, by sett' +
+        'ing'
+      'the color parameter (or the ValueColor array property).'
+      ''
+      
+        'Example: Series1.AddCandle( ...., clYellow );   Series1.ValueCol' +
+        'or[ 10 ]:=clBlue;')
+  end
+  inherited Chart1: TChart
+    Top = 109
+    Height = 228
+    object Series1: TCandleSeries
+      CloseValues.DateTime = False
+      CloseValues.Name = 'Close'
+      CloseValues.Order = loNone
+      DateValues.DateTime = True
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.DateTime = False
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.DateTime = False
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      OpenValues.DateTime = False
+      OpenValues.Name = 'Open'
+      OpenValues.Order = loNone
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 36
+    object Label1: TLabel
+      Left = 136
+      Top = 12
+      Width = 26
+      Height = 13
+      Caption = '&Style:'
+      FocusControl = ComboBox1
+    end
+    object CheckBox1: TCheckBox
+      Left = 24
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Custom colors'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object ComboBox1: TComboBox
+      Left = 168
+      Top = 8
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Stick'
+        'Bar'
+        'Open Close')
+    end
+  end
+end

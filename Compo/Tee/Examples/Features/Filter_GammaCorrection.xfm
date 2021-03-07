@@ -1,0 +1,136 @@
+inherited FilterGammaCorrection: TFilterGammaCorrection
+  Left = 448
+  Top = 366
+  Width = 547
+  Height = 466
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 531
+  end
+  inherited Memo1: TMemo
+    Width = 531
+    Lines.Strings = (
+      
+        'This filter controls the overall brightness of an image (or refe' +
+        'renced region). Images that are not properly '
+      
+        'corrected can look either bleached out, or too dark. Accurate re' +
+        'production of colors also requires some '
+      
+        'knowledge of gamma. Changing the amount of gamma correction not ' +
+        'only influences the brightness, but '
+      'also the ratios of red to green to blue. '
+      ''
+      'Example :'
+      '  with GammaCorrectionFilter do'
+      '  begin'
+      '    Amount := 50;'
+      '    Percent:= False;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 531
+    Height = 274
+    BackWall.Pen.Color = clGray
+    BackWall.Pen.Width = 2
+    LeftWall.Visible = False
+    Legend.HorizMargin = 6
+    Legend.TextStyle = ltsPlain
+    Legend.Transparent = True
+    MarginLeft = 5
+    MarginRight = 5
+    Title.Visible = False
+    BottomAxis.Axis.Visible = False
+    BottomAxis.TickLength = 10
+    Frame.Color = clGray
+    Frame.Width = 2
+    LeftAxis.ZPosition = 100.000000000000000000
+    RightAxis.Axis.Visible = False
+    RightAxis.TickInnerLength = 1
+    RightAxis.TickLength = 10
+    View3D = False
+    View3DOptions.Elevation = 334
+    View3DOptions.Perspective = 84
+    View3DOptions.Rotation = 330
+    ColorPaletteIndex = 4
+    object Series1: TGanttSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.Distance = -7
+      Marks.Visible = True
+      VertAxis = aRightAxis
+      ClickableLine = False
+      Pointer.Gradient.EndColor = 4210752
+      Pointer.Gradient.Visible = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 11
+      Pointer.Visible = True
+      XValues.Name = 'Inici'
+      XValues.Order = loAscending
+      YValues.DateTime = True
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ConnectingPen.Visible = False
+      StartValues.Name = 'Inici'
+      StartValues.Order = loAscending
+      EndValues.Name = 'Fi'
+      EndValues.Order = loNone
+      NextTask.Name = 'Prop.tasca'
+      NextTask.Order = loNone
+      Data = {
+        040500000000000000A01DE34006446973656E7900000000E01EE34000000000
+        0000F0BF00000000601EE3400B446573656E766F6C75702E000000006021E340
+        000000000000F0BF00000000801EE3400850726F746F746970000000004021E3
+        40000000000000F0BF00000000E01EE3400656656E64657300000000C020E340
+        000000000000F0BF00000000401FE340094D61726B6574696E6700000000E021
+        E340000000000000F0BF}
+    end
+    object ChartTool1: TGridBandTool
+      Band1.Color = clSilver
+      Band2.Color = 14869218
+      AxisID = 0
+    end
+    object ChartTool2: TAntiAliasTool
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 531
+    object Label1: TLabel
+      Left = 16
+      Top = 14
+      Width = 39
+      Height = 13
+      Caption = '&Amount:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 193
+      Top = 14
+      Width = 6
+      Height = 13
+      Caption = '0'
+    end
+    object ScrollBar1: TScrollBar
+      Left = 65
+      Top = 12
+      Width = 121
+      Height = 17
+
+      Position = 50
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object cbPercent: TCheckBox
+      Left = 227
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Percent'
+      TabOrder = 1
+      OnClick = cbPercentClick
+    end
+  end
+end

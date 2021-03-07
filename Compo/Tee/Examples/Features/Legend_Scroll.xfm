@@ -1,0 +1,64 @@
+inherited LegendScroll: TLegendScroll
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Chart Legend can be scrolled, to show values starting from'
+      'our desired point. '
+      'This is done using the Legend FirstValue property:'
+      ''
+      'Chart1.Legend.FirstValue := 123;')
+  end
+  inherited Chart1: TChart
+    Top = 110
+    Height = 227
+    Title.Visible = False
+    Chart3DPercent = 20
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TColorLineTool
+      Pen.Width = 2
+      OnEndDragLine = ChartTool1EndDragLine
+      AxisID = 0
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 37
+    object Label1: TLabel
+      Left = 16
+      Top = 13
+      Width = 51
+      Height = 13
+      Caption = '&First value:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 216
+      Top = 13
+      Width = 6
+      Height = 13
+      Caption = '0'
+    end
+    object ScrollBar1: TScrollBar
+      Left = 72
+      Top = 12
+      Width = 137
+      Height = 16
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+  end
+end

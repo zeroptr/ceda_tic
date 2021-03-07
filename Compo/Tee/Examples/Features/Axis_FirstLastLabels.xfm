@@ -1,0 +1,45 @@
+inherited FirstLastLabels: TFirstLastLabels
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Axis "OnDrawLabel" event can be used for multiple purposes.'
+      'It is called just before the axis is going to draw a label.'
+      ''
+      
+        'This example shows how to set a different text alignment for the' +
+        ' first and'
+      'last labels of the bottom axis.'
+      '')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 225
+      Height = 17
+      Caption = 'First and last bottom axis labels aligned'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

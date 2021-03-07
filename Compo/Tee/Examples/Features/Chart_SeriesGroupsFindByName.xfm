@@ -1,0 +1,263 @@
+inherited ChartSeriesGroupsFindByName: TChartSeriesGroupsFindByName
+  Left = 334
+  Top = 193
+  Width = 721
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 154
+    Width = 705
+  end
+  inherited Memo1: TMemo
+    Width = 705
+    Lines.Strings = (
+      
+        'TSeriesGroup class includes a FindByName method, it searches for' +
+        ' the Group name passed as parameter and returns a TSeriesGroup o' +
+        'bject to '
+      'be used directly.'
+      ''
+      'Example :'
+      '  var'
+      '    SGroup : TSeriesGroup;'
+      '  begin'
+      '    SGroup := Chart1.SeriesGroups.FindByName(Edit1.Text);'
+      
+        '   (SGroup.Series[0] as TCustomSeries).Color:=ButtonColor1.Symbo' +
+        'lColor'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 705
+    BackWall.Color = 13626620
+    BackWall.Pen.Visible = False
+    BackWall.Size = 5
+    BackWall.Transparent = False
+    Border.Color = 9423874
+    Border.Width = 7
+    Border.Visible = True
+    BottomWall.Color = 16550915
+    BottomWall.Pen.Visible = False
+    BottomWall.Size = 5
+    Gradient.Direction = gdFromCenter
+    Gradient.EndColor = clWhite
+    Gradient.MidColor = 16777088
+    Gradient.StartColor = 10814240
+    Gradient.Visible = True
+    LeftWall.Color = 16744576
+    LeftWall.Pen.Visible = False
+    LeftWall.Size = 5
+    Legend.DividingLines.Color = clSilver
+    Legend.DividingLines.Visible = True
+    Legend.Font.Color = 6553600
+    Legend.Frame.Visible = False
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = 13556735
+    Legend.Gradient.MidColor = 14739177
+    Legend.Gradient.StartColor = 16774122
+    Legend.Gradient.Visible = True
+    Legend.Shadow.HorizSize = 4
+    Legend.Shadow.Transparency = 50
+    Legend.Shadow.VertSize = 5
+    Legend.Symbol.Squared = True
+    RightWall.Size = 5
+    Title.Color = clBlack
+    Title.Font.Color = clNavy
+    Title.Font.Height = -16
+    Title.Frame.Color = 10083835
+    Title.Frame.Width = 2
+    Title.Gradient.Balance = 40
+    Title.Gradient.Direction = gdRightLeft
+    Title.Gradient.EndColor = clBlack
+    Title.Gradient.MidColor = 8388672
+    Title.Gradient.StartColor = clGray
+    Title.Gradient.Visible = True
+    Title.Shadow.HorizSize = 4
+    Title.Shadow.Transparency = 70
+    Title.Shadow.VertSize = 4
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = 16759225
+    BottomAxis.Grid.SmallDots = True
+    BottomAxis.LabelsFont.Color = clNavy
+    BottomAxis.LabelsFont.Name = 'Tahoma'
+    BottomAxis.LabelsFont.Style = [fsBold]
+    BottomAxis.MinorGrid.Color = 15066597
+    BottomAxis.MinorGrid.Visible = True
+    BottomAxis.MinorTickCount = 7
+    BottomAxis.TickLength = 5
+    DepthAxis.Axis.Color = clNavy
+    DepthAxis.Axis.Width = 1
+    DepthAxis.Grid.Color = clBlue
+    DepthAxis.Grid.SmallDots = True
+    DepthAxis.LabelsFont.Color = clNavy
+    DepthAxis.LabelsFont.Name = 'Tahoma'
+    DepthAxis.LabelsFont.Style = [fsBold]
+    DepthTopAxis.Axis.Color = clNavy
+    DepthTopAxis.Axis.Width = 1
+    DepthTopAxis.Grid.Color = clBlue
+    DepthTopAxis.Grid.SmallDots = True
+    DepthTopAxis.LabelsFont.Color = clNavy
+    DepthTopAxis.LabelsFont.Name = 'Tahoma'
+    DepthTopAxis.LabelsFont.Style = [fsBold]
+    Frame.Visible = False
+    LeftAxis.Axis.Color = clNavy
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clBlue
+    LeftAxis.Grid.SmallDots = True
+    LeftAxis.LabelsFont.Color = clNavy
+    LeftAxis.LabelsFont.Name = 'Tahoma'
+    LeftAxis.LabelsFont.Style = [fsBold]
+    RightAxis.Axis.Color = clNavy
+    RightAxis.Axis.Width = 1
+    RightAxis.Grid.Color = clBlue
+    RightAxis.Grid.SmallDots = True
+    RightAxis.LabelsFont.Color = clNavy
+    RightAxis.LabelsFont.Name = 'Tahoma'
+    RightAxis.LabelsFont.Style = [fsBold]
+    Shadow.Color = clBlack
+    Shadow.HorizSize = 7
+    Shadow.VertSize = 7
+    TopAxis.Axis.Width = 1
+    TopAxis.Grid.Color = 16759225
+    TopAxis.Grid.SmallDots = True
+    TopAxis.LabelsFont.Color = clNavy
+    TopAxis.LabelsFont.Name = 'Tahoma'
+    TopAxis.LabelsFont.Style = [fsBold]
+    TopAxis.MinorGrid.Color = 15066597
+    TopAxis.MinorGrid.Visible = True
+    TopAxis.MinorTickCount = 7
+    TopAxis.TickLength = 5
+    View3D = False
+    BevelInner = bvLowered
+    BevelOuter = bvNone
+    BevelWidth = 2
+    ColorPaletteIndex = 3
+    object Series1: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      AreaLinesPen.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000000000000000394000000000008061400000000000205240000000
+        0000E0654000000000009070400000000000D06B400000000000206240000000
+        00005069400000000000706C400000000000C062400000000000205240000000
+        0000004E400000000000002E400000000000004E400000000000E06040000000
+        0000A064400000000000E0654000000000004070400000000000C06240000000
+        00000044400000000000004E400000000000004E400000000000003440000000
+        00004050400000000000906040}
+    end
+    object Series2: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      AreaLinesPen.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 30
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000000000000060584000000000009055400000000000485C40000000
+        0000785E40000000000008614000000000003462400000000000906040000000
+        00009C6340000000000040654000000000007067400000000000986740000000
+        0000586B40000000000050694000000000001469400000000000046A40000000
+        0000586640000000000088634000000000001865400000000000446140000000
+        0000D46240000000000070624000000000000861400000000000546040000000
+        0000D858400000000000B85A40}
+    end
+    object Series3: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 16777164
+      ClickableLine = False
+      Pointer.HorizSize = 8
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 8
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0106000000000000000000000000000000008051403333333333331340000000
+        0000804B4033333333333323400000000000304640CCCCCCCCCCCC2C40000000
+        0000B04D40333333333333334000000000005044400000000000003840000000
+        0000F04E40}
+    end
+    object Series4: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 13434879
+      ClickableLine = False
+      Pointer.HorizSize = 8
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 8
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010600000000000000000000000000000000D467403333333333331340000000
+        000064694033333333333323400000000000FC6C40CCCCCCCCCCCC2C40000000
+        00000E7040333333333333334000000000002671400000000000003840000000
+        0000EE7140}
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 113
+    Width = 705
+    object Label1: TLabel
+      Left = 25
+      Top = 14
+      Width = 96
+      Height = 13
+      Caption = '&SeriesGroup  name :'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 128
+      Top = 10
+      Width = 149
+      Height = 21
+      TabOrder = 0
+      Text = 'Edit1'
+    end
+    object ButtonColor1: TButtonColor
+      Left = 288
+      Top = 8
+      Width = 73
+      Caption = '&Color'
+      TabOrder = 1
+    end
+    object bApply: TBitBtn
+      Left = 372
+      Top = 8
+      Width = 65
+      Height = 25
+      Caption = '&Apply'
+      TabOrder = 2
+      OnClick = bApplyClick
+    end
+  end
+end

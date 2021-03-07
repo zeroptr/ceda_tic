@@ -1,0 +1,83 @@
+inherited BubbleTransparency: TBubbleTransparency
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Bubble series allows Transparency:'
+      ''
+      'Series1.Transparency := 50 ;  // <-- 50 %')
+  end
+  inherited Chart1: TChart
+    View3D = False
+    object Series1: TBubbleSeries
+      Marks.ArrowLength = 0
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 0
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.HorizSize = 15
+      Pointer.InflateMargins = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 15
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      RadiusValues.Name = 'Radius'
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 32
+      Top = 16
+      Width = 68
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Transparency:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 296
+      Top = 16
+      Width = 20
+      Height = 13
+      Caption = '50%'
+    end
+    object ScrollBar1: TScrollBar
+      Left = 112
+      Top = 16
+      Width = 177
+      Height = 16
+
+      Position = 50
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    AmbientLight = 8
+    Light.Color = clGray
+    Light.Visible = True
+    Light.Position.X = -100.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Light1.Color = clGray
+    Light1.Visible = False
+    Light1.Position.X = -100.000000000000000000
+    Light1.Position.Y = -100.000000000000000000
+    Light1.Position.Z = -100.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Shininess = 0.500000000000000000
+    TeePanel = Chart1
+    Left = 352
+    Top = 8
+  end
+end

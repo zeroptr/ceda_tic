@@ -1,0 +1,159 @@
+inherited SeriesStatsEditor: TSeriesStatsEditor
+  Left = 192
+  Top = 107
+  ClientHeight = 255
+  ClientWidth = 250
+  Position = poScreenCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    Width = 250
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 29
+    Width = 250
+    Height = 226
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 1
+    OnChange = PageControl1Change
+    object TabSheet1: TTabSheet
+      Caption = 'Stats'
+      object CheckBox1: TCheckBox
+        Left = 7
+        Top = 8
+        Width = 128
+        Height = 17
+        Caption = '&Average'
+        TabOrder = 0
+        OnClick = CheckBox1Click
+      end
+      object CheckBox2: TCheckBox
+        Left = 7
+        Top = 40
+        Width = 128
+        Height = 17
+        Caption = '&Trend'
+        TabOrder = 1
+        OnClick = CheckBox2Click
+      end
+      object Button1: TButton
+        Left = 144
+        Top = 6
+        Width = 75
+        Height = 25
+        Caption = 'Edit...'
+        Enabled = False
+        TabOrder = 2
+        OnClick = Button1Click
+      end
+      object Button2: TButton
+        Left = 144
+        Top = 38
+        Width = 75
+        Height = 25
+        Caption = 'Edit...'
+        Enabled = False
+        TabOrder = 3
+        OnClick = Button1Click
+      end
+      object CheckBox3: TCheckBox
+        Left = 7
+        Top = 72
+        Width = 128
+        Height = 17
+        Caption = '&Low'
+        TabOrder = 4
+        OnClick = CheckBox3Click
+      end
+      object Button3: TButton
+        Left = 144
+        Top = 70
+        Width = 75
+        Height = 25
+        Caption = 'Edit...'
+        Enabled = False
+        TabOrder = 5
+        OnClick = Button1Click
+      end
+      object CheckBox4: TCheckBox
+        Left = 7
+        Top = 104
+        Width = 128
+        Height = 17
+        Caption = '&High'
+        TabOrder = 6
+        OnClick = CheckBox4Click
+      end
+      object Button4: TButton
+        Left = 144
+        Top = 102
+        Width = 75
+        Height = 25
+        Caption = 'Edit...'
+        Enabled = False
+        TabOrder = 7
+        OnClick = Button1Click
+      end
+      object CheckBox5: TCheckBox
+        Left = 7
+        Top = 136
+        Width = 128
+        Height = 17
+        Caption = '&Median'
+        TabOrder = 8
+        OnClick = CheckBox5Click
+      end
+      object Button5: TButton
+        Left = 144
+        Top = 134
+        Width = 75
+        Height = 25
+        Caption = 'Edit...'
+        Enabled = False
+        TabOrder = 9
+        OnClick = Button1Click
+      end
+      object CheckBox6: TCheckBox
+        Left = 7
+        Top = 168
+        Width = 128
+        Height = 17
+        Caption = '&Curve fitting'
+        TabOrder = 10
+        OnClick = CheckBox6Click
+      end
+      object Button6: TButton
+        Left = 144
+        Top = 166
+        Width = 75
+        Height = 25
+        Caption = 'Edit...'
+        Enabled = False
+        TabOrder = 11
+        OnClick = Button1Click
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Info'
+      ImageIndex = 1
+      object Memo1: TMemo
+        Left = 0
+        Top = 0
+        Width = 242
+        Height = 198
+        Align = alClient
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Courier New'
+        Font.Style = []
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssBoth
+        TabOrder = 0
+      end
+    end
+  end
+end

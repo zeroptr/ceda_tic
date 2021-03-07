@@ -1,0 +1,274 @@
+// IBA_KeyDataLink.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+procedure TIB_KeyDataLink.DoBeforeAssignment;
+var
+  tmpDS: TIB_Dataset;
+begin
+  inherited DoBeforeAssignment;
+  tmpDS := ChildDataset;
+  if Assigned( tmpDS ) then begin
+    Inc( tmpDS.FPreventKeySeeking );
+  end;
+  try
+    ClearSearchCriteria( false );
+  finally
+    if Assigned( tmpDS ) then begin
+      Dec( tmpDS.FPreventKeySeeking );
+    end;
+  end;
+  if Assigned( Dataset ) and ( FSearchUpdateRequired ) then begin
+    Dataset.InvalidateSQL;
+  end;
+end;
+
+procedure TIB_KeyDataLink.DoAfterAssignment;
+begin
+  inherited DoAfterAssignment;
+  ChildDataset.SysKeyStateChanged;
+  ChildDataset.SysKeyDataChange( nil );
+end;
+
+procedure TIB_KeyDataLink.SysPreparedChanged;
+begin
+  inherited SysPreparedChanged;
+  if not Dataset.Prepared then begin
+    ClearSearchCriteria( false );
+  end;
+end;
+
+{procedure TIB_KeyDataLink.SysPrepareSQL;
+var
+  ii: integer;
+begin
+  if ( SearchBuffer <> '' ) and Assigned( Dataset ) then begin
+    ChildDataset.BufferBookmark := SearchBuffer;
+    with ChildDataset do begin
+      if BufferFields.RowState <> rsNone then begin
+        with KeyLinks do for ii := 0 to Count - 1 do begin
+          Dataset.SQLWhereItems.Add( IndexValues[ ii ] + '=?' +
+                                     IB_KEYLINK + IndexValues[ ii ] );
+          Dataset.ParamValueLinks.Add( IB_KEYLINK + IndexValues[ ii ] + '=' +
+                                  BufferFieldByName( IndexNames[ii]).AsString );
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_KeyDataLink.SetSearchBuffer( AValue: string );
+begin
+  if ChildDataset.Prepared then begin
+    if Assigned( Dataset ) and ( Dataset.State = dssSearch ) then begin
+      if ChildDataset.Active then begin
+        ChildDataset.Bookmark := AValue;
+      end else begin
+        FSearchBuffer := ChildDataset.BufferBookmark;
+        FSearchLast := ChildDataset.BufferBookmark;
+      end;
+    end else begin
+      ChildDataset.BufferBookmark := AValue;
+      FSearchBuffer := ChildDataset.BufferBookmark;
+      FSearchLast := ChildDataset.BufferBookmark;
+    end;
+  end;
+end; }
+
+procedure TIB_KeyDataLink.CheckBrowseMode;
+begin
+  if ChildDataset.Active then begin
+    ChildDataset.CheckBrowseMode;
+  end;
+  inherited CheckBrowseMode;
+end;
+
+procedure TIB_KeyDataLink.SysStateChanged;
+begin
+  inherited SysStateChanged;
+  if ChildDataset.Prepared then begin
+    ChildDataset.SysKeyStateChanged;
+    if Assigned( Dataset ) and ( Dataset.State = dssSearch ) then begin
+      Inc(FInternalSearchUpdate);
+      try
+        // if the child dataset is already active then always assign search data
+        if ChildDataset.Active then begin
+          ChildDataset.Bookmark := AdvSearchData;
+        end else begin
+          if AdvSearchData <> '' then begin
+            // The assumption is that if we previously saved some keydata
+            // then we want to reactivate the dataset to synchronise it.
+            // (Primarily to do with lookups that deactivate the dataset
+            // when it is not in use.  eg. IB_LookupEnh.)
+            ChildDataset.Open;
+            ChildDataset.Bookmark := AdvSearchData;
+          end;
+        end;
+      finally
+        Dec(FInternalSearchUpdate);
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_KeyDataLink.SysDataChange( AField: TIB_Column );
+begin
+//  if not FDataUpdating and not FDataChanging and not Disabled then begin
+    Inc( FChangingLevel );
+    try
+      DoDataChange( AField );
+    finally
+      Dec( FChangingLevel );
+    end;
+//  end;
+end;
+
+procedure TIB_KeyDataLink.SetAdvSearchData( const AValue: string );
+begin
+  inherited SetAdvSearchData( AValue );
+  if Assigned( ChildDataset ) and
+     ChildDataset.Active and
+     (not FSearchSync) and
+     (ChildDataset.FPreventKeySeeking = 0) then
+  begin
+    Inc(FInternalSearchUpdate);
+    try
+      if ( ChildDataset.Bookmark <> AdvSearchData ) then
+        if State = dssSearch then
+          ChildDataset.Bookmark := AdvSearchData
+        else if Prepared then
+          Dataset.InvalidateSQL;
+    finally
+      Dec(FInternalSearchUpdate);
+    end;
+  end;
+end;
+
+procedure TIB_KeyDataLink.SetSearchFromKeyData;
+  function GetWhereClause: string;
+  var
+    ii: integer;
+    tmpCol: TIB_Column;
+  begin
+    Result := '';
+    with ChildDataset do begin
+      if Fields.RowState <> rsNone then begin
+        with KeyLinks do for ii := 0 to Count - 1 do begin
+          if Result = '' then begin
+            Result := '(';
+          end else begin
+            Result := Result + ' AND ';
+          end;
+          tmpCol := FieldByName( IndexNames[ii] );
+          if tmpCol.IsText then 
+            Result := Result + IndexValues[ii] + ' = ' +
+                      mkLitCriteria( tmpCol.AsString, '''' )
+          else
+            Result := Result + IndexValues[ii] + ' = ' + tmpCol.AsString;
+        end;
+        if Result <> '' then begin
+          Result := Result + ')';
+        end;
+      end;
+    end;
+  end;
+
+begin
+  if ( FInternalSearchUpdate = 0 ) and not FSearchSync then begin
+    FSearchSync := true;
+    try
+      if ChildDataset.Active then begin
+        AdvSearchData := ChildDataset.Bookmark;
+        AdvSearchWhere := GetWhereClause;
+      end else begin
+        ClearSearchCriteria( false );
+      end;
+    finally
+      FSearchSync := false;
+    end;
+  end;
+end;
+
+function TIB_KeyDataLink.Modify: boolean;
+var
+  ii: integer;
+  tmpCol: TIB_Column;
+  tmpStr: string;
+begin
+  Result := true;
+  Inc( FChangingLevel );
+  try
+    if ChildDataset.Active and not ReadOnly and Assigned( Dataset ) then
+    begin
+      for ii := 0 to ChildDataset.KeyLinks.Count - 1 do
+      begin
+        tmpStr := ChildDataset.KeyLinks.IndexValues[ii];
+        if tmpStr = '' then
+        begin
+          Result := false;
+          Break;
+        end
+        else
+        begin
+          tmpCol := Dataset.FieldByName( tmpStr );
+          if tmpCol.ControlsReadOnly then
+          begin
+            Result := false;
+            Break;
+          end;
+        end;
+      end;
+      if Result then
+        Result := inherited Modify;
+    end
+    else
+      Result := false;
+  finally
+    Dec( FChangingLevel );
+  end;
+end;
+
+function TIB_KeyDataLink.GetSearchEntryName: string;
+begin
+  if not Assigned( Dataset ) then
+    Result := ''
+  else if not Assigned( Dataset.Owner ) then
+    Result := 'KLNK.' + Dataset.Name
+  else
+    Result := 'KLNK.' + Dataset.Owner.Name + '.' + Dataset.Name;
+end;
+
+

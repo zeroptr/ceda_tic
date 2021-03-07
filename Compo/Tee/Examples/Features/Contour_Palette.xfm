@@ -1,0 +1,70 @@
+inherited ContourPaletteForm: TContourPaletteForm
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 90
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'Contour Series uses ColorRange and Palette properties '
+      'like the Surface series does.')
+  end
+  inherited Chart1: TChart
+    Top = 92
+    Height = 238
+    Legend.Symbol.Continuous = True
+    Legend.Transparent = True
+    Title.Visible = False
+    DepthAxis.Visible = True
+    View3D = False
+    Color = clSilver
+    object Series1: TContourSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      EndColor = clYellow
+      MidColor = clRed
+      PaletteSteps = 34
+      StartColor = clBlue
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YPosition = 0.189598284286995300
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    object Label1: TLabel
+      Left = 21
+      Top = 10
+      Width = 32
+      Height = 13
+      Caption = '&Colors:'
+      FocusControl = ComboBox1
+    end
+    object ComboBox1: TComboBox
+      Left = 64
+      Top = 8
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      Items.Strings = (
+        'Single color'
+        'Gradient 2 colors'
+        'Gradient 3 colors'
+        'Palette Pale'
+        'Palette Strong'
+        'Palette Gray scale'
+        'Palette Inverted Gray'
+        'Palette Rainbow')
+      TabOrder = 0
+      OnChange = ComboBox1Change
+    end
+  end
+end

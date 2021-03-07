@@ -1,0 +1,50 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>TeeChart Pro v6</title>
+<meta name="Microsoft Theme" content="auto 011, default">
+</head>
+
+<body style="font-family: Arial">
+
+<p><b><font size="4">TeeChart Pro v6.&nbsp; -&nbsp; New property aliases.</font></b></p>
+<p><font size="3">You can still use the "old" properties, although it's recommended
+to start using the new properties.<br>
+</font></p>
+<table border="1">
+  <tr>
+    <td><b><font size="4">Old</font></b></td>
+    <td><b><font size="4">                               		New</font></b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><font face="Courier New" color="#000080">Series1.Active:=True</font></td>
+    <td><font face="Courier New" color="#000080">              		Series1.Visible:=True</font></td>
+  </tr>
+  <tr>
+    <td><font face="Courier New" color="#000080">Series1.SeriesColor:=clRed</font></td>
+    <td><font face="Courier New" color="#000080">		Series1.Color:=clRed</font></td>
+  </tr>
+  <tr>
+    <td><font face="Courier New" color="#000080">Series1.ValueColor[123]:=clNone</font></td>
+    <td><font face="Courier New" color="#000080">   	Series1.SetNull(123)</font></td>
+  </tr>
+  <tr>
+    <td><font face="Courier New" color="#000080">Chart1.LeftAxis</font></td>
+    <td><font face="Courier New" color="#000080">                   		Chart1.Axes.Left</font></td>
+  </tr>
+  <tr>
+    <td><font face="Courier New" color="#000080">Chart1.LeftWall</font></td>
+    <td><font face="Courier New" color="#000080">                   		Chart1.Walls.Left</font></td>
+  </tr>
+</table>
+
+</body>
+
+</html>

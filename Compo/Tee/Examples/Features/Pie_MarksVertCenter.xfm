@@ -1,0 +1,61 @@
+inherited PieMarksVertCenter: TPieMarksVertCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Pie series marks can draw lines from slices to the nearest corne' +
+        'r of the mark rectangle'
+      
+        '(the default), or they can draw the lines to the vertical mark c' +
+        'enter (as an "L" shape).'
+      ''
+      'Series1.PieMarks.VertCenter := True;'
+      ''
+      'To determine the amount of pixels of the "L" segment:'
+      ''
+      'Series1.PieMarks.LegSize := 25;'
+      ' ')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'Pie series marks')
+    View3D = True
+    ColorPaletteIndex = 8
+    inherited Series1: TPieSeries
+      Marks.Arrow.EndStyle = esFlat
+      Marks.Callout.Arrow.EndStyle = esFlat
+      Marks.Font.Height = -19
+      Marks.Font.Style = [fsBold]
+      Gradient.Balance = 4
+      Gradient.Direction = gdDiagonalDown
+      Gradient.EndColor = 29695
+      Gradient.Visible = True
+      Data = {
+        0406000000000000000090874004436172730000000000C886400650686F6E65
+        730000000000D88C40065461626C65730000000000405B40084D6F6E69746F72
+        730000000000707640054C616D70730000000000908540094B6579626F617264
+        73}
+    end
+  end
+  inherited Panel1: TPanel
+    inherited Label1: TLabel
+      Left = 191
+    end
+    inherited ScrollBar1: TScrollBar
+      Left = 251
+      Position = 25
+    end
+    object cbVertCenter: TCheckBox
+      Left = 13
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Vert. center'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbVertCenterClick
+    end
+  end
+end

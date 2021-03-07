@@ -1,0 +1,57 @@
+inherited AxisMultiRuntime: TAxisMultiRuntime
+  Left = 262
+  Top = 139
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Multiple axes can be created and configured at design-time'
+      '(no programming), or they can also be created at run-time with'
+      'few lines of code. '
+      ''
+      'This example shows a 3 vertical axis chart, created at run-time.')
+  end
+  inherited Chart1: TChart
+    Title.Visible = False
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clGreen
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clYellow
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Single Axis'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

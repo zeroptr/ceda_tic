@@ -1,0 +1,129 @@
+
+{                                                                              }
+{  IB_Grid.PBL                                                                 }
+{                                                                              }
+
+{$I IB_WinControl.PBL}
+
+public
+
+property Canvas;
+property Col;
+property EditorMode;
+property IncSearchText;
+
+published
+
+property IncSearchHotKey;
+property DefaultRowHeight;
+property DefaultColWidth;
+property FixedColor;
+property FixedDataCols;
+
+{ New Properties }
+
+property AllowDropFiles;
+property ToggleOnDblClick;
+{$IFDEF IBG_LookupList}
+property AllowIncSearch default true;
+{$ELSE}
+property AllowIncSearch;
+{$ENDIF}
+property AllowTimeout;
+property SearchKeyByKey;
+property SeekNearest;
+property AlwaysShowEditor;
+property BorderRows;
+property BorderCols;
+{$IFDEF IBG_LookupList}
+property RowSelect default true;
+{$ELSE}
+property RowSelect;
+{$ENDIF}
+property EditorBorderStyle;
+property DrawFocusSelected;
+property ThumbTracking;
+{$IFDEF IBG_LookupList}
+property TrackGridRow default true;
+property ListBoxStyle default true;
+{$ELSE}
+property TrackGridRow;
+property ListBoxStyle;
+{$ENDIF}
+property NoVertScrollBar;
+property ColMoving;
+property ColSizing;
+{$IFDEF IBG_LookupList}
+property ColLines default false;
+{$ELSE}
+property ColLines;
+{$ENDIF}
+property FixedColLines;
+property GridLinks;
+property GridLineWidth;
+property EditLinks;
+property EditLinksAuto;
+{$IFDEF IBG_LookupList}
+property RowLines default false;
+{$ELSE}
+property RowLines;
+{$ENDIF}
+property FixedRowLines;
+property IndicateBooleans;
+property IndicateOrdering;
+{$IFDEF IBG_LookupList}
+property IndicateRow default false;
+property IndicateSelected default false;
+{$ELSE}
+property IndicateRow;
+property IndicateSelected;
+{$ENDIF}
+property IndicateHighlight;
+{$IFDEF IBG_LookupList}
+property IndicateTitles default false;
+{$ELSE}
+property IndicateTitles;
+{$ENDIF}
+property IndicateLongTitle;
+property IndicateLongCellText;
+property DrawCellTextOptions;
+property DrawTitleTextOptions;
+property CurrentRowColor;
+property CurrentRowFont;
+property OrderingColor;
+property OrderingFont;
+property RowIndicatorColWidth;
+property FixedFont;
+property Ctl3DShallow;
+property StretchColumn;
+property NavigateOptions;
+property TabMovesOut;
+property TabStopLinks;
+property TitleAlignment;
+
+{ New Events }
+
+property OnBorderClick;
+property OnCellClick;
+property OnCellDblClick;
+property OnCellGainFocus;
+property OnCellLoseFocus;
+property OnColEnter;
+property OnColExit;
+property OnDrawBorder;
+property OnDrawCell;
+property OnDrawFocusedCell;
+property OnDrawTitle;
+property OnDropFiles;
+property OnEditButtonClick;
+property OnGetCellProps;
+property OnGetDisplayText;
+property OnGetEditMask;
+property OnGetEditText;
+property OnIncSearch;
+property OnSetColumnText;
+property OnSetEditText;
+property OnTitleClick;
+property OnTopLeftChanged;
+property OnIsValidChar;
+

@@ -1,0 +1,374 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>3D LED No Label [Default]</Name>
+<Properties>
+<ActiveColor>65280</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BevelStyle>2</BevelStyle>
+<BorderStyle>2</BorderStyle>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelText> </CenterLabelText>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>1</ShowReflection>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Flat LED No Label</Name>
+<Properties>
+<ActiveColor>65280</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BevelStyle>0</BevelStyle>
+<BorderStyle>0</BorderStyle>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelText> </CenterLabelText>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>0</ShowReflection>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Power LED</Name>
+<Properties>
+<ActiveColor>65280</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BevelStyle>2</BevelStyle>
+<BorderStyle>2</BorderStyle>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>1</CenterLabelFont.Style>
+<CenterLabelText>Power</CenterLabelText>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>1</ShowReflection>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Warning LED</Name>
+<Properties>
+<ActiveColor>65535</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BevelStyle>2</BevelStyle>
+<BorderStyle>2</BorderStyle>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>1</CenterLabelFont.Style>
+<CenterLabelText>Warning</CenterLabelText>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>1</ShowReflection>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Alarm LED</Name>
+<Properties>
+<ActiveColor>255</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BevelStyle>2</BevelStyle>
+<BorderStyle>2</BorderStyle>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFontActiveColor>16777215</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>1</CenterLabelFont.Style>
+<CenterLabelText>Alarm</CenterLabelText>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>1</ShowReflection>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Active LED (Blue)</Name>
+<Properties>
+<ActiveColor>16711680</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BevelStyle>2</BevelStyle>
+<BorderStyle>2</BorderStyle>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFontActiveColor>16776960</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>1</CenterLabelFont.Style>
+<CenterLabelText>Active</CenterLabelText>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>1</ShowReflection>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Active LED (Fuchsia)</Name>
+<Properties>
+<ActiveColor>16711935</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BevelStyle>2</BevelStyle>
+<BorderStyle>2</BorderStyle>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFontActiveColor>64</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>1</CenterLabelFont.Style>
+<CenterLabelText>Active</CenterLabelText>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>1</ShowReflection>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Pass (Lime) [Default]</Name>
+<Properties>
+<ActiveColor>65280</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>21760</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Status (Blue)</Name>
+<Properties>
+<ActiveColor>16711680</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>16776960</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>21760</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Status (Fuchsia)</Name>
+<Properties>
+<ActiveColor>16711935</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>64</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>21760</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Warning (Yellow)</Name>
+<Properties>
+<ActiveColor>65535</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>21760</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Failure (Red)</Name>
+<Properties>
+<ActiveColor>255</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>21760</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<ActiveColor>65535</ActiveColor>
+<AutoInactiveColor>0</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>0</CenterLabelFontInactiveColor>
+<InactiveColor>32896</InactiveColor>
+<Transparent>32896</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Carolina Blue</Name>
+<Properties>
+<ActiveColor>15189677</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>5063225</InactiveColor>
+<Transparent>5063225</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>GrayScale</Name>
+<Properties>
+<ActiveColor>16777215</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>8421504</InactiveColor>
+<Transparent>8421504</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<ActiveColor>0</ActiveColor>
+<AutoInactiveColor>0</AutoInactiveColor>
+<CenterLabelFontActiveColor>16777215</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>0</CenterLabelFontInactiveColor>
+<InactiveColor>16777215</InactiveColor>
+<Transparent>16777215</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Orange</Name>
+<Properties>
+<ActiveColor>33023</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>10837</InactiveColor>
+<Transparent>10837</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Teal</Name>
+<Properties>
+<ActiveColor>16776960</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<CenterLabelFontActiveColor>0</CenterLabelFontActiveColor>
+<CenterLabelFontInactiveColor>16777215</CenterLabelFontInactiveColor>
+<InactiveColor>5592320</InactiveColor>
+<Transparent>5592320</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Label Scheme</Name>
+<Scheme>
+<Name>Centered No Wrap [Default]</Name>
+<Properties>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Centered Word Wrap</Name>
+<Properties>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelWordWrap>1</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Bold Centered No Wrap</Name>
+<Properties>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>1</CenterLabelFont.Style>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Bold Centered Word Wrap</Name>
+<Properties>
+<CenterLabelAlignment>0</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>1</CenterLabelFont.Style>
+<CenterLabelWordWrap>1</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Left Justified No Wrap</Name>
+<Properties>
+<CenterLabelAlignment>1</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Left Justified Word Wrap</Name>
+<Properties>
+<CenterLabelAlignment>1</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelWordWrap>1</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Right Justified No Wrap</Name>
+<Properties>
+<CenterLabelAlignment>2</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelWordWrap>0</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Right Justified Word Wrap</Name>
+<Properties>
+<CenterLabelAlignment>2</CenterLabelAlignment>
+<CenterLabelEndsMargin>5</CenterLabelEndsMargin>
+<CenterLabelFont.Name>MS Sans Serif</CenterLabelFont.Name>
+<CenterLabelFont.Size>8</CenterLabelFont.Size>
+<CenterLabelFont.Style>0</CenterLabelFont.Style>
+<CenterLabelWordWrap>1</CenterLabelWordWrap>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

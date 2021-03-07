@@ -1,0 +1,892 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\froman\fprq2 Times New Roman;}{\f1\froman\fprq2\fcharset0 Times New Roman;}{\f2\fswiss\fprq2\fcharset0 Arial;}{\f3\fmodern\fprq1\fcharset0 Courier New;}{\f4\fswiss\fprq2 Arial;}{\f5\froman Times New Roman;}}
+{\colortbl ;\red0\green0\blue0;\red255\green0\blue0;\red0\green0\blue255;}
+\viewkind4\uc1\pard\f0\fs36 RELEASE NOTES for IBO Version 4.x\par
+\par
+\f1 6\f0 /\f1 7\f0 /200\f1 3\f0  \f1 Sub-\f0 Release 4.2 \f1 Ie\par
+\cf1\f2\fs20 Merged changes Geoff send for IB_Extract to be compatible with Firebird 1.5.\par
+\par
+Enhanced parser to be compatible with FIRST and SKIP tokens added by Firebird. \par
+\par
+Fixed a bug with the Locate() method of buffered datasets. Under a couple of circumstances it wouldn't put the record pointer to the first matching record but instead a subsequent one. There were a couple of circumstances only that this would appear and the work around was to fetch all records into the buffer. Now it works regardless. Though in the tests I ran people need to make sure to use proper NOCASE columns and the OrderingItems and OrderingLinks properties so that IBO can generate a truly case insensitive order by so that it can be correct when performing locates on the server.\par
+\par
+A property was added to IB_Export for convenience in dealing with the decimal separator property.\par
+\par
+Updated constants for the Polish language were provided.\par
+\par
+\cf0\f1\fs36 4\f0 /\f1 1\f0 /200\f1 3\f0  \f1 Sub-\f0 Release 4.2 \f1 Id\par
+\cf1\f2\fs20 Had to put in a couple conditional defines for versions of Delphi prior to version 6. \par
+\par
+\cf0\f1\fs36 3\f0 /\f1 28\f0 /200\f1 3\f0  \f1 Sub-\f0 Release 4.2 \f1 Ic\par
+\cf1\f2\fs20 Some changes were made in IB_Ledger.pas so that UNICODE could be supported. \par
+\par
+Support for the FIRST and SKIP tokens added to IB_Parse.pas.\par
+\par
+Added a missing form to a package files (IBO40VRT_C5.*).\par
+\par
+In IB_Import.pas\par
+\f3\{  Magni Viggosson <magni@hugbun.is>                                           \}\par
+\{  21/03/2003                                                                  \}\par
+\{     Fixed a problem with importing NULL fields                               \}\par
+\{     if the field is a blank string ('') then it is assumed to be NULL        \}\par
+\f2\par
+In IB_ControlInterface.pas\par
+\f3\fs16\{  Wassim Haddad <lobolo2000@hotmail.com>                                      \}\par
+\{  06-Jan-2003                                                                 \}\par
+\{     Added an interface extension to support owner draw controls.             \}\par
+\f2\fs20\par
+In IB_Grid.pas\par
+\f3\{  Wassim Haddad <lobolo2000@hotmail.com>                            \}\par
+\{  06-Jan-2003                                                       \}\par
+\{     Added support for an interface extension that supports owner   \}\par
+\{     draw controls.                                                 \}\par
+\f2\par
+\cf0\f1\fs36 11\f0 /\f1 19\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Ib\par
+\cf1\f2\fs20 I fixed a problem with the TIBOTable component and it's handling of auto-populating the fields in a detail dataset that link to the master dataset when putting the detail dataset into Insert state. It wasn't properly transferring values based upon the MasterFields linkage definition as it should. It also was not properly handling when table alias prefixes were included in the field names. For some reason the TDataset.FindField() method will not return a match if the "table.column" naming style is used. It has to be "column" without the table prefix.\par
+\par
+I fixed the TIB_RadioGroup control so that it will work when bound to an input parameter. It wasn't allowing itself to be updated and the value it had was not being assigned to the parameter prior to the execution of the SQL statement. \par
+\par
+A call to get a GeneratorValue() was not ensuring that a connection existed. It will now attempt to obtain a connection if this method is called.\par
+\par
+I added the ConnectionWasLost property to the TIB_Connection component so that it can be checked after an exception is handled to see if the connection is in a lost state.\par
+\par
+I included additional fixes to lessen resource usage with the TIB_UpdateBar control.\par
+\par
+\cf0\f1\fs36 10\f0 /\f1 25\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Ia\par
+\cf1\f2\fs20 I made some changes to allow use of a native BOOLEAN column type.\par
+\par
+\cf0\f1\fs36 10\f0 /\f1 3\f0 /200\f1 2\f0  Release 4.2 \f1 I\par
+\cf1\f2\fs20 I fixed a problem with the IB_Events component for CPPB. I made a property of type array and it doesn't like that. \par
+\par
+I made it so that there are separate package files for Delphi 6 and 7. The LIBSUFFIX feature is a piece of junk and doesn't do what Borland appeared to be trying to do.\par
+\par
+\cf0\f1\fs36 10\f0 /\f1 2\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hm\par
+\cf1\f2\fs20 I fixed another problem with the PLAN retrieval. It was leaving off the last byte as a result of my previous fix. Now it gets the whole plan as it should in all cases.\par
+\par
+Added support for the NULLS [ FIRST | LAST ] option for the ORDER BY clause in Firebird 1.5 ALPHA.\par
+\par
+\cf0\f1\fs36 10\f0 /\f1 1\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hl\par
+\cf1\f2\fs20 I fixed a problem with the PLAN retrieval. It was leaving off the first byte for some plans returned.\par
+\par
+There was an AV when preparing complex select statements that had multiple input parameters named the same in both sub-selects in the select list and in the where clause of the main statement.\par
+\par
+Some minor improvements to the IB_Query editor form.\f3\fs16\par
+\par
+\cf0\f1\fs36 9\f0 /\f1 30\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hk\par
+\cf1\f3\fs16 //          24 Set 02 LA - Luiz Alves. Fix problem with only rectangle\par
+//                         of the control is painted in design time without\par
+//                         paint days and months\par
+\par
+//          24 Set 02 LA - Luiz Alves. Fix problem with rectangle\par
+//                         of the control falling out of the screen when\par
+//                         ib_date is positioned near the corners of the form\par
+//                         and this Form is maximized\par
+\par
+//          24 Set 02 LA - Luiz Alves. Alterado ShowCalendar to\par
+//                         improve position of Calendar on screen when\par
+//                         ib_date is positioned near the corners of the form\par
+//                         and this Form is maximized\par
+\par
+In the IB_Events unit I made the following change:\par
+\{  Jason Wharton <jwharton@ibobjects.com>                                      \}\par
+\{  09/30/2002                                                                  \}\par
+\{     I changed the event dispatching so that it doesn't have to eat the       \}\par
+\{     exceptions while processing events. If an exception takes place it will  \}\par
+\{     leave it raised if it is other than EAbort. Then, the flag indicating    \}\par
+\{     that events are pending will be left true so they will still process.    \}\par
+\{     I also have it suppress announcing the events which have zero counts.    \}\par
+\par
+In the replicator trigger code generation templates:\par
+\{  Bertrand Lescou\'ebt <blescouet@jes.fr>                                        \}\par
+\{  09/18/2002                                                                  \}\par
+\{     bug fixes in WalkFields                                                  \}\par
+\{     Ignoring blob fields in stored procedure and trigger's code generation   \}\par
+\{     if they don't have to be replicated (MacroSubstitute procedure)          \}\par
+\par
+\{  Christian G\'fctter <friesenpower@web.de>                                      \}\par
+\{  09/02/2002                                                                  \}\par
+\{     Added some code to the KeyDown procedure so that a Search_Edit behaves   \}\par
+\{     like an Inc_Search when you press one of the following keys:             \}\par
+\{     VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT, VK_HOME, VK_END.                      \}\par
+\{     Pressing these keys makes the dataset scroll in the appropriate way.     \}\par
+\{  09/03/2002                                                                  \}\par
+\{     Added the property IgnoreColorScheme which makes IBO ignore the          \}\par
+\{     default coloring mechanisms and allows the user explicit control         \}\par
+\{     over the coloring of the SearchEdit.                                     \}\par
+\par
+\f2\fs20 I made the property PreparedInserts published so that it will appear in the object inspector now for TIB_Cursor and TIB_Query components. Like we needed another published property... This one is worth it.\par
+\par
+\cf0\f1\fs36 9\f0 /\f1 3\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hj\par
+\cf1\f2\fs20 I added Delphi 7 support. IBO now compiles in Delphi 7 just fine. Follow the same instructions as you would for Delphi 6. The pacakge files work great except the library suffix may still product a _D6 suffix. This can be changed in the package source by changing the library suffix to _D7. I'm going to look into changing this so that it works well for both Delphi 6 and 7. Anyway, things work in Delphi 7 even though it may name them according to a D6 convention.\par
+\par
+Fixed a problem with multi-column master-detail dataset linking. When the master dataset was put into edit mode it was causing the detail dataset to refresh even though a change to the master dataset was not made. This caused the detail dataset pointer to get moved to the first record and incur the extra network usage to refresh the dataset records. It now behaves smoothly as it should.\par
+\par
+\f3\fs16\{  Jason Wharton <jwharton@ibobjects.com>                                      \}\par
+\{    07/30/2002                                                                \}\par
+\{    Made it so that when doing a fixed width export and a date/time column    \}\par
+\{    is null it will fill the space with blanks instead of an arbitrary        \}\par
+\{    value for 0.                                                              \}\par
+\{                                                                              \}\par
+\{    I also added tha ability to suppress the creation of a SCH file with the  \}\par
+\{    ASCII formats.                                                            \}\par
+\{                                                                              \}\par
+\par
+\{  Norman Dunbar <norman@bountiful.demon.co.uk>                                \}\par
+\{  13-Aug-2002                                                                 \}\par
+\{     Change TIB_Connection.SysLogin to avoid an exception being raised if the \}\par
+\{     user hits the CANCEL button on the login dialogue.                       \}\par
+\par
+\{   2002/08/31 Marco Menardi                                                   \}\par
+\{     - fixed bad display formatting when control is unbound and data changed  \}\par
+\{       with .Value                                                            \}\f2\fs20\par
+\par
+\par
+\cf0\f1\fs36 7\f0 /\f1 12\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hi\par
+\cf1\f2\fs20 Fixed issue of int64 AsString introduced in the prior sub-release that I didn't catch. In order to accurately show values at the far end of int64 range when scaled I had to write my own conversion routines.\par
+\par
+Made a minor modification to allow a stored procedure with output parameters to be used in the DeleteSQL property. The output parameters are not respected in any way since there is no record left in the buffer to act upon if the delete is successful. Reason for this is because some people may want to use a single stored procedure for all the DML actions of a dataset and if there are output parameters an error would be returned without the change I made for the DeleteSQL property.\par
+\par
+\cf0\f1\fs36 7\f0 /\f1 5\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hh\par
+\cf1\f2\fs20 Included fix for time and date DisplayText formatting issue.\par
+\par
+Improved parsing for Firebird's FIRST m SKIP n syntax when using input parameters with those clauses. It was not putting the input parameters in the correct order. This has to do with how input parameters aren't always strictly in the byte order found in the SQL submitted to the server.\par
+\par
+\cf0\f1\fs36 7\f0 /\f1 1\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hg\par
+\cf1\f2\fs20 Fixed problem with handling of KeyDescLinks values.\par
+\par
+Fixed problem with handling very large INT64 based numeric columns using precision. As of yet, Delphi doesn't provide a non-floating point way of handling scaled values. The closest it gets is the currency type but it fixes things at 4 decimal places. Anyway, there were some problems when getting and setting the AsString value for large numerics that I wrote a custom routine to avoid Delphi's deficiencies. I now manually generate and parse the strings and just deal directly with the int64 type instead of using the built-in mechanisms for formatting numeric strings. You should also beware not to use variants to hold precise numerics. They will round values without warning.\par
+ \par
+\par
+\cf0\f1\fs36 6\f0 /\f1 13\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hf\par
+\cf1\f2\fs20 Fixed problem when posting an insert in a master dataset when a detail is also in insert state. The master dataset was posted but the detail ended up causing the master to do a post retain, post the detail and then complete the post of the master. What it should do is simply post the master dataset and leave the detail dataset in insert state.\par
+\par
+I made a simple attempt to resolve the Win98 resource problem in the TIB_Grid. Since I don't have Win98 to test with I am going to need to rely on customer feedback to know if it resolves the issue or not.\par
+\par
+\cf0\f1\fs36 6\f0 /\f1 12\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 He\par
+\cf1\f2\fs20 Fixed infinite loop problem in the IB_SQL tool if using a JOIN and resulting in two columns that have the exact same name.\par
+\par
+Reintroduced the multi-column selecting in the component editor for the TIB_Query and TIBOQuery components.\par
+\par
+Included minor changes to the IBF_Metadata form for DDL extraction. It now inherits from IBF_Base form for better integration.\par
+\par
+Moved TPBLength property from protected to public access so that more control over this is possible.\par
+\par
+\cf0\f1\fs36 6\f0 /\f1 6\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hd\par
+\cf1\f2\fs20 Existing issue: The new metadata extraction doesn't work with some IB 5.6 databases. This will be fixed in a sub-release soon.\par
+\par
+German, Portugese, Russian and Turkish constants units updated.\par
+\par
+The TIBODataset class was changed in regard to how inserts are performed. The BDE would make a customized INSERT SQL for each post and include only those columns which didn't have a NULL value for the column. This would allow any default on the server to be applied rather than using the NULL value which would be passed to the column. In IBO I was using all columns and passing NULL which made it so that server defaults were not being applied which gave it a different behavior than the BDE had. I have now changed IBO so that it has the same behavior as the BDE by default. I have also made it set the Required property of TField objects to false if a column has a default defined for it. There was also an issue inside of the native dataset which caused the CheckRequired to fail posting even though the column is defaulted. In short, IBO was expecting the default values to be read into the client instead of tailoring the INSERT statement in such a way that the server would apply the default. IBO will now work whichever way you want it to and by default the TDataset based stuff works like the BDE did and the native IBO stuff still works the same as before with one problem removed. I also found a bug in the PreparedInserts feature with it set to false which caused posting to fail with an AV. This feature was added only a sub-release or two ago so it should now be fully mature.\par
+\par
+\f3\fs16\{  Marco Krause <mkrause@hellmut-springer.de> - 19.05.2002                              \}\par
+\{    Improved performance in GetByName - It is important, that calls to                 \}\par
+\{    FieldByName() comes in the same order, the columns are typed in the sql statement. \}\par
+\f2\fs20\par
+MInor changes made to TIB_ArrayGrid. Made SetEditText() method public and change from using the FieldName to DisplayLabel for better presentation.\par
+\par
+\cf0\f1\fs36 5\f0 /\f1 14\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hc\par
+\cf1\f2\fs20 Addendum: Fixed problem with columns becomming read-only after fixing problem with SQL trace monitor text confusion.\par
+\par
+\cf0\f1\fs36 5\f0 /\f1 13\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hc\par
+\cf1\f2\fs20 Geoff made some very nice enhancements to the DDL Extract dialog and the Script dialog. More extract options and more editor functionality like search and replace. See source for details.\par
+\par
+Some changes to the IBF_Browse form:\par
+\f3\fs16\{  Geoff Worboys <geoff@telesiscomputing.com.au>                               \}\par
+\{  04-May-2002                                                                 \}\par
+\{     Altered pcBrowseChange so that on ISC errors it will display the error   \}\par
+\{     dialog and then continue.  The problem was that a database exception     \}\par
+\{     while opening the dialog was preventing the window from being displayed  \}\par
+\{     at all - it was created (and not destroyed until disconnect/exit) but    \}\par
+\{     it would not display.  This change allows the dialog to display, but     \}\par
+\{     you may continue to get the exception if you continually select the item \}\par
+\{     with the problem (such as selecting a relation with an invalid trigger   \}\par
+\{     giving the "Implementation Limit Exceeded" error).                       \}\par
+\f2\fs20\par
+I improved the schema cache so that it would not leave a transaction open ever if the session is not configured to do the background processing that the whole transaction OAT management processing depends upon. This will apply to people writing applications using multi-threading and they are not aware that they need to take the schema cache transaction into consideration. I believe they shouldn't have to do that and so I am making the schema cache always take care of itself now. The way it should have been to start with.\par
+\par
+When calling TIB_Transaction.Commit I made it so that it will be more intelligent about how master-detail relationships are handled. If the master is in insert mode then it will make sure to post it prior to posting any detail records that have been inserted.\par
+\par
+There was some potentially misleading information being put in the SQL trace monitor text for UpdateSQL properties. The input parameter names were showing as the field names from the query. They now will appear named as they should be using the input parameter names used in the SQL statement.\par
+\par
+Some changes made to the TIB_Column class:\par
+I made FullFieldName return only the aliasname if one is used instead of also putting the RelName with it as is in the Origin property.\par
+\f3\fs16\{  Dirk Schiffler <ds@rcs.de>                                                  \}\par
+\{  05/04/2002                                                                  \}\par
+\{     an Enhancement in TIB_Column.GetDisplayText                              \}\par
+\{     If no DisplayFormat defined for DateTime values, then the standard       \}\par
+\{     should be the global variables ShortDateFormat and/or ShortTimeFormat    \}\par
+\{     and not any mask.                                                        \}\f2\fs20\par
+\par
+Fixed some resource usage problems that were causing Out Of Resources errors in some circumstances.\par
+\f3\fs16\{  Jason Wharton <jwharton@ibobjects.com>                                      \}\par
+\{  10-May-2002                                                                 \}\par
+\{     I changed the button glyph handle so that it just used one of my         \}\par
+\{     resources directly instead of a system resource. This way I could have   \}\par
+\{     better control over the handle allocation and avoid problems.            \}\par
+\{                                                                              \}\par
+\{  Guido Klapperich <guido.klapperich@t-online.de>                             \}\par
+\{  05-may-2002                                                                 \}\par
+\{     I added the protected property DatePick: TDatePick, that references      \}\par
+\{     to Inplace-Editor for date fields. Now you can change the properties     \}\par
+\{     of the Inplace-Editor in your derived class.                             \}\par
+\{                                                                              \}\par
+\{  Dirk Schiffler <ds@rcs.de>                                                  \}\par
+\{  24-apr-2002                                                                 \}\par
+\{     In TIB_CustomCombo.Destroy fixed the release of glyph-handle.            \}\par
+\{     FButton.Glyph.Handle := 0  set to FButton.Glyph.ReleaseHandle            \}\f2\fs20\par
+\par
+Fixed some problems in the TDataset based components.\par
+\f3\fs16\{  Jason Wharton <jwharton@ibobjects.com>                                      \}\par
+\{  10-May-2002                                                                 \}\par
+\{     When removing the TIBOBCDField sub-class I needed to alter the code in   \}\par
+\{     the Get/SetFieldData routines so that the calculated fields would use    \}\par
+\{     the proper datasize. By the time the call is made to the internal        \}\par
+\{     get/set field data routines all BCD fields should be working with a      \}\par
+\{     currency data type as the buffer and not a TBCD type. Thus, even though  \}\par
+\{     the TBCDField.DataSize is 34 it should be ignored in my internal         \}\par
+\{     routines.                                                                \}\par
+\{                                                                              \}\f2\fs20\par
+\par
+I also fixed a problem with int64 based input parameters in a master-detail relationship. It was not properly handling values greater than MaxInt.\par
+\par
+Changes to DatePick (IB_Date).\par
+\f3\fs16 //          03 May 02 GK - Guido Klapperich. Added three new properties\par
+//                         TopPanelColor, TopPanelFontColor and ArrowColor\par
+//          03 May 02 MM  - Marco Menardi: NormalCellColor now works\par
+\{  Guido Klaperich <guido.klapperich@t-online.de>                              \}\par
+\{  03-May-2002                                                                 \}\par
+\{     Added three new properties TopPanelColor, TopPanelFontColor and          \}\par
+\{     ArrowColor                                                               \}\par
+\{                                                                              \}\par
+\{  Marco Menardi <mmenaz@lycosmail.com>                                        \}\par
+\{  05-may-2002                                                                 \}\par
+\{     Fixed exit validation not working when control is unbound                \}\par
+\{     Added property to enable/disable date autofill                           \}\par
+\{                                                                              \}\par
+\par
+\f2\fs20 I fixed a problem in the buffered dataset record handling routines:\f3\fs16\par
+\{  Jason Wharton <jwharton@jwharton.com>                                       \}\par
+\{  13 May 2002                                                                 \}\par
+\{     I fixed a problem when callig InvalidateRowNum and the record had been   \}\par
+\{     deleted from the server. In some cases two records ended up being        \}\par
+\{     removed from the buffer instead of just one. It had to do with calling   \}\par
+\{     ValidateRows() inside of the implementation which also will remove a     \}\par
+\{     row from the buffer if it comes across an invalid record that no longer  \}\par
+\{     belongs in the buffer.                                                   \}\par
+\par
+\f2\fs20 Changes with the IB_Currency control.\f3\fs16\par
+\{   2002/04/25 Marco Menardi                                                   \}\par
+\{     - calculator now supports 'cascade' operations (like 1+2+4-6=)           \}\par
+\{                                                                              \}\par
+\f2\fs20\par
+\cf0\f1\fs36 4\f0 /\f1 23\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Hb\par
+\cf1\f2\fs20 Fixed problem with IB_Grid and IndicateRow property combined with ListBoxStyle.\par
+\par
+\cf0\f1\fs36 4\f0 /\f1 22\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Ha\par
+\cf1\f2\fs20 Changed the DDL metadata extraction form in the utility bar to the new version created/revised from the old one by Geoff Worboys.\par
+\par
+Fixed the handling of values for using the TIB_Date control as a way to provide values for input parameters. I actually made the change in the TIB_FieldDataLink class so that all other controls similarly affected would also be resolved as well.\par
+\par
+Added the ability to use the CONNECT command in an IB_Script insead of making it have to use the CONNECT DATABASE command. It will now handle both cases and treat them as equivalent. This is mostly in order to maintain ISQL/IBConsole compatibility in script processing.\par
+\par
+I put a check inside the TIBODataset.CompareBookmarks() method so that it wouldn't corrupt the position of the internal buffer bookmark position and this seemed to solve a problem with the InfoPower TwwDBGrid control when using the OnRowChanged event in it. Normally it isn't really necessary to preserve the position of the buffer (IBO's work cursor) bookmark but in this case it seems necessary. It most likely has to do with the context in which the CompareBookmarks() method is being called in.\par
+\par
+\cf0\f1\fs36 4\f0 /\f1 20\f0 /200\f1 2\f0  Release 4.2 \f1 H\par
+\cf1\f2\fs20 Reverted to the IBF_Query form that works properly. The new version doesn't properly store the values set in the ColumnAttributes and FieldsXXXX properties.\par
+\par
+The TIBOBCDField is now obsolete. I reworked the BCD stuff in Delphi 3 and 4 so that it would work with cleaner code. It won't have quite as much performance but I was able to get rid of a lot of IFDEF's and override's. \par
+\par
+I improved the routine that does a field or param by name lookup so that it can deal with Borland's inability to store field names with their double quotes in various properties. Namely, the DBLookupCombo and other lookup related field entries.\par
+\par
+I fixed a painting issue with TIB_Grid and setting RowSelect to false. It was leaving the entire row painted until it was clicked away from. Now, when you set RowSelect to false it will immediately not paint the whole row in the highlighted color.\par
+\par
+Harald K. added SkipEmptyLines property to deal with empty lines in the TIB_Import component.\par
+\par
+I enhanced the nodelist so that I could release IBO 3.7 with HDR disabled.\par
+\par
+I touched up the keypress behavior of TIB_Edit so that it won't convert the comma into a period unless the DecimalSeparator is actually set to comma and it is not in dssSearch mode. I was trying to type in a comma for the IN( <val>, ... ) and it was forcing it to a period. What I was doing was pasting in a comma but I got tired of doing that.\par
+\par
+\cf0\f1\fs36 4\f0 /\f1 13\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Gd\par
+\cf1\f2\fs20 I fixed some grid flicker issues with the horizontal scrollbar.\par
+\par
+I fixed an obscure font glitch in the DatePick control.\par
+\par
+I added the ability to use a stored procedure that returns column values in the InsertSQL and EditSQL properties used for doing customized DML statements in datasets. This allows primary key values or other trigger assigned values to be brought to the client immediately upon posting without having to re-fetch the record from the server. You just have to make sure that the output columns of the stored procedure match the names of the columns in the dataset.\par
+\par
+I added the PreparedInserts property. Setting this to false will make it so that each time a record is posted it will generate a tailored INSERT SQL statement using only the columns that have values set to a non-null value. This will enable the server to apply defaults to records when inserted.\par
+\par
+I fixed a problem with CalculatedFields and Locate() as well as some enhancements to the automatic handling of the KeyDescLinks column values by using calculated fields instead of the in-line select statements and the need to re-fetch the record after each post.\par
+\par
+I fixed a few SQLDelimiter dialect 3 quoted identifier glitches when using params in TIBODataset.\par
+\par
+I improved the KeyLinksAutoDefine logic so that it will make more accurate determinations when trying to figure out the KeyLinks settings for you.\par
+\par
+I improved the TIBOTable component so that it will only use the specialized dual cursor buffers (HDR) when there are supporting ascending and descending indexes for the column(s) the dataset is sorted by. I'm still wondering what to do about columns that have NULL in them. I may need to add a third cursor which checks for such records. If there is an index they will be quick to find. I'm just leary of the overhead of maintaining a third cursor that could degrade to a long held single cursor. Also, what happens when you are in the middle of those records and refresh is hit? For now, just know that NULLs are not a good idea if you plan to use HDR.\par
+\par
+Package source files for BCB 6 were added.\par
+\par
+Included the IBD_Import.pas/dfm for for use with the TIB_Import component. You will have to tinker in the sources to make it work.\par
+\par
+There was a minor glitch with the fetch callback mechanism when calling the Last method in the TIBODataset class. It was required to be cancelled two times instead of just once when the fetching records Cancel button was pressed. Now it works with a single click as it should.\par
+\par
+I changed the position of the DoBeforeOpen event in relation to some internal code in the TIBODataset class in order to accommodate the need of a user. Can't remember the exact reason.\par
+\par
+There was a problem with Selected records when using the horizontal dataset refinement features. Under rare circumstances record nodes were getting the Selected flag set when they shouldn't have been.\par
+\par
+I added a minor improvement to the RecordCount logic when dealing with a DISTINCT and multiple columns in the query.\par
+\par
+There was a glitch with the Locate() method if ClaculatedFields were used in the native IBO dataset. The internal cursor generated to perform the Locate() on the server was picking up the OnCalculateField event and the CalculatedFields unnecessarily. I took them out.\par
+\par
+I changed the positioning of the call to trigger the CalculateFields events so that the row had properly set its RowFlag, which is an internal system use property. There was a glitch for the first record calculated upon if the Value (AsVariant) value of a column was used in the code. I never saw this because I generally always use AsString or the like.\par
+\par
+I added the ability to delete selected records to the IBF_Browse form of the IB_SQL utility.\par
+\par
+I have fixed the problem with the IBS_Base NT Service app base class so that it will not prevent the machine from doing a shutdown. \par
+\par
+I included some additional enhancements to the IBW_Base web module base class so that there are more built-in capabilities for searching using CONTAINING and OR.\par
+\par
+User contributed enhancements to the TIB_Query component editor/IB_SQL form:\par
+\f3\fs16\{  Herbert Senner <HSENNER@WEB.DE>                                             \}\par
+\{  04/08/2002                                                                  \}\par
+\{  I have enabled MultiSelection of ColumnAttributes- and FieldProperties      \}\par
+\{  and made it possible to assign a property to more than one Field in one     \}\par
+\{  step.                                                                       \}\par
+\{  I introduced a const E_UPDATESQL_NOT_NECESSARY                              \}\par
+\{  The UpdateSQL-Properties are closer linked to the SQL-Property of the query \}\par
+\{  so that only relations can be selected that are included in the query.      \}\f2\fs20\par
+\par
+\cf0\f1\fs36 3\f0 /\f1 21\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Gc\f4\fs20\par
+\cf1\f3\fs16\{  Marco Menardi <mmenaz@lycosmail.com>                                        \}\par
+\{  20-mar-2002                                                                 \}\par
+\{     Fixed Shift-Tab with TabStop and TabOut set to true                      \}\par
+\f2\fs20\par
+I added quite a bit of material to the IBW_Base web module foundation class for WebBroker applications. It is now possible for most of my client's web apps to be a single procedure filled with object definitions. A sample may be provided later upon request.\par
+\par
+Change to the TIB_ColumnArray class so that it will better notify of changes. I have to be careful with this column type because it requires to be posted and the new ARRAY ID retreived from the server before the contents can be read again.\par
+\par
+I enhanced the fields DisplayLabel and DisplayName properties. I hadn't realized it but I was not being consistent perfectly with the way the TDataset TField class does it. I decided I better conform. All impacted visual controls were adjusted so that their behavior will still be as expected.\par
+\par
+The IBD_Credits form was updated to better reflect IBO's affinity with Firebird.\par
+\par
+\par
+\cf0\f1\fs36 3\f0 /\f1 12\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Gb\f4\fs20\par
+\cf1\f2 This is a test release. More notes will be added later.\par
+\par
+Most importantly the fix for Firebird 1.0 compatibility is included here.\par
+\par
+There was also some changes in the AsVariant values in regard to NULL. I have set it to return VarIsNull true instead of just having it be Unassigned. There were some comparisons made in the past that choked because it isn't able to do comparisons of NULL values but I think they are resolved. I want this aspect tested heavily so that I can make this more accurate method perminent.\par
+\par
+There were some fixes to the IB_Date control popup calendar that Marco contributed.\par
+\par
+Numerous of the international IB_Constants files have been updated.\par
+\par
+BiDi support to the IB_Grid control has been added by a contributer and I have merged it in.\par
+\par
+The access violation with the TableName property has been resolved.\par
+\par
+\cf0\f1\fs36 3\f0 /\f1 1\f0 /200\f1 2\f0  \f1 Sub-\f0 Release 4.2 \f1 Ga\f4\fs20\par
+\cf1\f2 I added support for the TField.Origin property to reflect the RelName and SQLName of the column the field is associated to.\par
+\par
+I fixed a TIBODataset buffer synchronization issue. Under rare circumstances it was flushing out records that it should have been. Here are the conditions that needed to exist in order to see this problem. The OrderingItemNo had to be changed with HDR active and at the same time introduce in SQLWhereItems (thus disabling HDR) and the dataset then had to become empty with no records. Somehow it was not doing a Resync( \{\} ) just right. Now it does.\par
+\par
+I fixed an isue with TParams not being generated for params involved in master-detail situations. The master-detail link worked fine without the TParams existing but it still seemed inconsistant that there would not be a TParam generated even when one did exist in the SQL statement.\par
+\par
+I added the following method to IB_Utils: \par
+\tab\f3\fs16 function HexTextToString( AHexText: string; ALength: integer ): string;\f2\fs20\par
+\par
+I removed an irritating problem with the TIB_Edit control where it would revert a value typed in to its original value if the OnValidate event of the associated column raised an exception instead of leaving the value typed in by the user so that they could merely correct it.\par
+\par
+\cf2 I revamped the GetServerDefaults functionality so that the values are cached in the schema cache and not required to be fetched from the server over and over again for each insert. I also changed the format of the schema cache so that the values could be associated with proper table.field=value notation instead of the way it was before. If you are making use of the SchemaCache.Defaults for the list of columns which are defaulted on the server you will need to change your code. I expect that nobody is making use of this. I have not yet been able to test all working combinations, but since they weren't working yet 100% anyway I'm releasing this now so the other items in this sub-release are not held up.\cf0\par
+\par
+I added various properties to the datepick control using in the TIB_Date control so that control over colors and other minor visual aspects would be easier.\par
+\par
+\f3\fs16   property NormalCellLineColor;\par
+  property SelectedCellColor;\par
+  property SelectedCellFontColor;\par
+  property NormalCellColor;\par
+  property DifMonthFontColor;\par
+  property NormalCellFontColor;\par
+  property TodayCellColor;\par
+  property DayOfWeekStrLen;\par
+\f2\fs20\par
+I refined the RollbackRetaining method so that it won't refresh all the datasets in the transaction (for ODS10+ only). What it does is keep track of various events which indicate that the dataset likely has information that was affected and only refrehes those datasets. If a record is added, modified, deleted, invalidated or the dataset is refreshed the the flag is set such that upon a RollbackRetaining it will be refreshed.\par
+\par
+I included some improvements to the IB_Date control. There was also a minor bug-fix when using it in an unbound state.\par
+\f3\fs16\{  Marco Menardi <mmenaz@lycosmail.com>                                        \}\par
+\{  27-feb-2002                                                                 \}\par
+\{     added special keys facilities: spacebar for current date; if you start   \}\par
+\{     typing and control is empty, current date is automatically entered so    \}\par
+\{     you have good chanches to have the desired date with few keystrokes      \}\par
+\{                                                                              \}\par
+\{  Marco Menardi <mmenaz@lycosmail.com>                                        \}\par
+\{  19-feb-2002                                                                 \}\par
+\{     if unbound and a date is entered, the droppdown calendar now takes you on\}\par
+\{     the corresponding day (like does when bound)                             \}\par
+\f2\fs20\par
+I fixed an AV in the IB_Grid control that cropped up under some unusual, yet real, circumstances.\par
+\par
+Included a fix from a user:\par
+\f3\fs16\{  Herbert Senner <HSENNER@WEB.DE>                                             \}\par
+\{  02/20/2002                                                                  \}\par
+\{  Modification of the sbGenTableSQLClick-Method to correct wrong EditSQL-     \}\par
+\{  and InsertSQL-Properties if they are related to tables with KeyFields only  \}\par
+\f2\fs20\par
+I included some enhancements:\par
+\f3\fs16  * Unit Name: IBD_Restructure\par
+ * Purpose  :  Provide a Dialog for end-users to conveniently\par
+               change the visible fields and the order the fiels\par
+               are shown\par
+               This code is licensed under the CPS Trustwarte\par
+               License and is part of OBObjects and donated to\par
+               the IBO-Community.\par
+               Many thanks to Jason Wharton for creating such\par
+               a tremendous Data-Access Framework\par
+\par
+ * Author   :  Nick 'Kaputnik' Josipovic nick@kaputnik.com\par
+ * History  :  29.12.2001 Unit created, tested and used privately\par
+               24.02.2002 Unit revised, bug-fixed and passed on to\par
+               Jason for review and inclusion\f2\fs20\par
+\par
+\f1\fs36 2\f0 /\f1 21\f0 /200\f1 2\f0  Release 4.2 \f1 G\f4\fs20\par
+\f2 I fixed a bug which had to do woth the horizontal dataset refinement feature recently added when mixed in with another feature. In the case where there are SQLWhereItems added in the OnPrepareSQL event, this makes it so that the HDR feature is turned off. (No need to refine a dataset that is refined in the OnPrepareSQL event.) I needed to set a flag so that it recognized this properly. What happened as a result is it left the BufferHasBof flag false when it should have been set to true. \par
+\par
+Marco Menardi provided a fix for the CtrlGrid in regard to inserting a new record and the TAB key with TabStop = true setting.\par
+\pard\ri-1080\par
+\pard Made the IB_Events component do a RequestReconnect for databases which have an ODS of any value instead of just those prior to version 10. I was assuming that Borland would fix the bug in regard to the event alerters but they didn't. I will probably need to add a different property to control this because I surely hope they fix this problem before they advance the ODS to a new value. For now, if you are using events with remote connections then beware that when you go to disconnect it will do a quick reconnect and disconnect again because that is what is necessary to avoid the bug in the GDS32.dll FreeLibrary() call.\par
+\par
+Enahnced the nodelist to better handle extreem cases of dealing with MaxInt and -MaxInt record numbers. There were some rare cases where integer overflows were taking place.\par
+\par
+Changes merged into the TIB_Grid control:\par
+\f3\fs16\{  Paul Hope <paulhope@allcomm.co.uk>                                          \}\par
+\{  28-jan-2002                                                                 \}\par
+\{     Changed TitleAlignment option to gtaRightJustify,gtaLeftJustify,         \}\par
+\{     gtaCenter,gtaColumns.  When gtaColums is selected the title alignments   \}\par
+\{     follow the column alignment - if one cant be found defaults to           \}\par
+\{     LeftJustify                                                              \}\par
+\{                                                                              \}\par
+\{  Geoff Worboys <geoff@telesiscomputing.com.au>                               \}\par
+\{  13-Feb-2002                                                                 \}\par
+\{     Altered the grid Paint routine to reset FEditorMode according to the     \}\par
+\{     visibility/availability of the inplace editor (rather than directly      \}\par
+\{     resetting to its old value).  This ensures FEditorMode remains in        \}\par
+\{     sync with the inplace editor as expected by the base class.              \}\par
+\{                                                                              \}\par
+\{  Marco Menardi <mmenaz@lycosmail.com>                                        \}\par
+\{  27-jan-2002                                                                 \}\par
+\{     If an field EditMask was set, CharCase attribute was ignored.            \}\par
+\{                                                                              \}\par
+\{  Marco Menardi <mmenaz@lycosmail.com>                                        \}\par
+\{  14-jan-2002                                                                 \}\par
+\{     Fix TIB_CustomCombo.CMExit problem when ClearSelectionOnExit is true     \}\par
+\{     since unhandled EAbort exception produced a wrong try to focus to a      \}\par
+\{     unfucusable control                                                      \}\par
+\{                                                                              \}\par
+\{  Geoff Worboys <geoff@telesiscomputing.com.au>                               \}\par
+\{  08-Jan-2002                                                                 \}\par
+\{     Altered the InplaceEditor.UpdateContents method so that it is possible   \}\par
+\{     to override the display of the default date editor.  The change means    \}\par
+\{     that if you put in MYDATEFIELD=EDIT in the EditLinks and attach your     \}\par
+\{     own code to OnEditButton the default editor will not appear.             \}\par
+\f2\fs20\par
+Changes made in the TIB_SearchPanel control:\par
+\f3\fs16\{   Zoltan Korponai < rhollay@mail.com >                                       \}\par
+\{   10/27/2001                                                                 \}\par
+\{                                                                              \}\par
+\{   new variables:   dwidth_max, lwidth_max1, lwidth_max2: integer             \}\par
+\{                                                                              \}\par
+\{   - a bug concerning the label's positions is fixed;                         \}\par
+\{   - if the dataset is changed at runtime, the old labels are cleared;        \}\par
+\{   - if DualColumn = True, then the control's positions are optimized         \}\par
+\{     on the panel;                                                            \}\par
+\{   - if EditWidth >= 0 then all the controls on the panel will have this      \}\par
+\{     EditWidth;                                                               \}\par
+\{     If EditWidth < 0 then the controls will have their corresponding         \}\par
+\{     DisplayWidth, set at the dataset level;                                  \}\par
+\f2\fs20\par
+I fixed a bug which had to do with deleting an only row in a master-detail situation.\par
+\par
+The DML caching/dataset synchronizing feature was enhanced so that it wouldn't interfere with datasets currently in a non-browsing state. Instead of doing that it will wait until after the dataset is posted and then do a Refresh in order to get the dataset synchronized. This default bahavior is subject to furthur refinements because obviously I would like it to do what it can without interrupting a dataset in an edit state. There is no reason other records in the buffer cannot be refreshed if they are what is being synchronized. In short, I'd like it to intelligently perform all synchronizing actions possible rather then deferring them.\par
+\par
+Changes made to the native dataset base class:\par
+\f3\fs16\{  Geoff Worboys <geoff@telesiscomputing.com.au>                               \}\par
+\{  16-Feb-2002                                                                 \}\par
+\{     Fixed KeyToChildAction to so that tmpKeyFlds and tmpKeyVals corresponded \}\par
+\{     properly in the call to Lookup.                                          \}\par
+\{                                                                              \}\par
+\{  Marco Menardi <mmenaz@lycosmail.com>                                        \}\par
+\{  10-Feb-02                                                                   \}\par
+\{     in SysGetServerDefaults2 TrimLeftPrevOrdChar is applied to DEFAULT to    \}\par
+\{     remove chars lower than #32 included, since server bug allows spaces and \}\par
+\{     CR/LF chars be embedded in front of the keyword                          \}\f2\fs20\par
+\par
+I fixed a bug in the TIB_Row class where I had a loop variable set as word which was unsigned. Thus, if the loop was approached with a 0 - 1 situation it caused the loop to go a whole bunch of times instead of none.\par
+\par
+Changes made to IBC_Label feature:\par
+\f3\fs16\{  Geoff Worboys <geoff@telesiscomputing.com.au>                               \}\par
+\{  10-Jan-2002                                                                 \}\par
+\{     Improved autolabel model management when using IIB_GridWinControl        \}\par
+\{     interface (automatic model label creation when necessary).               \}\par
+\{     Introduced a new global variable IB_AutoLabel_PreventFlicker             \}\par
+\{     See notes for online help generation.                                    \}\par
+\f2\fs20\par
+\par
+\f1\fs36 2\f0 /\f1 1\f0 /200\f1 2\f0  Sub-Release 4.2 F\f1 r\f4\fs20\par
+\f2 I merged in some fixes that Geoff provided with rounding issues as well as a delete situation with a single record in a grid and master detail relationships.\par
+\par
+I merged in a fix for the Integer Overflow which happened under some strange circumstances.\par
+\par
+I finished including the IB_CodeFormatter and IBF_Metadata units in the package source files for CPPB.\par
+\par
+A few updated language constants files were included in this sub-release.\par
+\par
+An improvement donated to the IBF_Query form was included adding a popup menu to place information into the clipboard for ease of use.\par
+\f4\par
+\f0\fs36 1/\f1 15\f0 /200\f1 2\f0  Sub-Release 4.2 F\f1 p\f4\fs20\par
+\f2 I fixed an Integer Overflow problem thanks to the help of an excellent sample app.\par
+\f4\par
+\f2 I merged in a fix from Marco Menardi who fixed a problem with the grid and its handling of the ControlIsModified property and the selecting a boolean.\par
+\par
+I merged in some improvements made by Marco Menardi adding panel-like features to the TIB_Text control.\par
+\f4\par
+I \f2 made the TIBOStoredProc component so that it would Prepare without giving the error about not being able to create a cursor handle. This was from a goof in the last sub-release. I also improved the handling of Params so that it will bring the output params into the design-time editors.\par
+\par
+I improved the TfrmLookup form that is used in the TIB_LookupDialog component so that if you are looking at a KeyLinks relationship's child dataset and you scroll it, thus putting the KeyLinks parent dataset into an edit state, then if you hit the Cancel button it will cancel that change if the dataset being edited wasn't in an edit state when the dialog form was opened.\par
+\par
+The property StayOpenOnTop was also added to various dialog forms. The contributor didn't put credits in the top of the source file and I forgot who contributed this item.\par
+\par
+I added the ability to have the child dataset in a KeyLinks relationship maintain the values of a calculated field in the parent dataset. This is done by leaving the OnCalculateFields event nil and setting up the KeyDescLinks property so that it will point to the calculated fields by name. Then, each time the parent fetches a record it will announce and have its calculated fields plugged in. This should make it easier to setup lookup relationships between dataset so that it isn't necessary to use all of the in-line select clauses in the parent's SELECT list.\par
+\par
+I made the TIB_Monitor component so that it would put its hooks in globally instead of for just a single session. This allows a single IB_Monitor component to monitor the activity of multiple sessions in a multi-session application. Like a web-server or something like that.\par
+\par
+CalculatedFields were not being processed under a specific circumstance of the horizontal dataset refinement feature. You had to be somewhere refined and then change the filtered criteria (or something of that sort causing a refresh and a SQL change at the same time) and then fetch rows above where refreshed to. Now all rows are processed for CalculatedFields as necessary.\par
+\par
+I resolved the problem with Selected rows in the IB_Grid control disappearing from view. It was a painting bug where they would not show if the current row was scrolled out of view.\par
+\par
+I fixed the problem where assigning a data value to a column without the dataset being in an edit state would in some cases cause the value to not remain. It would go into edit mode but the value being assigned got lost in the process. Now the edit mode is brought in and the value being assigned is preserved. If you were to explicitely call Edit or Insert prior to the Assignment the value would not have been lost.\par
+\par
+The new IB 6.5 feature of ROWS should work in this release.\par
+\par
+The DatePick window used in the TIB_Date control should work fine again.\par
+\par
+I improved the TIBOTable component when inserting as a detail dataset with columns in a master dataset with different column names did not pick up the related values. Now even if the names are different it will bring the values from the master and plug them into the detail dataset.\par
+\par
+I figured out how to get all the design-time editors for the TDataset components to work in Delphi 6. I had to figure out their new approach using interfaces. Pretty slick once I figured it out. Took me quite a while though.\par
+\par
+[NOTE: There was no Fo release.]\par
+\par
+\f0\fs36 1\f1 2\f0 /\f1 5\f0 /2001 Sub-Release 4.2 F\f1 n\f4\fs20\par
+I \f2 made it so that the OnDataChange events when doing column modifications would distinguish between a direct assignment and an Assign() initiated assignment. I made it so that when directly assigning a new value it would always announce a datachange notification, whether or not the data value was actually changed. Only the Assign() will suppress announcement of an OnDataChange notification when the values are the same. This is important to have since the master-detail linking relies upon it reaching a point that there are no longer any binary differences between the linking columns. If there were differences or perpetual announcement of data change events there would be an infinite looping, as was the case in recent sub-releases where trying to keep the link between master and detail perfectly accurate when using callbacks. Keep in mind, callbacks are off by default for TDataset based stuff so this was only an issue to those using callback support, which is a nice luxury now ready for the prime time in the native IBO components and controls. I'd still be hesitant to turn them on in TDataset based components.\par
+\par
+I merged in a fix to the TIB_Grid control which will make sure to provide OnKeyDown notification when default handling overrides and sets the Key value to zero and doesn't call the inherited behavior. Note, this simply announces to the event directly if it is assigned.\par
+\par
+ \f0\fs36 1\f1 2\f0 /3/2001 Sub-Release 4.2 F\f1 m\f4\fs20\par
+I \f2 discovered why the recent master-detail changes were causing a lockup. It had to do with depending on watching for a changed column value and plugging them into the detail dataset. Under some circumstances I was having to check the params of the detail to match the master a couple of times. This has to do with supporting the ability to allow callbacks to permit the master dataset to continue scrolling records even if all the details had not refreshed with the new values. In this situation it was possible for the detail datasets to be left out of sycn. Therefore, I made it so that once the master had stopped scrolling it would loop refreshing the input parameters of the detail datasets until they matched. Well, the way I was checking if they matched was flawed such that it would go over it and over it instead of exiting. The permanent fix resulted in doing a better job of detecting whether a pparameter was really changed or not. This involved eliminating things like assigning columns that are different types or lengths and making sure to ignore the whitespace in the buffers when looking for differences.\par
+\par
+As a result of the changes above, the OnDataChange event should be totally accurate and only fire when there was actually a change to the data value in the buffer. Previously I had it announcing a data change event every time the column value was written to whether it was changed in value or not.\par
+\par
+I fixed the broken SetRange problem in TIBODataset as well as an access violation if you altered the Filter property inside of the BeforeOpen event. I also made it possible to use descending order in the IndexFieldNames property of TIBOTable component. You just have to add DESC after each column name with a space between. I modified the MasterDetail sample application in the TDataset folder. By clicking on the title boxes in the grid it will sort both ascending and descending. I also showed how it integrates properly with SetRange. I also noticed that when using master-detail with TIBODataset the details would continue to show records even after the master dataset had closed. I made it so that the detail datasets would clear their buffers if the master dataset is closed.\par
+\par
+I carefully redid all of the CPPB 4 package source files. The only serious problem is one of the packages didn't have a package in its requires clause that it should have. I went ahead and edited at the direct text level all of the package source files to be consistent. There should be no problems installing the CPPB 4 packages now. I plan to go through and do a cleanup on the CPPB 3 and 5 versions as well.\f4\par
+\cf2\par
+\cf0\f0\fs36 11/30/2001 Sub-Release 4.2 Fl\f4\fs20\par
+\cf2 I fixed a problem with cached updates buffer handling. In some cases it was making it so that the Locate() method worked very slowly after updates were applied. Under certain circumstances it also corrupted a key value in the node buffers. This could have led to potential confusion in the data if cached updates were applied in batches subsequently without the dataset closing and opening again to wash out the affected key data.\par
+\cf0\par
+\f2 I fixed the disappearing grid problem as well as an annoying flicker when first clicking into the grid. I also fixed the problem with the lookupcombo control's popup list dropping down with blank space around the bottom on the first time dropping it down.\par
+\par
+I went through this whole thing in great detail making sure this version works well with Delphi 3 in anticipation of freezing this version and then for future development phasing out Delphi 3 support. This will be essential to more easily support the newer versions of Delphi, Kylix and CPPB coming out. I found a few nit-picks and cleaned up the sample application DFM's for properties Delphi 3 doesn't recognize.\par
+\f4\par
+\f0\fs36 11/29/2001 Sub-Release 4.2 Fk\f4\fs20\par
+In a fix from a previous sub-release there was one aspect of it that still needed some attantion.It has to do with the TIBODataset.AutoFetchAll property. If the dataset has AutoFetchAll set to true then the internal dataset attempted to fetch all records right inside of the TDataset.InternalOpen method. However, at that point in time it has not yet populated its buffers so it isn't ready for some things that might happen as a result of records entering the internal datasets buffers either. One case is if you have an OnFilterRecord event assigned. I make use of the TDataset.TempBuffer when operating in that event, so, if you have AutoFetchAll set to true and an OnFilterRecord event assigned it would try and access a non-existant TempBuffer and cause an AV. What I did was defer the opening of the internal dataset until after the TDataset had its buffers all prepared and ready to go. I did this by overriding the DoAfterOpen virtual method.\par
+\par
+When there are no KeyLinks and you are doing a seek on a bookmark for either the bufferfields or the fields arrays, it was possible to hit a FetchAll if it didn't find the bookmark in the buffer. I have made it so that it would be more efficient than just doing a fetchall. It now pulls in batches of records and will exit early if it finds the bookmark it is looking for.\par
+\par
+I included a few minor fixes to double-click support in the TIB_Ledger control. Thanks to Sean Matthews for his assistance there.\par
+\par
+\f0\fs36 11/28/2001 Sub-Release 4.2 Fj\f4\fs20\par
+I fixed a bug in the TIB_Grid internal edit control where a column's validation rule failed and then in code without leaving the grid that same column was attempted to be edited. What happened is it still tried to validate the text in the grid that failed instead of replacing it with the new value being set in the code.\par
+\par
+When preparing a statement the columns are generated and if there was an entry in any of the stringlist properties of the dataset or connection there was a LayoutChange event on the column generated. However, if all of those stringlist properties were blank the layout change was never being called at all (for efficiency). As a result of this, the DATEONLYFORMAT Editmask was not getting initialized. As a result, there was no default edit mask being applied.\par
+\par
+There is a problem in the VCL's handling of EditMasks that I fixed. Somehow it would strip out and add back in the mask characters in an inconsistent way. I put in a check to detect and correct when it got things messed up.\par
+\par
+I fixed a bug in the TIBODataset class where it wasn't doing a Resync() on the buffer in one instance that it should of been. As a result, it was possible for stale records to be in the TDataset buffers and cause various problems, including an AV during a Rollback.\par
+\par
+I fixed a bug in the handling of a direct SQL property modification to the TIB_StoredProc component. If the case of the procedure name was not upper, it wasn't properly doing uppercase to it in the schemacache. The same thing would probably result if a lower case stored proc name was entered into the StoredProcName property. This was only a problem if AutoDefineParams was true. Otherwise, plugging in a statement directly int othe SQL would not get messed up. I also made it so that directly manipulating the SQL property sets AutoDefineParams to false since it is assumed the correct input parameters are also being furnished with the SQL statement.\par
+\par
+I fixed a problem which surfaced when configuring a master dataset with many detail datasets who also have detail datasets. In some cases when rapidly scrolling through the master holding down the navigator button it would cause the datasets to get out of sync. Thus, the user would have to scroll forward and then back once to get all the details to sync up to the current master. I figured out how to make it so that it will always end up with the details correct. Thus, it is possible to scroll through the master dataset quickly without the burden of all the detail datasets syncing up. With callbacks they would be interrupted as the master moved on to a new record. Then, when the master was done scrolling the details would all get caught up properly by a specially designed check hooked in to make sure it took place properly.\par
+\par
+\f0\fs36 11/26/2001 Sub-Release 4.2 Fi\f4\fs20\par
+I fixed a problem with parameter names where OLD_"adialect3prm" is used in the update statements.\par
+\par
+I made it so that the TIBOUpdateSQL component would give a more descriptive error message if it encountered an exception or unexpected RowsAffected during an apply update.\par
+\par
+I made the TIBODataset component more efficient if it is going to be closed and opened a lot. There were things being done in the InternalOpen method that were only necessary upon preparing the dataset instead of each time it is opened and closed. I moved those out of this method and into the AfterPrepare of its internal dataset object. \par
+\par
+\f0\fs36 11/24/2001 Sub-Release 4.2 Fh\f4\fs20\par
+I fixed the problem where mixing multiple MasterLinks and KeyLinks relationships would cause a detail dataset to go into dssEdit state when scrolling a master dataset.\par
+\par
+I fixed yet another aspect of the TIBOUpdateSQL linkage problems. At run-time when closing a large datamodule with many TIBOUpdateSQL components it was possible to get an access violation. I am very confident there should be no more problems with this component causing AV's.\par
+\par
+I fixed a problem when using AutoFetchAll and OnFilterRecord at the same time with the TIBODataset based datasets. This caused an AV with this combination.\par
+\par
+I fixed a problem to do with Locate() and trailing spaces in text based key columns. It was returning true for the call to Locate() but the record pointer was not moving to the record it thought matched. Truth is, it should have returned false and now it does.\par
+\par
+I fixed a problem when doing a Lookup() and one of the input values is NULL. This became noticable when using LookupFields where values in the source were null but the lookup field was still getting a value when it shouldn't have been. I now have it returning NULL as it should.\par
+\par
+\f0\fs36 11/23/2001 Sub-Release 4.2 Fg\f4\fs20\par
+I fixed a problem with the TIBODataset component when doing a refresh as a result of a change in the Filtered property. Under some random circumstances it was accessing a bookmark before a proper resync had been performed and thus an Access Violation was occuring because it was referencing invalid memory. I figured out how to avoid this properly. \par
+\par
+\f0\fs36 11/22/2001 Sub-Release 4.2 Ff\f4\fs20\par
+I fixed a font resource leak in the datepick control. I also fixed a problem with the MonthWindow not scrolling up properly when the mouse moved over the top part of the window. \par
+\par
+\{ Dirk Schiffler <ds@rcs.de>                                                   \}\par
+\{ 11/11/2001                                                                   \}\par
+\{    - constant G_DefaultRowHeight for property DefaultRowHeight               \}\par
+\{      in the class-definitions for grid                                       \}\par
+\{    - new property 'NoVertScrollBar' in unit IB_Grid                          \} \par
+\{      it's use in procedure 'UpdateScrollBars' to avoid a vertical scrollbar  \}\par
+\{                                                                              \}\par
+\par
+I fixed a bitmap resource leak in the TIB_LookupCombo control.\par
+\par
+I fixed a problem with performing a Locate() when using horizontal dataset refinement where under rare conditions it would put the process into an infinite loop, never reaching completion.\par
+\par
+I provided a better fix for the IsEmpty property of the buffered dataset. It wasn't pushing on both the Eof and Bof directions in order to make sure that the dataset is indeed empty or not. I had it earlier so that it would only push towards eof to check and not bof.\par
+\par
+\{: Event to use custom high char in order to support different collations along\par
+with the horizontal dataset refinement. In some cases #255 is considered at a\par
+lesser position in the collation order than 'z' is. In such a case, the\par
+dataset is going to appear truncated if the Last method is called.\}\par
+TIB_GetHighCollateChar = procedure(     IB_Field: TIB_Column;\par
+                                    var AChar: char ) of object;\par
+\par
+I made the TIBODataset.CanModify property respect if the transaction has had its ReadOnly property set or not. I also put in an extra check for an empty buffer so that there won't be any invalid records still in the buffers when they shouldn't be.\par
+\par
+\par
+\f0\fs36 11/21/2001 Sub-Release 4.2 Fe\f4\fs20\par
+I merged in a contributed property to the IB_Grid control to suppress the vertical scrollbar. \par
+\par
+I merged in user contributed enhancements to the component editor used to automate setting the OrderingItems and OrderingLinks properties. It now supports the POS attribute param.\par
+\par
+I fixed a problem with the transaction name being stored in the DFM when it shouldn't be. If the transaction is the default internal transaction of a database component it shouldn't store its transaction reference because it includes the name of the connection as the owner. Then, the DFM reader was getting confused because there isn't a form with the same name as the database component.\par
+\par
+I fixed a bug with the IsEmpty property when using horizontal dataset refinement and the buffered row nums shifted to where the beginning number was above 1. It was returning true when it should have been returning false. It will now return the correct value no matter where the buffer row number beginning and ending references slide to. I was using a literal instead of the BofRowNum property as a point of reference. With IBO 4 it is important to know that row numbers can be positive, zero and negative.\par
+\par
+\f0\fs36 11/20/2001 Sub-Release 4.2 Fd\f4\fs20\par
+I fixed some problems with the TDataset based components. The TIBOUpdateSQL component was causing an AV during design-time when closing forms under certain circumstances.\par
+\par
+I added DriverName and SessionName properties to the TIBODatabase component so that errors would not cause property settings to be lost. Even though you press Ignore, it is still possible for property settings across forms to be lost. Thus, it is better to avoid having to hit ignore. This is after using GReplace to convert over all the calss names from the BDE based ones to the IBO class names.\par
+\par
+I made the TIBODatabase component PasswordStorage property default to psNotSecure which will match the behavior of the TDatabase component.\par
+\par
+I added BeforeSavePoint and AfterSavePoint events to the TIB_Transaction component.\par
+\par
+I fixed the problem where a dataset was inserted into from search mode and made BufferActive = true but it wasn't Active = true because the cursor hadn't been opened and then if its CommitAction was caClose and the transaction's Commit method was called the dataset was not going back into search mode. Now, in this situation the dataset will go back into search mode as it should.\par
+\par
+I enhanced the statement base class so that when a stored procedure is executed without any output parameters it assumes that there was some DML executed in it. What else is there to do than some DML if it isn't returning data of some kind. Thus, if you set the StoredProcHasDML it is only necessary for those situations where the stored procedure is returning some values in output fields. This is for both EXECUTE PROCEDURE and SELECT * FROM PROCEDURE statements.\par
+\par
+\f0\fs36 11/7/2001 Sub-Release 4.2 Fc\f4\fs20\par
+Support for isc_portable_integer was included at the session base level.\par
+\par
+Bugs in an IB_Parse routine fixed. This was in the default word generator for the full text search index generator. In some cases special characters were not being recognized fully. It had to do with the area of representing numbers as words properly.\par
+\par
+TIB_Script enhanced to reveal the position of the statement in the script so that progress indication is allowed during the execution of the script.\par
+\par
+\par
+\f0\fs36 11/01/2001 Sub-Release 4.2 Fb\f4\fs20\par
+Improvements to the IB_ActionNavigate and IB_ActionUpdate units were merged in.\par
+\par
+Beta of TIB_Currency edit control was included in this release. \par
+\par
+Resource leaks were completed in the TIB_SearchBar control. All the other button bars had the same resource leaks in the past and I thought I had fixed them all but I missed this one somehow.\par
+\par
+User contributed bug fixes to multi-column layout in the TIB_SearchPanel control were merged in.\par
+\par
+Fixed the AfterScroll event not firing in a detail dataset when the master dataset caused it to refresh its records.\par
+\par
+Fixed the MIDAS support method so that it would know how to properly quote strings. I had mistakenly thought it needed to know how to quote identifiers.\par
+\par
+Added FieldOptions property (user contributed) to the TIBODataset components so that it is possible to have both design-time declared fields and still allow the default fileds to be merged in with them. This way it is possible to have design-time fields defined and still tap into the data dictionary type behaviors of allowing IBO to generate run-time fields.\par
+\par
+\f0\fs36 10/29/2001 Sub-Release 4.2 Fa\f4\fs20\par
+The Locate() method was still broken in one aspect that needed to be corrected. What this had to do with was the case where a find nearest on a column not in the sort order of the dataset was executed. It was using an incorrect sort order in the cursor used to perform the locate on the server. As a result, it was finding an incorrect record in the buffer.\par
+\par
+\f0\fs36 10/27/2001 Release 4.2 F\f4\fs20\par
+The Locate() method was broken in the attempt to fix the AV in combination with the OnFIlterRecord in the previous sub-release. This has now been fully resolved. The problem was under some circumstances it went into an infinite loop.\par
+\par
+I fixed a problem with large numerics in the TIBODataset class. It was raising an exception when trying to store a very large number.\par
+\par
+There was a problem with largeint and variant support when using the GotoRecord method of the TIBODataset class. The type was detected and AsString used instead of AsVariant. This works around variants inability to deal with largeint storage. (Fixed by Rohit Gupta.)\par
+\par
+I fixed the AssignSQLWithSearch() method where using calculated fields and assigning to a TDataset based component.\par
+\par
+I relaxed the transaction timeout property timings so that it wouldn't be quite so aggressive.\par
+\par
+\f0\fs36 10/25/2001 Sub-Release 4.2 Eh\f4\fs20\par
+There was a problem with Locate() that was broken in the attempt to fix the AV in combination with the OnFIlterRecord. This has now been fully resolved.\par
+\par
+The problem with the TIB_LookupCombo when using the default popup list with the DropDownWidth set to 0 for default width was fixed. The last column was being made too narrow when first dropped down under some circumstances. There was also an adjustment made so that the decimal key on the keyboard would produce the appropriate DecimalSeparater character for international users.\par
+\par
+I fixed an instability problem when using OnFilterRecord to filter out rows and various complex operations that caused an internal buffer reference get a nil pointer on the node for the records data. As a result, there was an AV when using the TIBODataset based components. It had to do with calling Last when the actual last record in the buffer was filtered out. To my knowledge there should be no other circumstance which produced the AV.\par
+\par
+I fixed a problem with the RecordCount property when the OnFilterRecord event has some records filtered out of the visible dataset. I spelled the name of a variable wrong and didn't catch it. It only became apparent when records were actually filtered out and it wasn't deducting them from the record count value returned. Now, RecordCount should accurately take into consideration all records which have been filtered out by OnFilterRecord.\par
+\par
+I fixed a problem in the Locate() method. There was a case where a variant exception was being raised because of the comparison of a NULL and a non-NULL column value. I simply had to make it recognize the situation and work around its inability to perform the comparison without an exception with NULL's involved.\par
+\par
+I included contributions from Marco Menardi to support the CURRENT_TIMESTAMP, CURRENT_TIME and CURRENT_DATE string literals when dealing with date columns and the AsString property. Assigning any one of these strings will result in the appropriate value being plugged in from the client.\par
+\par
+I added the OnCalculateField event to those properties copied when using the AssignSQLWithSearch() method so that if you are using calculated fields they will get handled properly when using this method. I still have yet to get another aspect of calculated fields working with this method. I have also added the OrderingItems, OrderingLinks and OrderingItemNo properties to be transferred in this event when dealing with the TIBODataset based components.\par
+\par
+\cf2 If you use Delphi 4 I have realized that the support for BCD fields isn't working as it should. Because of this, I have made it use TIBOFloatField instead. All programs using TIBOBCDField will need to be recompiled after using GReplace to replace those with the TIBOFloatField. Otherwise, there will be runtime errors when opening the datasets.\par
+\cf1\par
+\f0\fs36 9/20/2001 Sub-Release 4.2 Eg\f4\fs20\par
+I fixed a problem with the replicator setup utility. It wasn't interpreting the macro begin and end charaters correctly. Those using the precompiled tool had no problem but those compiling a new one from sources inherited the bug and experienced the failure to load the metadata for replication.\par
+\par
+I fixed a filter parsing bug when using IS NOT NULL or IS NULL towards the end of the filter statement.\par
+\par
+I merged in some changes from Geoff for the TIB_Grid control to fix some focusing problems.\par
+\par
+\f0\fs36 9/11/2001 Sub-Release 4.2 Ef\f4\fs20\par
+I fixed the disappearing grid problem.\par
+\par
+\cf2 I changed the default behavior of the SQL identifier naming rules. It used to check each identifier if it was a reserved token or not but this was quite a drain of performance for most applications that don't use any identifiers which are reserved tokens. Also, if they are using reserved tokens proper care is given to put them in quotes as they should. Now, I have turned this checking off by default in order to improve performance for those who do not use identifiers that are also reserved tokens.\cf1\par
+\par
+\f0\fs36 9/9/2001 Sub-Release 4.2 Ee\f4\fs20\par
+I fixed a problem with the FindFirst method returning an error about an unsupported column type.\par
+\par
+I fixed a problem to do with the handling of the list of datasets during the commit action processing. I changed a for loop to a while loop so that if the number of items in the list changed it would be more dynamic instead of raising an exception. It simple checks to see if the item it just processed is still in the list and if it isn't it doesn't decrement the counter. By doing this it will still eventually exit the loop and not crash and most likely get every item since new ones are always added to the end of the list.\par
+\par
+I fixed the TIB_LookupList control so that it would have the proper defaut values on its property declarations. When porting it to IBO version 4 I accidently messed up a define it needed.\par
+\par
+I improved the handling of variant values with int64 based columns in Delphi 6.\par
+\par
+I made the '*' character recognized as all columns when dealing with variant values for all columns of a record.\par
+\par
+I fixed the problem of the OnMacroSubstitute event getting removed at design-time when assigning a new SQL value in the editor.\par
+\par
+I made a change in the IBS_Base.pas for the NT Service application framework. It seems that this class prevents a machine from doing a shutdown. \par
+\par
+I fixed the problem of the EditMask being set improperly when the NOTIME VolumnAttribute should be set.\par
+\par
+I fixed a problem of the background OAT fetches when they reached EOF they were triggering a DataChange event. Notmally this is fine but it someone was recrea\par
+\par
+\f0\fs36 8/28/2001 Sub-Release 4.2 Ed\f4\fs20\par
+I finished fixing the bug in the IB_ComboBox control for Delphi 6. I missed one additional aspect that still caused an infinit loop in another spot. This is all a part of changes made in the base class of Delphi 6's VCL. Good changes, I just didn't handle them right.\par
+\par
+I fixed a problem with TIBOTable.Locate and FindKey. It wasn't working just right in a particular case. It returned false when it should have returned true.\par
+\par
+\f0\fs36 8/25/2001 Sub-Release 4.2 Ec\f4\fs20\par
+I fixed the bug in the IB_ComboBox control for Delphi 6. It made a method virtual and as a result of this I made it an override but when I did that it created a stack overflow because I accessed the inherited property inside of the getter which invoked the getter again and so on until the crash. The symptom of this is a sudden termination of Delphi or your application. Poof! Gone. This should not happen any more.\par
+\par
+\f0\fs36 8/15/2001 Sub-Release 4.2 Eb\f4\fs20\par
+I fixied the bug when pressing ESC on the TIB_LookupCombo control you sometimes got a Field Not Found exception.\par
+\par
+I made the TIB_Cursor.RecordCount property handle the case where a DISTINCT clause is used in a SELECT statement. It will parse together an appropriate SQL to get the count of the distinct rows. It even tries to support multiple columns.\par
+\par
+I fixed two bugs in the TIB_Monitor component. One had to do with dynamically creating, destroying and creating additional instances of this component. It would raise an access violation if it were being created after the last instance in the app had previously been destroyed. I also fixed a place where a variable to one of the API calls was not passing in a reference pointer but instead the address to the reference pointer. This caused memory to get corrupted and the system would fail.\par
+\par
+The InfoPower datasets DCR file still had resource names from the old IBO class names that Borland stole. I changed them to reflect my current class naming convention. This avoids the duplicate resource problem of having them the same name as the ones in IBX.\par
+\par
+I fixed the BookmarkValid and GotoBookmark( ) capabilities in the TDataset based components.\par
+\par
+I added a public property declaration for the TIB_Row.UpdatedColumns list. This will tell you exactly which columns were affected during an OnDataChange event notification where they are being lumbed into a single notification.\par
+\par
+I touched up the controls that had Delphi 6 compiler hints and suppressed the platform hints too.\par
+\par
+I merged in the changes to make the TIB_CustomCombo control not actually place the dataset into an edit state until a value is changed.\par
+\par
+Some misc enhancements to the TIB_Ledger control were merged in.\par
+There was also some nice stuff done to the TIB_ActionNavigate unit as well.\par
+\par
+Lester Caine supplied us with revised and improved package sources for \par
+\par
+\f0\fs36 8/10/2001 Sub-Release 4.2 Ea\f4\fs20\par
+I finished fixing the bug with the AssignSQLWithSearch() method mentioned below. There was one more aspect to it I had not taken into consideration and some pieces were not being transferred as they should.\par
+\par
+Geoff Worboys included the PasswordStorage property so that full control over how passwords are stored in the exe can be determined.\par
+\par
+I included user changes to the IB_ActionNavigate.pas unit. It made the actions more similar to the IB_NavigatorBar in behavior.\par
+\par
+\f0\fs36 8/9/2001 Release 4.2 E\f4\fs20\par
+I fixed a bug where using the AssignSQLWithSearch() method didn't behave when the source was a native dataset and the target was a TDataset based component and the native query had its fields in a different order than the columns were in the select list. I now have it so that it will not only work correctly but it will also transfer the order of the fields in the native dataset to make the TDataset have its fields in the same order. \par
+\par
+I fixed a bug where the field properties of the BufferFields were not staying perfectly in sync with the changes in the Fields filed properties if there was an explicit call to BeginLayout/EndLayout. I now have it so that it will behave appropriately in all usage cases.\par
+\par
+I placed the source file header in the individual include files for the IB_Components unit.\par
+\par
+I fixed a bug in the TIB_DataPump component when pumping into a SELECT statement as the destination. Since it uses Insert mode to accomplish this the CheckRequired was getting in the way when direct buffer binding was being used and the destination columns were bound to the source buffers. What was happening is the IsNull property wasn't seeing the exact value that it should be and reporting incorrectly that a required column was null when in fact it wasn't. Now it will not get confused when direct buffer mapping is being used in the pump.\par
+\par
+I implemented the requested changes into the various IB_Action components for better navigation.\par
+\par
+The ESCAPE key wasn't working perfectly with the lookup combo control. It has now been adjusted to revert its values when ESC is pressed like the other controls do.\par
+\par
+I noticed that the popup memo editor that comes out of the TIB_Grid control didn't behave well when ENTER was pressed. Instead of allowing you to place a new line in the editor it would activate the default button and close the form. Once that was fixed I noticed that the WantReturns was set to false. So, I have not fixed it so that it is possible to get CRLF in the contents of memo fields when using the default memo editor.\par
+\par
+New French and Turkish constants updated in this release.\par
+\par
+There was a performance leak in the TIBODataset class which caused the index definitions to be read needlessly. This caused an extra overhead so I removed this call. It may be necessary to call IndexDefs.Update if you are relying upon the IndexDefs any.\par
+\par
+\f0\fs36 8/4/2001 Sub-Release 4.2 Db\f4\fs20\par
+I made the TIB_Monitor component work with ISAPI modules and other multi-session & multi-threaded applications. \par
+\par
+\f0\fs36 8/3/2001 Sub-Release 4.2 Da\f4\fs20\par
+I fixed some issues with Delphi 3 and 4 support. For some reason I thought the FreeAndNil( ) routine would work in them but this was added in Delphi 5. I also hadn't properly integrated the IB_ActionModule so that it would compile in Delphi 4.\par
+\par
+I removed a problem with using the TIB_Monitor in multi-threaded environments. I was using a threadvar to keep track of the list of monitor components so under multi-threading circumstances things weren't initialized just right. This lead to an access violation when the IB_Monitor hooks were in. \par
+\par
+\f0\fs36 8/2/2001 Release 4.2 D\f4\fs20\par
+I changed the package source files to be explicit rebuild instead of build as needed. I figured this would be more compatible with component users purposes.\par
+\par
+I fixed a bug where using cached updates and BLOB columns and runtime code manipulations to the content of the BLOB were not working just right. After changes are made and Post is called the BLOB would appear blank until the changes were applied. Now they properly reflect the right values at all times. Thanks to Steve Johnson for his help with this issue.\par
+\par
+I fixed an access violation when destroying components in a certain order and under special circumstances, including the use of cached updates.\par
+\par
+I fixed an issue with TIBODataset where TChart was doing a Resync( ) and IBO was complaining that it couldn't find the current record.\par
+\par
+\f0\fs36 6/28/2001\par
+\f4\fs20 I added in the ability to do connection pooling. It is really quite simple. You just call the connection's DisconnectToPool method. Always when connecting it will check the pool for a matching connection if one exists. There is also a global method that allows you to clear the pool. This is ideal for ISAPI applications because each hit can close the connection if there was one and the hits that don't need a connection won't require a connection handle be wasted in handling that particular web hit. \par
+\par
+\f0\fs36 6/14/2001\par
+\f4\fs20 The most important new feature in Release 4 is horizontal dataset refinement.  It means you can now specify a base query which can result in a significantly large dataset, for example, more than 100K rows.  Then, as you issue commands to the dataset to navigate among these rows IBO will automatically do the refinement necessary to pull in only those rows that are of interest. This can be implemented by using the POS attribute in the OrderingLinks property. What used to be entered as this: MYCOL=1 is now entered as MYCOL=ITEM=1;POS=0. Be sure to have supporting indexes both ascending and descending and don't use it on columns with nulls in them. TIBOTable will make these entries internally automatically.\par
+\par
+Internally, this affects the buffers significantly. Previously, I could always assume that the buffer had the BOF position and that it wouldn't grow "backwards" from there.  Now, my buffers have to be aware that they may need to pull in rows at the beginning or the end, or both if you have done a locate out in the middle somewhere. As long as you have proper indexes all dataset navigation commands should complete within 1 or two seconds. This makes using things like InfoPower with the TDataset stuff totally rock. Incremental searching is amazingly fast, for example.\par
+\par
+TDataset is handling these changes in dataset buffering architecture but, unfortunately, the native IBO controls like TIB_Grid were much less tolerant to the changes. TIB_Grid has undergone significant alterations to support this more flexible buffering architecture. As a result however, the grid is now much more smoothe and efficient itself. I was able to take a greater level of control and make things more efficient even with the grid. \par
+\par
+Another major feature is the ability to maintain client/side filtering of rows. It is also possible to change the filter logic and refresh without having to refresh the dataset from the server. A new RefreshFilteredRows method will recalculate the filtered status of all rows in the buffer and adjust the dataset accordingly, as if a refresh had been done. This works with the OnFilterRecord event only.\par
+\par
+CachedUpdates has received a lot of attention, resulting in improvements to its integration with the server-centric nature of IBO.  I have been able to harmonize these two opposed models considerably, resulting in better accuracy and efficiency in the integration.  Capability has been added to optionally show cached deleted rows, as well.\par
+\par
+I have greatly enhanced the session level background processing mechanisms.  In addition to using a timer, I have designed and implemented an architecture that hooks right into the IDLE cpu message notifications from Windows to fuel things like automatic Transaction OAT management.  The result is much more fluid and efficient handling of the background tasks that IBO relies upon to happen. The timer is now only necessary to keep the idle messages happening when in a "wait and see" situation,\par
+\par
+I have tied in other components to this new architecture. The IB_Events component and all components which descend from the TIB_Process class are hooked into the session's ability to use idle CPU cycles to fuel passive processes. TTimer components should no longer be necessary, thus reducing setup to a minimum.  Part of the session's new architecture includes a WakeUp notification system designed to take care of the synchronization of the event notifications. \par
+\par
+I have developed a base class for writing NT Services with IBO. It is possible to write a simple service easily enough but, to do it correctly, there were some difficult points to iron out. It involved doing some things that took quite a bit of head scratching to get just right. The new session architecture for passive processing fits the service application's passive manner of execution very well.\par
+\par
+I have developed some components that are used to provide a top to bottom full (fuzzy) text searching solution. It isn't 100% server-based as the index needs to be maintained by a client process but it is possible to use it from any client, whether IBO or not. You just have to have an IBO application running somewhere to maintain the index. All of the triggers to do it are built automatically. It does logging of searches too, including internal server statistics for performance metering.\par
+\par
+A simple replication module follows the same pattern as the search index maintenance components.  Some significant similarities exist between in the maintenance processes for index tables and replicated tables. This piece is still under development.\par
+\par
+IBO will now (not quite yet) tolerate broken connections much better. Along with this, you can actually allow a transparent disconnect from the connection and, when activity starts up again, a transparent reconnect.  There are timing configurations similar to the transaction OAT handling mechanisms. \par
+\par
+One example of how this could be useful is when an application goes idle for 15 minutes and there are no active transactions. The app will simply let the connection handle go, by disconnecting it. After it performs the reconnection it will reallocate all the statement handles and flag all queries to reprepare themselves.  When the user returns and goes to use the application, s/he is notified that the application is resuming itself. \par
+\par
+I have added a property to the connection component that will control trimming behavior when datasets are fetched.  To minimize the impact of porting existing applications to IBO4, the default behavior remains as it was.  However, in IBO4, you can set the DefaultNoTrimming variable of the connection to true to prevent any trimming being done by default.  You would then need to explicitly control the trimming on a case by case basis using SQLType, Domains, column names and/or table&column name pairs.\par
+\par
+I have split up IBO into separate packages to give better support for runtime packages. There are now four main runtime packages - core components, tools/utility components, visual components and forms/dialogs.  There are now specific designtime packages too - one to bring the runtime packages for the native stuff into the IDE.  The TDataset stuff needs this core runtime as well as one runtime just for the TDataset-based classes. A separate designtime-only package brings these into the IDE. There are separate packages for the IBOWeb internet stuff, replication components and the full text components.\par
+\par
+Geoff Worboys introduced the usage of interfaces to make it easier to integrate controls into TIB_Grid and other external processing, like mask handling, into core IBO classes, without requiring that the necessary files be compiled and hard linked to IBO. This allows Geoff to maintain his enhancedcomponents in packages separate from the IBO components.  In general, it means releases can be more "stable" and third-party developers can integrate their products with IBO more effectively. \par
+\par
+I added support for macro processing in the SQL and other properties of the statement/dataset/script. Some of this work actually leaked into 3.6 because I needed it there. \par
+\par
+The IB_WISQL project has been renamed IB_SQL.  I have added a new ColumnAttributes tab to this tool, so it is now possible to set client-side defaults, NOTREQUIRED and so on, when editing your data interactively.\par
+\par
+Changes you need to be aware of:\par
+\par
+1.  The Scrollbars property of TIB_LookupCombo is gone.  You can simply ignore this property when it is reported on opening forms that use this control.\par
+\par
+2.  The old IBDataset.pas unit has been renamed IBODataset.pas to bring it into line with the components it contains.  The old name was a legacy from before Borland hijacked my registered prefix 'TIB' and applied it to their InterBaseXpress components.  If you have built applications using the TIBO (dataset-compatible) components, please open your units in a text editor and replace IBDataset with IBODataset in all uses clauses containing it.  GReplace is a free tool you can download to peform this task very quickly as a search-and-replace.  See \cf3\ul\f5\fs24 http://www.gexperts.org/.\cf1\ulnone\par
+\f4\fs20\par
+\f0\fs36\par
+\f4\fs20\par
+}
+ 

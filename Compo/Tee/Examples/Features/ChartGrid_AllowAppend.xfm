@@ -1,0 +1,54 @@
+inherited ChartGridAllowAppend: TChartGridAllowAppend
+  Left = 270
+  Top = 250
+  Width = 658
+  Height = 494
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 650
+  end
+  inherited Memo1: TMemo
+    Width = 650
+    Lines.Strings = (
+      
+        'When True ChartGrid1.AllowAppend allows new data to be appended ' +
+        'to the bottom of the ChartGrid (and hence associated Series) '
+      
+        'by down arrow keying from the current bottom row of the ChartGri' +
+        'd.'
+      'Example:'
+      'ChartGrid1.AllowAppend:=True;')
+  end
+  inherited Chart1: TChart
+    Left = 169
+    Width = 481
+    Height = 311
+    ColorPaletteIndex = 6
+  end
+  inherited Panel1: TPanel
+    Width = 650
+    object cbAllowAppend: TCheckBox
+      Left = 14
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Allow append'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbAllowAppendClick
+    end
+  end
+  object ChartGrid1: TChartGrid
+    Left = 0
+    Top = 156
+    Width = 169
+    Height = 311
+    Align = alLeft
+    Options = [goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing, goColSizing, goEditing, goTabs, goThumbTracking]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+  end
+end

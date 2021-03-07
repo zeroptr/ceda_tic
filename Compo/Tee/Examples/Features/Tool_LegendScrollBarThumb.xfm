@@ -1,0 +1,125 @@
+inherited ToolLegendScrollBarThumb: TToolLegendScrollBarThumb
+  Left = 317
+  Top = 197
+  Width = 651
+  Height = 530
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 643
+  end
+  inherited Memo1: TMemo
+    Width = 643
+    Lines.Strings = (
+      
+        'An custom image may be set for the Legend scroll cursor. Alterna' +
+        'tively select from one of the predefined options.')
+  end
+  inherited Chart1: TChart
+    Width = 643
+    Height = 347
+    Gradient.EndColor = clWhite
+    Gradient.MidColor = clSilver
+    Gradient.StartColor = 15790320
+    Gradient.Visible = True
+    Legend.Shadow.Visible = False
+    Legend.TopPos = 2
+    Title.Visible = False
+    LeftAxis.MaximumOffset = 8
+    View3D = False
+    ColorPaletteIndex = 1
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      BarStyle = bsRectGradient
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        002300000000000000007067400000000000205C400000000000A05E40000000
+        00000059400000000000E055400000000000605D400000000000605340000000
+        0000C0674000000000007072400000000000C072400000000000806640000000
+        0000E872400000000000E06A4000000000000059400000000000005440000000
+        000080664000000000002067400000000000E065400000000000406A40000000
+        000060584000000000000004400000000000605D400000000000405A40000000
+        000080614000000000002052400000000000005E400000000000B06840000000
+        00009872400000000000187A4000000000009877400000000000907540000000
+        000070724000000000001073400000000000106D400000000000306140}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 643
+    object Label1: TLabel
+      Left = 96
+      Top = 14
+      Width = 32
+      Height = 13
+      Caption = '&Image:'
+      FocusControl = CBStyle
+    end
+    object Label4: TLabel
+      Left = 340
+      Top = 14
+      Width = 23
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Size:'
+      FocusControl = Edit3
+    end
+    object bEdit: TButton
+      Left = 11
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = bEditClick
+    end
+    object CBStyle: TComboFlat
+      Left = 137
+      Top = 10
+      Width = 83
+      TabOrder = 1
+      OnChange = CBStyleChange
+      Items.Strings = (
+        'Custom'
+        'Thumb 1'
+        'Thumb 2'
+        'Thumb 3')
+    end
+    object BBrowse: TButton
+      Left = 236
+      Top = 9
+      Width = 75
+      Height = 25
+      HelpContext = 1934
+      Caption = '&Browse...'
+      TabOrder = 2
+      OnClick = BBrowseClick
+    end
+    object Edit3: TEdit
+      Left = 371
+      Top = 11
+      Width = 46
+      Height = 21
+      TabOrder = 3
+      Text = '25'
+      OnChange = Edit3Change
+    end
+    object UDThumbSize: TUpDown
+      Left = 417
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit3
+      Max = 30000
+      Position = 25
+      TabOrder = 4
+    end
+  end
+end

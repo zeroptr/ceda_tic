@@ -1,0 +1,120 @@
+inherited CursorToleranceToolForm: TCursorToleranceToolForm
+  Left = 325
+  Top = 169
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 437
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      
+        'Defines the tolerance distance in pixels from the cursor upon wh' +
+        'ich you can select the Cursor. That can '
+      'make it easier to pickup and move the cursor.'
+      ''
+      'Example:'
+      
+        'ChartTool1.ClickTolerance:= 4; //Cursor selected when mouse with' +
+        'in 4 pixels at either side')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 281
+    BackWall.Color = 15461355
+    BackWall.Pen.Color = clGray
+    BackWall.Transparent = False
+    Gradient.EndColor = clSilver
+    Gradient.Visible = True
+    Legend.Transparent = True
+    Title.Font.Color = clBlack
+    Title.Text.Strings = (
+      'Click Tolerance for Cursor Tool')
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Axis.Visible = False
+    Frame.Color = clGray
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Axis.Visible = False
+    View3D = False
+    TabOrder = 2
+    object Series1: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.HorizSize = 7
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psDiamond
+      Pointer.VertSize = 7
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        000F0000000000000000F8714000000000005069400000000000306B40000000
+        0000407540000000000028744000000000006870400000000000706240000000
+        0000005940000000000030614000000000001068400000000000205C40000000
+        00001068400000000000F069400000000000E05A400000000000206240}
+    end
+    object ChartTool1: TCursorTool
+      Pen.Color = clNavy
+      Series = Series1
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 16
+      Top = 15
+      Width = 76
+      Height = 13
+      Caption = '&Click tolerance :'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 99
+      Top = 12
+      Width = 33
+      Height = 21
+      TabOrder = 0
+      Text = '3'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 132
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Position = 3
+      TabOrder = 1
+    end
+    object cbFollowMouse: TCheckBox
+      Left = 245
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Follow mouse'
+      TabOrder = 2
+      OnClick = cbFollowMouseClick
+    end
+    object cbSnap: TCheckBox
+      Left = 177
+      Top = 14
+      Width = 64
+      Height = 17
+      Caption = '&Snap'
+      TabOrder = 3
+      OnClick = cbSnapClick
+    end
+  end
+end

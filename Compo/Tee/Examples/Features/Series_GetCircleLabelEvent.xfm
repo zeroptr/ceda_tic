@@ -1,0 +1,109 @@
+inherited SeriesGetCircleLabelEvent: TSeriesGetCircleLabelEvent
+  Left = 335
+  Top = 259
+  Width = 561
+  Height = 449
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 553
+  end
+  inherited Memo1: TMemo
+    Width = 553
+    Lines.Strings = (
+      
+        'The OnGetCircleLabel event for several series types (Polar, Rada' +
+        'r, WindRose, etc)'
+      
+        'allows replacing the default text used to display labels around ' +
+        'the series circle.'
+      ''
+      'For example, append the "c" character to all labels:'
+      ''
+      'procedure TSeriesGetCircleLabelEvent.Series1GetCircleLabel('
+      
+        '  Sender: TCustomPolarSeries; const Angle: Double; Index: Intege' +
+        'r;'
+      '  var Text: String);'
+      'begin'
+      '  Text := Text + '#39'c'#39';'
+      'end;'
+      ''
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 553
+    Height = 266
+    Legend.Visible = False
+    MarginLeft = 10
+    MarginRight = 10
+    Title.Visible = False
+    AxisVisible = False
+    BottomAxis.Increment = 30.000000000000000000
+    View3D = False
+    object Series1: TPolarBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ColorEachPoint = True
+      AngleIncrement = 30.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      CircleLabels = True
+      LabelsMargin = 4
+      Pen.Color = clRed
+      Pen.Width = 5
+      Pointer.HorizSize = 6
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psHexagon
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      OnGetCircleLabel = Series1GetCircleLabel
+      Data = {
+        0119000000CDCCCCCCCCCC2C400000000000007C40CDCCCCCCCCCC3C40000000
+        0000588E409A999999999945400000000000E07C40CDCCCCCCCCCC4C40000000
+        0000F0834000000000000052400000000000C067409A99999999995540000000
+        000040894033333333333359400000000000002040CDCCCCCCCCCC5C40000000
+        0000D08D40333333333333604000000000002080400000000000006240000000
+        0000407240CDCCCCCCCCCC634000000000005072409A99999999996540000000
+        000050824067666666666667400000000000406F403333333333336940000000
+        0000807C400000000000006B400000000000008740CDCCCCCCCCCC6C40000000
+        00004086409A99999999996E400000000000A079403333333333337040000000
+        00003889409A999999991971400000000000F886400000000000007240000000
+        00001078406766666666E672400000000000607540CDCCCCCCCCCC7340000000
+        0000006A403333333333B374400000000000002A409A99999999997540000000
+        0000F08D4000000000008076400000000000207040}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 553
+    object Label1: TLabel
+      Left = 16
+      Top = 15
+      Width = 145
+      Height = 13
+      Caption = 'Add extra text for &Circle labels :'
+    end
+    object editText: TEdit
+      Left = 176
+      Top = 12
+      Width = 49
+      Height = 21
+      TabOrder = 0
+      Text = 'c'
+    end
+    object Button1: TButton
+      Left = 232
+      Top = 10
+      Width = 75
+      Height = 25
+      Caption = '&Apply !'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

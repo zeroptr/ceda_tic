@@ -1,0 +1,65 @@
+inherited BarSideAll: TBarSideAll
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Bar and Horiz.Bar series can now be aligned "Side All". This mea' +
+        'ns all points of'
+      'each series are contiguous to the next one.'
+      ''
+      'Example: Series1.MultiBar := mbSideAll ;')
+  end
+  inherited Chart1: TChart
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbSideAll
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clGreen
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbSideAll
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 70
+      Height = 13
+      Caption = '&Multi-Bar Style:'
+      FocusControl = RadioGroup1
+    end
+    object RadioGroup1: TRadioGroup
+      Left = 88
+      Top = 2
+      Width = 199
+      Height = 35
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        'Side &All'
+        '&Side to Side')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+  end
+end

@@ -1,0 +1,164 @@
+
+{                                                                              }
+{ IB_Component                                                                 }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: This component is a foundation level class for many of IBO's components and
+serves to provide a reference to the Session.
+<br><br>
+It also gives a hook into the error processing for the session. Errors can be
+trapped globally and processed using the TIB_SessionProps component.
+<br><br>
+The version of the components is reported by this class.}
+TIB_Component = class(TComponent)
+private
+{ Property Storage Fields }
+  FBusyLevel: integer;
+  FCheckingSession: boolean;
+  FHasNilAncestry: boolean;
+  FChildOfProcess: boolean;
+  FOnError: TIB_ErrorEvent;
+  FOnSessionTimer: TIB_SessionTimerEvent;
+  procedure SetVersion( const AValue: string );
+  function GetVersion: string;
+  procedure SetOnSessionTimer( AValue: TIB_SessionTimerEvent );
+protected
+  FIB_Session: TIB_Session;
+  FIsProcess: boolean;
+  procedure SetOnError( AValue: TIB_ErrorEvent ); virtual;
+  function GetSession: TIB_Session; virtual;
+  procedure SetSession( ASession: TIB_Session ); virtual;
+  function IsSessionStored: boolean;
+  procedure DoHandleError(       Sender: TObject;
+                           const errcode: isc_long;
+                                 ErrorMessage,
+                                 ErrorCodes: TStringList;
+                           const SQLCODE: isc_long;
+                                 SQLMessage,
+                                 SQL: TStringList;
+                             var RaiseException: boolean); virtual;
+  procedure DoWakeUp( Sender: TObject );
+  function NeedTimerNotifications: boolean; virtual;
+  property BusyLevel: integer read FBusyLevel;
+  function CheckSession( AllowDefault: boolean ): boolean;
+  procedure FindSession( var ASession: TIB_Session;
+                             AllowDefault: boolean ); virtual;
+  procedure Notification( AComponent: TComponent;
+                          Operation: TOperation); override;
+public
+
+{ Inherited Methods }
+
+{: This constructor method allows an object being created to be made a part of
+a session other than the default session for the thread creating it.
+<br><br>
+Email author if you need additional information.}
+  constructor CreateForSession( AOwner: TComponent;
+                                ASession: TIB_Session );
+  constructor Create( AOwner: TComponent ); override;
+{: Standard destructor.}
+  destructor Destroy; override;
+{: This method is used to indicate that the IB_Session has an active
+process pending completion. In some cases it can lead to a performance
+improvement if the application code runs a batch of separate processes all
+nested within a call to BeginBusy() and EndBusy().
+<br><br>
+Yield is a flag that lets the session know whether or not there will be a
+call to Application.ProcessMessages. If this is true then a different cursor
+is used when screen cursor handling is enabled.}
+  procedure BeginBusy( Yield: boolean );
+{: This method is used to indicate to the IB_Session that a process it
+was waiting on has been aborted or completed.
+<br><br>
+It is very important to use the try..finally..end exception handling construct
+when calling these methods.}
+  procedure EndBusy;
+{: This method allows access to the internal passive task processing. Under
+normal circumstances, it is called automatically by the session.}
+  procedure ProcessPassiveTasks( var IsDone,
+                                     IsWaiting,
+                                     Terminate: boolean ); virtual;
+{: This flag is used to tell if the component is owned by a process component.
+It is necessary to know this, to prevent the passive processing from visiting
+components which are internal to a process and corrupting their state.}
+  property ChildOfProcess: boolean read FChildOfProcess;
+{: This property indicates whether the component can be tied to a session via
+the ownership chain.}
+  property HasNilAncestry: boolean read FHasNilAncestry;
+{: Reference to the Session to which this component belongs.}
+  property IB_Session: TIB_Session read GetSession
+                                   write SetSession
+                                   stored IsSessionStored;
+{: Event to trap an exception about to be generated by the component session
+as a result of a call to HandleException().
+<br><br>
+This would be a good place from which to feed an error log file.
+<br><br>
+It is also possible to prevent a Delphi exception from being raised.
+<br><br>
+Of course, you may also choose to raise your own custom exception class.
+<br><br>
+Another role of this event could be to provide alternative text for certain
+error messages that are anticipated.}
+  property OnError: TIB_ErrorEvent read FOnError write SetOnError;
+
+{: By default the session produces a continual series of timer notifications in
+order to serve as the backbone to timing-related issues in IBO.
+<br><br>
+By default this event will trigger once a second and is controlled at the
+session level. See the TIB_SessionProps component for controlling the default
+session in a GUI application.
+<br><br>
+If you are using an explicit TIB_Session component it will not trigger any
+events by default. See the TimerInterval property if you want to enable the
+explicit session's OnSessionTimer event.
+<br><br>
+It is recommended that you examine the TCustomForm.UpdateActions method.  Because
+that method is hooked into the Application.OnIdle notification system, it would
+prove to be more effective than a session timer as a mechanism to hook into for
+notifications.}
+  property OnSessionTimer: TIB_SessionTimerEvent read FOnSessionTimer
+                                                 write SetOnSessionTimer;
+published
+
+{: Version of InterBase Objects implemented.}
+  property Version: string read GetVersion write SetVersion stored false;
+
+end;
+
+// IBA_Component.IMP

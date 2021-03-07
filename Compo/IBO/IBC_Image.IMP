@@ -1,0 +1,447 @@
+// IBC_Image.INT
+
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.IMP}
+{$UNDEF IB_AutoLabel}
+
+constructor TIB_CustomImage.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  {$IFNDEF VER90}
+  FAutoLabel := TIB_AutoLabel.Create( Self );
+  {$ENDIF}
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csFramed, csOpaque, csReplicatable];
+  Width := 105;
+  Height := 105;
+  TabStop := true;
+  ParentColor := false;
+  FPicture := TPicture.Create;
+  FPicture.OnChange := PictureChanged;
+  FBorderStyle := bsSingle;
+  FAutoDisplay := true;
+  FCenter := true;
+  FQuickDraw := true;
+  FKeepScale := true;
+  DataLink.Control := Self;
+  DataLink.OnStateChanged := StateChanged;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnUpdateData := UpdateData;
+end;
+
+destructor TIB_CustomImage.Destroy;
+begin
+  {$IFNDEF VER90}
+  FAutoLabel.Free;
+  FAutoLabel := nil;
+  {$ENDIF}
+  DataSource := nil;
+  with DataLink do begin
+    Control := nil;
+    OnStateChanged := nil;
+    OnDataChange := nil;
+    OnUpdateData := nil;
+  end;
+  Destroying;
+  FPicture.Free;
+  FPicture := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomImage.Loaded;
+begin
+  inherited Loaded;
+  SysDataChange( nil );
+  {$IFNDEF VER90}
+  RemakeAutoLabel;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomImage.SysStateChanged;
+begin
+  with DataLink do
+    if ColorScheme then
+      inherited Color := Color;
+  UpdateTabStop;
+end;
+
+procedure TIB_CustomImage.SysDataChange;
+begin
+  if not FIsUpdating and not FIgnorePictureChange then
+    if Assigned( Field ) and Field.IsBlob then
+      with Field as TIB_ColumnBlob do
+      begin
+        FIgnorePictureChange := true;
+        try
+          Picture.Graphic := nil;
+        finally
+          FIgnorePictureChange := false;
+        end;
+        FPictureLoaded := false;
+        if IsNull or AutoDisplay then
+          LoadPicture;
+        if IsNull or IsLoaded and not FPictureLoaded then
+          LoadPicture
+        else
+          Invalidate;
+      end;
+end;
+
+procedure TIB_CustomImage.SysUpdateData;
+begin
+  with DataLink do begin
+    if ControlIsModified then begin
+      if Assigned( Field ) and Field.IsBlob and not FIsUpdating then begin
+        with Field as TIB_ColumnBlob do begin
+          FIsUpdating := true;
+          try
+            if Assigned( Picture.Graphic ) and
+               ( not Picture.Graphic.Empty ) then begin
+              Assign( Picture.Graphic );
+            end else begin
+              Clear;
+            end;
+          finally
+            FPictureLoaded := true;
+            FIsUpdating := false;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_CustomImage.LoadPicture;
+begin
+  if not FPictureLoaded and not FIgnorePictureChange then
+  begin
+    FIgnorePictureChange := true;
+    try
+      if Assigned( Field ) and not Field.IsNull and Field.IsBlob then
+      begin
+        try
+          Field.AssignTo( Picture.Bitmap );
+        except
+          try
+            Field.AssignTo( Picture.MetaFile );
+          except
+            try
+               Field.AssignTo( Picture.Icon );
+             except
+               raise Exception.Create( 'Not a Bitmap, Metafile or Icon' );
+             end;
+          end;
+        end;
+      end
+      else
+        Picture.Graphic := nil;
+    finally
+      FIgnorePictureChange := false;
+    end;
+    FPictureLoaded := true;
+  end;
+end;
+
+procedure TIB_CustomImage.PictureChanged(Sender: TObject);
+begin
+  if AutoSize and ( Align <> alClient ) then
+  begin
+    if (Picture.Width > 0) and (Picture.Height > 0) then
+      SetBounds(Left, Top, Picture.Width, Picture.Height)
+    else
+      SetBounds(Left, Top, 100, 100);
+  end;
+  if not FIgnorePictureChange then
+  begin
+    with DataLink do
+    begin
+      if Modify then
+      begin
+        ControlIsModified := true;
+        FPictureLoaded := true;
+        if not Focused then
+          UpdateData;
+      end;
+    end;
+  end;
+  Invalidate;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_CustomImage.GetPalette: HPALETTE;
+begin
+  Result := 0;
+  if FPicture.Graphic is TBitmap then
+    Result := TBitmap(FPicture.Graphic).Palette;
+end;
+
+procedure TIB_CustomImage.SetAutoDisplay( AValue: Boolean );
+begin
+  if AutoDisplay <> AValue then
+  begin
+    FAutoDisplay := AValue;
+    if AValue then
+      LoadPicture;
+  end;
+end;
+
+procedure TIB_CustomImage.SetCenter( AValue: boolean );
+begin
+  if FCenter <> AValue then
+  begin
+    FCenter := AValue;
+    Invalidate;
+  end;
+end;
+
+procedure TIB_CustomImage.SetPicture( AValue: TPicture );
+begin
+  FPicture.Assign( AValue );
+end;
+
+procedure TIB_CustomImage.SetStretch( AValue: boolean );
+begin
+  if FStretch <> AValue then
+  begin
+    FStretch := AValue;
+    Invalidate;
+  end;
+end;
+
+procedure TIB_CustomImage.SetKeepScale( AValue: boolean );
+begin
+  if FKeepScale <> AValue then
+  begin
+    FKeepScale := AValue;
+    Invalidate;
+  end;
+end;
+
+procedure TIB_CustomImage.SetAutoSize( AValue: boolean );
+begin
+  if AutoSize <> AValue then
+  begin
+    FAutoSize := AValue;
+    if AutoSize then
+      Align := alNone;
+    FIgnorePictureChange := true;
+    try
+      PictureChanged( Picture );
+    finally
+      FIgnorePictureChange := false;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomImage.CopyToClipboard;
+begin
+  if Picture.Graphic <> nil then
+    Clipboard.Assign(Picture);
+end;
+
+procedure TIB_CustomImage.CutToClipboard;
+begin
+  if Picture.Graphic <> nil then
+  begin
+    if DataLink.Modify then
+    begin
+      CopyToClipboard;
+      Picture.Graphic := nil;
+    end;
+  end;
+end;
+
+procedure TIB_CustomImage.PasteFromClipboard;
+begin
+  if ( Clipboard.HasFormat( CF_BITMAP )) and
+     ( DataLink.Modify ) then
+    Picture.Bitmap.Assign( Clipboard );
+end;
+
+procedure TIB_CustomImage.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if FBorderStyle = bsSingle then
+    Params.Style := Params.Style or WS_BORDER;
+end;
+
+procedure TIB_CustomImage.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  case Key of
+  VK_INSERT:
+    if ssShift in Shift then
+      PasteFromClipBoard
+    else
+      if ssCtrl in Shift then
+        CopyToClipBoard;
+  VK_DELETE:
+    if ssShift in Shift then
+      CutToClipBoard
+    else
+      Picture.Graphic := nil;
+  end;
+end;
+
+procedure TIB_CustomImage.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  case Key of
+    ^X: CutToClipBoard;
+    ^C: CopyToClipBoard;
+    ^V: PasteFromClipBoard;
+    #13: if not FPictureLoaded then LoadPicture
+                               else DataLink.UpdateData;
+    #27: SysDataChange( nil );
+  end;
+end;
+
+procedure TIB_CustomImage.CMEnter(var Message: TCMEnter);
+begin
+  Invalidate; { Draw the focus marker }
+  inherited;
+end;
+
+procedure TIB_CustomImage.CMExit(var Message: TCMExit);
+begin
+  DataLink.UpdateData;
+  Invalidate; { Erase the focus marker }
+  inherited;
+end;
+
+procedure TIB_CustomImage.CMTextChanged(var Message: TMessage);
+begin
+  inherited;
+  if not FPictureLoaded then Invalidate;
+end;
+
+procedure TIB_CustomImage.WMLButtonDown(var Message: TWMLButtonDown);
+begin
+  if TabStop and CanFocus then SetFocus;
+  inherited;
+end;
+
+procedure TIB_CustomImage.WMLButtonDblClk(var Message: TWMLButtonDblClk);
+begin
+  LoadPicture;
+  inherited;
+end;
+
+procedure TIB_CustomImage.WMCut(var Message: TMessage);
+begin
+  CutToClipboard;
+end;
+
+procedure TIB_CustomImage.WMCopy(var Message: TMessage);
+begin
+  CopyToClipboard;
+end;
+
+procedure TIB_CustomImage.WMPaste(var Message: TMessage);
+begin
+  PasteFromClipboard;
+end;
+
+procedure TIB_CustomImage.Paint;
+var
+  R: TRect;
+  S: string;
+  DrawPict: TPicture;
+  Pal: HPalette;
+{$IFDEF IBO_VCL30_OR_GREATER}
+  Form: TCustomForm;
+{$ELSE}
+  Form: TForm;
+{$ENDIF}
+begin
+  with Canvas do
+  begin
+    Brush.Style := bsSolid;
+    Brush.Color := Color;
+    if Assigned( Field ) and
+       ( FPictureLoaded or (csPaintCopy in ControlState)) then
+    begin
+      DrawPict := TPicture.Create;
+      Pal := 0;
+      try
+        if (csPaintCopy in ControlState) and
+           Assigned(Field) and Field.IsBlob then
+        begin
+          Field.AssignTo( DrawPict );
+          if DrawPict.Graphic is TBitmap then
+          begin
+            DrawPict.Bitmap.IgnorePalette := QuickDraw;
+          end;
+        end
+        else
+        begin
+          DrawPict.Assign( Picture );
+          if Focused and ( DrawPict.Graphic is TBitmap ) and
+            ( DrawPict.Bitmap.Palette <> 0 ) then
+          begin
+          { Control has focus, so realize the bitmap palette in foreground }
+            Pal := SelectPalette(Handle, DrawPict.Bitmap.Palette, False);
+            RealizePalette(Handle);
+          end;
+        end;
+        SetRect( R, 0, 0, DrawPict.Width, DrawPict.Height );
+//        if Stretch and KeepScale then begin
+//          FillRect(ClientRect);
+//          if ( DrawPict.Graphic <> nil ) and
+//             not DrawPict.Graphic.Empty then begin
+// WIP!!!
+//            tmpInt := ( R.Bottom - R.Top ) - DrawPict.Graphic.Height;
+//            if tmpInt > ( R.Right - R.Left ) - DrawPict.Width then begin
+//            end;
+//            InflateRect( R, R.
+//            StretchDraw( R, DrawPict.Graphic );
+//          end;
+{        end else} if Stretch or AutoSize then begin
+          if ( DrawPict.Graphic = nil ) or DrawPict.Graphic.Empty then begin
+            FillRect(ClientRect);
+          end else begin
+            StretchDraw( ClientRect, DrawPict.Graphic );
+          end;
+        end else begin
+          if Center then OffsetRect( R,
+                                    (ClientWidth  - DrawPict.Width ) div 2,
+                                    (ClientHeight - DrawPict.Height) div 2);
+          StretchDraw( R, DrawPict.Graphic );
+          ExcludeClipRect(Handle, R.Left, R.Top, R.Right, R.Bottom);
+          FillRect(ClientRect);
+          SelectClipRgn(Handle, 0);
+        end;
+      finally
+        if Pal <> 0 then SelectPalette(Handle, Pal, True);
+        DrawPict.Free;
+      end;
+    end else begin
+      Font := Self.Font;
+      S := DataLink.FieldText;
+      R := ClientRect;
+      FillRect( R );
+      TextRect( R, (R.Right  - TextWidth (S)) div 2,
+                   (R.Bottom - TextHeight(S)) div 2, S );
+    end;
+    Form := GetParentForm(Self);
+    if (Form <> nil) and (Form.ActiveControl = Self) and
+      not (csDesigning in ComponentState) and
+      not (csPaintCopy in ControlState) then begin
+      Brush.Color := clWindowFrame;
+      FrameRect(ClientRect);
+    end;
+  end;
+end;
+
+procedure TIB_CustomImage.SetName( const AValue: TComponentName );
+begin
+  inherited SetName( AValue );
+  if csDesigning in ComponentState then begin
+    Invalidate;
+  end;
+end;

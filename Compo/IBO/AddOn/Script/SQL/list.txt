@@ -1,0 +1,10 @@
+0001 Domains 
+0002 Generators
+0003 Table PERSONAL
+0004 Table PERSONA
+0005 Table FORMA26
+0006 Table ALP
+0007 Tables SPR_*
+1000 External function (Volume 1)
+2000 External function (Volume 2)
+9000 COMMIT

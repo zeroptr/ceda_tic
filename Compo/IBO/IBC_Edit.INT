@@ -1,0 +1,169 @@
+
+{                                                                              }
+{ TIB_Edit                                                                     }
+{                                                                              }
+
+TIB_EditButtonStyle = ( ebsNone, ebsEllipsis, ebsDropDown );
+
+{: In this event it is possible to change the drawing of the Ellipsis or the
+DropDown button.
+<br>
+One possibility is to change just the brush color of the canvas and then, with
+DefaultDrawing enabled, let the default drawing proceed as usual.
+<br>
+It is possible to draw a completely different image into the rectangle of the
+canvas.
+<br>
+For an example of drawing into the rectangle of the canvas, see the Draw method
+of TCustomImageList in the Delphi help.}
+TIB_EditButtonCustomDrawEvent = procedure(     ACanvas: TCanvas;
+                                               Rect: TRect;
+                                               Enabled,
+                                               Pressed: boolean;
+                                           var DefaultDraw: boolean ) of object;
+
+TIB_IsValidCharEvent = procedure(     Sender: TObject;
+                                  var AChar: Char;
+                                  var IsValid: Boolean ) of object;
+
+{: This control gives a very generic entry field for displaying and/or entering
+data or search criteria.
+<br><br>
+It is aware of the dataset state and displays/accepts search criteria if the
+state is dssSearch;  otherwise it displays/accepts data.}
+TIB_CustomEdit = class(TCustomMaskEdit)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomEdit.INT}
+{$UNDEF IB_AutoLabel}
+private
+  FFocused: boolean;
+  FCanvas: TControlCanvas;
+  FAlignment: TAlignment;
+  FDrawButton: boolean;
+  FButtonWidth: integer;
+  FImageList: TImageList;
+  FImageIndex: integer;
+  FImageIndexDisabled: integer;
+  FImageIndexPressed: integer;
+  FButtonStyle: TIB_EditButtonStyle;
+  FAlwaysShowButton: boolean;
+  FPressed: boolean;
+  FTracking: boolean;
+  FMaskChanging: boolean;
+  FAllowUnboundEdits: boolean;
+  FOnButtonClick: TNotifyEvent;
+  FOnButtonDraw:TIB_EditButtonCustomDrawEvent;
+  FOnGetDisplayText,
+  FOnGetEditText,
+  FOnSetEditText:TIB_TextEvent;
+  FOnIsValidChar:TIB_IsValidCharEvent;
+  procedure SetFocused( AValue: boolean );
+  procedure DrawButton;
+  procedure DrawButtonStyle(ACanvas: TCanvas; ARect: TRect);
+  function GetTextMargins: TPoint;
+  procedure WMCut(var Message: TMessage); message WM_CUT;
+  procedure WMPaste(var Message: TMessage); message WM_PASTE;
+  procedure CMGotFocus(var Message: TCMGotFocus); message CM_GotFocus;
+  procedure StopTracking;
+  procedure CheckDrawButton(ForceRepaint: boolean);
+  procedure SetPasswordChar(Value: Char);
+  procedure SetButtonStyle(Value: TIB_EditButtonStyle);
+  procedure SetAlwaysShowButton(Value: boolean);
+  procedure SetImageList(Value: TImageList);
+  procedure SetImageIndex(Value: integer);
+  procedure SetImageIndexDisabled(Value: integer);
+  procedure SetImageIndexPressed(Value: integer);
+  procedure TrackButton(X,Y: Integer);
+  procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
+  procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+  procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+  procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
+protected
+  procedure BoundsChanged;
+  procedure DoEditButtonClick; dynamic;
+  procedure CreateParams(var Params: TCreateParams); override;
+  procedure CreateWnd; override;
+  procedure DoEnter; override;
+  procedure DoExit; override;
+  procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+  procedure PaintWindow(DC: HDC); override;
+  procedure DoCustomButtonDraw(     ACanvas: TCanvas;
+                                    Rect: TRect;
+                                    Enabled,
+                                    Pressed: boolean;
+                                var DefaultDraw:boolean ); virtual;
+  function EditCanModify: Boolean; override;
+  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  procedure KeyPress(var Key: Char); override;
+  procedure Reset; override;
+  procedure Loaded; override;
+  procedure Change; override;
+  procedure UpdateMask( UnboundMask: string ); virtual;
+  property MaskChanging: boolean read FMaskChanging write FMaskChanging;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+  property PasswordChar write SetPasswordChar;
+{: This property allows a button to be displayed in the edit control.
+<br><br>
+Note that the button will not show if PasswordChar is set, although
+the OnButtonClick event will still be fired for CTRL+ENTER if the
+ButtonStyle property is set to show a button.}
+  property ButtonStyle: TIB_EditButtonStyle read FButtonStyle
+                                            write SetButtonStyle
+                                            default ebsNone;
+{: This property can contain the IconList for the Ellipsis button.
+<br>
+Use the ImageIndex[ ] to select the required icon. If no ImageList has been set,
+a default ellipsis button is drawn.
+<br>
+See also ButtonStyle.}
+  property ImageList: TImageList read FImageList
+                                 write SetImageList;
+{: The index to the image in the imagelist for the ButtonGlyph.  See also
+ImageIndexDisabled, ImageIndexPressed.}
+  property ImageIndex: integer read FImageIndex
+                               write SetImageIndex
+                               default -1;
+{: An optional index to the image in the Imagelist for the ButtonGlyph
+   to display when the field is disabled.  See also ImageIndex,
+   ImageIndexPressed.}
+  property ImageIndexDisabled: integer read FImageIndexDisabled
+                                       write SetImageIndexDisabled
+                                       default -1;
+{: An optional index to the image in the Imagelist for the ButtonGlyph
+   when the button is pressed.  See also ImageIndex, ImageIndexDisabled.}
+  property ImageIndexPressed: integer read FImageIndexPressed
+                                      write SetImageIndexPressed
+                                      default -1;
+{: This property determines whether the control's button will show when the
+control is not focused.}
+  property AlwaysShowButton: boolean read FAlwaysShowButton
+                                     write SetAlwaysShowButton
+                                     default false;
+{: This event will fire when the button is about to be drawn.}
+  property OnButtonDraw: TIB_EditButtonCustomDrawEvent read FOnButtonDraw
+                                                       write FOnButtonDraw;
+{: This event will fire when the user presses the button in the edit control,
+or when the user presses CTRL+ENTER and the ButtonStyle property is set to
+show a button.}
+  property OnButtonClick: TNotifyEvent read FOnButtonClick
+                                       write FOnButtonClick;
+  property OnGetDisplayText: TIB_TextEvent read FOnGetDisplayText
+                                           write FOnGetDisplayText;
+  property OnGetEditText: TIB_TextEvent read FOnGetEditText
+                                        write FOnGetEditText;
+  property OnSetEditText: TIB_TextEvent read FOnSetEditText
+                                        write FOnSetEditText;
+  property OnIsValidChar: TIB_IsValidCharEvent read FOnIsValidChar
+                                               write FOnIsValidChar;
+end;
+
+{: Published class of TIB_CustomEdit.}
+TIB_Edit = class(TIB_CustomEdit)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomEdit.PBL}
+{$UNDEF IB_AutoLabel}
+end;
+
+// IBC_Edit.IMP

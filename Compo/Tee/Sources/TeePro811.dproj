@@ -1,0 +1,433 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{3DF3F3BA-22EC-4F9B-A126-1CD1C16ED881}</ProjectGuid>
+			<MainSource>TeePro811.dpk</MainSource>
+			<Config Condition="'$(Config)'==''">Debug</Config>
+			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+			<ProjectVersion>12.0</ProjectVersion>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Basis' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_UsePackage>vcl;rtl;xmlrtl;inet;inetdbbde;inetdbxpress;vclx;dbrtl;soaprtl;dsnap;indy;adortl;vcldb;bdertl;vcldbx;ibxpress;vclactnband;dsnapcon;dbexpress;dbxcds;inetdb;webdsnap;websnap;TeeUI811;Tee811;TeeDB811</DCC_UsePackage>
+			<DCC_ImageBase>42700000</DCC_ImageBase>
+			<DCC_UNSAFE_TYPE>true</DCC_UNSAFE_TYPE>
+			<DCC_UNSAFE_CAST>true</DCC_UNSAFE_CAST>
+			<DCC_UNSAFE_CODE>true</DCC_UNSAFE_CODE>
+			<DCC_DependencyCheckOutputName>..\..\..\Bpl\TeePro811.bpl</DCC_DependencyCheckOutputName>
+			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+			<DCC_Platform>x86</DCC_Platform>
+			<RuntimeOnlyPackage>true</RuntimeOnlyPackage>
+			<DCC_Description>TeeChart Pro 8 Components</DCC_Description>
+			<DCC_N>true</DCC_N>
+			<DCC_K>false</DCC_K>
+			<DCC_S>false</DCC_S>
+			<GenDll>true</GenDll>
+			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+			<DCC_F>false</DCC_F>
+			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+			<DCC_DebugInformation>false</DCC_DebugInformation>
+			<GenPackage>true</GenPackage>
+			<DCC_E>false</DCC_E>
+			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="TeePro811.dpk">
+				<MainSource>MainSource</MainSource>
+			</DelphiCompile>
+			<DCCReference Include="rtl.dcp"/>
+			<DCCReference Include="vcl.dcp"/>
+			<DCCReference Include="Tee811.dcp"/>
+			<DCCReference Include="TeeUI811.dcp"/>
+			<DCCReference Include="OHLChart.pas"/>
+			<DCCReference Include="CandleCh.pas"/>
+			<DCCReference Include="TeeSurfa.pas"/>
+			<DCCReference Include="ErrorBar.pas"/>
+			<DCCReference Include="CurvFitt.pas"/>
+			<DCCReference Include="TeePolar.pas"/>
+			<DCCReference Include="Bar3D.pas"/>
+			<DCCReference Include="TeeCount.pas"/>
+			<DCCReference Include="ImaPoint.pas"/>
+			<DCCReference Include="ImageBar.pas"/>
+			<DCCReference Include="MyPoint.pas"/>
+			<DCCReference Include="BigCandl.pas"/>
+			<DCCReference Include="StatChar.pas"/>
+			<DCCReference Include="TeeHistoEdit.pas">
+				<Form>THistogramSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePoly.pas"/>
+			<DCCReference Include="TeeProCo.pas"/>
+			<DCCReference Include="TeeCandlEdi.pas"/>
+			<DCCReference Include="TeeErrBarEd.pas"/>
+			<DCCReference Include="TeeSurfEdit.pas"/>
+			<DCCReference Include="TeeContourEdit.pas"/>
+			<DCCReference Include="TeePolarEditor.pas"/>
+			<DCCReference Include="TeePo3DEdit.pas"/>
+			<DCCReference Include="TeeGriEd.pas"/>
+			<DCCReference Include="TeeVolEd.pas"/>
+			<DCCReference Include="TeeImaEd.pas"/>
+			<DCCReference Include="TeeEditPro.pas"/>
+			<DCCReference Include="TeeCumu.pas"/>
+			<DCCReference Include="TeeBezie.pas"/>
+			<DCCReference Include="TeeEdit.pas"/>
+			<DCCReference Include="TeePoin3.pas"/>
+			<DCCReference Include="TeeComma.pas"/>
+			<DCCReference Include="TeeScroB.pas"/>
+			<DCCReference Include="TeeRose.pas"/>
+			<DCCReference Include="TeeTools.pas"/>
+			<DCCReference Include="TeeChartActions.pas"/>
+			<DCCReference Include="TeeTriSurface.pas"/>
+			<DCCReference Include="TeeTriSurfEdit.pas">
+				<Form>TriSurfaceSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeDonutEdit.pas">
+				<Form>DonutSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeDonut.pas"/>
+			<DCCReference Include="TeeBoxPlot.pas"/>
+			<DCCReference Include="TeeCursorEdit.pas">
+				<Form>CursorSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBoxPlotEditor.pas">
+				<Form>BoxSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeInspector.pas"/>
+			<DCCReference Include="TeeAnnToolEdit.pas">
+				<Form>AnnotationToolEdit</Form>
+			</DCCReference>
+			<DCCReference Include="TeeAxisToolEdit.pas">
+				<Form>AxisToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBarJoinEditor.pas"/>
+			<DCCReference Include="TeeAxisArrowEdit.pas">
+				<Form>AxisArrowToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeClockEditor.pas"/>
+			<DCCReference Include="TeeColorBandEdit.pas">
+				<Form>ColorBandToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeColorLineEditor.pas">
+				<Form>ColorLineToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeDrawLineEditor.pas">
+				<Form>DrawLineEdit</Form>
+			</DCCReference>
+			<DCCReference Include="TeeHighLowEdit.pas">
+				<Form>HighLowEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeLinePointEditor.pas"/>
+			<DCCReference Include="TeeToolSeriesEdit.pas">
+				<Form>SeriesToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeColorGridEditor.pas"/>
+			<DCCReference Include="TeeWaterFallEdit.pas"/>
+			<DCCReference Include="TeeWindRoseEditor.pas"/>
+			<DCCReference Include="TeeSeriesTextEd.pas">
+				<Form>SeriesTextEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePyramid.pas"/>
+			<DCCReference Include="TeePyramidEdit.pas">
+				<Form>PyramidSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSmith.pas"/>
+			<DCCReference Include="TeeSmithEdit.pas">
+				<Form>SmithSeriesEdit</Form>
+			</DCCReference>
+			<DCCReference Include="TeeImageToolEdit.pas">
+				<Form>ChartImageToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeNearestToolEditor.pas">
+				<Form>NearestToolEdit</Form>
+			</DCCReference>
+			<DCCReference Include="TeeDragMarksEdit.pas">
+				<Form>DragMarksToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeMapSeries.pas"/>
+			<DCCReference Include="TeeMapSeriesEdit.pas">
+				<Form>MapSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeMarksTipToolEdit.pas">
+				<Form>MarksTipToolEdit</Form>
+			</DCCReference>
+			<DCCReference Include="teecalendar.pas"/>
+			<DCCReference Include="teecalendareditor.pas">
+				<Form>CalendarSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFunnel.pas"/>
+			<DCCReference Include="TeeFunnelEditor.pas">
+				<Form>FunnelSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePageNumTool.pas"/>
+			<DCCReference Include="TeeDragPoint.pas"/>
+			<DCCReference Include="TeePreviewPanelEditor.pas">
+				<Form>FormPreviewPanelEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeRotateToolEditor.pas">
+				<Form>RotateToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeExtraLegendTool.pas">
+				<Form>ExtraLegendEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBollingerEditor.pas">
+				<Form>BollingerFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCLVFunction.pas">
+				<Form>CLVFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCompressOHLC.pas">
+				<Form>CompressFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeExpAveFuncEdit.pas">
+				<Form>ExpAveFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeADXFuncEditor.pas">
+				<Form>ADXFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeGanttTool.pas">
+				<Form>GanttToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeGridBandToolEdit.pas">
+				<Form>GridBandToolEdit</Form>
+			</DCCReference>
+			<DCCReference Include="TeeMACDFuncEdit.pas">
+				<Form>MACDFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeMovAveFuncEdit.pas">
+				<Form>MovAveFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeOBVFunction.pas">
+				<Form>OBVFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePointFigure.pas">
+				<Form>PointFigureEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeRMSFuncEdit.pas"/>
+			<DCCReference Include="TeeSeriesAnimEdit.pas">
+				<Form>SeriesAnimToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSmoothFuncEdit.pas">
+				<Form>SmoothFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSpline.pas"/>
+			<DCCReference Include="TeeTransposeTool.pas">
+				<Form>GridTransposeToolEdit</Form>
+			</DCCReference>
+			<DCCReference Include="TeeXML.pas">
+				<Form>XMLSourceEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePVOFunction.pas">
+				<Form>PVOFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCCIFunction.pas">
+				<Form>CCIFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeGauges.pas"/>
+			<DCCReference Include="TeeGaugeEditor.pas">
+				<Form>GaugeSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeTowerEdit.pas">
+				<Form>TowerSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeVectorEdit.pas">
+				<Form>VectorSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePieTool.pas">
+				<Form>PieToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeLighting.pas">
+				<Form>LightToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeThemes.pas"/>
+			<DCCReference Include="TeeThemeEditor.pas">
+				<Form>ChartThemeSelector</Form>
+			</DCCReference>
+			<DCCReference Include="TeeLegendScrollBar.pas">
+				<Form>ScrollBarEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSurfaceTool.pas">
+				<Form>SurfaceNearest</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSeriesBandTool.pas">
+				<Form>SeriesBandToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSelectorTool.pas">
+				<Form>SelectorToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeDownSampling.pas"/>
+			<DCCReference Include="TeeVolumePipe.pas"/>
+			<DCCReference Include="TeeVolumePipeEditor.pas">
+				<Form>VolumePipeSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeDataTableTool.pas"/>
+			<DCCReference Include="TeeDataTableEditor.pas">
+				<Form>DataTableEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeIsoSurface.pas"/>
+			<DCCReference Include="TeeSeriesStats.pas">
+				<Form>SeriesStatsEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCurveFittingEditor.pas">
+				<Form>CurveFittingEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFaderTool.pas">
+				<Form>FaderEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeMagnifyTool.pas">
+				<Form>MagnifyToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeChartBook.pas"/>
+			<DCCReference Include="TeeSubChart.pas">
+				<Form>SubChartEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeText3D.pas">
+				<Form>Text3DEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBannerTool.pas">
+				<Form>BannerEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeLegendPalette.pas">
+				<Form>LegendPaletteEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePolarGrid.pas">
+				<Form>PolarGridEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSAR.pas">
+				<Form>SARFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFrameTool.pas">
+				<Form>FrameToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSeriesRegion.pas">
+				<Form>SeriesRegionEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeHighLowLine.pas">
+				<Form>HighLowLineEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeAntiAlias.pas">
+				<Form>AntiAliasEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeExcelSource.pas">
+				<Form>ExcelSourceForm</Form>
+			</DCCReference>
+			<DCCReference Include="TeeVideoPlayer.pas">
+				<Form>VideoPlayerEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeVideo.pas">
+				<Form>VideoToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSubsetEditor.pas">
+				<Form>SubsetFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeHistogram.pas"/>
+			<DCCReference Include="TeeTransposeSeries.pas">
+				<Form>TransposeSeriesToolEdit</Form>
+			</DCCReference>
+			<DCCReference Include="TeeAxisScrollEdit.pas">
+				<Form>AxisScrollEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeOrgSeries.pas">
+				<Form>OrgSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeTagCloud.pas">
+				<Form>TagCloudEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeRenkoSeries.pas">
+				<Form>RenkoSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeKagiSeries.pas">
+				<Form>KagiSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeLinkTool.pas">
+				<Form>LinkToolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFibonacci.pas">
+				<Form>FibonacciEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCircularGauge.pas">
+				<Form>CircularGaugeEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeLinearGauge.pas">
+				<Form>LinearGaugeEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeNumericGauge.pas">
+				<Form>NumericGaugeEditor</Form>
+			</DCCReference>
+			<BuildConfiguration Include="Basis">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+		<ProjectExtensions>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
+			<Borland.ProjectType>Package</Borland.ProjectType>
+			<BorlandProject>
+				<Delphi.Personality>
+					<Source>
+						<Source Name="MainSource">TeePro811.dpk</Source>
+					</Source>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">8</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1033</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">Steema Software</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">TeeChart Pro</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">8.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName">TeePro811</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (c) 2006-2007 by David Berneda</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename">TeePro811</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductName">TeeChart Pro</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">8.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+					<Excluded_Packages>
+						<Excluded_Packages Name="e:_program_files_borland_bds_3.0_Bin_dcltee100.bpl">TeeChart Components</Excluded_Packages>
+					</Excluded_Packages>
+				</Delphi.Personality>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>

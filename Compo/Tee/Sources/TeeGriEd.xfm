@@ -1,0 +1,447 @@
+object Grid3DSeriesEditor: TGrid3DSeriesEditor
+  Left = 347
+  Top = 187
+  AutoScroll = False
+  BorderIcons = [biSystemMenu]
+  ClientHeight = 243
+  ClientWidth = 388
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 277
+    Height = 243
+    ActivePage = TabSingle
+    Align = alClient
+    TabOrder = 0
+    OnChange = PageControl1Change
+    object TabSingle: TTabSheet
+      Caption = 'Single'
+      object BColor: TButtonColor
+        Left = 16
+        Top = 14
+        HelpContext = 421
+        Caption = 'C&olor...'
+        TabOrder = 0
+      end
+      object BRemove: TButton
+        Left = 16
+        Top = 48
+        Width = 177
+        Height = 25
+        HelpContext = 421
+        Caption = '&Remove custom colors'
+        TabOrder = 1
+        OnClick = BRemoveClick
+      end
+    end
+    object TabRange: TTabSheet
+      Caption = 'Range'
+      ImageIndex = 1
+      object BFromColor: TButtonColor
+        Left = 16
+        Top = 8
+        HelpContext = 440
+        Caption = '&Start...'
+        TabOrder = 0
+      end
+      object BMidColor: TButtonColor
+        Left = 16
+        Top = 40
+        HelpContext = 1493
+        Caption = '&Middle...'
+        TabOrder = 1
+        OnClick = BMidColorClick
+      end
+      object BToColor: TButtonColor
+        Left = 16
+        Top = 72
+        HelpContext = 195
+        Caption = '&End...'
+        TabOrder = 2
+      end
+      object CheckBox1: TCheckBox
+        Left = 104
+        Top = 44
+        Width = 119
+        Height = 17
+        HelpContext = 1493
+        Caption = '&No middle'
+        TabOrder = 3
+        OnClick = CheckBox1Click
+      end
+      object Button1: TButton
+        Left = 16
+        Top = 109
+        Width = 75
+        Height = 25
+        HelpContext = 440
+        Caption = 'S&wap'
+        TabOrder = 4
+        OnClick = Button1Click
+      end
+      object Button2: TButton
+        Left = 104
+        Top = 109
+        Width = 75
+        Height = 25
+        Caption = '&Gallery...'
+        TabOrder = 5
+        OnClick = Button2Click
+      end
+    end
+    object TabPalette: TTabSheet
+      Caption = 'Palette'
+      ImageIndex = 2
+      object PageControl2: TPageControl
+        Left = 0
+        Top = 0
+        Width = 269
+        Height = 215
+        ActivePage = TabPaletteSteps
+        Align = alClient
+        TabOrder = 0
+        object TabPaletteSteps: TTabSheet
+          Caption = 'Steps'
+          object Label4: TLabel
+            Left = 63
+            Top = 10
+            Width = 30
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'S&teps:'
+            FocusControl = SEPalette
+          end
+          object Label3: TLabel
+            Left = 45
+            Top = 64
+            Width = 44
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '&Minimum:'
+            FocusControl = EPaletteMin
+          end
+          object Label6: TLabel
+            Left = 64
+            Top = 88
+            Width = 25
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '&Step:'
+            FocusControl = EPaletteStep
+          end
+          object Label8: TLabel
+            Left = 64
+            Top = 122
+            Width = 68
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '&Legend every:'
+            FocusControl = Edit1
+          end
+          object SEPalette: TEdit
+            Left = 96
+            Top = 7
+            Width = 33
+            Height = 21
+            HelpContext = 345
+            TabOrder = 0
+            Text = '1'
+            OnChange = SEPaletteChange
+          end
+          object UDPalette: TUpDown
+            Left = 129
+            Top = 7
+            Width = 15
+            Height = 21
+            HelpContext = 345
+            Associate = SEPalette
+            Min = 1
+            Max = 1000
+            Position = 1
+            TabOrder = 1
+          end
+          object CBUseMin: TCheckBox
+            Left = 64
+            Top = 38
+            Width = 153
+            Height = 17
+            HelpContext = 1926
+            Caption = '&Use palette minimum'
+            TabOrder = 2
+            OnClick = CBUseMinClick
+          end
+          object EPaletteMin: TEdit
+            Left = 94
+            Top = 61
+            Width = 88
+            Height = 21
+            HelpContext = 345
+            TabOrder = 3
+            Text = '1'
+            OnChange = EPaletteMinChange
+          end
+          object EPaletteStep: TEdit
+            Left = 94
+            Top = 86
+            Width = 88
+            Height = 21
+            HelpContext = 345
+            TabOrder = 4
+            Text = '1'
+            OnChange = EPaletteStepChange
+          end
+          object Edit1: TEdit
+            Left = 136
+            Top = 119
+            Width = 33
+            Height = 21
+            HelpContext = 1927
+            TabOrder = 5
+            Text = '1'
+            OnChange = Edit1Change
+          end
+          object UDLegendEvery: TUpDown
+            Left = 169
+            Top = 119
+            Width = 15
+            Height = 21
+            HelpContext = 1927
+            Associate = Edit1
+            Min = 1
+            Max = 1000
+            Position = 1
+            TabOrder = 6
+          end
+        end
+        object TabSheet2: TTabSheet
+          Caption = 'Colors'
+          ImageIndex = 1
+          object ChartGrid1: TChartGrid
+            Left = 0
+            Top = 86
+            Width = 261
+            Height = 101
+            Align = alClient
+            Options = [goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing, goColSizing, goEditing, goTabs, goThumbTracking]
+            PopupMenu = PopupMenu1
+            TabOrder = 0
+            ShowColors = True
+            ShowLabels = False
+            OnChangeColor = ChartGrid1ChangeColor
+            OnEditingCell = ChartGrid1EditingCell
+          end
+          object Panel2: TPanel
+            Left = 0
+            Top = 0
+            Width = 261
+            Height = 86
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 1
+            object Label2: TLabel
+              Left = 4
+              Top = 3
+              Width = 26
+              Height = 13
+              Caption = 'St&yle:'
+              FocusControl = CBPalStyle
+            end
+            object Label7: TLabel
+              Left = 4
+              Top = 42
+              Width = 79
+              Height = 13
+              Caption = '&Custom Palettes:'
+              FocusControl = CBPalettes
+            end
+            object CBPalStyle: TComboFlat
+              Left = 4
+              Top = 18
+              Width = 107
+              HelpContext = 1494
+              TabOrder = 0
+              OnChange = CBPalStyleChange
+              Items.Strings = (
+                'Pale'
+                'Strong'
+                'Gray scale'
+                'Inverted Gray'
+                'Rainbow'
+                'Custom')
+            end
+            object CBPalettes: TComboFlat
+              Left = 4
+              Top = 57
+              Width = 145
+              DropDownCount = 12
+              Enabled = False
+              ItemHeight = 0
+              TabOrder = 1
+              OnChange = CBPalettesChange
+            end
+            object Button3: TButton
+              Left = 160
+              Top = 54
+              Width = 75
+              Height = 25
+              Caption = '&New...'
+              TabOrder = 2
+              OnClick = Button3Click
+            end
+            object Button4: TButton
+              Left = 160
+              Top = 16
+              Width = 75
+              Height = 25
+              Caption = '&Invert'
+              TabOrder = 3
+              OnClick = Button4Click
+            end
+          end
+        end
+      end
+    end
+  end
+  object Panel1: TPanel
+    Left = 277
+    Top = 0
+    Width = 111
+    Height = 243
+    Align = alRight
+    BevelOuter = bvNone
+    TabOrder = 1
+    object GroupBox2: TGroupBox
+      Left = 5
+      Top = 10
+      Width = 105
+      Height = 123
+      Caption = 'Grid size:'
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 32
+        Top = 21
+        Width = 10
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&X:'
+        FocusControl = SEXGrid
+      end
+      object Label5: TLabel
+        Left = 32
+        Top = 47
+        Width = 10
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&Z:'
+        FocusControl = SEZGrid
+      end
+      object LDepth: TLabel
+        Left = 14
+        Top = 74
+        Width = 32
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&Depth:'
+        FocusControl = EDepth
+      end
+      object SEXGrid: TEdit
+        Left = 44
+        Top = 18
+        Width = 39
+        Height = 21
+        HelpContext = 305
+        TabOrder = 0
+        Text = '1'
+        OnChange = SEZGridChange
+      end
+      object UDXGrid: TUpDown
+        Left = 83
+        Top = 18
+        Width = 15
+        Height = 21
+        HelpContext = 305
+        Associate = SEXGrid
+        Min = 1
+        Max = 1000
+        Position = 1
+        TabOrder = 1
+      end
+      object SEZGrid: TEdit
+        Left = 44
+        Top = 44
+        Width = 39
+        Height = 21
+        HelpContext = 306
+        TabOrder = 2
+        Text = '1'
+        OnChange = SEZGridChange
+      end
+      object UDZGrid: TUpDown
+        Left = 83
+        Top = 44
+        Width = 15
+        Height = 21
+        HelpContext = 306
+        Associate = SEZGrid
+        Min = 1
+        Max = 1000
+        Position = 1
+        TabOrder = 3
+      end
+      object EDepth: TEdit
+        Left = 51
+        Top = 71
+        Width = 32
+        Height = 21
+        HelpContext = 648
+        TabOrder = 4
+        Text = '1'
+        OnChange = EDepthChange
+      end
+      object UDDepth: TUpDown
+        Left = 83
+        Top = 71
+        Width = 15
+        Height = 21
+        HelpContext = 648
+        Associate = EDepth
+        Min = 1
+        Position = 1
+        TabOrder = 5
+      end
+      object CBIrreg: TCheckBox
+        Left = 7
+        Top = 100
+        Width = 95
+        Height = 17
+        HelpContext = 1437
+        Caption = '&Irregular'
+        TabOrder = 6
+        OnClick = CBIrregClick
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 320
+    Top = 155
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 64
+    Top = 168
+    object Invert1: TMenuItem
+      Caption = '&Invert'
+      OnClick = Invert1Click
+    end
+  end
+end

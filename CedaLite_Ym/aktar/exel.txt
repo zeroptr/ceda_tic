@@ -1,0 +1,1937 @@
+
+
+{http://www.delphiturkiye.com sitesinden alýnmýþtýr
+Excel deki bir çok fonksiyonu burdan bulabilirsiniz. Ýnternette topladýðým excel özelliklerini düzenleyerek burda sizlere sunuyorum.
+
+iyi çalýþmalar.
+
+uses comobj,xlconst; //comobj kütüphanesinin eklenmesi gerekiyor
+
+Kod:
+
+
+// excel dosyasýnýn açýlmasý ve iþlem için hazýrlanmasý ile ilgi procedure
+procedure tform1.dosyaac;
+begin
+  // Excel oluþturuluyor
+  ExcelApp := CreateOleObject('Excel.Application');
+  try
+    ExcelApp.Workbooks.Open('C:\deneme.xls');
+    // deneme.xls dosyasý iþlem için açýlýyor
+  finally
+    // Excel dosyasý kapatýlýyor.
+    if not VarIsEmpty(ExcelApp) then
+    begin
+        ExcelApp.DisplayAlerts := False;  //Excel mesajlarýný görünteleme
+        ExcelApp.Quit;
+        ExcelApp := Unassigned;
+    end;
+  end;
+end;
+
+
+
+//Hucre duzenleme ile ilgi procedure
+Kod:
+
+procedure TForm1.HucreDuzenle;
+var
+  Range: Variant;
+begin
+  //Sayfa1 deki C1 ile F25 arasýný seç
+  Range := XLApp.Workbooks[1].WorkSheets['Sayfa1'].Range['C1:F25'];
+  //Sayfa1 deki C1 ile F25 arasýndaki hücrelere RAND() formülü yerleþtir.
+  Range.Formula := '=RAND()';
+  //Sayfa1 deki C1 ile F25 arasýndaki hücrelerin rengini deðiþtir
+  Range.Columns.Interior.ColorIndex := 3;
+  Range.Borders.LineStyle := xlContinuous;
+end;
+
+
+
+// Kolon düzenleme ile ilgili procedure
+Kod:
+
+procedure TForm1.ChangeColumns;
+var
+  ColumnRange: Variant;
+begin
+  ColumnRange := XLApp.Workbooks[1].WorkSheets['Sayfa1'].Columns;
+  //1 nolu kolonun geniþliði 5 olarak ayarlandý.
+  ColumnRange.Columns[1].ColumnWidth := 5;
+  //1 nolu kolonun fontu koyu olarak ayarlandý.
+  ColumnRange.Columns[1].Font.Bold := True;
+  //1 nolu kolonun font rengi mavi olarak ayarlandý.
+  ColumnRange.Columns[1].Font.Color := clBlue;
+end;
+
+
+
+//Grafik nesnesi eklemek için ilgili procedure
+Kod:
+
+procedure TForm1.ChartData;
+var
+  ARange: Variant;
+  Sheets: Variant;
+begin
+  XLApp.Workbooks[1].Sheets.Add(,,1,xlChart);
+  Sheets := XLApp.Sheets;
+  ARange := Sheets.Item['Sayfa1'].Range['A1:A10'];
+  Sheets.Item['Chart1'].SeriesCollection.Item[1].Values := ARange;
+  Sheets.Item['Chart1'].ChartType := xl3DPie;
+  Sheets.Item['Chart1'].SeriesCollection.Item[1].HasDataLabels := True;
+
+  XLApp.Workbooks[1].Sheets.Add(,,1,xlChart);
+  Sheets.Item['Chart2'].SeriesCollection.Item[1].Values := ARange;
+  Sheets.Item['Chart2'].SeriesCollection.Add(ARange);
+  Sheets.Item['Chart2'].SeriesCollection.NewSeries;
+  Sheets.Item['Chart2'].SeriesCollection.Item[3].Values :=
+    VarArrayOf([1,2,3,4,5, 6,7,8,9,10]);
+  Sheets.Item['Chart2'].ChartType := xl3DColumn;
+end;
+
+
+
+//Excel deki aktif sayfayý Text dosya olarak kaydetmek
+Kod:
+
+function ExcelSaveAsText(ExcelFile, TextFile: TFileName): Boolean;
+const
+  xlText = -4158;
+var
+  ExcelApp: OleVariant;
+  vTemp1, vTemp2, vTemp3: OLEVariant;
+begin
+  Result := False;
+  try
+    ExcelApp := CreateOleObject('Excel.Application');
+  except
+    // Hata olursa çýkýþ
+    Exit;
+  end;
+  try
+    //Excel dosyasýný aç
+    ExcelApp.Workbooks.Open(ExcelFile);
+    ExcelApp.DisplayAlerts := False;
+    vTemp3 := False;
+    vTemp2 := xlText;
+    vTemp1 := TextFile;
+    //Açýlan excel dosyasýný text olarak kaydet
+    ExcelApp.ActiveWorkbook.SaveAs(vTemp1, vTemp2, vTemp3);
+    Result := True;
+  finally
+    //Excel kapat ve çýk
+    ExcelApp.Quit;
+    ExcelApp := Unassigned;
+  end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  //Üstteki fonksiyonun kullaným þekli
+  ExcelSaveAsText('C:\deneme.xls','C:\denemetext.txt');
+end;
+
+
+
+//Excel de satýrlarda kelime arama
+Kod:
+
+ExcelRow := ExcelSheet.Cells.Find(What:='abc').Row;
+
+
+//Belli bir hücreye text yazmak için
+Kod:
+
+ SHEET.CELLS[1,1]:= 'DENEME METÝN'; {SATIR,SÜTUN}
+
+
+
+//Hücrenin font u ile ilgili iþlemler için
+Kod:
+
+ SHEET.CELLS[1,1].Font.Color     := $00E88017;
+ SHEET.CELLS[1,1].Font.Bold      := True;
+ SHEET.CELLS[1,1].Font.italic    := True;
+ SHEET.CELLS[1,1].Font.Underline := true;
+ SHEET.CELLS[1,1].Font.Size      := 20;
+
+
+
+//Hücre içindeki bir aralýktaki metin ile ilgilli iþlem için
+Kod:
+
+SHEET.CELLS[1,1].Characters(3, 1).Font.Bold := True;
+
+
+
+//Aralýktaki bütün hücrelerin dört kenarýný renklendirir
+Kod:
+
+ SHEET.RANGE['A1:A10'].Borders.Color := $00E88017;
+
+
+
+//Bir tek hücrenin çerçevesine müdahale
+Kod:
+
+ SHEET.CELLS[1,10].Borders.LineStyle := xlContinuous;
+
+
+
+//Aralýktaki hücrelere çerçevesine müdahale
+Kod:
+
+ SHEET.RANGE['A1:A10'].Borders.LineStyle := xlContinuous;
+
+
+
+//Belirlenen kolonu silmek için
+Kod:
+
+ Excel.ActiveSheet.columns[2].delete;
+
+
+
+//Otomatik kolon geniþliði için
+Kod:
+
+ excel.range['A1','L10'].EntireColumn.AutoFit;
+
+
+
+// Sayfa ismi deðiþtir
+Kod:
+
+  ExcelApp.Workbooks[1].WorkSheets[1].Name := 'Yeni isim';
+
+
+
+
+//Hücreyi tah formatýna göre düzenleme ve yazdýrma
+Kod:
+
+  ExcelApp.Cells[3, 1].Value := FormatDateTime('dd-mmm-yyyy', Now);
+
+
+
+//Türkçe yada ing. excel kullanýyorsanýz farkezme.
+// Hücrede TOPLAM yazdýrýcaksanýz bu formülü kullanýn
+Kod:
+
+ExcelApp.Range['A11', 'A11'].Formula := '=Sum(A1:A10)';
+
+
+
+//Hücreyi saða döþe
+Kod:
+
+  ExcelApp.Cells[2, 1].HorizontalAlignment :=-4152;
+
+
+//Hücreyi sola döþe
+Kod:
+
+  ExcelApp.Cells[2, 1].HorizontalAlignment :=-4131;
+
+
+//Hücreyi Yukarý döþe
+Kod:
+
+  ExcelApp.Cells[2, 1].HorizontalAlignment :=-4160;
+
+
+//Hücreyi aþaðý döþe
+Kod:
+
+  ExcelApp.Cells[2, 1].HorizontalAlignment :=-4107;
+
+
+//Aralýktaki hücreleri koyu yap
+Kod:
+
+  ExcelApp.Range['B16:M26'].Font.Bold := True;
+
+
+
+// Aralýktaki hücrelerin font ölçüsünü 12 yap
+Kod:
+
+  ExcelApp.Range['B16:M26'].Font.Size := 12;
+
+
+
+//Aktif excel sayfasýnýn yazýcý sayfasýný yatay yap
+Kod:
+
+ExcelApp.ActiveSheet.PageSetup.Orientation :=2;
+
+
+
+//Aktif excel sayfasýnýn yazýcý sayfasýný dikey yap
+Kod:
+
+ExcelApp.ActiveSheet.PageSetup.Orientation :=1;
+
+
+
+//Aktif excel sayfasýnýn yazýcý kaðýt boþluklarý
+Kod:
+
+  ExcelApp.ActiveSheet.PageSetup.LeftMargin  := 35;
+  ExcelApp.ActiveSheet.PageSetup.RightMargin := -15;
+
+
+
+//Aktif excel sayfasýnýn yazým ölçüsünü %95 küçült
+Kod:
+
+ExcelApp.ActiveSheet.PageSetup.Zoom := 95;
+
+
+
+// Aktif excel sayfasýnýn yazýcý kaðýdýný A4 seçer
+Kod:
+
+  ExcelApp.PageSetup.PaperSize := 9;
+
+
+
+// Çizgileri göster ve gösterme
+Kod:
+
+  ExcelApp.ActiveWindow.DisplayGridlines := False;
+
+
+
+// Siyah ve Beyaz olarak ayarla
+Kod:
+
+  ExcelApp.ActiveSheet.PageSetup.BlackAndWhite := False;
+
+
+
+//Excel versiyonunu öðrenmek için
+Kod:
+
+  ShowMessage(Format('Excel Version %s: ', [ExcelApp.Version]));
+
+
+
+//Program çalýþýrken açýlan excel dosyasýný göster
+Kod:
+
+  ExcelApp.Visible := True;
+
+
+
+//Excel dosyasýný kaydet
+Kod:
+
+  ExcelApp.SaveAs('c:\deneme.xls');
+
+
+
+//Aktif excel kitabýný kaydet
+Kod:
+
+  ExcelApp.ActiveWorkBook.SaveAs('c:\filename.xls');
+
+
+
+//Excel içindeki baþka bir sayfayý seçmek için
+Kod:
+
+   excel.Sheets['Sayfa2'].Select;
+
+
+
+//Excel dosyasýnda kaç tane sayfa var
+Kod:
+
+ kacsayfa:=excel.Workbooks[1].Sheets.Count;
+
+
+
+//Excel dosyasý içinde Sayfa5 varmý
+Kod:
+
+for i:=1 to excel.Workbooks[1].Sheets.Count do
+   if Excel.Workbooks[1].WorkSheets[i].Name='Sayfa5' then varmi:=true;
+
+
+
+//Yeni sayfa ekle ve isim ver
+Kod:
+
+ excel.Sheets.Add;
+ Excel.ActiveSheet.Name :='Yeni Sayfa';
+
+
+
+//Sayfa1 den Sayfa2 Belli hücre aralýðýný kopyala
+Kod:
+
+   excel.Sheets['Sayfa1'].Select;
+  DestRange := Excel.Range['A1','D10'];
+  Excel.Range['A1','D10'].Copy(EmptyParam);
+   excel.Sheets['Sayfa2'].Select;
+  excel.Range['A1','D10'].Select;
+  excel.activesheet.paste;
+
+
+
+//1. kolona göre dolu olan son satýrý tespit etmek için excelsonsatir(1);
+Kod:
+
+function excelsonsatir(AColumn: Integer): Integer;
+const
+  xlUp = 3;
+begin
+    Result := excel.Range[Char(96 + AColumn) + IntToStr(65536)].end[xlUp].Rows.Row;
+end;
+
+
+
+//hücre ekle aþaðý kaydýr
+Kod:
+
+excel.Cells.Item[2,2].Insert(xlShiftDown);
+
+
+//satýr ekle aþaðý kaydýr
+Kod:
+
+excel.Cells.Item[2,2].EntireRow.Insert(xlShiftDown);
+
+
+//hücre sil sola kaydýr
+Kod:
+
+excel.Cells.Item[2,2].Delete(xlShiftToLeft);
+
+
+//Bunun ne olduðunu bilmiyorum
+Kod:
+
+excel.Cells.Item[2,2].EntireColumn.Delete(xlShiftToLeft);
+
+
+
+//satýr ý otomatik yüksekliðini ayarla
+Kod:
+
+excel.Range['A1','C10'].Rows.Autofit;
+
+
+
+//bulunan satýrý silmek için
+Kod:
+
+Excel.rows[i].delete;
+
+
+// bir aralýktaki satýrlarý silmek için
+Kod:
+
+MsExcelWorkSheet1.ActiveSheet.Rows[IntToStr(StartRow)+':'+IntToStr(EndRow)].Select;
+MsExcelWorkSheet1.ActiveSheet.Rows[IntToStr(StartRow)+':'+IntToStr(EndRow)].Delete;
+
+
+//satýr yüksekliði ayarla
+Kod:
+
+Excel.ActiveSheet.Rows[2].RowHeight := 1/0.035;
+
+
+//Çerçevenin kalýnlýðýný ayarlamak için 1-2-3-4-5-6 kenarlarý
+Kod:
+
+ExcelApp.ActiveSheet.Range[ 'B3:D4' ].Borders[2].Weight := 3;
+
+
+//Hücredeki açýklamalarý siler.
+Kod:
+
+ExcelApp.ActiveSheet.Cells[1,4].ClearContents;
+
+
+
+//Hücrenin isim font ve renk özelliklerini ayarlamak için
+Kod:
+
+ExcelApp.ActiveSheet.Rows[1].Font.Name := 'Arial Tur';
+ExcelApp.ActiveSheet.Rows[1].Font.Color := clBlue;
+ExcelApp.ActiveSheet.Rows[1].Font.Bold := True;
+ExcelApp.ActiveSheet.Rows[1].Font.UnderLine := True;
+
+
+//Yazýcý çýktýsýnda baþlýk bilgilerini düzenlenmesi
+Kod:
+
+ExcelApp.ActiveSheet.PageSetup.CenterHeader := '????';
+ExcelApp.ActiveSheet.PageSetup.CenterFooter := '?&P?';
+
+
+
+//Yazýcý çýktýsýnda sayfa özelliklerinin ayarlanmasý
+Kod:
+
+//2cm
+ExcelApp.ActiveSheet.PageSetup.HeaderMargin := 2/0.035;
+//3cm
+ExcelApp.ActiveSheet.PageSetup.HeaderMargin := 3/0.035;
+//2cm
+ExcelApp.ActiveSheet.PageSetup.TopMargin := 2/0.035;
+//2cm
+ExcelApp.ActiveSheet.PageSetup.BottomMargin := 2/0.035;
+//2cm
+ExcelApp.ActiveSheet.PageSetup.LeftMargin := 2/0.035;
+//2cm
+ExcelApp.ActiveSheet.PageSetup.RightMargin := 2/0.035;
+//2cm
+ExcelApp.ActiveSheet.PageSetup.CenterHorizontally := 2/0.035;
+//2cm
+ExcelApp.ActiveSheet.PageSetup.CenterVertically := 2/0.035;
+//gridlines
+ExcelApp.ActiveSheet.PageSetup.PrintGridLines := True;
+
+
+
+//Bir kopyalama yöntemi
+Kod:
+
+ExcelApp.ActiveSheet.Used.Range.Copy;
+ExcelApp.ActiveSheet.Range[ 'A1:E2' ].Copy;
+ExcelApp.ActiveSheet.Range.[ 'A1' ].PasteSpecial;
+ExcelApp.ActiveSheet.Range.PasteSpecial;
+
+
+
+//satýr ekle
+Kod:
+
+ExcelApp.ActiveSheet.Rows[2].Insert;
+
+
+
+//kolon ekle
+Kod:
+
+ExcelApp.ActiveSheet.Columns[1].Insert;
+
+
+
+
+//satýr sil
+Kod:
+
+ExcelApp.ActiveSheet.Rows[2].Delete;
+
+
+
+//Kolon sil
+Kod:
+
+ExcelApp.ActiveSheet.Columns[1].Delete;
+
+
+
+//yazýcý ön izleme
+Kod:
+
+ExcelApp.ActiveSheet.PrintPreview;
+
+
+
+//yazýcý ya yazdýr
+Kod:
+
+ExcelApp.ActiveSheet.PrintOut;
+
+
+
+//excel sayfasý kaydedilmiþmi
+Kod:
+
+if not ExcelApp.ActiveWorkBook.Saved then showmessage('Kaydedilmemiþ');
+
+
+
+//sayfa kaydedilmiþ mi
+Kod:
+
+ExcelApp.ActiveWorkBook.Saved := True;
+
+
+
+//sayfayý kaydet
+Kod:
+
+ExcelApp.WorkBooks.Close;
+
+
+
+//excel den çýk
+Kod:
+
+ExcelApp.Quit;
+
+
+
+//excel i görünür yap
+Kod:
+
+ExcelApplication1.Visible[0]:=True;
+
+
+
+//Excel baþlýk bilgisini deðiþtir
+Kod:
+
+ExcelApplication1.Caption := 'deneme Microsoft Excel';
+
+
+
+//Excel dosyasýný açman farklý bir yolu
+Kod:
+
+ExcelApplication1.Workbooks.Open (c:\a.xls
+EmptyParam,EmptyParam,EmptyParam,EmptyParam,
+EmptyParam,EmptyParam,EmptyParam,EmptyParam,
+EmptyParam,EmptyParam,EmptyParam,EmptyParam,0)
+
+
+
+//sayfa aktif yap numara ile
+Kod:
+
+ExcelApplication1.WorkSheets[2].Activate; ?
+
+
+//sayfa aktif yap isimle
+Kod:
+
+ExcelApplication1.WorksSheets[ 'Sheet2' ].Activate;
+
+
+
+//hucreye bilgi yaz
+Kod:
+
+ExcelApplication1.Cells[1,4].Value := 'deneme';
+
+
+
+//aktif sayfada kolon geniþliðini ayarla
+Kod:
+
+ExcelApplication1.ActiveSheet.Columns[1].ColumnsWidth := 5;
+
+
+
+//aktif sayfada satýr yüksekliðini ayarla
+Kod:
+
+ExcelApplication1.ActiveSheet.Rows[2].RowHeight := 1/0.035; // 1??
+
+
+
+//sayfa sonu koy
+Kod:
+
+ExcelApplication1.WorkSheets[1].Rows[8].PageBreak := 1;
+
+
+
+//sayfa sonu koyma
+Kod:
+
+ExcelApplication1.ActiveSheet.Columns[4].PageBreak := 0;
+
+
+
+//chart kullanýmý
+Kod:
+
+var asheet1,achart, range:variant;
+asheet1:=ExcelApplication1.Workbooks[1].Worksheets[1];
+achart:=asheet1.chartobjects.add(100,100,200,200);
+achart.chart.charttype:=4;
+series:=achart.chart.seriescollection;
+range:='sheet1!r2c3:r3c9';
+series.add(range,true);
+achart.Chart.HasTitle:=True;
+achart.Chart.ChartTitle.Characters.Text:=? Excle????
+
+
+
+//ne ise yariyor bilmiyorum
+Kod:
+
+var i,j:integer;
+ii:string;
+begin
+
+ExcelApplication1.Visible[0]:=True;
+ExcelApplication1.Caption:='Excel Application';
+try
+ExcelApplication1.Workbooks.Open(ExtractFilePath(paramstr(0))+'???.xls',
+null,null,null,null,null,null,null,null,null,null,null,null,0); //??????????????
+except
+ExcelApplication1.Disconnect;//?????????
+ExcelWorkbook1.ConnectTo(ExcelApplication1.Workbooks[1]);//ExcelWorkbook1?Eexcelapplication1????
+ExcelWorksheet1.ConnectTo(ExcelWorkbook1.Worksheets[1] as _Worksheet);//Excelworksheet1?Excelworkbook1????
+
+
+
+//ExcelApplication1.WorkBooks1.Close;
+Kod:
+
+ExcelApplication1.Disconnect;
+ExcelApplication1.Quit;
+
+
+
+//hücre birleþtir.
+Kod:
+
+  bk.Sheets[1].Range['A1','E1'].MergeCells := true;
+  bk.Sheets[1].Range['A1','E1'].HorizontalAlignment := $FFFFEFF4;
+  bk.Sheets[1].Range['A1','E1'].VerticalAlignment := $FFFFEFF4;
+
+
+
+//Yeni sayfa eklemek için
+Kod:
+
+Function ExcelAddWorkSheet(Excel : Variant): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.Worksheets.Add;
+  Except
+    MessageDlg('Unable to add a new worksheet', mtError, [mbOK], 0);
+    Result := False;
+  End;
+End;
+
+
+
+//excel i görününür yada görünmez yapmak için
+Kod:
+
+Function ExcelSetVisible(Excel : Variant;IsVisible: Boolean): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.Visible := IsVisible;
+  Except
+    MessageDlg('Unable to Excel Visibility', mtError, [mbOK], 0);
+    Result := False;
+  End;
+End;
+
+
+
+//exceli kapatmak için
+Kod:
+
+Function ExcelClose(Excel : Variant; SaveAll: Boolean): Boolean;
+Begin
+  Result := True;
+  Try
+    ExcelCloseWorkBooks(Excel, SaveAll);
+    Excel.Quit;
+  Except
+    MessageDlg('Unable to Close Excel', mtError, [mbOK], 0);
+    Result := False;
+  End;
+End;
+
+
+
+//excel kitabýný kapatmak için
+Kod:
+
+Function ExcelCloseWorkBooks(Excel : Variant; SaveAll: Boolean): Boolean;
+var
+  loop: byte;
+Begin
+  Result := True;
+  Try
+    For loop := 1 to Excel.Workbooks.Count Do
+      Excel.Workbooks[1].Close[SaveAll];
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//excel sayfansýný isimle seçmek için
+Kod:
+
+Function ExcelSelectSheetByName(Excel : Variant; SheetName: String): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.Sheets[SheetName].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//excel de bir hücreyi seçmek için
+Kod:
+
+Function ExcelSelectCell(Excel : Variant; RowNum, ColNum: Integer): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.ActiveSheet.Cells[RowNum, ColNum].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Bir hücreden bilgi okumak için
+Kod:
+
+Function ExcelGetCellValue(Excel : Variant; RowNum, ColNum: Integer): ShortString;
+Begin
+  Result := '';
+  Try
+    Result := Excel.Cells[RowNum, ColNum].Value;
+  Except
+    Result := '';
+  End;
+End;
+
+
+
+//excel de þu anki bulunulan satýr
+Kod:
+
+Function ExcelGetRow(Excel : Variant): Integer;
+Begin
+  Try
+    Result := Excel.ActiveCell.Row;
+  Except
+    Result := 1;
+  End;
+End;
+
+
+
+//Excel de þu anda bulunulan kolon
+Kod:
+
+Function ExcelGetCol(Excel : Variant): Integer;
+Begin
+  Try
+    Result := Excel.ActiveCell.Column;
+  Except
+    Result := 1;
+  End;
+End;
+
+
+
+//Excel de en son kolonu seçmek
+Kod:
+
+Function ExcelGoToLastCol(Excel : Variant): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.Selection.End[xlToRight].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//excel de en son satýrý seçmek
+Kod:
+
+Function ExcelGoToLastRow(Excel : Variant): Boolean;
+Begin
+  Result := True;
+
+  Try
+    Excel.Selection.End[xlDown].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de en üst satýrý seçmek
+Kod:
+
+Function ExcelGoToTopRow(Excel : Variant): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.Selection.End[xlUp].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de en sol kolonu seçmek
+Kod:
+
+Function ExcelGoToLeftmostCol(Excel : Variant): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.Selection.End[xlToLeft].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de 1.satýr ve 1. kolondaki hücreyi seçmek
+Kod:
+
+Function ExcelHome(Excel : Variant): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.ActiveSheet.Cells[1,1].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de son satir son kolondaki hücreyi seçmek
+Kod:
+
+Function ExcelEnd(Excel : Variant): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.Selection.End[xlDown].Select;
+    Excel.Selection.End[xlToRight].Select;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de en son kolonu seçmek bulunduðu satýrda
+Kod:
+
+Function ExcelLastCol(Excel : Variant): Integer;
+Var
+  CurRow : Integer;
+  CurCol : Integer;
+Begin
+  Result := 1;
+  Try
+    CurRow := Excel.ActiveCell.Row;
+    CurCol := Excel.ActiveCell.Column;
+    Result := CurCol;
+    Excel.Selection.End[xlToRight].Select;
+    Result := Excel.ActiveCell.Column;
+    Excel.ActiveSheet.Cells[CurRow, CurCol].Select;
+  Except
+  End;
+End;
+
+
+
+//Excel de en son satýrý seçmek bulunduðu kolonda
+Kod:
+
+Function ExcelLastRow(Excel : Variant): Integer;
+Var
+  CurRow : Integer;
+  CurCol : Integer;
+Begin
+  Result := 1;
+  Try
+    CurRow := Excel.ActiveCell.Row;
+    CurCol := Excel.ActiveCell.Column;
+    Result := CurRow;
+    Excel.Selection.End[xlDown].Select;
+    Result := Excel.ActiveCell.Row;
+    Excel.ActiveSheet.Cells[CurRow, CurCol].Select;
+  Except
+  End;
+End;
+
+
+
+//Excelde ilk satýrý seçmek bulunduðu kolonda
+Kod:
+
+Function ExcelFirstRow(Excel : Variant): Integer;
+Var
+  CurRow : Integer;
+  CurCol : Integer;
+Begin
+  Result := 1;
+  Try
+    CurRow := Excel.ActiveCell.Row;
+    CurCol := Excel.ActiveCell.Column;
+    Result := CurRow;
+    Excel.Selection.End[xlUp].Select;
+    Result := Excel.ActiveCell.Row;
+    Excel.ActiveSheet.Cells[CurRow, CurCol].Select;
+  Except
+  End;
+End;
+
+
+
+//excel de son kolonu seçmek bulunduðu satýrda
+Kod:
+
+Function ExcelFirstCol(Excel : Variant): Integer;
+Var
+  CurRow : Integer;
+  CurCol : Integer;
+Begin
+  Result := 1;
+  Try
+    CurRow := Excel.ActiveCell.Row;
+    CurCol := Excel.ActiveCell.Column;
+    Result := CurRow;
+    Excel.Selection.End[xlToLeft].Select;
+    Result := Excel.ActiveCell.Column;
+    Excel.ActiveSheet.Cells[CurRow, CurCol].Select;
+  Except
+  End;
+End;
+
+
+
+//Excel de string arama yöntemi bulursa cursor oraya konumlanýr.
+Kod:
+
+Function ExcelFindInRange(
+  Excel       : Variant;
+  FindString  : ShortString;
+  TopRow      : Integer;
+  LeftCol     : Integer;
+  LastRow     : Integer;
+  LastCol     : Integer): Boolean;
+Begin
+  Result :=
+    ExcelFindValue(
+      Excel,
+      FindString,
+      TopRow,
+      LeftCol,
+      LastRow,
+      LastCol,
+      True,
+      True,
+      True);
+End;
+
+
+
+//Excel de string arama yöntemi bulursa cursor oraya konumlanýr. baþka bir yöntem
+Kod:
+
+Function ExcelFind(
+  Excel       : Variant;
+  FindString  : ShortString): Boolean;
+Begin
+  Result :=
+    ExcelFindInRange(
+      Excel,
+      FindString,
+      ExcelFirstRow(Excel),
+      ExcelFirstCol(Excel),
+      ExcelLastRow(Excel),
+      ExcelLastCol(Excel));
+End;
+
+
+
+//Excel den stringgrid e aktarma
+Kod:
+
+Function ExcelCopyToStringGrid(
+  Excel                 : Variant;
+  ExcelFirstRow         : Integer;
+  ExcelFirstCol         : Integer;
+  ExcelLastRow          : Integer;
+  ExcelLastCol          : Integer;
+  StringGrid            : TStringGrid;
+  StringGridFirstRow    : Integer;
+  StringGridFirstCol    : Integer;
+  SizeStringGridToFit   : Boolean; {Make the StringGrid the same size as the input range}
+  ClearStringGridFirst  : Boolean  {cells outside input range in StringGrid are cleared}
+  ): Boolean;
+Var
+  C,R : Integer;
+Begin
+  Result := False;
+  If ExcelLastCol < ExcelFirstCol Then Exit;
+  If ExcelLastRow < ExcelFirstRow Then Exit;
+  If (ExcelFirstRow < 1) Or (ExcelFirstRow > 255)   Then Exit;
+  If (ExcelFirstCol < 1) Or (ExcelFirstCol > 30000) Then Exit;
+  If (ExcelLastRow  < 1) Or (ExcelLastRow > 255)    Then Exit;
+  If (ExcelLastCol  < 1) Or (ExcelLastCol > 30000)  Then Exit;
+  If StringGrid = nil   Then Exit;
+  If SizeStringGridToFit Then
+  Begin
+    StringGrid.ColCount := ExcelLastCol - ExcelFirstCol + StringGridFirstCol + 1;
+    StringGrid.RowCount := ExcelLastRow - ExcelFirstRow + StringGridFirstRow + 1;
+  End;
+  If ClearStringGridFirst Then
+  Begin
+    C := StringGrid.ColCount;
+    R := StringGrid.RowCount;
+    StringGrid.ColCount := 1;
+    StringGrid.RowCount := 1;
+    StringGrid.Cells[0,0] := '';
+    StringGrid.ColCount := C;
+    StringGrid.RowCount := R;
+  End;
+
+  Result := True;
+  For R := ExcelFirstRow To ExcelLastRow Do
+  Begin
+    For C := ExcelFirstCol To ExcelLastCol Do
+    Begin
+      Try
+        StringGrid.Cells[
+          C - ExcelFirstCol + StringGridFirstCol,
+          R - ExcelFirstRow + StringGridFirstRow] :=
+            Excel.Cells[R, C];
+      Except
+        Result := False;
+      End;
+    End;
+  End;
+End;
+
+
+
+//Excel deki hücreye formul yazmak için
+Kod:
+
+Function ExcelSetCellFormula(
+  Excel         : Variant;
+  FormulaString : ShortString;
+  RowNum, ColNum: Integer): Boolean;
+Begin
+  Result := True;
+  Try
+    Excel.
+      ActiveSheet.
+        Cells[RowNum, ColNum].
+          Formula := FormulaString;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel kolonundaki integer larý string e çevirmek için
+Kod:
+
+Function ExcelColIntToStr(ColNum: Integer): ShortString;
+Var
+  ColStr    : ShortString;
+  Multiplier: Integer;
+  Remainder : Integer;
+Begin
+  Result := '';
+  If ColNum < 1   Then Exit;
+  If ColNum > 256 Then Exit;
+  Multiplier := ColNum div 26;
+  Remainder  := ColNum Mod 26;
+  If ColNum <= 26 Then
+  Begin
+    ColStr[1] := ' ';
+    If Remainder = 0 Then
+    Begin
+      ColStr[2] := 'Z';
+    End
+    Else
+    Begin
+      ColStr[2] := Chr(Remainder+64);
+    End;
+  End
+  Else
+  Begin
+    If Remainder = 0 Then
+    Begin
+      If Multiplier = 1 Then
+      Begin
+        ColStr[1] := ' ';
+        ColStr[2] := 'Z';
+      End
+      Else
+      Begin
+        ColStr[1] := Chr(Multiplier+64-1);
+        ColStr[2] := 'Z';
+      End;
+    End
+    Else
+    Begin
+      ColStr[1] := Chr(Multiplier+64);
+      ColStr[2] := Chr(Remainder+64);
+    End;
+  End;
+  If ColStr[1] = ' ' Then
+  Begin
+    Result := Result + ColStr[2];
+  End
+  Else
+  Begin
+    Result := Result + ColStr[1] + ColStr[2];
+  End;
+  Result := Result;
+End;
+
+
+
+//Excel kolonundaki string leri integer a çevirmek için
+Kod:
+
+Function ExcelColStrToInt(ColStr: ShortString): Integer;
+Var
+  ColStrNew  : ShortString;
+  i          : Integer;
+  RetVal     : Integer;
+  Multiplier : Integer;
+  Remainder  : Integer;
+Begin
+  RetVal := 1;
+  Result := RetVal;
+  ColStrNew := '';
+  For i := 1 To Length(ColStr) Do
+  Begin
+    If ((Ord(ColStr[i]) >=  65)  And
+       ( Ord(ColStr[i]) <=  90)) Or
+       ((Ord(ColStr[i]) >=  97)  And
+       ( Ord(ColStr[i]) <= 122)) Then
+    Begin
+      ColStrNew := ColStrNew + UpperCase(ColStr[i]);
+    End;
+  End;
+  If Length(ColStrNew) < 1 Then Exit;
+  If Length(ColStrNew) < 2 Then
+  Begin
+    RetVal := Ord(ColStrNew[1])-64;
+  End
+  Else
+  Begin
+    Multiplier := Ord(ColStrNew[1])-64;
+    Remainder  := Ord(ColStrNew[2])-64;
+    Retval     := (Multiplier * 26) + Remainder;
+  End;
+  Result := RetVal;
+End;
+
+
+
+//Excel hücresine kýsa string yazmak için
+Kod:
+
+Function ExcelSetCellValue(
+  Excel : Variant;
+  RowNum, ColNum: Integer;
+  Value : ShortString): Boolean;
+Begin
+  Try
+    Excel.Cells[RowNum, ColNum].Value := Value;
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel dosyasý açmak için þifresiz olanlarda
+Kod:
+
+Function ExcelOpenFile(Excel : Variant; FileName : String): Boolean;
+Begin
+  Result := True;
+  try
+    //Open the database that we want to work with
+    Excel.Workbooks.Open[FileName];
+  except
+    MessageDlg('Unable to locate '+FileName, mtError, [mbOK], 0);
+    Result := False;
+  end;
+End;
+
+
+
+//Excel dosyasýný parametreli açmak için. Þifreli veya read only gibi
+Kod:
+
+{
+Excel
+  The OLEObject passed as an argument.
+
+FileName
+  Required. Specifies the filename of the workbook to open.
+
+UpdateLinks
+  Specifies how links in the file are updated. If this
+  argument is omitted, the user is prompted to determine
+  how to update links. Otherwise, this argument is one of
+  the values shown in the following table.
+  Value   Meaning
+  0   No updates
+  1   Updates external but not remote references
+  2   Updates remote but not external references
+  3   Updates both remote and external references
+
+  If Microsoft Excel is opening a file in the WKS, WK1, or
+  WK3 format and the updateLinks argument is 2, Microsoft
+  Excel generates charts from the graphs attached to the file.
+  If the argument is 0, no charts are created.
+
+ReadOnly
+  If True, the workbook is opened in read-only mode.
+
+Format
+  If Microsoft Excel is opening a text file, this argument
+  specifies the delimiter character, as shown in the following
+  table. If this argument is omitted, the current delimiter
+  is used.
+
+  Value   Delimiter
+  1   Tabs
+  2   Commas
+  3   Spaces
+  4   Semicolons
+  5   Nothing
+  6   Custom character, see the delimiter argument.
+
+Password
+  A string containing the password required to open a
+  protected workbook. If omitted and the workbook requires
+  a password, the user is prompted for the password.
+}
+
+Function ExcelOpenFileComplex(
+  Excel        : Variant;
+  FileName     : String;
+  UpdateLinks  : Integer;
+  ReadOnly     : Boolean;
+  Format       : Integer;
+  Password     : ShortString): Boolean;
+Begin
+  Result := True;
+  try
+    //Open the database that we want to work with
+    Excel.
+      Workbooks.
+        Open[
+          FileName,
+          UpdateLinks,
+          ReadOnly,
+          Format,
+          Password];
+  except
+    MessageDlg('Unable to locate '+FileName, mtError, [mbOK], 0);
+    Result := False;
+  end;
+End;
+
+
+
+//Excel deki sayfayý text dosyaya kaydetmek için
+Kod:
+
+Function ExcelSaveAsText(
+  Excel         : Variant;
+  ExcelFirstRow : Integer;
+  ExcelFirstCol : Integer;
+  ExcelLastRow  : Integer;
+  ExcelLastCol  : Integer;
+  OutFilePath   : ShortString;
+  OutFileName   : ShortString): Boolean;
+{
+OutFileFormat: Use one of the following
+xlAddIn      xlExcel3         xlTextMSDOS
+xlCSV        xlExcel4         xlTextWindows
+xlCSVMac     xlExcel4Workbook xlTextPrinter
+xlCSVMSDOS   xlIntlAddIn      xlWK1
+xlCSVWindows xlIntlMacro      xlWK3
+xlDBF2       xlNormal         xlWKS
+xlDBF3       xlSYLK           xlWQ1
+xlDBF4       xlTemplate       xlWK3FM3
+xlDIF        xlText           xlWK1FMT
+xlExcel2     xlTextMac        xlWK1ALL
+}
+Var
+  FullOutName : String;
+Begin
+  Try
+    If OutFilePath <> '' Then
+    Begin
+      If Not (Copy(OutFilePath,Length(OutFilePath),1) = '\') Then
+      Begin
+        OutFilePath := OutFilePath + '\';
+      End;
+    End;
+    FullOutName := OutFilePath + OutFileName;
+    If FileExists(FullOutName) Then DeleteFile(FullOutName);
+
+    If ExcelVersion(Excel) = '8.0' Then
+    Begin
+      ExcelSelectCell(Excel,ExcelFirstRow,ExcelFirstCol);
+      ExcelSelectBlockWhole(Excel);
+      //Excel.SendKeys('^+{END}');
+    End
+    Else
+    Begin
+      Excel.
+        Range(
+          ExcelColIntToStr(ExcelFirstCol)+
+          IntToStr(ExcelFirstRow)+
+          ':'+
+          ExcelColIntToStr(ExcelLastCol)+
+          IntToStr(ExcelLastRow)
+              ).
+          Select;
+    End;
+{
+  FileFormat = (xlAddIn, xlCSV, xlCSVMac, xlCSVMSDOS, xlCSVWindows, xlDBF2,
+                xlDBF3, xlDBF4, xlDIF, xlExcel2, xlExcel3, xlExcel4,
+                xlExcel4Workbook, xlIntlAddIn, xlIntlMacro, xlNormal,
+                xlSYLK, xlTemplate, xlText, xlTextMac, xlTextMSDOS,
+                xlTextWindows, xlTextPrinter, xlWK1, xlWK3, xlWKS,
+                xlWQ1, xlWK3FM3, xlWK1FMT, xlWK1ALL);
+}
+(*
+    //CHECKING OUT THE GARBLED OUTPUT
+    //  Produces an *.xls
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'02',xlCSV);
+*)
+    //  Produces an *.txt
+//    Excel.
+//      ActiveSheet.
+//      SaveAs(
+//        FullOutName,xlCSVMSDOS);
+(*
+    //  Produces nothing
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'05',xlCSVWindows);
+
+    //  Produces nothing
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'06',xlDBF2);
+
+    //  Produces an *.txt comma separated
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        FullOutName,xlDBF3);
+*)
+    //  Produces an *.txt
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        FullOutName,xlTextMSDOS);
+(*
+    //  Produces an *.dbf
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'08',xlDBF4);
+    //  Produces an *.dbf
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'09',xlDIF);
+    //  Produces an *.dif
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'10',xlExcel2);
+    //  Produces an *.slk
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'11',xlExcel3);
+    //  Produces an *.dbf
+    Excel.
+      ActiveSheet.
+      SaveAs(
+        OutFilePath+OutFileName+'12',xlExcel4);
+
+*)
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel sayfasýndan seçimli kopyalama yapmak için.Sadece deðerler yapýþtýrýlýr.
+Kod:
+
+Function ExcelPasteValuesOnly(
+  Excel         : Variant;
+  ExcelFirstRow : Integer;
+  ExcelFirstCol : Integer;
+  ExcelLastRow  : Integer;
+  ExcelLastCol  : Integer): Boolean;
+Begin
+  Result := True;
+  try
+    If ExcelVersion(Excel) = '8.0' Then
+    Begin
+      If Not ExcelSelectRange(
+               Excel,
+               ExcelFirstRow,
+               ExcelFirstCol,
+               ExcelLastRow,
+               ExcelLastCol)
+      Then
+      Begin
+        Result := False;
+        ShowMessage('Unable to select the range to paste as values.');
+        Exit;
+      End;
+      Excel.Selection.Copy;
+      Excel.Selection.PasteSpecial(xlValues);
+      Excel.Application.CutCopyMode := False;
+    End
+    Else
+    Begin
+      Excel.Range(
+        ExcelColIntToStr(ExcelFirstCol)+IntToStr(ExcelFirstRow)+
+        ':'+
+        ExcelColIntToStr(ExcelLastCol)+IntToStr(ExcelLastRow)).Select;
+      Excel.Selection.Copy;
+      Excel.Selection.PasteSpecial(xlValues);
+      Excel.Application.CutCopyMode := False;
+      Excel.Selection.Replace('#N/A','0');
+    End;
+  except
+    ShowMessage('Unable to paste range as values');
+    Result := False;
+  end;
+End;
+
+
+
+//Kolon geniþliðini ayarlamak için
+Kod:
+
+Function ExcelSetColumnWidth(Excel : Variant; ColNum, ColumnWidth: Integer): Boolean;
+Var
+  RowWas : Integer;
+  ColWas : Integer;
+Begin
+  Try
+    RowWas := ExcelGetRow(Excel);
+    ColWas := ExcelGetCol(Excel);
+    ExcelSelectCell(Excel,1,ColNum);
+    Excel.Selection.ColumnWidth := ColumnWidth;
+    ExcelSelectCell(Excel,RowWas,ColWas);
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de bir alaný seçmek için
+Kod:
+
+Function ExcelSelectRange(
+    Excel    : Variant;
+    FirstRow : Integer;
+    FirstCol : Integer;
+    LastRow  : Integer;
+    LastCol  : Integer): Boolean;
+Var
+  r,c : Integer;
+Begin
+  Result := False;
+  Try
+    If FirstRow <   1 Then Exit;
+    If FirstCol <   1 Then Exit;
+    If LastRow  <   1 Then Exit;
+    If LastCol  <   1 Then Exit;
+    If FirstCol > 255 Then Exit;
+    If LastCol  > 255 Then Exit;
+
+    If Not ExcelSelectCell(
+             Excel,
+             FirstRow,
+             FirstCol)
+    Then
+    Begin
+      Exit;
+    End;
+    {Check for strange number combinations}
+    If FirstRow = LastRow Then
+    Begin
+      {Don't need to do anything}
+    End
+    Else
+    Begin
+      If FirstRow < LastRow Then
+      Begin
+        For r := FirstRow To LastRow - 1 Do
+        Begin
+          Excel.SendKeys('+{DOWN}');
+        End;
+      End
+      Else
+      Begin
+        For r := LastRow To FirstRow - 1 Do
+        Begin
+          Excel.SendKeys('+{UP}');
+        End;
+      End;
+    End;
+    If FirstCol = LastCol Then
+    Begin
+      {Don't need to do anything}
+    End
+    Else
+    Begin
+      If FirstCol < LastCol Then
+      Begin
+        For c := FirstCol To LastCol - 1 Do
+        Begin
+          Excel.SendKeys('+{RIGHT}');
+        End;
+      End
+      Else
+      Begin
+        For c := LastCol To FirstCol - 1 Do
+        Begin
+          Excel.SendKeys('+{LEFT}');
+        End;
+      End;
+    End;
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excelde blok seçmek sendkey iþlemi ile
+Kod:
+
+Function ExcelSelectBlock(
+    Excel    : Variant;
+    FirstRow : Integer;
+    FirstCol : Integer): Boolean;
+Begin
+  Try
+    ExcelSelectCell(Excel,FirstRow,FirstCol);
+    Excel.SendKeys('+{END}+{RIGHT}');
+    Excel.SendKeys('+{END}+{DOWN}');
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel sayfasýnýn tamamýný seçmek için
+Kod:
+
+Function ExcelSelectBlockWhole(Excel: Variant): Boolean;
+Var
+  FirstRow : Integer;
+  FirstCol : Integer;
+  RowWas   : Integer;
+  ColWas   : Integer;
+Begin
+  Try
+    RowWas   := ExcelGetRow(Excel);
+    ColWas   := ExcelGetCol(Excel);
+
+    {If the base cell is on a side of the block, the block
+    will not be created properly.}
+
+    {View From Original Cell}
+    FirstRow := ExcelFirstRow(Excel);
+    FirstCol := ExcelFirstCol(Excel);
+    If (Not IsBlockColSide(Excel,RowWas,ColWas)) And
+       (Not IsBlockRowSide(Excel,RowWas,ColWas)) Then
+    Begin
+      {Cell is not on a side of the block}
+      ExcelSelectCell(Excel,FirstRow,FirstCol);
+      Excel.SendKeys('+{END}+{RIGHT}');
+      Excel.SendKeys('+{END}+{DOWN}');
+      Result := True;
+      Exit;
+    End;
+    {Row Only problem}
+    If (Not IsBlockColSide(Excel,RowWas,ColWas)) And
+       (IsBlockRowSide(Excel,RowWas,ColWas)) Then
+    Begin
+      {DEFAULT TO ASSUMING SELECTED CELLS ARE NEAR TOP LEFT AND
+      BLOCK IS TOWARD BOTTOM RIGHT}
+      ExcelSelectCell(Excel,RowWas,FirstCol);
+      Excel.SendKeys('+{END}+{RIGHT}');
+      Excel.SendKeys('+{END}+{DOWN}');
+      Result := True;
+      Exit;
+    End;
+    {Column Only problem}
+    If (IsBlockColSide(Excel,RowWas,ColWas)) And
+       (Not IsBlockRowSide(Excel,RowWas,ColWas)) Then
+    Begin
+      {DEFAULT TO ASSUMING SELECTED CELLS ARE NEAR TOP LEFT AND
+      BLOCK IS TOWARD BOTTOM RIGHT}
+      ExcelSelectCell(Excel,FirstRow,ColWas);
+      Excel.SendKeys('+{END}+{RIGHT}');
+      Excel.SendKeys('+{END}+{DOWN}');
+      Result := True;
+      Exit;
+    End;
+    {DEFAULT TO ASSUMING SELECTED CELLS ARE NEAR TOP LEFT AND
+    BLOCK IS TOWARD BOTTOM RIGHT}
+    ExcelSelectCell(Excel,RowWas,ColWas);
+    Excel.SendKeys('+{END}+{RIGHT}');
+    Excel.SendKeys('+{END}+{DOWN}');
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Bunun ne olduðunu bilmiyorum
+Kod:
+
+Function IsBlockColSide(Excel : Variant; RowNum, ColNum: Integer): Boolean;
+Var
+  CellFirstSide     : Integer;
+  CellLastSide      : Integer;
+  FirstSideLastSide : Integer;
+  LastSideFirstSide : Integer;
+Begin
+  ExcelSelectCell(Excel,RowNum,ColNum);
+  CellFirstSide := ExcelFirstCol(Excel);
+  CellLastSide  := ExcelLastCol(Excel);
+  ExcelSelectCell(Excel,RowNum,CellFirstSide);
+  FirstSideLastSide := ExcelLastCol(Excel);
+  ExcelSelectCell(Excel,RowNum,CellLastSide);
+  LastSideFirstSide := ExcelFirstCol(Excel);
+  ExcelSelectCell(Excel,RowNum,ColNum);
+  If (LastSideFirstSide = ColNum) Or
+     (FirstSideLastSide = ColNum) Then
+  Begin
+    Result := True;
+  End
+  Else
+  Begin
+    Result := False;
+  End;
+End;
+
+
+
+//Bunun ne olduðunu bilmiyorum
+Kod:
+
+Function IsBlockRowSide(Excel : Variant; RowNum, ColNum: Integer): Boolean;
+Var
+  CellFirstSide     : Integer;
+  CellLastSide      : Integer;
+  FirstSideLastSide : Integer;
+  LastSideFirstSide : Integer;
+Begin
+  ExcelSelectCell(Excel,RowNum,ColNum);
+  CellFirstSide := ExcelFirstRow(Excel);
+  CellLastSide  := ExcelLastRow(Excel);
+  ExcelSelectCell(Excel,CellFirstSide,ColNum);
+  FirstSideLastSide := ExcelLastRow(Excel);
+  ExcelSelectCell(Excel,CellLastSide,ColNum);
+  LastSideFirstSide := ExcelFirstRow(Excel);
+  ExcelSelectCell(Excel,RowNum,ColNum);
+  If (LastSideFirstSide = RowNum) Or
+     (FirstSideLastSide = RowNum) Then
+  Begin
+    Result := True;
+  End
+  Else
+  Begin
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de sayfa ismini deðiþtirmek için
+Kod:
+
+Function ExcelRenameSheet(
+  Excel         : Variant;
+  OldName       : ShortString;
+  NewName       : ShortString): Boolean;
+Begin
+  Try
+    Excel.Sheets(OldName).Name := NewName;
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel de sayfayý silmek için sayfa1 gibi
+Kod:
+
+Function ExcelDeleteWorkSheet(
+  Excel     : Variant;
+  SheetName : ShortString): Boolean;
+Begin
+  Try
+    If Not ExcelSelectSheetByName(Excel,SheetName) Then
+    Begin
+      ShowMessage('Could not select the '+SheetName+' WorkSheet');
+      Result := False;
+      Exit;
+    End;
+    Excel.ActiveWindow.SelectedSheets.Delete;
+    Result := True;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Þu anda kullanýlan sayfanýn ismi getirir.
+Kod:
+
+Function ExcelGetActiveSheetName(Excel : Variant): ShortString;
+Begin
+  Result := '';
+  Try
+    Result := Excel.ActiveSheet.Name;
+  Except
+    Result := '';
+  End;
+End;
+
+
+
+//Sadece deðerleri yapýþtýrýr.
+Kod:
+
+Function ExcelValuesOnly(
+  Excel         : Variant;
+  ExcelFirstRow : Integer;
+  ExcelFirstCol : Integer;
+  ExcelLastRow  : Integer;
+  ExcelLastCol  : Integer): Boolean;
+Var
+  r,c : Integer;
+  s   : ShortString;
+Begin
+  Try
+    If ExcelVersion(Excel) = '8.0' Then
+    Begin
+      For r := ExcelFirstRow To ExcelLastRow Do
+      Begin
+        For c := ExcelFirstCol To ExcelLastCol Do
+        Begin
+          s := Excel.Cells[r,c].Value;
+          Excel.Cells[r, c].Value := s;
+        End;
+      End;
+    End
+    Else
+    Begin
+      ExcelPasteValuesOnly(
+        Excel,
+        ExcelFirstRow,
+        ExcelFirstCol,
+        ExcelLastRow,
+        ExcelLastCol);
+    End;
+    Result := True;;
+  Except
+    Result := False;
+  End;
+End;
+
+
+
+//Excel hücresindeki formulü getirir.
+Kod:
+
+Function ExcelGetCellFormula(
+  Excel         : Variant;
+  RowNum, ColNum: Integer): ShortString;
+Begin
+  Result := ' ';
+  Try
+    Result := Excel.
+                ActiveSheet.
+                Cells[RowNum, ColNum].
+                Formula;
+  Except
+    Result := ' ';
+  End;
+End;
+
+
+
+//Excel in versiyon bilgisini döndürür.
+Kod:
+
+Function ExcelVersion(Excel: Variant): ShortString;
+Var
+  Version : ShortString;
+Begin
+  Result := '';
+  Try
+    Version := Excel.Version;
+    Result := Version;
+  Except
+    Result := '';
+  End;
+
+END;
+
+
+}

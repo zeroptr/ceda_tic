@@ -1,0 +1,74 @@
+:Base teechart8Guide.hlp
+:Title TeeChart Pro v8 VCL version
+1 TeeChart Pro VCL v8 Guide
+2 Welcome to TeeChart=Welcome_to_TeeChart
+2 What's new in TeeChart v8 !=TeeChart_Whats_new
+2 User guide
+3 1. Introduction
+4 1.1. Introduction=TeeChart1_Introduction
+4 1.2. Licensing issues=hlp_TeeChartv8
+4 1.3. About TeeChart=TeeChart1_About_TeeChart
+3 2. Getting started
+4 2.1. Getting Started=TeeChart2_Getting_started
+4 2.2. Using TeeChart online help=TeeChart3_Using_TeeChart_on-line_help
+4 2.3. Using the TeeChart Wizard=TeeChart_Using_the_TeeChart_Wizard
+4 2.4. Which TeeChart Component should I use ?=teechart_Which_TeeChart_component_should_I_use
+4 2.5. Creating a new Chart with the TChart or TDBChart component=TeeChart8_Creating_a_new_chart
+4 2.6. The Chart Editor=teechart_The_Chart_Editor
+4 2.7. Configuring data Series in a TChart=TeeChart8_Config_data_series_TChart
+4 2.8. Configuring data Series in a TDBChart=TeeChart8_Config_data_series_TDBChart
+4 2.9. Modifying Chart data=Chart_Mod_Data
+3 3. TeeChart demos
+4 3.1. TeeChart demos=TeeChart8_TeeChart_demos
+3 4. Component reference
+4 4.1. TChart component=TeeChart8_TChart_component
+4 4.2. TDBChart component=TeeChart8_TDBChart_component
+4 4.3. TeeChart Series
+5 4.3.1. TeeChart Series=TeeChart8_TChartSeries
+5 4.3.2. Line and Fast Line=TeeChart8_Line_series
+5 4.3.3. Bar=TeeChart8_Bar
+5 4.3.4. Horizontal Bar=TeeChart8_Horizontal_Bar
+5 4.3.5. Area=TeeChart8_Area
+5 4.3.6. Point=TeeChart8_Point
+5 4.3.7. Pie=TeeChart8_Pie
+5 4.3.8. Arrow=TeeChart8_Arrow
+5 4.3.9. Bubble=TeeChart8_Bubble
+5 4.3.10. Gantt=TeeChart8_Gantt
+5 4.3.11. Shape=TeeChart8_Shape
+5 4.3.12. Combining Series=TeeChart8_Combining_Series
+3 4.4. Adding a Chart to QuickReport=TeeChart10_Adding_a_chart_to_quickreport
+3 4.5. Standard Functions=TeeChart11_Standard_functions
+3 5. Working with Chart and Series
+4 5.1. Overview=Working_with_TeeChart_overview
+4 5.2. Click events=TeeChart12_Click_events
+4 5.3. Custom drawing on the Chart=Teechart12_Custom_drawing
+4 5.4. Working with Axes=TeeChart12_Working_with_Axes
+4 5.5. Series manipulation=TeeChart12_Series_manipulation
+4 5.6. Printing Charts=TeeChart12_Printing_Charts
+4 5.7. Chart Zoom and Scroll=TeeChart12_Chart_Zoom_and_Scroll
+4 5.8. Real-time Charting and speed=TeeChart12_Real-time_Charting_and_speed
+4 5.9. Functions=TeeChart12_Functions
+2 Example code
+3 Where to find examples=example_code
+2 TeeChart key classes
+3 Overview=hlp_COMPONENT_REF
+3 Chart=tchart@teechart8.hlp
+3 Series=hlp_LISTOFSERIES
+3 Functions=TeeChart11_Standard_functions
+3 Axes=TChartAxis@teechart8.hlp
+3 Legend=TChartLegend@teechart8.hlp
+3 Walls=TChartWall@teechart8.hlp
+2 Additional TeeChart palette components
+3 Overview=XtraComponents_Overview
+3 TSeriesDataset=TSeriesDataset@teechart8.hlp
+3 TChartScrollBar=TChartScrollBar@teechart8.hlp
+3 TDraw3D=TDraw3D@teechart8.hlp
+3 TTeeCommander=TTeeCommander@teechart8.hlp
+3 TChartEditor=TChartEditor@teechart8.hlp
+3 TChartPreviewer=TChartPreviewer@teechart8.hlp
+3 TTeeOpenGL=TTeeOpenGL@teechart8.hlp
+2 Support
+3 Where to get help=help_sources
+3 Contacting Steema Software=Contact_us
+2 License
+3 License and disclaimer=hlp_TeeChartv8

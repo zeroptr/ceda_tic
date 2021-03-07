@@ -1,0 +1,41 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = tee811.bpl TeeUI811.bpl TeeDB811.bpl TeePro811.bpl \
+  TeeLanguage811.bpl TeeGL811.bpl TeeImage811.bpl DclTeePro811.bpl 
+
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Tee811.bpl: Tee811.dpk
+  $(DCC)
+
+TeeDB811.bpl: TeeDB811.dpk
+  $(DCC)
+
+TeeUI811.bpl: TeeUI811.dpk
+  $(DCC)
+
+TeePro811.bpl: TeePro811.dpk
+  $(DCC)
+
+TeeLanguage811.bpl: TeeLanguage811.dpk
+  $(DCC)
+
+TeeGL811.bpl: TeeGL811.dpk
+  $(DCC)
+
+TeeImage811.bpl: TeeImage811.dpk
+  $(DCC)
+
+DclTeePro811.bpl: DclTeePro811.dpk
+  $(DCC)

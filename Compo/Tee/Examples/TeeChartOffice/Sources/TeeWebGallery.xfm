@@ -1,0 +1,215 @@
+object WebGallery: TWebGallery
+  Left = 292
+  Top = 179
+  BorderStyle = bsDialog
+  Caption = 'TeeChart Office Web Gallery'
+  ClientHeight = 283
+  ClientWidth = 440
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object PanelUpload: TPanel
+    Left = 0
+    Top = 0
+    Width = 440
+    Height = 242
+    Align = alClient
+    TabOrder = 1
+    Visible = False
+    object Label2: TLabel
+      Left = 32
+      Top = 24
+      Width = 211
+      Height = 13
+      Caption = 'Upload current Chart to Web Gallery:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label3: TLabel
+      Left = 32
+      Top = 56
+      Width = 56
+      Height = 13
+      Caption = 'Your &Name:'
+      FocusControl = EditName
+    end
+    object Label4: TLabel
+      Left = 32
+      Top = 88
+      Width = 55
+      Height = 13
+      Caption = 'Your &e-mail:'
+      FocusControl = EditEMail
+    end
+    object Label5: TLabel
+      Left = 32
+      Top = 120
+      Width = 49
+      Height = 13
+      Caption = '&Password:'
+      FocusControl = EditPassword
+    end
+    object Label6: TLabel
+      Left = 32
+      Top = 168
+      Width = 59
+      Height = 13
+      Caption = '&Chart Name:'
+      FocusControl = EditChart
+    end
+    object LabelSize: TLabel
+      Left = 258
+      Top = 168
+      Width = 23
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Size:'
+    end
+    object LabelKB: TLabel
+      Left = 294
+      Top = 168
+      Width = 6
+      Height = 13
+      Caption = '0'
+    end
+    object EditName: TEdit
+      Left = 101
+      Top = 53
+      Width = 260
+      Height = 21
+      TabOrder = 0
+    end
+    object EditEMail: TEdit
+      Left = 101
+      Top = 85
+      Width = 260
+      Height = 21
+      TabOrder = 1
+    end
+    object EditPassword: TEdit
+      Left = 101
+      Top = 117
+      Width = 121
+      Height = 21
+      PasswordChar = '*'
+      TabOrder = 2
+    end
+    object Button2: TButton
+      Left = 240
+      Top = 114
+      Width = 121
+      Height = 25
+      Caption = '&Obtain Password...'
+      TabOrder = 3
+      OnClick = Button2Click
+    end
+    object EditChart: TEdit
+      Left = 101
+      Top = 165
+      Width = 121
+      Height = 21
+      TabOrder = 4
+    end
+  end
+  object PanelMain: TPanel
+    Left = 0
+    Top = 0
+    Width = 440
+    Height = 242
+    Align = alClient
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 32
+      Top = 24
+      Width = 104
+      Height = 13
+      Caption = 'Choose an option:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object RadioLoad: TRadioButton
+      Left = 40
+      Top = 56
+      Width = 225
+      Height = 17
+      Caption = '&Load Chart from Web address:'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+      OnClick = RadioLoadClick
+    end
+    object URL: TComboBox
+      Left = 58
+      Top = 77
+      Width = 297
+      Height = 21
+      ItemHeight = 13
+      TabOrder = 1
+      Text = 'http://www.steema.com/demo.tee'
+    end
+    object RadioBrowse: TRadioButton
+      Left = 40
+      Top = 128
+      Width = 337
+      Height = 17
+      Caption = '&Browse the chart gallery at www.ChartAll.com'
+      TabOrder = 2
+      OnClick = RadioBrowseClick
+    end
+    object RadioUpload: TRadioButton
+      Left = 40
+      Top = 176
+      Width = 305
+      Height = 17
+      Caption = '&Upload current Chart to www.ChartAll.com'
+      Enabled = False
+      TabOrder = 3
+      OnClick = RadioUploadClick
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 242
+    Width = 440
+    Height = 41
+    Align = alBottom
+    TabOrder = 2
+    object Button1: TButton
+      Left = 352
+      Top = 8
+      Width = 75
+      Height = 25
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 0
+    end
+    object ButtonOK: TButton
+      Left = 264
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'OK'
+      Default = True
+      TabOrder = 1
+      OnClick = ButtonOKClick
+    end
+  end
+end

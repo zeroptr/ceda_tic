@@ -1,0 +1,41 @@
+
+{                                                                              }
+{  IB_WinControl.PBL                                                           }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+{$DEFINE IB_WinControl}
+{$I IB_Control.PBL}
+{$UNDEF IB_WinControl}
+
+//IB_CustomEdit.PBL
+
+published
+
+property BorderStyle;
+property Ctl3D;
+property ParentCtl3D;
+{$IFDEF IB_FieldControl}
+property ParamName;
+{$ENDIF}
+{$IFDEF IBG_CustomGrid}
+property PreventDeleting;
+{$ENDIF}
+property PreventEditing;
+property PreventInserting;
+property PreventSearching;
+property ReadOnly;
+property TabOrder;
+property TabStop;
+property TabStopAutomation;
+property OnEnter;
+property OnExit;
+property OnKeyDown;
+property OnKeyPress;
+property OnKeyUp;
+
+{$ENDIF}
+
+// IB_WinControl.IMP
+

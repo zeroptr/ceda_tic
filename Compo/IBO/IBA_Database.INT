@@ -1,0 +1,269 @@
+
+{                                                                              }
+{ TIB_Database                                                                 }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: This component is intended for BDE/VCL compatibility only. It is a
+TIB_Connection descendant that is equipped with its own internally-contained
+TIB_TransactionDefault component. The two are welded together, emulating the
+single transaction per connection construction of the VCL's TDatabase.
+<br><br>
+Any statement or dataset that attaches to a TIB_Database object by way of its
+own IB_Connection property will have its IB_Transaction propety assigned to the
+internally contained IB_Transaction instance automatically.
+<br><br>
+All transaction control is thereby bound at the connection level, instead of
+taking advantage of InterBase's capability to support multiple transactions
+per connection.
+<br><br>
+This could lend some simplicity to your application, if you are not concerned
+with assigning tasks to discrete transactions and would prefer not to have to
+worry about making sure each dataset has its IB_Transaction property properly
+assigned.
+<br><br>
+In the case where a statement's or dataset's IB_Connection property is not a
+TIB_Database class, and its IB_Transaction property is left blank, it will
+create its own internal transaction.  If you made the choice to avoid working
+with simultaneous transactions, this behavior could give rise to the undesirable
+effect of having different statements and datasets being kept within different
+transaction contexts.
+<br><br>
+It takes extra work and a little extra know-how to use the IB_Connection and
+IB_Transaction components separately.  However, the flexibility and power it
+adds to your application makes it worthwhile to avoid using the
+TIB_Database class.}
+TIB_Database = class( TIB_Connection )
+protected
+  FIB_Transaction: TIB_Transaction;
+  procedure SetName( const NewName: TComponentName ); override;
+  procedure SetAnnounceFocus( AValue: boolean ); override;
+  procedure SetDefaultTransaction( AValue: TIB_Transaction ); override;
+  function GetPtrHandle: pisc_tr_handle;
+  function GetTransactionState: TIB_TransactionState;
+  function GetCachedUpdatePendingCount: integer;
+  function GetPostPendingCount: integer;
+  function GetStarted: boolean;
+  procedure SetStarted( AValue: boolean );
+  function GetAutoCommit: boolean;
+  procedure SetAutoCommit( AValue: boolean );
+  function GetReadOnly: boolean;
+  procedure SetReadOnly( AValue: boolean );
+  function GetIsolation: TIB_Isolation;
+  procedure SetIsolation( AValue: TIB_Isolation );
+  function GetRecVersion: boolean;
+  procedure SetRecVersion( AValue: boolean );
+  function GetLockWait: boolean;
+  procedure SetLockWait( AValue: boolean );
+  function GetBeforeStart: TIB_TransactionEvent;
+  procedure SetBeforeStart( AValue: TIB_TransactionEvent );
+  function GetAfterStart: TIB_TransactionEvent;
+  procedure SetAfterStart( AValue: TIB_TransactionEvent );
+  function GetBeforeCommit: TIB_TransactionEvent;
+  procedure SetBeforeCommit( AValue: TIB_TransactionEvent );
+  function GetAfterCommit: TIB_TransactionEvent;
+  procedure SetAfterCommit( AValue: TIB_TransactionEvent );
+  function GetBeforeCommitRetaining: TIB_TransactionEvent;
+  procedure SetBeforeCommitRetaining( AValue: TIB_TransactionEvent );
+  function GetAfterCommitRetaining: TIB_TransactionEvent;
+  procedure SetAfterCommitRetaining( AValue: TIB_TransactionEvent );
+  function GetBeforeRollbackRetaining: TIB_TransactionEvent;
+  procedure SetBeforeRollbackRetaining( AValue: TIB_TransactionEvent );
+  function GetAfterRollbackRetaining: TIB_TransactionEvent;
+  procedure SetAfterRollbackRetaining( AValue: TIB_TransactionEvent );
+  function GetBeforeRollback: TIB_TransactionEvent;
+  procedure SetBeforeRollback( AValue: TIB_TransactionEvent );
+  function GetAfterRollback: TIB_TransactionEvent;
+  procedure SetAfterRollback( AValue: TIB_TransactionEvent );
+  function GetBeforeEnd: TIB_TransactionEvent;
+  procedure SetBeforeEnd( AValue: TIB_TransactionEvent );
+  function GetAfterEnd: TIB_TransactionEvent;
+  procedure SetAfterEnd( AValue: TIB_TransactionEvent );
+  function GetTransactionLinkCount: integer;
+  function GetInTransaction: boolean;
+  function GetTransactionIsActive: boolean;
+  function GetOnSessionTimer: TIB_SessionTimerEvent;
+  procedure SetOnSessionTimer( AValue: TIB_SessionTimerEvent );
+  function GetTimeOutProps: TIB_TimeoutProps;
+  procedure SetTimeOutProps( AValue: TIB_TimeoutProps );
+  procedure GetTransIsolation( AReader: TReader );
+  function GetDriverName: string;
+protected
+{ Inherited Methods }
+  procedure DefineProperties( AFiler: TFiler ); override;
+public
+  constructor Create( AOwner: TComponent ); override;
+  procedure SetFocus; override;
+
+{ Methods from IB_Transaction }
+
+{: See the help for TIB_Transaction.}
+  procedure ApplyUpdates( const ADatasets: array of TIB_BDataset );
+{: See the help for TIB_Transaction.}
+  procedure CancelUpdates( const ADatasets: array of TIB_BDataset );
+{: See the help for TIB_Transaction.}
+  procedure StartTransaction;
+{: See the help for TIB_Transaction.}
+  procedure Activate;
+{: See the help for TIB_Transaction.}
+  procedure CommitRetaining;
+{: See the help for TIB_Transaction.}
+  procedure SavePoint;
+{: See the help for TIB_Transaction.}
+  procedure Commit;
+{: See the help for TIB_Transaction.}
+  procedure Rollback;
+{: See the help for TIB_Transaction.}
+  procedure RollbackRetaining;
+{: See the help for TIB_Transaction.}
+  procedure Refresh( CommitChanges: boolean );
+{: See the help for TIB_Transaction.}
+  function CloseWithConfirm: {$IFNDEF IBO4_BETA}TModalResult
+                             {$ELSE}integer{$ENDIF};
+{: See the help for TIB_Transaction.}
+  function EndWithConfirm: {$IFNDEF IBO4_BETA}TModalResult
+                           {$ELSE}integer{$ENDIF};
+{: See the help for TIB_Transaction.}
+  procedure PostAll;
+{: See the help for TIB_Transaction.}
+  procedure CancelAll;
+{: See the help for TIB_Transaction.}
+  procedure UpdateStatus; 
+
+{ Properties }
+
+{: BDE Compatibility property.}
+  property DriverName: string read GetDriverName;
+{: This property gives a reference to the internal transaction of this
+component.}
+  property IB_Transaction: TIB_Transaction read FIB_Transaction;
+{: See the help for TIB_Transaction.}
+  property PtrHandle: pisc_tr_handle read GetPtrHandle;
+{: See the help for TIB_Transaction.}
+  property TransactionState: TIB_TransactionState read GetTransactionState;
+{: See the help for TIB_Transaction.}
+  property CachedUpdatePendingCount: integer read GetCachedUpdatePendingCount;
+{: See the help for TIB_Transaction.}
+  property PostPendingCount: integer read GetPostPendingCount;
+{: See the help for TIB_Transaction.}
+  property InTransaction: boolean read GetInTransaction;
+{: See the help for TIB_Transaction.}
+  property TransactionIsActive: boolean read GetTransactionIsActive;
+
+published
+
+{ Properties }
+
+{: Avoids errors when the form is loading.}
+  property DefaultTransaction stored false;
+
+{: See the help for TIB_Transaction.}
+  property AutoCommit: boolean read GetAutoCommit
+                               write SetAutoCommit
+                               default true;
+{: See the help for TIB_Transaction.}
+  property ReadOnly: boolean read GetReadOnly
+                             write SetReadOnly
+                             default false;
+{: See the help for TIB_Transaction.}
+  property Isolation: TIB_Isolation read GetIsolation
+                                    write SetIsolation
+                                    default tiCommitted;
+{: See the help for TIB_Transaction.}
+  property RecVersion: boolean read GetRecVersion
+                               write SetRecVersion
+                               default true;
+{: See the help for TIB_Transaction.}
+  property LockWait: boolean read GetLockWait write SetLockWait default false;
+
+{: See the help for TIB_Transaction.}
+  property TimeoutProps: TIB_TimeoutProps read GetTimeoutProps
+                                          write SetTimeoutProps;
+                                          
+{ Events }
+
+{: See the help for TIB_Transaction.}
+  property BeforeStart: TIB_TransactionEvent read GetBeforeStart
+                                             write SetBeforeStart;
+{: See the help for TIB_Transaction.}
+  property AfterStart: TIB_TransactionEvent read GetAfterStart
+                                            write SetAfterStart;
+{: See the help for TIB_Transaction.}
+  property BeforeCommit: TIB_TransactionEvent read GetBeforeCommit
+                                              write SetBeforeCommit;
+{: See the help for TIB_Transaction.}
+  property AfterCommit: TIB_TransactionEvent read GetAfterCommit
+                                             write SetAfterCommit;
+{: See the help for TIB_Transaction.}
+  property BeforeCommitRetaining: TIB_TransactionEvent
+      read GetBeforeCommitRetaining
+     write SetBeforeCommitRetaining;
+{: See the help for TIB_Transaction.}
+  property AfterCommitRetaining: TIB_TransactionEvent
+      read GetAfterCommitRetaining
+     write SetAfterCommitRetaining;
+{: See the help for TIB_Transaction.}
+  property BeforeRollbackRetaining: TIB_TransactionEvent
+      read GetBeforeRollbackRetaining
+     write SetBeforeRollbackRetaining;
+{: See the help for TIB_Transaction.}
+  property AfterRollbackRetaining: TIB_TransactionEvent
+      read GetAfterRollbackRetaining
+     write SetAfterRollbackRetaining;
+{: See the help for TIB_Transaction.}
+  property BeforeRollback: TIB_TransactionEvent read GetBeforeRollback
+                                                write SetBeforeRollback;
+{: See the help for TIB_Transaction.}
+  property AfterRollback: TIB_TransactionEvent read GetAfterRollback
+                                               write SetAfterRollback;
+{: See the help for TIB_Transaction.}
+  property BeforeEnd: TIB_TransactionEvent read GetBeforeEnd
+                                           write SetBeforeEnd;
+{: See the help for TIB_Transaction.}
+  property AfterEnd: TIB_TransactionEvent read GetAfterEnd
+                                          write SetAfterEnd;
+{: See the help for TIB_Transaction.}
+  property OnSessionTimer: TIB_SessionTimerEvent read GetOnSessionTimer
+                                                 write SetOnSessionTimer;
+{$IFNDEF HELPSCAN}
+  property _TransactionLinkCount: integer read GetTransactionLinkCount
+                                          write flag_junk_value
+                                          stored false;
+{$ENDIF}                                          
+end;
+
+// IBA_Database.IMP

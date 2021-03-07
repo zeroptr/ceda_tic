@@ -1,0 +1,82 @@
+inherited FilterFlip: TFilterFlip
+  Width = 583
+  Height = 472
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 567
+  end
+  inherited Memo1: TMemo
+    Width = 567
+    Lines.Strings = (
+      
+        'The Flip filter allows you to turn the selected region (text and' +
+        ' images) upside down.'
+      ''
+      'Example :'
+      '  FlipFilter := TFlipFilter.Create(ChartTool1.Filters);')
+  end
+  inherited Chart1: TChart
+    Width = 567
+    Height = 280
+    Gradient.EndColor = 8454143
+    Gradient.MidColor = clWhite
+    Gradient.StartColor = 16744576
+    Gradient.Visible = True
+    Title.Visible = False
+    Shadow.Color = clGray
+    Shadow.HorizSize = 6
+    Shadow.VertSize = 6
+    object Series1: TCalendarSeries
+      ShowInLegend = False
+      Date = 39148.000000000000000000
+      Days.Transparent = True
+      Days.Visible = True
+      Months.Transparent = True
+      Months.Visible = True
+      Months.Format = 'mmmm, yyyy'
+      Sunday.Color = clRed
+      Sunday.Font.Color = clWhite
+      Sunday.Gradient.EndColor = 4194432
+      Sunday.Gradient.Visible = True
+      Sunday.Shadow.HorizSize = 0
+      Sunday.Shadow.VertSize = 0
+      Sunday.Transparent = False
+      Sunday.Visible = True
+      Today.Color = clBlue
+      Today.Font.Color = clWhite
+      Today.Gradient.EndColor = clWhite
+      Today.Gradient.MidColor = clBlue
+      Today.Gradient.Visible = True
+      Today.Shadow.HorizSize = 0
+      Today.Shadow.VertSize = 0
+      Today.Transparent = False
+      Today.Visible = True
+      Trailing.Font.Color = clGray
+      Trailing.Transparent = True
+      Trailing.Visible = True
+      WeekDays.Gradient.EndColor = 8454016
+      WeekDays.Gradient.Visible = True
+      WeekDays.Transparent = False
+      WeekDays.Visible = True
+      WeekDays.Pen.Visible = False
+      WeekDays.Format = 'ddd'
+    end
+    object ChartTool1: TAntiAliasTool
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 567
+    object cbFlip: TCheckBox
+      Left = 15
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Flip'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbFlipClick
+    end
+  end
+end

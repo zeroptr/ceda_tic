@@ -1,0 +1,188 @@
+
+{                                                                              }
+{ TIB_SchemaCache                                                              }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+TIB_SchemaCacheItems = ( sciDomainNames,
+                         sciGeneratorNames,
+                         sciTableNames,
+                         sciViewNames,
+                         sciProcedureNames,
+                         sciConstraintNames,
+                         sciTriggerNames,
+                         sciIndexDefs,
+                         sciIndexNames,
+                         sciPrimaryKeys,
+                         sciForeignKeys,
+                         sciRequired,
+                         sciDefaults,
+                         sciComputed,
+                         sciFieldDomains,
+                         sciTableKeys,
+                         sciTableFields,
+                         sciProcedureParams,
+                         sciRelationsByID,
+                         sciDatabaseSchemaVer,
+                         sciClientSchemaVer );
+
+TIB_SchemaCacheItemsSet = set of TIB_SchemaCacheItems;
+
+{: Work in progress.}
+TIB_SchemaCache = class( TPersistent ) 
+private
+  FTransaction: TIB_TransactionInternal;
+  FValidInfoFlags: TIB_SchemaCacheItemsSet;
+  FValueLists: array[ TIB_SchemaCacheItems ] of TIB_StringList;
+  FDomainNameCursor: TIB_Dataset;
+  FTableKeyCursor: TIB_Dataset;
+  FTableFieldsCursor: TIB_Dataset;
+  FFieldSourceCursor: TIB_Dataset;
+  FDomainSourceCursor: TIB_Dataset;
+  FProcedureParamsCursor: TIB_Dataset;
+  FLocalDir: string;
+protected
+  procedure DoHandleError( Sender: TObject; const ERRCODE: longint;
+    ErrorMessage, ErrorCodes: TStringList; const SQLCODE: longint;
+    SQLMessage, SQL: TStringList; var RaiseException: Boolean);
+  function GetConnection: TIB_Connection;
+  function GetDomainNameCursor: TIB_Dataset;
+  function GetTableKeyCursor: TIB_Dataset;
+  function GetTableFieldsCursor: TIB_Dataset;
+  function GetFieldSourceCursor: TIB_Dataset;
+  function GetDomainSourceCursor: TIB_Dataset;
+  function GetProcedureParamsCursor: TIB_Dataset;
+  procedure SetLocalDir( const AValue: string );
+  property DomainNameCursor: TIB_Dataset read GetDomainNameCursor;
+  property TableKeyCursor: TIB_Dataset read GetTableKeyCursor;
+  property TableFieldsCursor: TIB_Dataset read GetTableFieldsCursor;
+  function GetSchemaCacheList( AList: integer ): TIB_StringList;
+  function GetItemName( ALst: TIB_SchemaCacheItems ): string;
+  function GetLocalFileName( ALst: TIB_SchemaCacheItems ): string;
+  function GetGDBFilename: string;
+  procedure CheckTransactionEnded;
+public
+  constructor Create( AConnection: TIB_Connection );
+  destructor Destroy; override;
+  procedure FreeResources;
+{: This method creates the IBO$SCHEMA_VERSION table if needed, and adds any
+missing records that are required for versioning to operate correctly.
+<br><br>
+If the table IBO$SCHEMA_VERSION exists in the database and it has records
+present, schema versioning is performed on the basis of values stored in this
+table.  Updating the version numbers in this table will cause all clients
+to refresh the associated schema cache items when next loaded.}
+  procedure CheckSchemaVersionTable;
+{: Calling this method will delete the local schema cache files.  The files
+will be regenerated automatically the next time the information is accessed.
+<br><br>
+To cause the schema cache to be reloaded immediately, call the
+InvalidateAllItems method.}
+  procedure DeleteLocalFiles;
+{: Calling this method will invalidate all schema cache items and cause them
+to be reloaded on demand from either local schema files or directly from the
+database.  The source for reloading depends on whether local files exist and, if
+so, whether the IBO$SCHEMA_VERSION table exists and contains records that are
+more recent.
+<br><br>
+If metadata changes are made by a application using an IB_Script or via the
+ExecuteImmediate method of a statement, the application may subsequently discard
+old schema cache information by updating records in the IBO$SCHEMA_VERSION table
+or delete specific schema in the local cache.  Calling this method will allow
+immediate access to the new metadata information.}
+  procedure InvalidateAllItems;
+{: Calling this method loads the RelationsByID information, which is used by
+the IB_Profiler to report table names in performance counts.}
+  procedure LoadRelationsByIDInfo;
+  function GetDomainName( const ARelName, ASQLName: string ): string;
+  procedure GetProcedureParamNames( const AProcName: string;
+                                    const AParamInput: boolean;
+                                          AStrings: TStrings );
+  procedure GetTableKeys( const TableName: string; const AKeys: TStrings );
+  procedure GetTableFields( const TableName: string; const AFields: TStrings );
+  property FieldSourceCursor: TIB_Dataset read GetFieldSourceCursor;
+  property DomainSourceCursor: TIB_Dataset read GetDomainSourceCursor;
+  property Connection: TIB_Connection read GetConnection;
+  property GDBFilename: string read GetGDBFilename;
+  property LocalDir: string read FLocalDir write SetLocalDir;
+  property Transaction: TIB_TransactionInternal read FTransaction;
+published
+  property Computed: TIB_StringList index integer( sciComputed )
+                                    read GetSchemaCacheList;
+  property ConstraintNames: TIB_StringList index integer( sciConstraintNames )
+                                           read GetSchemaCacheList;
+  property Defaults: TIB_StringList index integer( sciDefaults )
+                                    read GetSchemaCacheList;
+  property DomainNames: TIB_StringList index integer( sciDomainNames )
+                                       read GetSchemaCacheList;
+  property ForeignKeys: TIB_StringList index integer( sciForeignKeys )
+                                       read GetSchemaCacheList;
+  property GeneratorNames: TIB_StringList index integer( sciGeneratorNames )
+                                          read GetSchemaCacheList;
+  property IndexDefs: TIB_StringList index integer( sciIndexDefs )
+                                     read GetSchemaCacheList;
+  property IndexNames: TIB_StringList index integer( sciIndexNames )
+                                      read GetSchemaCacheList;
+  property PrimaryKeys: TIB_StringList index integer( sciPrimaryKeys )
+                                       read GetSchemaCacheList;
+  property ProcedureNames: TIB_StringList index integer( sciProcedureNames )
+                                          read GetSchemaCacheList;
+  property Required: TIB_StringList index integer( sciRequired )
+                                    read GetSchemaCacheList;
+  property TableNames: TIB_StringList index integer( sciTableNames )
+                                      read GetSchemaCacheList;
+  property RelationsByID: TIB_StringList index integer( sciRelationsByID )
+                                         read GetSchemaCacheList;
+  property TriggerNames: TIB_StringList index integer( sciTriggerNames )
+                                        read GetSchemaCacheList;
+  property ViewNames: TIB_StringList index integer( sciViewNames )
+                                     read GetSchemaCacheList;
+  property FieldDomains: TIB_StringList index integer( sciFieldDomains )
+                                        read GetSchemaCacheList;
+  property TableKeys: TIB_StringList index integer( sciTableKeys )
+                                     read GetSchemaCacheList;
+  property TableFields: TIB_StringList index integer( sciTableFields )
+                                       read GetSchemaCacheList;
+  property ProcedureParams: TIB_StringList index integer( sciProcedureParams )
+                                           read GetSchemaCacheList;
+  property DatabaseSchemaVer: TIB_StringList
+      index integer( sciDatabaseSchemaVer ) read GetSchemaCacheList;
+  property ClientSchemaVer: TIB_StringList
+      index integer( sciClientSchemaVer ) read GetSchemaCacheList;
+end;
+
+// IBA_SchemaCache.IMP

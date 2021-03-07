@@ -1,0 +1,85 @@
+inherited HighLowForm: THighLowForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 90
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'High-Low series draws (and optionally fills) two lines with High' +
+        ' and Low values'
+      'for each point.'
+      '')
+  end
+  inherited Chart1: TChart
+    Top = 92
+    Height = 245
+    Legend.Visible = False
+    Title.Visible = False
+    object Series1: THighLowSeries
+      HighBrush.Color = clLime
+      HighPen.Color = clBlue
+      HighPen.Width = 2
+      HighValues.DateTime = False
+      HighValues.Name = 'Y'
+      HighValues.Order = loNone
+      LowBrush.Color = clWhite
+      LowBrush.Style = bsClear
+      LowValues.DateTime = False
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      Pen.Color = clBlue
+      Cursor = crCross
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    object ButtonPen1: TButtonPen
+      Left = 8
+      Top = 8
+      Caption = '&High...'
+      TabOrder = 0
+    end
+    object ButtonPen2: TButtonPen
+      Left = 184
+      Top = 8
+      Caption = '&Low...'
+      TabOrder = 1
+    end
+    object ButtonPen3: TButtonPen
+      Left = 360
+      Top = 8
+      Caption = 'L&ines...'
+      TabOrder = 2
+    end
+    object Button1: TButton
+      Left = 88
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'High &Fill...'
+      TabOrder = 3
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 264
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'L&ow Fill...'
+      TabOrder = 4
+      OnClick = Button2Click
+    end
+  end
+end

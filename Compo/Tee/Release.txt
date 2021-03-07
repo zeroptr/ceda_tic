@@ -1,0 +1,446 @@
+===========================================
+ TeeChart Pro v8 VCL / CLX version
+ Copyright (c) 1995-2009
+ by Steema Software SL
+ All Rights Reserved.
+
+ http://www.steema.com
+ email: info@steema.com
+ support forum: http://support.steema.com
+
+=======================================
+Release Notes 2nd September 2009
+TeeChart VCL version 8
+Build 8.06.60902
+=======================================
+Please send feedback to:
+http://www.teechart.net/support/index.php
+=======================================  
+
+Bugfixes/changes
+--------------------------
+1)  [TV52014184]
+    TAntiAliasTool not drawing 2D lines
+    correctly when scrolling them partially
+    out of the chart. Fixed.
+2)  [TV52014200]
+    In v8.05 C++ Builder projects threw an
+    exception when using TeeGDIPlus unit.
+    Fixed.
+3)  [TV52014264]
+    TColorGridSeries threw an exception
+    when being populated with negative
+    values under some circumstances. Fixed.
+4)  [TV52014252]
+    Setting LinePen.Width in 2D line series
+    also set OutLine.Width. Fixed.
+5)  [TV52014302]
+    Clicked function for TFastLineSeries
+    doesn't care of stairs mode. Fixed.
+6)  [TV52014303]
+    Function's source series list empty in
+    MDI applications under some
+    circumstances. Fixed.
+7)  [TV52011120]
+    Axis labels overlap when DateTime under
+    some circumstances. Fixed.
+8)  [TV52014316]
+    Bars haven't the correct width under
+    some circumstances.
+9)  [TV52014348]
+    TTeePreviewPanel didn't plot patterns
+    in legend symbols. Fixed.
+10) [not assigned]
+    Scrolling to the right the last pointer
+    of Area Series disappear, now fixed.
+
+New Features
+--------------------------
+1)  [TV52014310]
+    TeeRoundDate support for increments
+    smaller than dtHalfMonth.
+2)  RAD Studio 2010 support.
+
+===========================================
+ TeeChart Pro v8 VCL / CLX version
+ Copyright (c) 1995-2009
+ by Steema Software SL
+ All Rights Reserved.
+
+ http://www.steema.com
+ email: info@steema.com
+ support forum: http://support.steema.com
+
+=======================================
+Release Notes 22nd May 2009
+TeeChart VCL version 8
+Build 8.05.50522
+=======================================
+Please send feedback to:
+http://www.teechart.net/support/index.php
+=======================================  
+
+Bugfixes/changes
+--------------------------
+1)  [TF02012544]
+    Zooming or scrolling on a TBubbleSeries
+    caused bubbles at the edges of the 
+    chart to "disappear". Fixed.
+2)  [TF02013413]
+    Scrolling on a TCandleSeries caused
+    incorrect FirstDisplayedIndex and
+    LastDisplayedIndex values to be returned.
+    Fixed.
+3)  [similar to TF02012544]	
+    Problems similar to TF02012544 also
+    occurred in the following Series types:
+    TBarSeries, THorizBarSeries, TBar3DSeries, 
+    TBarJoinSeries, TErrorSeries, 
+    TErrorBarSeries, TImageBarSeries, 
+    TPointSeries, TImagePointSeries
+    and TPointFigureSeries. Fixed.
+4)  [TF02013442]
+    TSmithSeries circle unnecessarily reduced
+    in size when Marks made visible. Fixed.
+5)  [TF02013446]
+    THistogramSeries and THorizHistogramSeries 
+    not rendering correctly when the axis 
+    associated with the XValues is inverted.
+    Fixed.
+6)  [TV52013959]
+    Memory leak in TPNGExportFormat.
+    SaveToStreamCompression, now Fixed.
+7)  [TF02013524]
+    Null values could not be set for the 
+    Candle Series. Fixed. Null values can
+    now be set using the TChartSeries.SetNull()
+    method.
+8)  [TV52013949]
+    Axis increment calculation produced an
+    error with very big ranges. Fixed.
+9)  [No bugfix log]
+    CalcXPos and CalcYPos not working in the 
+    TColorGridSeries. Fixed.
+10) [TV52013783]
+    Grid lines not plotted in TColorGridSeries
+    under some circumstances. Fixed.
+11) [TV52013781]
+    TColorGridSeries not working in VCL.NET
+    applications in some cases. Fixed.
+12) [TF02013701]
+    TPointSeries failing to show last points
+    under exceptional circumstances. Fixed.
+13) [TF02013714]
+    THorizBarseries not displaying
+    all points when chart resized. Fixed.
+14) [TV52012609]
+    Added support for TVideoTool.Compression.
+    Video compression can be assigned recording
+    video if it exists as a codec on the system.
+15) [TV52013763]
+    Adding Video Player Tool from the editor 
+    gives an exception, now fixed.
+16) [TV52013795]
+    Axes titles painted at the wrong position
+    under some circumstances. Fixed.
+17) [TV52013762]
+    Series' VisibleCount property not working
+    correctly, now fixed.
+18) [TV52013523]
+    Adding null values to a candle series
+    plotted black candles. Fixed.
+19) [TV52013796]
+    TColorGridSeries not plotted correctly
+    when an associated axis has Inverted
+    property set to true. Fixed.
+20) [TV52012772]
+    First value in THistogramFunction wrongly
+    calculated. Fixed.
+21) [TV52013866]
+    Big difference in values crashes when
+    calculating axis labels increment. Fixed.
+22) [TV52013770]
+    Multiline chart footer and subfooter 
+    not plotted corectly. Fixed.
+23) [TV52013637]
+    TColorGridSeries.Clicked method not 
+    working when IrregularGrid=True. Fixed.
+24) [TV52013630]
+    Negative values in 2D bar series not 
+    plotted correctly with GDI+ canvas. 
+    Fixed.
+25) [TV52013462]
+    Polar series not plotting correctly
+    when ClockWiseLabels set to false.
+    Fixed.  
+26) [TV52013293]
+    2D pies not plotted correctly using
+    GDI+ canvas. Fixed.
+27) [TV52013958]
+    Pie Series now has support for image 
+    as Brush for each slice in 3D mode.
+28) [TV52012826]
+    Source code didn't compile with all
+    TChartValue values available. Fixed.
+29) [TV52012814]
+    Filled checkbox in TContourSeries
+    editor non-functional at design-time.
+    Fixed.
+30) [TV52013778, TV52013431]
+    SmoothBitmap property in TColorGridSeries
+    not working fine. Fixed.
+31) [TV52013890]
+    Setting series points color in VCL.NET 
+    caused an error under some circumstances.
+    Fixed.
+32) [TV52013884]
+    Chart editor's gallery raised an
+    exception in VCL.NET applications
+    under some circumstances. Fixed.
+33) [TV52013978]
+    TTeeCommander buttons not rendering
+    correctly in VCL.NET applications. 
+    Fixed.
+34) [TV52013433]
+    Setting TLegendItem.Text produced an
+    error. Fixed.
+35) [TV52013257]
+    Series points not painted correctly
+    when scrolling and horizontal axis 
+    is inverted. Fixed.
+36) [TV52013470]
+    THorizHistogramSeries with inverted
+    vertical axis not plotting correctly.
+    Fixed.
+37) [TV52013314]
+    TMarksTipTool doesn't work correctly 
+    with TErrorSeries. Fixed.	
+38) [TF02013509]
+    Using the OnGetAxisLabel event, 
+    although the label is modified properly
+    (for example cut it) on the Axis, the 
+    Axis label size is calculated  by the
+    complete labels so a lot of empty space
+    appears at the bottom, now fixed.
+39) [TV52014081]
+    TTagCloudSeries threw an exception when
+    only had one value. Fixed.
+40) [TV52013611]
+    Using TDrawLineTool in a chart with
+    a TAntiAliasTool, when scrolling lines
+    out of the chart boundaries produced an
+    error. Fixed.
+41) [TV52014108]
+    3D editor dialog allowed Perspective
+    values greater than 100. Fixed.
+42) [TV52013610]
+    TDrawLineTool not painting lines 
+    correctly when used together with 
+    TAntiAliasTool or TGDIPlusCanvas. 
+    Fixed.
+43) [TV52013767]
+    The ColorGrid Series was not displaying
+    correctly in OpenGL or PDFExport. Now 
+    resolved.
+44) [TV52010768]
+    Some functions not working fine for
+    horizontal series. Fixed.
+45) [TV52012014]
+    Selecting marks from a series with null
+    points using a TSelectorTool produced
+    an error. Fixed.
+45) [TV52013515]
+    Export errors with PDf and GIF exports and
+    RAD Studio 2009 only. Now resolved.
+46) [TV52013538]
+    Export errors for some 'data' text formats 
+    from RAD Studio 2009 only (related to 
+    Unicode encoding). Now resolved.
+
+
+New Features
+--------------------------
+1)  [TV52013792]
+    New TChartSeries.AddArray(XValues, YValues)
+    method.
+2)  [TV52013566]
+    New ClearChart method implemented.
+3)  [TV52012644]
+    New DisplayedPointCount property for 
+    TDownSamplingFunction.
+4)  [TV52013276]
+    New DefaultNullValue property for series.	
+5)  New FontSeriesColor for Marks which sets the
+    font color for each mark giving its point 
+    color.
+6)  [TV52013175]
+    New IncludeNulls property implemented for
+    THistogramFunction. This property is true
+    by default.	
+
+=======================================
+Release Notes 10th October 2008
+TeeChart VCL version 8
+Build 8.04
+=======================================
+Please send feedback to:
+http://www.teechart.net/support/index.php
+=======================================  
+
+Bugfixes/changes
+--------------------------
+1)  Added UseSeriesFormat and ValueFormat
+    properties for export data which allow to
+    use a specific valueformat or the one 
+    choosed for Series.
+2)  [TV52013138] 
+    Trying to get MaxLabelsWidth hangs if 
+    IAxisSize=0. Now fixed.
+3)  Using translations, Field names of selected
+    table as datasource were translated too, now
+    fixed.
+4)  [TF02013319]
+    FirstVisibleIndex and LastVisibleIndex
+    not calculated correctly under some
+    circumstances and for some series.
+    Fixed.
+5)  [TV52012914]
+    TLinearGauge's title settings at
+    designtime doesn't persist at runtime.
+    Fixed.
+6)  [TV52013112]
+    Print preview margins could not be
+    eddited using print preview controls.
+    Fixed.
+7)  [TV52013171]
+    TLineSeries' Add(YValue, Label, Color)
+    method override didn't produce different
+    color line segments. Fixed.
+8)  [TV52013076]
+    XML export/import loses null points.
+    Fixed.
+9)  [TV52013279]
+    ContourSeries did not colour fill 
+    segments correctly when datasourced from 
+    external file. Now resolved.
+10) [TV52012634] Reviewed
+    ColorGrid Series generates unaligned cells
+    using similar code to the following one :
+       var x,z: Integer;
+       for x:=0 to 5 do
+         for z:=0 to 3 do
+            Series1.AddXYZ(x,random,z);
+    This happens when series' rows and columns 
+    start at value zero. Now fixed.
+11) [TV52013186]
+    When first point in a series is a null
+    value and TreatNulls=tnSkip a line is
+    drawn from first to last series point.
+    Fixed.
+12) [TV52013102]
+    TChartScrollBar component modified axes
+    scales incorrectly when zooming or panning 
+    associated chart.
+    Fixed.
+13) [TV52013251]
+    Surface Grid [new] cell insertion wasn't 
+    working correctly. Now resolved. 
+14) [TV52013355]
+    Chart editor's export data tab generated
+    a semicolon when choosing "Colon" option
+    in the "Delimiter" field. Fixed.
+
+=======================================
+Release Notes 28th May 2008
+TeeChart VCL version 8
+Build 8.03
+=======================================
+Please send feedback to:
+http://www.teechart.net/support/index.php
+=======================================  
+
+Bugfixes/changes
+--------------------------
+1)  [TV52010241]
+    THistogramSeries and THorizHistogramSeries 
+    not drawing correctly when axis is not
+    automatic. Fixed.
+2)  [TV52012770]
+    Fixed bug which appear at v8.02. Printing
+    the Charts access violation is thrown.
+3)  [TV52010983]
+    Fixed bug : SetNull doesn't work properly
+    for FastLine Series. Setting the IgnoreNulls
+    property of FastLineSeries to false in 
+    conjunction to TreatNulls property works
+    fine now (Series1.IgnoreNulls:=false; 
+    Series1.TreatNulls:=tnDontPaint).
+4)  [TV52010079]
+    Crossover funtion: if there is a crossover 
+    at x=0 and x=0 is the xvalue of the first 
+    series point of BOTH series then crosspoints
+    doesn't work. Crosspoints does work for all 
+    other situations with x=0
+5)  [TV52010196]
+    CrossPoints Function does not work fine 
+    setting it at designtime. An extra point is
+    added at the end which is not correct. Now
+    fixed.
+6)  [TV52012988], [TV52012592] and [TV52012533]
+    Legends with many items not behaving 
+    correctly under some circumstances. Fixed.
+7)  [TV52012495]
+    Changing of a circular gauge to a linear 
+    doesn't work well. Fixed.
+8)  [TV52010523] & [TV52011291]
+    Verified these bugs had been fixed in 
+    earlier v8 releases.
+9)  [TV52012978]
+    ColorGrid click sensitivity was not correct
+    with CenteredGrid True. Fixed.
+10) [TV52013006]
+    Changing Series type to BarSeries before
+    repaint caused a StackStyle problem. Fixed.
+11) [TV52012330]
+    Horizontal Series types did not load XY data
+    correctly from SeriesTextSource. Fixed.
+12) [TV52012634]
+    ColorGrid Series generates unaligned cells
+    using similar code to the following one :
+       var x,z: Integer;
+       for x:=0 to 5 do
+         for z:=0 to 3 do
+            Series1.AddXYZ(x,random,z);
+    This happens when series' rows and columns 
+    start at value zero. Now fixed.
+13) [TV52012332]
+    TBarSeries and THorizBarSeries not drawing 
+    correctly when axis is not automatic and 
+    BarWidthPercent = 100. Fixed.
+14) [TV52011721]
+    Problems sizing with Axis' custom label 
+    size. Now fixed.
+15) [TV52012992]
+    Reported "invalid floating point operation" 
+    using the rotate tool under some steep angle
+    conditions. Fixed.
+16) [TV52013025]
+    The labels list would remains empty when using 
+    AddHighLow from HighLowSeries. Fixed.
+17) [TV52012919]
+    Change notification: The GDI+ example is now 
+    included as part of TeeNew demo project.
+18) [TV52012699]
+    Using TLegendPaletteTool with a ColorGrid 
+    series with a custom palette didn't work
+    correctly. Fixed.
+19) [TV52011868]
+    Mouse-panning would cause some axes bound 
+    data to move more quickly than the mouse 
+    movement. Fixed.
+
+=======================================
+Please send feedback to:
+http://www.teechart.net/support/index.php
+=======================================  
+ 

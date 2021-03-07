@@ -1,0 +1,106 @@
+inherited OpenGLEditorForm: TOpenGLEditorForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The OpenGL editor can now be displayed inside the Chart Editor'
+      '(under the "OpenGL" tab).'
+      ''
+      'It is required to use the "TeeOpenGLEdit.pas" unit.')
+  end
+  inherited Chart1: TChart
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    Border.Visible = True
+    BottomWall.Size = 10
+    Gradient.Balance = 4
+    Gradient.Direction = gdBottomTop
+    Gradient.EndColor = 25284
+    Gradient.MidColor = clWhite
+    Gradient.StartColor = 27349
+    Gradient.Visible = True
+    LeftWall.Size = 10
+    Legend.Gradient.Visible = True
+    Title.Font.Shadow.HorizSize = 2
+    Title.Font.Shadow.VertSize = 2
+    Title.Text.Strings = (
+      'TeeChart and OpenGL')
+    DepthAxis.Visible = True
+    View3DOptions.Elevation = 1
+    View3DOptions.FontZoom = 135
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 55
+    View3DOptions.Rotation = 34
+    object Series1: TBar3DSeries
+      ColorEachPoint = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clBlue
+      BarStyle = bsCilinder
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      OffsetValues.Name = 'Offset'
+      OffsetValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Active OpenGL'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 160
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    Active = True
+    AmbientLight = 8
+    Light.Color = clGray
+    Light.Visible = True
+    Light.Position.X = 82.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = 10.000000000000000000
+    Light1.Color = clGray
+    Light1.Visible = False
+    Light1.Position.X = -100.000000000000000000
+    Light1.Position.Y = -100.000000000000000000
+    Light1.Position.Z = -100.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Shininess = 0.500000000000000000
+    TeePanel = Chart1
+    Left = 352
+    Top = 82
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Title = 'See the new OpenGL tab....'
+    Left = 280
+    Top = 81
+  end
+end

@@ -1,0 +1,17 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>0</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<RotationAngle>0</RotationAngle>
+<Stretched>0</Stretched>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

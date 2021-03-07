@@ -1,0 +1,70 @@
+inherited JPEGExportForm: TJPEGExportForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Exporting to JPEG graphic format is available using the Export D' +
+        'ialog'
+      'or by code at run-time. The VCL TJPEGImage object is required.'
+      ''
+      'The TeeJPEG unit should be used. (Uses TeeJPEG).')
+  end
+  inherited Chart1: TChart
+    Legend.TextStyle = ltsValue
+    Chart3DPercent = 10
+    object Series1: TArrowSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 0
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.HorizSize = 14
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 14
+      Pointer.Visible = True
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      EndXValues.DateTime = True
+      EndXValues.Name = 'EndX'
+      EndXValues.Order = loNone
+      EndYValues.DateTime = False
+      EndYValues.Name = 'EndY'
+      EndYValues.Order = loNone
+      StartXValues.DateTime = True
+      StartXValues.Name = 'X'
+      StartXValues.Order = loAscending
+      StartYValues.DateTime = False
+      StartYValues.Name = 'Y'
+      StartYValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = '&Save to JPEG...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 152
+      Top = 8
+      Width = 169
+      Height = 25
+      Caption = 'Show &Export dialog...'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+end

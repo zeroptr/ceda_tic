@@ -1,0 +1,131 @@
+inherited ArrowSeriesForm: TArrowSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 41
+    Lines.Strings = (
+      
+        'Each Arrow is represented as a point with Starting and  Ending c' +
+        'oordinates.'
+      'This demo changes arrow positions randomly.')
+  end
+  inherited Chart1: TChart
+    Top = 73
+    Height = 264
+    BackWall.Brush.Color = clWhite
+    BackWall.Color = 8454143
+    BackWall.Size = 20
+    BackWall.Transparent = False
+    BackWall.Gradient.Direction = gdFromTopLeft
+    BackWall.Gradient.EndColor = clGreen
+    BackWall.Gradient.Visible = True
+    BottomWall.Color = 8454016
+    BottomWall.Size = 20
+    Foot.Font.Height = -12
+    Foot.Frame.Color = clScrollBar
+    LeftWall.Color = 16777088
+    LeftWall.Size = 20
+    Legend.Visible = False
+    MarginBottom = 10
+    MarginRight = 10
+    Title.Frame.Color = clScrollBar
+    Title.Text.Strings = (
+      '')
+    Title.Visible = False
+    Chart3DPercent = 60
+    ClipPoints = False
+    RightAxis.Grid.Visible = False
+    RightAxis.MinorTickLength = 3
+    RightAxis.TickLength = 5
+    View3DOptions.Elevation = 353
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 55
+    View3DOptions.Rotation = 334
+    View3DOptions.Zoom = 97
+    Zoom.Animated = True
+    object Series1: TArrowSeries
+      ColorEachPoint = True
+      HorizAxis = aBothHorizAxis
+      Marks.ArrowLength = 8
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      SeriesColor = clRed
+      VertAxis = aBothVertAxis
+      ClickableLine = False
+      Pointer.HorizSize = 32
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 24
+      Pointer.Visible = True
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      EndXValues.DateTime = True
+      EndXValues.Name = 'EndX'
+      EndXValues.Order = loNone
+      EndYValues.DateTime = False
+      EndYValues.Name = 'EndY'
+      EndYValues.Order = loNone
+      StartXValues.DateTime = True
+      StartXValues.Name = 'X'
+      StartXValues.Order = loAscending
+      StartYValues.DateTime = False
+      StartYValues.Name = 'Y'
+      StartYValues.Order = loNone
+      Left = 104
+      Top = 195
+    end
+    object ChartTool1: TAxisArrowTool
+      Brush.Color = clRed
+      Length = 22
+      AxisID = 0
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 41
+    Height = 32
+    object CheckBox3: TCheckBox
+      Left = 20
+      Top = 8
+      Width = 125
+      Height = 17
+      Caption = '&Color each'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox3Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 120
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = '&Animate'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 200
+      Top = 8
+      Width = 49
+      Height = 17
+      Caption = '&3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 376
+    Top = 41
+  end
+end

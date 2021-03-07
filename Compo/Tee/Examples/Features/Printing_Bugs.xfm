@@ -1,0 +1,36 @@
+object PrintingBugsForm: TPrintingBugsForm
+  Left = 216
+  Top = 107
+  Width = 440
+  Height = 352
+  Color = clBtnFace
+  ParentFont = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 432
+    Height = 325
+    Align = alClient
+    Lines.Strings = (
+      'Fixed bugs about printing charts:'
+      ''
+      '- The Canvas "MapMode" is preserved.'
+      '   When printing charts, the Windows Device Context MapMode is'
+      '   changed to "Anisotropic" (metafile). '
+      '   After printing charts, the previous MapMode is restored.'
+      ''
+      '- No printers installed.'
+      
+        '  When there are no printers installed on Windows, the print pre' +
+        'view'
+      '  dialog does not raise any exceptions.'
+      ''
+      '- Hewlett Packard (HP) Laserjet printers and lines not printed.'
+      
+        '  Latest (Summer 2000) Laserjet drivers from HP.com fix this pro' +
+        'blem.')
+    TabOrder = 0
+  end
+end

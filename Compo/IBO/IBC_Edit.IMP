@@ -1,0 +1,972 @@
+// IBC_Edit.INT
+
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomEdit.IMP}
+{$UNDEF IB_AutoLabel}
+
+constructor TIB_CustomEdit.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+{$IFNDEF VER90}
+  FAutoLabel := TIB_AutoLabel.Create( Self );
+{$ENDIF}
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csReplicatable];
+  DataLink.Control := Self;
+  DataLink.OnStateChanged := StateChanged;
+  DataLink.OnEditingChanged := EditingChanged;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnUpdateData := UpdateData;
+  FButtonWidth := GetSystemMetrics(SM_CXVSCROLL) + 1;
+  FButtonStyle := ebsNone;
+  FImageList := nil;
+  FImageindex := -1;
+  FImageIndexDisabled := -1;
+  FImageIndexPressed := -1;
+  FAlwaysShowButton := false;
+  FAllowUnboundEdits := false;
+  UpdateMask( '' );
+end;
+
+destructor TIB_CustomEdit.Destroy;
+begin
+{$IFNDEF VER90}
+  FAutoLabel.Free;
+  FAutoLabel := nil;
+{$ENDIF}
+  DataSource := nil;
+  with DataLink do
+  begin
+    Control := nil;
+    OnStateChanged := nil;
+    OnEditingChanged := nil;
+    OnDataChange := nil;
+    OnUpdateData := nil;
+  end;
+  Destroying;
+  if FCanvas <> nil then
+  begin
+    FCanvas.Free;
+    FCanvas := nil;
+  end;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomEdit.Loaded;
+begin
+  inherited Loaded;
+  SysStateChanged;
+  SysDataChange( nil );
+{$IFNDEF VER90}
+  RemakeAutoLabel;
+{$ENDIF}
+end;
+
+{------------------------------------------------------------------------------}
+{  Control specific processing                                                 }
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomEdit.SysDataChange;
+var
+  tmpText: string;
+begin
+  UpdateMask( '' );
+  if Assigned( Field ) or not FAllowUnboundEdits then
+  begin
+    if FAlignment <> DataLink.FieldAlignment then
+    begin
+      EditText := '';
+      FAlignment := DataLink.FieldAlignment;
+      if (ButtonStyle <> ebsNone) and
+         (PasswordChar = #0) then
+      begin
+        if HandleAllocated then
+          RecreateWnd;
+        CheckDrawButton(true);
+      end;
+    end;
+    if Focused then
+    begin
+      tmpText := DataLink.FieldText;
+      if Assigned(OnGetEditText) then
+         OnGetEditText(Self,tmpText);
+      Text := tmpText;
+    end
+    else
+    begin
+      tmpText := DataLink.FieldText;
+      if Assigned(OnGetDisplayText) then
+         OnGetDisplayText(Self,tmpText);
+      EditText := tmpText;
+    end;
+    Modified := false;
+    Invalidate;
+  end;
+end;
+
+procedure TIB_CustomEdit.SysStateChanged; { Handles LayoutChange event as well }
+begin
+  if Assigned( Field ) or not FAllowUnboundEdits then
+  begin
+    with DataLink do
+    begin
+      if ColorScheme then
+        inherited Color := DataLink.Color;
+      case FieldCharCase of
+        ccUpper: CharCase := StdCtrls.ecUpperCase;
+        ccLower: CharCase := StdCtrls.ecLowerCase;
+        else     CharCase := StdCtrls.ecNormal;
+      end;
+      UpdateMask( '' );
+      MaxLength := FieldMaxLength;
+    end;
+    EditingChanged( DataLink, DataSource );
+  end;
+  UpdateTabStop;
+end;
+
+procedure TIB_CustomEdit.SysUpdateData;
+var tmpText:string;
+begin
+  if Assigned( Field ) then
+  begin
+    if Modified then
+    begin
+      ValidateEdit;
+      tmpText := Text;
+      if Assigned(OnSetEditText) then
+         OnSetEditText(Self,tmpText);
+      DataLink.FieldText := tmpText;
+    end;
+  end
+  else
+  if FAllowUnboundEdits then
+    ValidateEdit;
+  Modified := false;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_CustomEdit.EditCanModify: Boolean;
+begin
+  Result := DataLink.Modify;
+end;
+
+procedure TIB_CustomEdit.Reset;
+begin
+  SysDataChange( nil );
+  SelectAll;
+end;
+
+procedure TIB_CustomEdit.Change;
+begin
+  if not MaskChanging then with DataLink do
+    if ( DataChangingLevel = 0 ) and ( NeedToPost or
+                                      (State = dssSearch) or
+                                      SearchAlways or
+                                      IsParamEdit ) then
+    begin
+      ControlIsModified := true;
+      Modified := true;
+    end;
+  inherited Change;
+end;
+
+procedure TIB_CustomEdit.UpdateMask( UnboundMask: string );
+var
+  tmpS: string;
+  tmpM: string;
+begin
+  MaskChanging := true;
+  try
+    if Assigned( Field ) then
+    begin
+      if EditMask <> DataLink.FieldEditMask then
+      begin
+      // There is a bug in the VCL's mask processing.
+      // Even though I've said the mask characters are a part of the text
+      // it removes them when setting the EditMask to blank.
+      // This appears to work around the problem but I am not totally sure.
+        tmpS := Text;
+        tmpM := EditMask;
+        EditMask := DataLink.FieldEditMask;
+        if ( tmpM = '' ) and ( tmpS <> Text ) then
+          Text := tmpS;
+      end;
+    end
+    else
+    if FAllowUnboundEdits then
+      EditMask := UnboundMask
+    else
+      EditMask := '';
+  finally
+    MaskChanging := false;
+  end;
+end;
+
+procedure TIB_CustomEdit.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  Msg: TMsg;
+begin
+  if ( ButtonStyle <> ebsNone ) and
+     (( Key = VK_RETURN ) and ( Shift = [ssCtrl] ) or
+     (( Key = VK_DOWN ) and ( Shift = [ssAlt] ))) then
+  begin
+    //NOTE// Always trap "VK_RETURN + ssCtrl", otherwise CTRL-ENTER can be
+    //         used to put a carriage return into the text.
+    //
+    //NOTE// Call PeekMessage first!! (*before* inherited KeyDown)
+    //
+    // DoEditButtonClick or "inherited KeyDown()" can do things that
+    // result in the message queue being scanned, e.g. "ShowMessage()".
+    // Calling PeekMessage first makes sure that the WM_CHAR messages
+    // (for CTRL-ENTER) do not leak thru to the windows control.
+    //
+    // Note that to test for this problem with CTRL-ENTER the dataset must be
+    // placed out of dssBrowse (e.g. into dssEdit mode), otherwise the edit
+    // control is readonly (see EditingChanged), and won't show the problem.
+    //
+    PeekMessage( Msg, Handle, WM_CHAR, WM_CHAR, PM_REMOVE );
+    inherited KeyDown( Key, Shift );
+    if Key <> 0 then
+    begin
+      Key := 0;
+      DoEditButtonClick;
+    end;
+  end
+  else
+  begin
+    inherited KeyDown( Key, Shift );
+    if ( Key = VK_DELETE ) or
+       (( Key = VK_INSERT ) and ( ssShift in Shift )) then
+      if not EditCanModify then
+        Key := 0; // prevent the change
+  end;
+end;
+
+procedure TIB_CustomEdit.KeyPress( var Key: Char );
+var
+  IsValid:Boolean;
+begin
+  inherited KeyPress(Key);
+  //NOTE// This makes the control ignore return keypresses to make the
+  //         control behave as if it were *not* a multi-line edit.
+  //
+  // Note that to test for this problem with ENTER keypress the dataset must be
+  // placed out of dssBrowse (e.g. into dssEdit mode), otherwise the edit
+  // control is readonly (see EditingChanged), and won't show the problem.
+  if ( Key = #13 ) and ( ButtonStyle <> ebsNone ) then
+  begin
+    Key := #0;
+    Exit;
+  end;
+  with DataLink do
+  begin
+    if (Field<>nil) then
+    begin
+      if ( not SearchAlways ) and
+         ( State <> dssSearch ) then
+      begin
+        if ( Field.IsNumeric ) and
+           ( Key = '.' ) and
+           ( DecimalSeparator = ',' ) then
+          Key := DecimalSeparator
+        else
+        if (Field.IsDateTime) and (Key = ':') and (DateSeparator <> Key) then
+          Key := TimeSeparator;
+      end;
+
+      if Key in [#32..#255] then
+      begin
+        IsValid:=FieldIsValidChar(Key);
+        if Assigned( OnIsValidChar ) then
+           OnIsValidChar( Self, Key, IsValid );
+        if not IsValid then
+        begin
+          MessageBeep(0);
+          Key := #0;
+        end;
+      end;
+    end;
+    case Key of
+      ^H, ^V, ^X, #32..#255:
+      begin
+        if EditCanModify then
+        begin
+          if ( Length( Text ) = 0 ) and
+             ( Field <> nil) and
+             ( FieldCharCase = ccProper ) then
+            Key := AnsiUpperCase( Key )[1];
+        end
+        else
+          Key := #0;  // dont allow change
+      end;
+      #27: begin
+        Reset;
+        SelectAll;
+        Key := #0;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_CustomEdit.WMPaste(var Message: TMessage);
+begin
+  if EditCanModify then inherited;
+end;
+
+procedure TIB_CustomEdit.WMCut(var Message: TMessage);
+begin
+  if EditCanModify then inherited;
+end;
+
+procedure TIB_CustomEdit.CMGotFocus(var Message: TCMGotFocus);
+begin
+  inherited;
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomEdit.CMEnter(var Message: TCMEnter);
+begin
+  SetFocused( true );
+  if AutoSelect and not (csLButtonDown in ControlState) then SelectAll;
+  inherited;
+  // This causes a value to be lost when the OnValidate event has an exception.
+  // The call to SetFocused above will actually do a datachange already too.
+//  SysDataChange( nil );
+end;
+
+procedure TIB_CustomEdit.CMExit(var Message: TCMExit);
+begin
+  try
+    DataLink.UpdateData;
+  except
+    SelectAll;
+    SetFocus;
+    raise;
+  end;
+  SetFocused( false );
+  CheckCursor;
+  SysDataChange( nil );
+  inherited;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomEdit.WMPaint(var Message: TWMPaint);
+var
+  Left: Integer;
+  Margins: TPoint;
+  R: TRect;
+  DC: HDC;
+  PS: TPaintStruct;
+  S: string;
+  tmpBtnWidthAdj: integer;
+begin
+  //MODIFIED// 1999-04-14 CW: REMOVED...
+  //                          CAN'T CALL PaintHandler() WHEN WE WANT OTHER
+  //                          TEXT JUSTIFICATIONS, AS THE MULTILINE EDIT
+  //                          IS NOW *ALWAYS* SET TO LEFT JUSTIFIED.
+  //
+  //if (FButtonStyle <> ebsNone) and
+  //   (PasswordChar = #0) then begin
+  //  PaintHandler(Message);
+  //end;
+  //
+  //ENDMODIFIED//
+  if ((FAlignment = taLeftJustify) or FFocused) and
+    not (csPaintCopy in ControlState) then
+  begin
+    //MODIFIED// 1999-04-14 CW: CALL PaintHandler() INSTEAD OF inherited  TO
+    //                          ALLOW THE BUTTON TO BE DRAWN.  NOTE THAT THE
+    //                          CALL TO ExcludeClipRect() IN PaintWindow()
+    //                          MAKES SURE THAT THE WIN CONTROL DOES NOT
+    //                          DRAW OVER THE BUTTON.
+    //inherited;
+    //Exit;
+    //
+    PaintHandler(Message);
+    Exit;
+    //ENDMODIFIED//
+  end;
+
+  if FCanvas = nil then
+  begin
+    FCanvas := TControlCanvas.Create;
+    FCanvas.Control := Self;
+  end;
+  DC := Message.DC;
+  if DC = 0 then
+    DC := BeginPaint( Handle, PS );
+  FCanvas.Handle := DC;
+  try
+    //MODIFIED// 1999-04-14 CW: ADDED THIS TO DRAW THE BUTTON
+    if FDrawButton then
+      DrawButton;
+    //ENDMODIFIED//
+    FCanvas.Font := Font;
+    //JLW Modified this to make it so that when the control is disabled that
+    // its color will match the color of the default disabled coloring.
+    if not Enabled {and ( Font.Color = clBlack )} then
+      FCanvas.Font.Color := clInactiveCaption;
+    //JLW
+    with FCanvas do
+    begin
+      R := ClientRect;
+      if not ( NewStyleControls and Ctl3D ) and
+             ( BorderStyle = bsSingle ) then
+      begin
+        Brush.Color := clWindowFrame;
+        FrameRect(R);
+        InflateRect(R, -1, -1);
+      end;
+      Brush.Color := Color;
+      if (csPaintCopy in ControlState) and
+         (DataLink.Field <> nil) then
+      begin
+        S := DataLink.FieldText;
+        case CharCase of
+          StdCtrls.ecUpperCase: S := AnsiUpperCase(S);
+          StdCtrls.ecLowerCase: S := AnsiLowerCase(S);
+        end;
+      end
+      else
+        S := EditText;
+      if PasswordChar <> #0 then
+        FillChar(S[1], Length(S), PasswordChar);
+      Margins := GetTextMargins;
+      //MODIFIED// 1999-04-14  CW: CORRECTED ALIGNMENT WHEN BUTTON SHOWING
+      //case FAlignment of
+      //  taLeftJustify: Left := Margins.X;
+      //  taRightJustify: Left := ClientWidth - TextWidth(S) - Margins.X - 1;
+      //else
+      //  Left := (ClientWidth - TextWidth(S)) div 2;
+      //end;
+      if FDrawButton then
+      begin
+        Dec( R.Right, FButtonWidth );  //<=-adjust R for TextRect() call
+        tmpBtnWidthAdj := FButtonWidth;
+      end
+      else
+        tmpBtnWidthAdj := 0;
+      case FAlignment of
+        taLeftJustify: Left := Margins.X;
+        taRightJustify: Left := (ClientWidth - tmpBtnWidthAdj) - TextWidth(S) -
+                                                                 Margins.X - 1;
+      else
+        Left := ((ClientWidth - tmpBtnWidthAdj) - TextWidth(S)) div 2;
+      end;
+      //ENDMODIFIED//
+      TextRect( R, Left, Margins.Y, S );
+    end;
+  finally
+    FCanvas.Handle := 0;
+    if Message.DC = 0 then
+      EndPaint( Handle, PS );
+  end;
+end;
+
+function TIB_CustomEdit.GetTextMargins: TPoint;
+var
+  DC: HDC;
+  SaveFont: HFont;
+  I: Integer;
+  SysMetrics, Metrics: TTextMetric;
+begin
+  if NewStyleControls then
+  begin
+    if BorderStyle = bsNone then
+      I := 0
+    else
+    if Ctl3D then
+      I := 1
+    else
+      I := 2;
+    Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
+    Result.Y := I;
+  end
+  else
+  begin
+    if BorderStyle = bsNone then
+      I := 0
+    else
+    begin
+      DC := GetDC(0);
+      GetTextMetrics(DC, SysMetrics);
+      SaveFont := SelectObject(DC, Font.Handle);
+      GetTextMetrics(DC, Metrics);
+      SelectObject(DC, SaveFont);
+      ReleaseDC(0, DC);
+      I := SysMetrics.tmHeight;
+      if I > Metrics.tmHeight then
+        I := Metrics.tmHeight;
+      I := I div 4;
+    end;
+    Result.X := I;
+    Result.Y := I;
+  end;
+end;
+
+procedure TIB_CustomEdit.CreateParams( var Params: TCreateParams );
+const
+  Alignments: array[TAlignment] of longint = (ES_LEFT, ES_RIGHT, ES_CENTER);
+begin
+  inherited CreateParams( Params );
+  if ( ButtonStyle <> ebsNone ) and
+     ( PasswordChar = #0 ) then
+  begin
+    {In order to use EM_SETRECT later, make the edit control type MULTILINE...}
+    //NOTE// Alignment style setting only applies to MULTILINE control
+
+    //MODIFIED// CW 1999-04-14  CW: ONLY ES_LEFT REQUIRED, AS IT SHOULD ALWAYS
+    //                                SHOW LEFT JUSTIFIED WHEN EDITING TO KEEP
+    //                                THE SAME STYLE OF INTERFACE REGARDLESS OF
+    //                                BUTTON BEING DRAWN.
+    //
+    //Params.Style := longint(Params.Style) or ES_MULTILINE or
+    //                Alignments[FAlignment];
+    Params.Style := longint(Params.Style) or ES_MULTILINE or ES_LEFT;
+    //ENDMODIFIED//
+  end;
+  {Set or clear the ES_READONLY style as required...}
+  //
+  //NOTE// Required for use of RecreateWnd, and also for cases where the
+  //       control is created on an invisible parent window.
+  //
+  // EditingChanged updates "inherited ReadOnly".  If HandleAllocated=false,
+  // setting "inherited ReadOnly" will not modify the READONLY style setting.
+  // Hence the need to set ES_READONLY appropriately here.
+  if Assigned( DataLink ) then
+    EditingChanged( DataLink, DataSource );  //<=-update "inherited ReadOnly"
+  if inherited ReadOnly then
+    Params.Style := longint(Params.Style) or longint(ES_READONLY)
+  else
+    Params.Style := longint(Params.Style) and not longint(ES_READONLY);
+end;
+
+//MODIFIED// 1999-04-14 CW: ADDED THIS TO MAKE SURE THAT THE BOUNDS ARE SET
+//                            FOR MULTI-LINE EDIT CONTROLS.  SOMETIMES THEY
+//                            WERE BEING CREATED WITHOUT A CALL TO BoundsChanged
+//                            WHICH ALLOWED THE BUTTON TO DRAW OVER THE TEXT.
+procedure TIB_CustomEdit.CreateWnd;
+begin
+  inherited CreateWnd;
+  if (ButtonStyle <> ebsNone) and
+     (PasswordChar = #0) then
+    //NOTE// MULTILINE edit, so set bounds...
+    BoundsChanged;
+end;
+//ENDMODIFIED//
+
+procedure TIB_CustomEdit.BoundsChanged;
+var
+  R: TRect;
+begin
+{ Determine the size of the text area in the control
+  it will be smaller by the width of the button if one is present }
+  SetRect( R, 0, 0, ClientWidth - 2, ClientHeight + 1 ); // +1 is workaround for
+                                                         // windows paint bug
+  if FDrawButton then
+    Dec( R.Right, FButtonWidth );
+  SendMessage( Handle, EM_SETRECTNP, 0, LongInt( @R ));
+  Repaint;
+end;
+
+procedure TIB_CustomEdit.SetPasswordChar(Value: Char);
+var
+  OldValue: Char;
+begin
+  if inherited PasswordChar <> Value then
+  begin
+    OldValue := inherited PasswordChar;
+    inherited PasswordChar := Value;
+    if (OldValue = #0) or (Value = #0) then
+    begin
+      if HandleAllocated then
+        RecreateWnd;
+      CheckDrawButton(true);
+    end;
+  end;
+end;
+
+procedure TIB_CustomEdit.CheckDrawButton( ForceRepaint: boolean );
+var
+  TmpDrawBtn: boolean;
+begin
+  TmpDrawBtn := ((ButtonStyle <> ebsNone) or ( Assigned( FImageList )) and
+                                              ( FImageIndex >= 0 )) and
+                (PasswordChar = #0) and
+                (
+                  (FAlwaysShowButton or Focused) or
+                  (csDesigning in ComponentState)
+                );
+  if (FDrawButton <> TmpDrawBtn) or ForceRepaint then
+  begin
+    FDrawButton := TmpDrawBtn;
+    if (ButtonStyle <> ebsNone) and
+       (PasswordChar = #0) and
+       (HandleAllocated) then
+      BoundsChanged;
+  end;
+end;
+
+procedure TIB_CustomEdit.SetButtonStyle( Value: TIB_EditButtonStyle );
+var
+  OldValue: TIB_EditButtonStyle;
+begin
+  if FButtonStyle <> Value then
+  begin
+    OldValue := FButtonStyle;
+    FButtonStyle := Value;
+    if ( OldValue = ebsNone ) or ( Value = ebsNone ) then
+      if HandleAllocated then RecreateWnd;
+    CheckDrawButton(true);
+  end;
+end;
+
+procedure TIB_CustomEdit.SetAlwaysShowButton(Value: boolean);
+begin
+  if (FAlwaysShowButton <> Value) then
+  begin
+    FAlwaysShowButton := Value;
+    CheckDrawButton(false);
+  end;
+end;
+
+procedure TIB_CustomEdit.SetImageList(Value: TImageList);
+var
+  OldWidth: Integer;
+begin
+  FImageList := Value;
+  OldWidth := FButtonWidth;
+  if FImageList <> nil then
+  begin
+  // +8 = borderwidth (2*2) + space (2*2)
+    FButtonWidth := FImageList.Width + 8
+  end
+  else
+  begin
+  // Added "+ 1" on 13 May 1999 by Lars George
+    FButtonWidth := GetSystemMetrics( SM_CXVSCROLL ) + 1;
+  end;
+  if ( OldWidth <> FButtonWidth ) and HandleAllocated then
+    RecreateWnd;
+  CheckDrawButton( true );
+end;
+
+procedure TIB_CustomEdit.SetImageIndex(Value: integer);
+begin
+  if Value <> FImageIndex then begin
+    FImageIndex := Value;
+    CheckDrawButton( true );
+  end;
+end;
+
+procedure TIB_CustomEdit.SetImageIndexDisabled(Value: integer);
+begin
+  if Value <> FImageIndexDisabled then
+  begin
+    FImageIndexDisabled := Value;
+    CheckDrawButton( true );
+  end;
+end;
+
+procedure TIB_CustomEdit.SetImageIndexPressed(Value: integer);
+begin
+  if Value <> FImageIndexPressed then
+  begin
+    FImageIndexPressed := Value;
+    CheckDrawButton( true );
+  end;
+end;
+
+
+procedure TIB_CustomEdit.DoEditButtonClick;
+begin
+  SysUpdateData( Field );
+  if Assigned( FOnButtonClick ) then
+    FOnButtonClick( Self );
+end;
+
+procedure TIB_CustomEdit.WMSetCursor(var Msg: TWMSetCursor);
+var
+  P: TPoint;
+begin
+{ Normally, the Edit control changes the Cursor to an I-bar when over
+  the control.  We need to set it back to an arrow when over the button }
+  if FDrawButton and
+     PtInRect( Rect(Width - FButtonWidth - 4, 0, ClientWidth, ClientHeight),
+               ScreenToClient( P )) then
+  begin
+    GetCursorPos( P );
+    Windows.SetCursor( LoadCursor( 0, idc_Arrow ));
+  end
+  else
+    inherited;
+end;
+
+procedure TIB_CustomEdit.TrackButton(X,Y: Integer);
+var
+  NewState: Boolean;
+  R: TRect;
+begin
+{ Check if the position passed is over the area of the button -
+  if so then set the state to pressed and redraw the depressed
+  button }
+  SetRect(R, ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+  NewState := PtInRect(R, Point(X, Y));
+  if FPressed <> NewState then
+  begin
+    FPressed := NewState;
+    InvalidateRect(Handle, @R, False);
+  end;
+end;
+
+procedure TIB_CustomEdit.PaintWindow(DC: HDC);
+begin
+  if FDrawButton then
+  begin
+    if FCanvas = nil then
+    begin
+      FCanvas := TControlCanvas.Create;
+      FCanvas.Control := Self;
+    end;
+    FCanvas.Handle := DC;
+    try
+      DrawButton;
+    finally
+      FCanvas.Handle := 0;
+    end;
+  end;
+  inherited PaintWindow(DC);
+end;
+
+procedure TIB_CustomEdit.DrawButton;
+const
+  arOuterColor: array[Boolean] of TColor = (clWhite, clBlack);
+  arInnerColor: array[Boolean] of TColor = (TColor($00E6E6E6), clDkGray);
+var
+  R: TRect;
+  tmpPressed: boolean;
+  tmpPressN: boolean;
+begin
+  tmpPressed := FPressed and not DataLink.BoundToBuffer;
+  tmpPressN := not tmpPressed;
+  // fill button and draw border
+  SetRect(R, ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+  FCanvas.Brush.Color := clBtnFace;
+  FCanvas.FillRect(R);
+  Frame3D(FCanvas, R, arOuterColor[tmpPressed], arOuterColor[tmpPressN],1);
+  Frame3D(FCanvas, R, arInnerColor[tmpPressed], arInnerColor[tmpPressN],1);
+  // draw either button image or predefined styles (e.g. ellipsis)
+  if not Assigned( FImageList ) or ( FImageIndex < 0 ) then
+    DrawButtonStyle( FCanvas, R )
+  else
+  begin
+    with R do       // center bitmap vertically
+      Inc(Top, ((Bottom - Top) - FImageList.Height) div 2);
+    Inc(R.Left, 2); // left space (see SetImageList)
+    if Enabled or ( FImageIndexDisabled < 0 ) then
+    begin
+      if not tmpPressed or ( FImageIndexPressed < 0 ) then
+      begin
+        FImageList.Draw( FCanvas, R.Left + Ord( tmpPressed ),
+          R.Top + Ord( tmpPressed ), FImageIndex {, Enabled} );
+      end
+      else
+      begin
+        FImageList.Draw( FCanvas, R.Left + 1, R.Top + 1,
+                         FImageIndexPressed {, Enabled} );
+      end;
+    end
+    else
+    begin
+      //if enabled or (...)  then ...
+      FImageList.Draw( FCanvas, R.Left, R.Top, FImageIndexDisabled{, True} );
+    end;
+  end;
+  // this ensures that the win control does not draw over the button...
+  SetRect(R, ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+  ExcludeClipRect( FCanvas.Handle, R.Left, R.Top, R.Right, R.Bottom );
+end;
+
+procedure TIB_CustomEdit.DrawButtonStyle(ACanvas: TCanvas; ARect: TRect);
+
+  procedure DrawEllipsisImage(AColor: TColor; X, Y: Integer);
+  var
+    W, W2: integer;
+  begin
+    W := FButtonWidth shr 3;
+    if W = 0 then W := 1;
+    with ACanvas do
+    begin
+      Pen.Color := AColor;
+      Brush.Color := AColor;
+      W2 := W + W shr 1;
+      Ellipse( X - w2, Y, X + W - w2, Y + W );
+      Ellipse( X     , Y, X + W     , Y + W );
+      Ellipse( X + w2, Y, X + W + w2, Y + W );
+    end;
+  end;
+
+  // Added 13 May 1999 by Lars George
+  procedure DrawDropDown(AColor: TColor; ARect: TRect; X, Y: Integer);
+  var
+    nWdt, nHgt: Integer;
+  begin
+    with ACanvas, ARect do
+    begin
+      // calculate width of arrows
+      nWdt := (Right - Left) - 6; // 8 = sum of gap left and right
+      // make odd number to make arrow even
+      if (nWdt mod 2) = 0 then Dec(nWdt);
+      nHgt := nWdt div 2;
+      // calculate new top position
+      Inc(Top, Y + ((Bottom - Top) - nHgt) div 2);
+      Inc(Left, 3 + X); // 3 = gap on left side
+      // set colors and draw arrow with polyline
+      Pen.Color := AColor;
+      Brush.Color := AColor;
+      Polygon([Point(Left, Top), Point(Left + nWdt - 1, Top),
+               Point(Left + nWdt div 2, Top + nHgt)]);
+    end;
+  end;
+
+var
+  Z, Q: Integer;
+  bDefaultDraw:boolean;
+  tmpPressed: boolean;
+begin
+  tmpPressed := FPressed and not DataLink.BoundToBuffer;
+  Z := ((ARect.Right - ARect.Left) shr 1) - 1 + Ord(tmpPressed);
+  Q := ((ARect.Bottom - ARect.Top) shr 1) - 1 + Ord(tmpPressed);
+  //setting the color now, so in the Eventhandler can it get changed...
+  //at least for the enabled-status
+  if Enabled then
+  begin
+    ACanvas.pen.color := clBlack;
+    ACanvas.brush.color := clBlack;
+  end;
+  bDefaultDraw:=true;
+  DoCustomButtonDraw(ACanvas,ARect,Enabled,tmpPressed,bDefaultDraw);
+  if bDefaultDraw then
+  begin
+    if Enabled then
+    begin
+      case ButtonStyle of
+        ebsEllipsis: DrawEllipsisImage( ACanvas.Brush.Color,
+                                        ARect.Left + Z,
+                                        ARect.Top + Q );
+        ebsDropDown: DrawDropDown( ACanvas.brush.color,
+                                   ARect,
+                                   Ord(tmpPressed),
+                                   Ord(tmpPressed));
+      end;
+    end
+    else
+    begin
+      case ButtonStyle of
+        ebsEllipsis:
+        begin
+          DrawEllipsisImage( clBtnHighlight, ARect.Left + Z+1, ARect.Top + Q+1 );
+          DrawEllipsisImage( clBtnShadow,    ARect.Left + Z,   ARect.Top + Q );
+        end;
+        ebsDropDown:
+        begin
+          DrawDropDown( clBtnHighlight, ARect, 1, 1 );
+          DrawDropDown( clBtnShadow,    ARect, 0, 0 );
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_CustomEdit.DoCustomButtonDraw(ACanvas:TCanvas; Rect:TRect;Enabled,Pressed:boolean;var DefaultDraw:boolean);
+begin
+  if Assigned( FOnButtonDraw ) then
+    FOnButtonDraw( ACanvas, Rect, Enabled, Pressed, DefaultDraw );
+end;
+
+procedure TIB_CustomEdit.WMLButtonDown( var Message: TWMLButtonDown );
+begin
+  if FDrawButton and
+     PtInRect( Rect( Width - FButtonWidth, 0, Width, Height ),
+               Point( Message.XPos, Message.YPos )) then
+  begin
+    SetFocus;
+    MouseCapture := True;
+    FTracking := True;
+    TrackButton( Message.XPos, Message.YPos );
+  end
+  else
+    inherited;
+end;
+
+procedure TIB_CustomEdit.WMLButtonUp(var Message: TWMLButtonUp);
+var
+  WasPressed: Boolean;
+begin
+  if FTracking then
+  begin
+    WasPressed := FPressed;  //<=-FPressed is set by TrackButton(X,Y)
+    StopTracking;
+    if (ButtonStyle <> ebsNone) and WasPressed then
+      DoEditButtonClick;
+  end
+  else
+    inherited;
+end;
+
+procedure TIB_CustomEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if FDrawButton then
+  begin
+    if PtInRect( Rect( Width - FButtonWidth,
+                       0,
+                       Width,
+                       Height ),
+                 Point( X, Y )) then
+      Cursor := crHandPoint
+    else
+      Cursor := crDefault;
+  end;
+  if FTracking then
+    TrackButton(X, Y)
+  else
+    inherited MouseMove(Shift, X, Y);
+end;
+
+procedure TIB_CustomEdit.StopTracking;
+begin
+{ we are finished tracking the mouse over the control.  Reset everything }
+  if FTracking then
+  begin
+    TrackButton( -1, -1 );
+    FTracking := False;
+    MouseCapture := False;
+  end;
+end;
+
+procedure TIB_CustomEdit.DoEnter;
+begin
+  CheckDrawButton(false);
+  inherited DoEnter;
+end;
+
+procedure TIB_CustomEdit.DoExit;
+begin
+  CheckDrawButton(false);
+  inherited DoExit;
+end;
+
+procedure TIB_CustomEdit.SetFocused( AValue: boolean );
+begin
+  if FFocused <> AValue then
+  begin
+    FFocused := AValue;
+    if (FAlignment <> taLeftJustify) and not IsMasked then
+      DataLink.Reset;
+    SysDataChange( Field );
+  end;
+end;
+

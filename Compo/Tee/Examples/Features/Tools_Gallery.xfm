@@ -1,0 +1,45 @@
+inherited ToolsGallery: TToolsGallery
+  Left = 296
+  Top = 181
+  Width = 557
+  Height = 484
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 541
+  end
+  inherited Memo1: TMemo
+    Width = 541
+    Lines.Strings = (
+      
+        'The Tools Gallery can be called using the code bellow, it shows ' +
+        'a list of all the available tools with explanation '
+      'and preview for each one.'
+      ''
+      'Example  :'
+      'uses TeeToolsGallery;'
+      ''
+      '  with TTeeToolsGallery.Create(Self) do'
+      '  try'
+      '    ShowModal;'
+      '  finally'
+      '    Free;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 541
+    Height = 292
+  end
+  inherited Panel1: TPanel
+    Width = 541
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 129
+      Height = 25
+      Caption = '&Tools Gallery...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

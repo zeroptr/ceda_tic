@@ -1,0 +1,77 @@
+inherited Bubble3DSeriesForm: TBubble3DSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Bubble 3D series displays "bubbles", each one with different X, ' +
+        'Y, '
+      'Radius and Z values.'
+      ''
+      'The 3D depth is supported in OpenGL display mode only.')
+  end
+  inherited Chart1: TChart
+    BackWall.Pen.Visible = False
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Color = clNavy
+    BottomWall.Pen.Visible = False
+    BottomWall.Size = 10
+    LeftWall.Color = 4210816
+    LeftWall.Pen.Visible = False
+    LeftWall.Size = 10
+    RightWall.Pen.Visible = False
+    RightWall.Size = 10
+    RightWall.Visible = True
+    ClipPoints = False
+    Frame.Visible = False
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 39
+    object Series1: TBubble3DSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      LinePen.Visible = False
+      Pointer.Gradient.EndColor = clWhite
+      Pointer.HorizSize = 17
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 17
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+      RadiusValues.Name = 'Radius'
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    Active = True
+    AmbientLight = 9
+    Light.Color = 1250067
+    Light.Visible = True
+    Light.Position.X = -100.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Light1.Color = 986895
+    Light1.Visible = True
+    Light1.Position.X = 429.000000000000000000
+    Light1.Position.Y = -276.000000000000000000
+    Light1.Position.Z = -41.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Shininess = 0.370000000000000000
+    TeePanel = Chart1
+    Left = 360
+    Top = 91
+  end
+end

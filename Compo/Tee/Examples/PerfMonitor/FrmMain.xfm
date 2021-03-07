@@ -1,0 +1,430 @@
+object MainForm: TMainForm
+  Left = 77
+  Top = 112
+  Width = 721
+  Height = 496
+  Caption = 'TeeChart Performance Monitor'
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 185
+    Top = 74
+    Height = 376
+  end
+  object PageControl1: TPageControl
+    Left = 188
+    Top = 74
+    Width = 525
+    Height = 376
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 0
+    OnChange = PageControl1Change
+    object TabSheet1: TTabSheet
+      Caption = 'Monitor'
+      object Chart1: TChart
+        Left = 0
+        Top = 0
+        Width = 517
+        Height = 348
+        BackWall.Color = 15132390
+        BackWall.Size = 5
+        BackWall.Transparent = False
+        BottomWall.Size = 5
+        Gradient.EndColor = 753908
+        Gradient.MidColor = 16059031
+        Gradient.StartColor = 14540754
+        Gradient.Visible = True
+        LeftWall.Size = 5
+        Legend.DividingLines.Color = clSilver
+        Legend.DividingLines.EndStyle = esFlat
+        Legend.DividingLines.Visible = True
+        Legend.Gradient.Visible = True
+        Legend.PositionUnits = muPercent
+        Legend.Shadow.Transparency = 50
+        RightWall.Size = 5
+        Title.Text.Strings = (
+          '')
+        BottomAxis.Grid.SmallDots = True
+        LeftAxis.Grid.SmallDots = True
+        Shadow.Color = clBlack
+        Shadow.HorizSize = 7
+        Shadow.VertSize = 7
+        View3D = False
+        View3DOptions.Perspective = 127
+        Align = alClient
+        BevelWidth = 5
+        TabOrder = 0
+        PrintMargins = (
+          15
+          17
+          15
+          17)
+        object Series1: TBarSeries
+          ColorEachPoint = True
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = True
+          Gradient.Direction = gdTopBottom
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Bar'
+          YValues.Order = loNone
+        end
+        object ChartTool1: TColorLineTool
+          Pen.Color = clRed
+          Pen.Width = 3
+          Pen.EndStyle = esFlat
+          Style = clCenter
+          AxisID = 0
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Description'
+      ImageIndex = 1
+      object Memo1: TMemo
+        Left = 0
+        Top = 0
+        Width = 517
+        Height = 348
+        Align = alClient
+        ReadOnly = True
+        TabOrder = 0
+      end
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 713
+    Height = 41
+    Align = alTop
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 609
+      Top = 15
+      Width = 38
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Interval:'
+      FocusControl = EdiCounterValue
+    end
+    object CmdSelectCounter: TButton
+      Left = 12
+      Top = 8
+      Width = 93
+      Height = 25
+      Caption = '&Add Counter...'
+      TabOrder = 0
+      OnClick = CmdSelectCounterClick
+    end
+    object EdiCounterValue: TEdit
+      Left = 648
+      Top = 12
+      Width = 43
+      Height = 21
+      TabOrder = 1
+      Text = '1000'
+      OnChange = EdiCounterValueChange
+    end
+    object UpDown1: TUpDown
+      Left = 691
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = EdiCounterValue
+      Min = 1
+      Max = 30000
+      Position = 1000
+      TabOrder = 2
+      Thousands = False
+    end
+    object CheckBox1: TCheckBox
+      Left = 213
+      Top = 14
+      Width = 108
+      Height = 16
+      Caption = 'View as &Histogram'
+      TabOrder = 3
+      OnClick = CheckBox1Click
+    end
+    object ComboFlat1: TComboFlat
+      Left = 355
+      Top = 12
+      Width = 94
+      TabOrder = 4
+      OnChange = ComboFlat1Change
+      Items.Strings = (
+        'Bar'
+        'Horiz. Bar'
+        'Pie')
+    end
+    object Button1: TButton
+      Left = 120
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Clear All'
+      TabOrder = 5
+      OnClick = Button1Click
+    end
+    object CBEnabled: TCheckBox
+      Left = 480
+      Top = 14
+      Width = 63
+      Height = 17
+      Caption = '&Enabled'
+      Checked = True
+      State = cbChecked
+      TabOrder = 6
+      OnClick = CBEnabledClick
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 41
+    Width = 713
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 2
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 450
+    Width = 713
+    Height = 19
+    Panels = <
+      item
+        Width = 100
+      end
+      item
+        Width = 100
+      end
+      item
+        Width = 100
+      end
+      item
+        Width = 100
+      end
+      item
+        Width = 100
+      end>
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 74
+    Width = 185
+    Height = 376
+    Align = alLeft
+    TabOrder = 4
+    object Splitter2: TSplitter
+      Left = 1
+      Top = 186
+      Width = 183
+      Height = 3
+      Cursor = crVSplit
+      Align = alTop
+    end
+    object ChartListBox1: TChartListBox
+      Left = 1
+      Top = 1
+      Width = 183
+      Height = 185
+      Chart = Chart1
+      ShowSeriesIcon = False
+      Align = alTop
+      ItemHeight = 24
+      TabOrder = 0
+      OnClick = ChartListBox1Click
+    end
+    object Panel3: TPanel
+      Left = 1
+      Top = 189
+      Width = 183
+      Height = 186
+      Align = alClient
+      TabOrder = 1
+      object PageControl2: TPageControl
+        Left = 1
+        Top = 1
+        Width = 181
+        Height = 184
+        ActivePage = TabSheet3
+        Align = alClient
+        TabOrder = 0
+        object TabSheet3: TTabSheet
+          Caption = 'View'
+          object Label3: TLabel
+            Left = 39
+            Top = 114
+            Width = 58
+            Height = 13
+            Caption = 'Time period:'
+          end
+          object Label2: TLabel
+            Left = 3
+            Top = 88
+            Width = 93
+            Height = 13
+            Caption = 'Number of samples:'
+          end
+          object RadioHistory: TRadioGroup
+            Left = 3
+            Top = 0
+            Width = 164
+            Height = 81
+            Caption = 'View:'
+            ItemIndex = 0
+            Items.Strings = (
+              'All history'
+              'Last samples'
+              'Last time period')
+            TabOrder = 0
+            OnClick = RadioHistoryClick
+          end
+          object Edit1: TEdit
+            Left = 99
+            Top = 85
+            Width = 36
+            Height = 21
+            TabOrder = 1
+            Text = '0'
+            OnChange = Edit1Change
+          end
+          object UpDown2: TUpDown
+            Left = 135
+            Top = 85
+            Width = 15
+            Height = 21
+            Associate = Edit1
+            Max = 30000
+            TabOrder = 2
+          end
+          object ComboFlat2: TComboFlat
+            Left = 99
+            Top = 111
+            Width = 70
+            TabOrder = 3
+            OnChange = ComboFlat2Change
+            Items.Strings = (
+              'Seconds'
+              'Minutes'
+              'Hours'
+              'Days'
+              'Months'
+              'Years')
+          end
+        end
+        object TabSheet4: TTabSheet
+          Caption = 'Scroll'
+          ImageIndex = 1
+          object Label4: TLabel
+            Left = 38
+            Top = 109
+            Width = 58
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '&Percentage:'
+            FocusControl = Edit2
+          end
+          object Label5: TLabel
+            Left = 3
+            Top = 128
+            Width = 93
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Number of &samples:'
+          end
+          object RadioScroll: TRadioGroup
+            Left = 8
+            Top = 8
+            Width = 142
+            Height = 87
+            Caption = 'Scroll'
+            ItemIndex = 0
+            Items.Strings = (
+              'Do not auto scroll'
+              'A percentage'
+              'A number of samples'
+              'A time period')
+            TabOrder = 0
+            OnClick = RadioScrollClick
+          end
+          object Edit2: TEdit
+            Left = 99
+            Top = 106
+            Width = 36
+            Height = 21
+            TabOrder = 1
+            Text = '20'
+          end
+          object UpDown3: TUpDown
+            Left = 135
+            Top = 106
+            Width = 15
+            Height = 21
+            Associate = Edit2
+            Position = 20
+            TabOrder = 2
+          end
+        end
+        object TabSheet5: TTabSheet
+          Caption = 'Options'
+          ImageIndex = 2
+          object Label6: TLabel
+            Left = 24
+            Top = 16
+            Width = 44
+            Height = 13
+            Caption = '&Multiplier:'
+            FocusControl = ComboScale
+          end
+          object ComboScale: TComboFlat
+            Left = 72
+            Top = 12
+            Width = 93
+            TabOrder = 0
+            OnChange = ComboScaleChange
+            Items.Strings = (
+              '1/1000000'
+              '1/100000'
+              '1/10000'
+              '1/1000'
+              '1/100'
+              '1/10'
+              '1'
+              '10'
+              '100'
+              '1000'
+              '10000'
+              '100000'
+              '1000000')
+          end
+          object CBVisible: TCheckBox
+            Left = 72
+            Top = 40
+            Width = 97
+            Height = 17
+            Caption = '&Visible'
+            TabOrder = 1
+            OnClick = CBVisibleClick
+          end
+        end
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    Left = 96
+    Top = 184
+  end
+end

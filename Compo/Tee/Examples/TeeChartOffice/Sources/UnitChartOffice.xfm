@@ -1,0 +1,2805 @@
+object MainForm: TMainForm
+  Left = 118
+  Top = 104
+  Width = 874
+  Height = 712
+  HelpContext = 1
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
+  Caption = 'TeeChart Office'
+  Color = clBtnFace
+  ParentFont = True
+  HelpFile = 'TeeChartOffice.hlp'
+  Menu = MainMenu1
+  OldCreateOrder = True
+  Position = poScreenCenter
+  ShowHint = True
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 185
+    Top = 57
+    Height = 590
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 57
+    Width = 185
+    Height = 590
+    Align = alLeft
+    BevelOuter = bvNone
+    TabOrder = 0
+    object Splitter2: TSplitter
+      Left = 0
+      Top = 193
+      Width = 185
+      Height = 3
+      Cursor = crVSplit
+      Hint = 'Drag to resize'
+      Align = alTop
+    end
+    object PageControlSeries: TPageControl
+      Left = 0
+      Top = 0
+      Width = 185
+      Height = 193
+      ActivePage = PanelSeries
+      Align = alTop
+      TabOrder = 0
+      object PanelSeries: TTabSheet
+        Caption = 'Series'
+        object ChartListBox1: TChartListBox
+          Left = 0
+          Top = 26
+          Width = 177
+          Height = 139
+          Chart = DBChart1
+          OnChangeActive = ChartListBox1ChangeActive
+          OnChangeColor = ChartListBox1ChangeColor
+          OnChangeOrder = ChartListBox1ChangeOrder
+          OnDblClickSeries = ChartListBox1DblClickSeries
+          OnRemovedSeries = ChartListBox1RemovedSeries
+          Align = alClient
+          BorderStyle = bsNone
+          ItemHeight = 24
+          PopupMenu = LocalMenu
+          TabOrder = 0
+          OnClick = ChartListBox1Click
+        end
+        object ToolBar1: TToolBar
+          Left = 0
+          Top = 0
+          Width = 177
+          Height = 26
+          AutoSize = True
+          Images = ImageListSeries
+          ParentShowHint = False
+          PopupMenu = PopupToolSeries
+          ShowHint = True
+          TabOrder = 1
+          object SBAdd: TToolButton
+            Left = 0
+            Top = 2
+            Hint = 'Add...'
+            ImageIndex = 0
+            OnClick = SBAddClick
+          end
+          object SBDelete: TToolButton
+            Left = 23
+            Top = 2
+            Hint = 'Delete...'
+            ImageIndex = 1
+            OnClick = SBDeleteClick
+          end
+          object ToolButton3: TToolButton
+            Left = 46
+            Top = 2
+            Width = 8
+            Style = tbsSeparator
+          end
+          object TBMoveUp: TToolButton
+            Left = 54
+            Top = 2
+            Hint = 'Move Up'
+            ImageIndex = 2
+            OnClick = TBMoveUpClick
+          end
+          object TBMoveDown: TToolButton
+            Left = 77
+            Top = 2
+            Hint = 'Move Down'
+            ImageIndex = 3
+            OnClick = TBMoveDownClick
+          end
+          object ToolButton6: TToolButton
+            Left = 100
+            Top = 2
+            Width = 8
+            Style = tbsSeparator
+          end
+          object SBEdit: TToolButton
+            Left = 108
+            Top = 2
+            Hint = 'Edit...'
+            ImageIndex = 4
+            OnClick = SBEditClick
+          end
+          object ToolButton2: TToolButton
+            Left = 131
+            Top = 2
+            Width = 8
+            Style = tbsSeparator
+          end
+          object SBFont: TToolButton
+            Left = 139
+            Top = 2
+            Hint = 'Title...'
+            ImageIndex = 5
+            OnClick = Title1Click
+          end
+        end
+      end
+      object TabDataSources: TTabSheet
+        Caption = 'Data Sources'
+        ImageIndex = 1
+        object ToolBar2: TToolBar
+          Left = 0
+          Top = 0
+          Width = 177
+          Height = 22
+          AutoSize = True
+          Images = ImageListSeries
+          ParentShowHint = False
+          PopupMenu = PopupToolSeries
+          ShowHint = True
+          TabOrder = 0
+          object SBNewDataSource: TToolButton
+            Left = 0
+            Top = 0
+            Hint = 'Add...'
+            ImageIndex = 0
+            OnClick = SBNewDataSourceClick
+          end
+          object SBDeleteSource: TToolButton
+            Left = 23
+            Top = 0
+            Hint = 'Delete...'
+            ImageIndex = 1
+            OnClick = SBDeleteSourceClick
+          end
+          object ToolButton9: TToolButton
+            Left = 46
+            Top = 0
+            Width = 8
+            Style = tbsSeparator
+          end
+          object SBEditSource: TToolButton
+            Left = 54
+            Top = 0
+            Hint = 'Edit...'
+            ImageIndex = 4
+            OnClick = SBEditSourceClick
+          end
+          object ToolButton11: TToolButton
+            Left = 77
+            Top = 0
+            Width = 8
+            Style = tbsSeparator
+          end
+          object SBRenameSource: TToolButton
+            Left = 85
+            Top = 0
+            Hint = 'Title...'
+            ImageIndex = 5
+            OnClick = SBRenameSourceClick
+          end
+        end
+        object LBSources: TListBox
+          Left = 0
+          Top = 22
+          Width = 177
+          Height = 143
+          Align = alClient
+          BorderStyle = bsNone
+          ItemHeight = 13
+          TabOrder = 1
+          OnClick = LBSourcesClick
+        end
+      end
+    end
+    object PanelInspector: TPanel
+      Left = 0
+      Top = 196
+      Width = 185
+      Height = 394
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 185
+        Height = 22
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 0
+        TabStop = True
+        OnResize = Panel2Resize
+        object ComboBoxParts: TComboFlat
+          Left = 4
+          Top = 0
+          Width = 160
+          TabOrder = 0
+          OnChange = ComboBoxPartsChange
+          Items.Strings = (
+            'Chart'
+            'Legend'
+            'Title'
+            'Series'
+            'Series Marks'
+            'Axis'
+            'Wall')
+        end
+      end
+      object Inspector: TTeeInspector
+        Left = 0
+        Top = 22
+        Width = 185
+        Height = 372
+        Align = alClient
+        BorderStyle = bsNone
+        FixedRows = 0
+        Options = [goFixedVertLine, goVertLine, goHorzLine, goColSizing, goThumbTracking]
+        PopupMenu = PopupMenuInspector
+        TabOrder = 1
+        Items = <>
+        Header.Font.Color = clNavy
+        ColWidths = (
+          82
+          103)
+      end
+    end
+  end
+  object Panel4: TPanel
+    Left = 188
+    Top = 57
+    Width = 678
+    Height = 590
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 1
+    object Splitter4: TSplitter
+      Left = 608
+      Top = 0
+      Height = 590
+      Align = alRight
+    end
+    object PanelTabs: TPanel
+      Left = 0
+      Top = 0
+      Width = 608
+      Height = 590
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 0
+      object Splitter3: TSplitter
+        Left = 0
+        Top = 451
+        Width = 608
+        Height = 3
+        Cursor = crVSplit
+        Align = alBottom
+        Beveled = True
+        Visible = False
+      end
+      object PageControl1: TPageControl
+        Left = 0
+        Top = 0
+        Width = 608
+        Height = 451
+        ActivePage = TabChart
+        Align = alClient
+        HotTrack = True
+        TabOrder = 0
+        OnChange = PageControl1Change
+        object TabChart: TTabSheet
+          Caption = 'Chart'
+          object ScrollBox2: TScrollBox
+            Left = 0
+            Top = 0
+            Width = 600
+            Height = 423
+            HorzScrollBar.Tracking = True
+            VertScrollBar.Tracking = True
+            Align = alClient
+            BorderStyle = bsNone
+            TabOrder = 0
+            object DBChart1: TDBChart
+              Left = 0
+              Top = 0
+              Width = 600
+              Height = 423
+              AllowPanning = pmNone
+              BackWall.Gradient.EndColor = clGray
+              BackWall.Gradient.Visible = True
+              BackWall.Size = 6
+              BottomWall.Size = 6
+              Gradient.EndColor = clGray
+              LeftWall.Size = 6
+              RightWall.Size = 6
+              Title.Text.Strings = (
+                'Chart1')
+              CustomAxes = <
+                item
+                  Horizontal = False
+                  OtherSide = False
+                end>
+              View3DOptions.Perspective = 50
+              Zoom.Allow = False
+              Zoom.Brush.Style = bsSolid
+              Zoom.Pen.Color = clGray
+              OnAfterDraw = DBChart1AfterDraw
+              Align = alClient
+              PopupMenu = PopupMenuPanel
+              TabOrder = 0
+              OnDblClick = DBChart1DblClick
+              OnDragDrop = DBChart1DragDrop
+              OnDragOver = DBChart1DragOver
+              OnMouseMove = DBChart1MouseMove
+              PrintMargins = (
+                15
+                30
+                15
+                30)
+            end
+          end
+        end
+        object TabData: TTabSheet
+          Caption = 'Data'
+          ImageIndex = 1
+          object ChartGrid1: TChartGrid
+            Left = 0
+            Top = 22
+            Width = 600
+            Height = 401
+            Align = alClient
+            BorderStyle = bsNone
+            Options = [goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing, goColSizing, goEditing, goTabs, goThumbTracking]
+            PopupMenu = PopupData
+            TabOrder = 0
+            Chart = DBChart1
+            OnSetEditText = ChartGrid1SetEditText
+          end
+          object PanelData: TPanel
+            Left = 0
+            Top = 0
+            Width = 600
+            Height = 22
+            Align = alTop
+            BevelOuter = bvNone
+            PopupMenu = PopupMenuGrid
+            TabOrder = 1
+            object ChartGridNavigator1: TChartGridNavigator
+              Left = 0
+              Top = 0
+              Width = 185
+              Height = 22
+              Align = alLeft
+              TabOrder = 3
+              Grid = ChartGrid1
+            end
+            object CheckBoxGridLabels: TCheckBox
+              Left = 194
+              Top = 2
+              Width = 73
+              Height = 17
+              Caption = '&Text labels'
+              Checked = True
+              State = cbChecked
+              TabOrder = 0
+              OnClick = CheckBoxGridLabelsClick
+            end
+            object CheckBoxX: TCheckBox
+              Left = 270
+              Top = 2
+              Width = 63
+              Height = 17
+              Caption = '&X values'
+              TabOrder = 1
+              OnClick = CheckBoxXClick
+            end
+            object CBColors: TCheckBox
+              Left = 336
+              Top = 2
+              Width = 59
+              Height = 17
+              Caption = '&Colors'
+              TabOrder = 2
+              OnClick = CBColorsClick
+            end
+          end
+        end
+        object TabText: TTabSheet
+          Caption = 'Text'
+          ImageIndex = 2
+          TabVisible = False
+        end
+        object TabPrint: TTabSheet
+          Caption = 'Print'
+          ImageIndex = 3
+        end
+      end
+      object PanelGrid: TPanel
+        Left = 0
+        Top = 454
+        Width = 608
+        Height = 136
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 1
+        Visible = False
+      end
+    end
+    object ScrollBox1: TScrollBox
+      Left = 611
+      Top = 0
+      Width = 67
+      Height = 590
+      HorzScrollBar.Visible = False
+      VertScrollBar.Tracking = True
+      Align = alRight
+      BorderStyle = bsNone
+      TabOrder = 1
+      OnResize = ScrollBox1Resize
+      object ChartGalleryPanel1: TChartGalleryPanel
+        Left = 0
+        Top = 0
+        Width = 67
+        Height = 590
+        NumRows = 12
+        NumCols = 1
+        OnChangeChart = ChartGalleryPanel1ChangeChart
+        OnSubSelected = ChartGalleryPanel1ChangeChart
+        Align = alClient
+        BevelOuter = bvNone
+        ParentColor = True
+        PopupMenu = PopupMenuGallery
+        TabOrder = 0
+        TabStop = True
+      end
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 647
+    Width = 866
+    Height = 19
+    Panels = <
+      item
+        Text = 'Chart'
+        Width = 100
+      end
+      item
+        Style = psOwnerDraw
+        Width = 20
+      end
+      item
+        Width = 420
+      end
+      item
+        Alignment = taCenter
+        Width = 50
+      end
+      item
+        Alignment = taCenter
+        Width = 30
+      end
+      item
+        Alignment = taCenter
+        Width = 30
+      end
+      item
+        Width = 30
+      end>
+    OnMouseMove = StatusBar1MouseMove
+    OnDrawPanel = StatusBar1DrawPanel
+  end
+  object ControlBar1: TControlBar
+    Left = 0
+    Top = 0
+    Width = 866
+    Height = 57
+    Align = alTop
+    AutoSize = True
+    BevelEdges = [beTop, beBottom]
+    BevelInner = bvNone
+    PopupMenu = PopupMenuToolbar
+    RowSize = 29
+    TabOrder = 3
+    object PanelFont: TPanel
+      Left = 11
+      Top = 31
+      Width = 502
+      Height = 22
+      Align = alTop
+      AutoSize = True
+      BevelOuter = bvNone
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      object FontBold: TSpeedButton
+        Left = 216
+        Top = 0
+        Width = 23
+        Height = 22
+        Hint = 'Bold'
+        AllowAllUp = True
+        GroupIndex = 2
+        Flat = True
+        OnClick = FontBoldClick
+      end
+      object FontItalic: TSpeedButton
+        Left = 240
+        Top = 0
+        Width = 23
+        Height = 22
+        Hint = 'Italic'
+        AllowAllUp = True
+        GroupIndex = 3
+        Flat = True
+        OnClick = FontBoldClick
+      end
+      object FontUnderline: TSpeedButton
+        Left = 264
+        Top = 0
+        Width = 23
+        Height = 22
+        Hint = 'Underline'
+        AllowAllUp = True
+        GroupIndex = 4
+        Flat = True
+        OnClick = FontBoldClick
+      end
+      object FontStrike: TSpeedButton
+        Left = 288
+        Top = 0
+        Width = 23
+        Height = 22
+        Hint = 'Strike out'
+        AllowAllUp = True
+        GroupIndex = 5
+        Flat = True
+        OnClick = FontBoldClick
+      end
+      object FontLeftAlign: TSpeedButton
+        Left = 312
+        Top = 0
+        Width = 23
+        Height = 22
+        Hint = 'Left justify'
+        GroupIndex = 6
+        Flat = True
+        OnClick = FontLeftAlignClick
+      end
+      object FontCenterAlign: TSpeedButton
+        Left = 336
+        Top = 0
+        Width = 23
+        Height = 22
+        Hint = 'Centered'
+        GroupIndex = 6
+        Flat = True
+        OnClick = FontLeftAlignClick
+      end
+      object FontRightAlign: TSpeedButton
+        Left = 360
+        Top = 0
+        Width = 23
+        Height = 22
+        Hint = 'Right justify'
+        GroupIndex = 6
+        Flat = True
+        OnClick = FontLeftAlignClick
+      end
+      object ShapeFontColor: TShape
+        Left = 4
+        Top = 3
+        Width = 17
+        Height = 17
+        Cursor = crHandPoint
+        Hint = 'Font Color'
+        OnMouseUp = ShapeFontColorMouseUp
+      end
+      object SBOutline: TSpeedButton
+        Left = 440
+        Top = 0
+        Width = 54
+        Height = 22
+        Caption = 'Outline...'
+        Flat = True
+        OnClick = SBOutlineClick
+      end
+      object ComboFonts: TComboFlat
+        Left = 26
+        Top = 1
+        Width = 132
+        Hint = 'Font Name'
+        DropDownCount = 15
+        TabOrder = 0
+        OnChange = ComboFontsChange
+      end
+      object ComboFontSize: TComboFlat
+        Left = 162
+        Top = 1
+        Width = 45
+        Hint = 'Font Size'
+        Style = csDropDown
+        TabOrder = 1
+        OnChange = ComboFontSizeChange
+        Items.Strings = (
+          '8'
+          '9'
+          '10'
+          '11'
+          '12'
+          '14'
+          '16'
+          '18'
+          '20'
+          '22'
+          '24'
+          '26'
+          '28'
+          '36'
+          '48'
+          '72')
+      end
+      object EditFontInter: TEdit
+        Left = 392
+        Top = 0
+        Width = 29
+        Height = 21
+        Hint = 'Inter-char size'
+        TabOrder = 2
+        Text = '0'
+        OnChange = EditFontInterChange
+      end
+      object UDFontInter: TUpDown
+        Left = 421
+        Top = 0
+        Width = 15
+        Height = 21
+        Hint = 'Inter-char size'
+        Associate = EditFontInter
+        Min = -25
+        Max = 25
+        TabOrder = 3
+      end
+    end
+    object PanelPage: TPanel
+      Left = 566
+      Top = 2
+      Width = 103
+      Height = 25
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 1
+      object ChartPageNavigator1: TChartPageNavigator
+        Left = 0
+        Top = 0
+        Width = 103
+        Height = 25
+        Align = alClient
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Chart = DBChart1
+      end
+    end
+    object PanelTools: TPanel
+      Left = 422
+      Top = 2
+      Width = 131
+      Height = 25
+      BevelOuter = bvNone
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+      object Annotation: TSpeedButton
+        Left = 0
+        Top = 0
+        Width = 25
+        Height = 25
+        Hint = 'Add Annotation...'
+        AllowAllUp = True
+        Flat = True
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000010000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+          3333333333333333333333333333333333333000330000033333330333300033
+          3333330733300033333333700000073333333330330003344433333073000334
+          7343333703007334334733330000333444333333000033347343333370073334
+          3343333330033334447333333033333333333333333333333333}
+        OnClick = AnnotationClick
+      end
+      object SBZoom: TSpeedButton
+        Left = 25
+        Top = 0
+        Width = 25
+        Height = 25
+        Hint = 'Enable Zoom'
+        AllowAllUp = True
+        GroupIndex = 1
+        Flat = True
+        Glyph.Data = {
+          76010000424D7601000000000000760000002800000020000000100000000100
+          0400000000000001000000000000000000001000000010000000000000000000
+          800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+          33033333333333333F7F3333333333333000333333333333F777333333333333
+          000333333333333F777333333333333000333333333333F77733333333333300
+          033333333FFF3F777333333700073B703333333F7773F77733333307777700B3
+          33333377333777733333307F8F8F7033333337F333F337F3333377F8F9F8F773
+          3333373337F3373F3333078F898F870333337F33F7FFF37F333307F99999F703
+          33337F377777337F3333078F898F8703333373F337F33373333377F8F9F8F773
+          333337F3373337F33333307F8F8F70333333373FF333F7333333330777770333
+          333333773FF77333333333370007333333333333777333333333}
+        NumGlyphs = 2
+        OnClick = SBZoomClick
+      end
+      object SBScroll: TSpeedButton
+        Left = 51
+        Top = 0
+        Width = 25
+        Height = 25
+        Hint = 'Enable Scroll'
+        AllowAllUp = True
+        GroupIndex = 1
+        Flat = True
+        Glyph.Data = {
+          96010000424D9601000000000000760000002800000018000000180000000100
+          0400000000002001000000000000000000001000000010000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+          3333333333333333333333333333333333333333333300000033333333333333
+          3330FFFFFF00333333333333330FFFFFFFFF00333333333330FFFFFFFFFFFF03
+          3333333330FFFFFFFFFFFFF0333333330FFFFFFFFFFFFFF0333333330FFFFFFF
+          FFFFFFFF033333330FFFFFFFFFFF0FFF033333330FFFFFFFFFFF00FF03333333
+          0FFFFFFFFFFF0FFF033333330FFFFFFFFFFF0FFF033333330FFFFFFFFFFF0F00
+          333333330FF0FF0FF0FF0033333333330FF0FF0FF0FF0333333333330FF0FF0F
+          F0FF0333333333330FF0FF0FF0FF0333333333330FF0FF0FF0FF033333333333
+          3000FF0FF0FF0333333333333333000FF0003333333333333333333003333333
+          3333333333333333333333333333333333333333333333333333}
+        OnClick = SBScrollClick
+      end
+      object SBDrawLine: TSpeedButton
+        Left = 77
+        Top = 0
+        Width = 25
+        Height = 25
+        Hint = 'Draw Lines'
+        AllowAllUp = True
+        GroupIndex = 1
+        Flat = True
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000010000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFFFF0FFFFFFFFFFFFFFCF0FFFFFFF9FFFFFCFF0FFFFF9
+          FFFFFFFCFF0FFF9FFFFFFFFCFFF0F9FFFFFFFFFFCFFF9FFFFFFFFFFFCFF9F0FF
+          FFFFFFFFFC9FFF0FFFFFFFFFFCFFFFF0FFFFFFFF9FCFFFFF0FFFFFF9FFCFFFFF
+          FFFFFF9FFFFCFFFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFF}
+        OnClick = SBDrawLineClick
+      end
+      object SBHints: TSpeedButton
+        Left = 103
+        Top = 0
+        Width = 25
+        Height = 25
+        Hint = 'Show Hints'
+        AllowAllUp = True
+        GroupIndex = 2
+        Flat = True
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000010000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+          FFFFFFFFFFFFFFFFFFFFF0999999FFFFFFFFF09999991FFFFFFFF09997777777
+          777FF09997BBBBBBBB7FF09997BB0BB0BB7FF09997B0BB0BBB7FF09997B0B0B0
+          0B7FF09997BBBBBBBB7FF09997777777777FF099999911FFFFFFF099999911FF
+          FFFFF099999911FFFFFFF000000011FFFFFFFFFFFFFFFFFFFFFF}
+        OnClick = SBHintsClick
+      end
+    end
+    object TeeCommander1: TTeeCommander
+      Left = 11
+      Top = 2
+      Width = 398
+      Height = 25
+      Panel = DBChart1
+      Align = alTop
+      BevelOuter = bvNone
+      ParentShowHint = False
+      PopupMenu = PopupMenuCommander
+      TabOrder = 3
+      ChartEditor = ChartEditor1
+      Previewer = ChartPreviewer1
+      LabelValues = False
+      OnEditedChart = TeeCommander1EditedChart
+    end
+    object ToolBarSeries: TToolBar
+      Left = 526
+      Top = 31
+      Width = 75
+      Height = 26
+      AutoSize = True
+      Caption = 'ToolBarSeries'
+      Images = ImageListSeries
+      TabOrder = 4
+      Wrapable = False
+      object ColorEach: TToolButton
+        Left = 0
+        Top = 2
+        Hint = 'Color Each Point'
+        AutoSize = True
+        Down = True
+        ImageIndex = 6
+        ParentShowHint = False
+        ShowHint = True
+        Style = tbsCheck
+        OnClick = ColorEachClick
+      end
+      object ShowAtLegend: TToolButton
+        Left = 23
+        Top = 2
+        Hint = 'Show at Legend'
+        AutoSize = True
+        Down = True
+        ImageIndex = 7
+        Style = tbsCheck
+        OnClick = ShowAtLegendClick
+      end
+      object ShowMarks: TToolButton
+        Left = 46
+        Top = 2
+        Hint = 'Show Series Marks'
+        Down = True
+        ImageIndex = 5
+        Style = tbsCheck
+        OnClick = ShowMarksClick
+      end
+    end
+    object Panel3: TPanel
+      Left = 614
+      Top = 31
+      Width = 90
+      Height = 21
+      AutoSize = True
+      BevelOuter = bvNone
+      TabOrder = 5
+      object ShapeBorderColor: TShape
+        Left = 0
+        Top = 2
+        Width = 17
+        Height = 17
+        Cursor = crHandPoint
+        Hint = 'Border Color'
+        Visible = False
+        OnMouseUp = ShapeBorderColorMouseUp
+      end
+      object ComboPenStyle: TComboFlat
+        Left = 18
+        Top = 0
+        Width = 45
+        Hint = 'Border Style'
+        Style = csOwnerDrawFixed
+
+        Enabled = False
+        ItemHeight = 15
+
+        TabOrder = 0
+        OnChange = ComboPenStyleChange
+        OnDrawItem = ComboPenStyleDrawItem
+        Items.Strings = (
+          'Solid'
+          'Dash'
+          'Dot'
+          'Dash Dot'
+          'Dash Dot Dot')
+      end
+      object BorderWidth: TScrollBar
+        Left = 64
+        Top = 2
+        Width = 26
+        Height = 16
+        Hint = 'Border width'
+
+        Max = 10
+        Min = 1
+
+
+        Position = 1
+        TabOrder = 1
+        OnChange = BorderWidthChange
+      end
+    end
+  end
+  object MainMenu1: TMainMenu
+    Images = ImageList3
+    Left = 616
+    Top = 72
+    object File1: TMenuItem
+      Caption = '&File'
+      object New1: TMenuItem
+        Caption = '&New'
+        ImageIndex = 0
+        ShortCut = 16462
+        OnClick = New1Click
+      end
+      object NewusingWizard1: TMenuItem
+        Caption = 'New using &Wizard...'
+        ImageIndex = 25
+        OnClick = NewusingWizard1Click
+      end
+      object Open1: TMenuItem
+        Caption = '&Open...'
+        ImageIndex = 1
+        ShortCut = 16463
+        OnClick = Open1Click
+      end
+      object Save1: TMenuItem
+        Caption = '&Save'
+        ImageIndex = 2
+        ShortCut = 16467
+        OnClick = Save1Click
+      end
+      object Saveas1: TMenuItem
+        Caption = 'Save &as...'
+        OnClick = Saveas1Click
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object Reopen1: TMenuItem
+        Caption = '&Reopen'
+        Visible = False
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Sendto1: TMenuItem
+        Caption = 'Send by e-&mail...'
+        ImageIndex = 27
+        ShortCut = 16461
+        OnClick = Sendto1Click
+      end
+      object Export1: TMenuItem
+        Caption = 'E&xport...'
+        OnClick = Export1Click
+      end
+      object PrintPreview1: TMenuItem
+        Caption = 'Print P&review...'
+        ImageIndex = 4
+        OnClick = PrintPreview1Click
+      end
+      object Print1: TMenuItem
+        Caption = '&Print...'
+        ImageIndex = 3
+        ShortCut = 16464
+        OnClick = Print1Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Exit1: TMenuItem
+        Caption = '&Exit'
+        ImageIndex = 26
+        ShortCut = 32883
+        OnClick = Exit1Click
+      end
+    end
+    object Edit1: TMenuItem
+      Caption = '&Edit'
+      object Copy1: TMenuItem
+        Caption = '&Copy'
+        ImageIndex = 10
+        OnClick = Copy1Click
+      end
+      object N9: TMenuItem
+        Caption = '-'
+      end
+      object ChartProperties1: TMenuItem
+        Caption = '&Properties...'
+        OnClick = ChartProperties1Click
+      end
+      object ChartTools1: TMenuItem
+        Caption = 'Chart &Tools...'
+        OnClick = ChartTools1Click
+      end
+    end
+    object View1: TMenuItem
+      Caption = '&View'
+      object Legend1: TMenuItem
+        Caption = '&Legend'
+        Checked = True
+        OnClick = Legend1Click
+      end
+      object Axes1: TMenuItem
+        Caption = '&Axes'
+        Checked = True
+        OnClick = Axes1Click
+      end
+      object Titles1: TMenuItem
+        Caption = '&Titles'
+        Checked = True
+        OnClick = Titles1Click
+      end
+      object N5: TMenuItem
+        Caption = '-'
+      end
+      object OpenGL1: TMenuItem
+        Caption = '&Open GL'
+        OnClick = OpenGL1Click
+      end
+      object N7: TMenuItem
+        Caption = '-'
+      end
+      object DataSources1: TMenuItem
+        Caption = '&Data Sources'
+        Checked = True
+        OnClick = DataSources1Click
+      end
+      object Serieslist1: TMenuItem
+        Caption = '&Series list'
+        Checked = True
+        OnClick = Serieslist1Click
+      end
+      object Inspector1: TMenuItem
+        Caption = 'Inspector'
+        Checked = True
+        OnClick = Inspector1Click
+      end
+      object Gallery1: TMenuItem
+        Caption = '&Gallery'
+        Checked = True
+        OnClick = Gallery1Click
+      end
+      object Statusbar2: TMenuItem
+        Caption = 'Status &Bar'
+        Checked = True
+        OnClick = Statusbar2Click
+      end
+      object Data1: TMenuItem
+        Caption = '&Data'
+        object asTab1: TMenuItem
+          Caption = 'as Tab'
+          Checked = True
+          RadioItem = True
+          OnClick = asTab1Click
+        end
+        object asWindow1: TMenuItem
+          Caption = 'as Window'
+          RadioItem = True
+          OnClick = asWindow1Click
+        end
+        object N27: TMenuItem
+          Caption = '-'
+        end
+        object Hide3: TMenuItem
+          Caption = '&Hide'
+          OnClick = Hide3Click
+        end
+      end
+      object N8: TMenuItem
+        Caption = '-'
+      end
+      object Toolbars1: TMenuItem
+        Caption = '&Toolbars'
+        object Standard1: TMenuItem
+          Caption = '&Standard'
+          Checked = True
+          OnClick = Standard1Click
+        end
+        object Font1: TMenuItem
+          Caption = '&Font'
+          Checked = True
+          OnClick = Font1Click
+        end
+        object Page1: TMenuItem
+          Caption = '&Page'
+          Checked = True
+          OnClick = Page1Click
+        end
+        object SeriesToolBarItem: TMenuItem
+          Caption = '&Series'
+          Checked = True
+          OnClick = SeriesToolBarItemClick
+        end
+        object Tools2: TMenuItem
+          Caption = '&Tools'
+          Checked = True
+          OnClick = Tools2Click
+        end
+      end
+    end
+    object Tools1: TMenuItem
+      Caption = '&Tools'
+      object Options2: TMenuItem
+        Caption = '&Options...'
+        OnClick = Options2Click
+      end
+      object Options1: TMenuItem
+        Caption = '&Language...'
+        ImageIndex = 28
+        OnClick = Options1Click
+      end
+      object N24: TMenuItem
+        Caption = '-'
+      end
+      object ImportfromWeb1: TMenuItem
+        Caption = '&Web Charts Gallery...'
+        ImageIndex = 31
+        OnClick = ImportfromWeb1Click
+      end
+      object Updateversion1: TMenuItem
+        Caption = '&Update version...'
+        ImageIndex = 29
+        OnClick = Updateversion1Click
+      end
+      object Textmode1: TMenuItem
+        Caption = '&Text mode'
+        OnClick = Textmode1Click
+      end
+    end
+    object Help1: TMenuItem
+      Caption = '&Help'
+      object TeeChartHelp1: TMenuItem
+        Caption = '&Help Index...'
+        ImageIndex = 5
+        OnClick = TeeChartHelp1Click
+      end
+      object Whatsthis1: TMenuItem
+        Caption = 'What'#39's &this ?'
+        OnClick = Whatsthis1Click
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object TeeChartWeb1: TMenuItem
+        Caption = 'TeeChart &Web...'
+        ImageIndex = 7
+        OnClick = TeeChartWeb1Click
+      end
+      object OnlineSupport1: TMenuItem
+        Caption = '&Online Support...'
+        ImageIndex = 30
+        OnClick = OnlineSupport1Click
+      end
+      object N16: TMenuItem
+        Caption = '-'
+      end
+      object About1: TMenuItem
+        Caption = '&About...'
+        ImageIndex = 6
+        OnClick = About1Click
+      end
+    end
+  end
+  object ImageList1: TImageList
+    Left = 616
+    Top = 256
+  end
+  object ChartEditor1: TChartEditor
+    Chart = DBChart1
+    OnClose = ChartEditor1Close
+    OnShow = ChartEditor1Show
+    Left = 456
+    Top = 248
+  end
+  object ChartPreviewer1: TChartPreviewer
+    Chart = DBChart1
+    Title = 'TeeChart Office Print Preview'
+    Left = 536
+    Top = 192
+  end
+  object ChartWebSource1: TChartWebSource
+    Chart = DBChart1
+    URL = 'http://www.steema.com/demo.tee'
+    Left = 616
+    Top = 394
+  end
+  object PopupMenuCommander: TPopupMenu
+    Left = 136
+    Top = 120
+    object Configure1: TMenuItem
+      Caption = '&Configure...'
+      OnClick = Configure1Click
+    end
+    object Hide2: TMenuItem
+      Caption = '&Hide'
+      OnClick = Hide2Click
+    end
+  end
+  object LocalMenu: TPopupMenu
+    HelpContext = 30130
+    Images = ImageListSeries
+    OnPopup = LocalMenuPopup
+    Left = 42
+    Top = 144
+    object AddItem: TMenuItem
+      Caption = '&New...'
+      HelpContext = 30131
+      ImageIndex = 0
+      ShortCut = 45
+      OnClick = SBAddClick
+    end
+    object Change1: TMenuItem
+      Caption = 'C&hange...'
+      ShortCut = 16456
+      OnClick = Change1Click
+    end
+    object DeleteItem: TMenuItem
+      Caption = '&Delete'
+      HelpContext = 30136
+      ImageIndex = 1
+      ShortCut = 46
+      OnClick = SBDeleteClick
+    end
+    object CloneItem: TMenuItem
+      Caption = 'D&uplicate'
+      ShortCut = 16451
+      OnClick = CloneItemClick
+    end
+    object Title1: TMenuItem
+      Caption = '&Title...'
+      ShortCut = 16468
+      OnClick = Title1Click
+    end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object SelectAllItem: TMenuItem
+      Caption = 'Select &all'
+      HelpContext = 30137
+      ShortCut = 16449
+      OnClick = SelectAllItemClick
+    end
+    object Datasource2: TMenuItem
+      Caption = 'Data&source...'
+      OnClick = Datasource1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = '&Edit...'
+      ImageIndex = 4
+      ShortCut = 16453
+      OnClick = SBEditClick
+    end
+    object MenuItem3: TMenuItem
+      Caption = '-'
+    end
+    object MoveUp1: TMenuItem
+      Caption = 'Move &Up'
+      ImageIndex = 2
+      OnClick = TBMoveUpClick
+    end
+    object MoveDown1: TMenuItem
+      Caption = 'Move &Down'
+      ImageIndex = 3
+      OnClick = TBMoveDownClick
+    end
+    object N6: TMenuItem
+      Caption = '-'
+    end
+    object HideSerieslist1: TMenuItem
+      Caption = '&Hide Series list'
+      OnClick = HideSerieslist1Click
+    end
+  end
+  object ImageListSeries: TImageList
+    Left = 24
+    Top = 304
+    Bitmap = {
+      494C010108000A00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      0000000000003600000028000000400000003000000001002000000000000030
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000800000008000000080
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000800000008000000080
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000FFFF0000FFFF
+      0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF
+      0000FFFF00000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA600F0CA
+      A600F0CAA600F0CAA600F0CAA600F0CAA600F0CAA600F0CAA600A4A0A000F0CA
+      A600000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080808000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000FFFF0000FFFF0000FF
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA6000000
+      0000000000000000000000000000F0CAA600F0CAA600A4A0A000F0CAA6000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000008080800000000000000000000000000000000000000000000000
+      0000808080000000000000000000000000000000000000000000000000000000
+      00000000000000000000FF000000FF000000FF00000000000000000000000000
+      0000000000000000000000000000000000000000000000FFFF0000FFFF0000FF
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA6000000
+      00000000000000000000F0CAA600F0CAA600A4A0A000F0CAA600000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000FF0000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000FFFF0000FFFF0000FF
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA6000000
+      000000000000F0CAA600F0CAA600A4A0A000F0CAA60000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA6000000
+      0000F0CAA600F0CAA600A4A0A000F0CAA6000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080808000000000000000000000000000000000008080
+      8000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000007F7F7F0000FFFF007F7F
+      7F000000000000000000000000000000000000000000FF000000FF000000FF00
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA600F0CA
+      A600F0CAA600A4A0A000F0CAA6000000000000000000000000000000000000FF
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      FF000000FF000000FF0000000000000000000000000000FFFF0000FFFF0000FF
+      FF000000000000000000000000000000000000000000FF000000FF000000FF00
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA600F0CA
+      A600A4A0A000F0CAA600000000000000000000000000000000000000000000FF
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      FF000000FF000000FF000000000000000000000000007F7F7F0000FFFF007F7F
+      7F000000000000000000000000000000000000000000FF000000FF000000FF00
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA600A4A0
+      A000F0CAA6000000000000000000000000000000000000000000000000000000
+      000000FFFF00A4A0A00000000000000000000000000000000000000000000000
+      0000000000000000000000000000808080000000000000000000808080000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      FF000000FF000000FF0000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000A4A0A000F0CA
+      A600000000000000000000000000000000000000000000000000000000000000
+      000000FFFF000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000FF000000FF000000
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000F0CAA6000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000FFFF00A4A0A000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000FF000000FF000000
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000FFFF0000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000FF000000FF000000
+      FF00000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000008000000080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000808080008080
+      8000808080008080800080808000808080008080800080808000808080008080
+      8000808080008080800080808000808080000000000000000000808080008080
+      8000808080008080800080808000808080008080800080808000808080008080
+      8000808080008080800080808000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000FFFFFF0000FF
+      FF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00000000000000
+      0000FFFFFF0000FFFF0000000000808080000000000000000000FFFFFF0000FF
+      FF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00000000000000
+      0000FFFFFF0000FFFF0000000000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000FFFF00FFFF
+      FF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000000000C0C0
+      C00000000000FFFFFF000000000080808000808080000000000000FFFF00FFFF
+      FF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000000000C0C0
+      C00000000000FFFFFF0000000000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000FFFFFF0000FF
+      FF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF000000000000FF
+      FF00C0C0C0000000000000000000808080000000800000000000FFFFFF0000FF
+      FF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF000000000000FF
+      FF00C0C0C0000000000000000000808080000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000808000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000FFFF00FFFF
+      FF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF00000000000000
+      000000000000000000000000000080808000000080000000800000FFFF00FFFF
+      FF0000FFFF00FFFFFF00808080000000800000FFFF00FFFFFF00000000000000
+      0000000000000000000000000000808080000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      000000000000000000000000000000000000FFFFFF0000000000FFFFFF008080
+      800000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF0000FFFF00FFFFFF0000FF
+      FF00FFFFFF0000FFFF00000000008080800080808000000080008080800000FF
+      FF00FFFFFF00808080000000800080808000FFFFFF0000FFFF00FFFFFF0000FF
+      FF00FFFFFF0000FFFF0000000000808080000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000008080000080800000808000008080000080800000000000000000
+      0000000000000000000000000000000000008080800000FFFF0000FFFF008080
+      8000FFFFFF0000FFFF008080800000FFFF00FFFFFF00FFFFFF0000FFFF00FFFF
+      FF0000FFFF00FFFFFF0000000000808080000000000000008000000080008080
+      800000FFFF000000800000008000FFFFFF0000FFFF00FFFFFF0000FFFF00FFFF
+      FF0000FFFF00FFFFFF0000000000808080000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000808000008080000080800000808000008080000080800000808000000000
+      0000000000000000000000000000000000000000000080808000FFFFFF008080
+      800000FFFF008080800000FFFF00FFFFFF0000FFFF0000FFFF00FFFFFF0000FF
+      FF00FFFFFF0000FFFF0000000000808080000000000080808000000080000000
+      80000000800000008000FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FF
+      FF00FFFFFF0000FFFF0000000000808080000000000000000000000000000000
+      0000808000008080000080800000808000008080000080800000808000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      000000000000000000000000000000000000808080008080800080808000FFFF
+      FF0080808000FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFF
+      FF0000FFFF00FFFFFF0000000000808080000000000080808000000080000000
+      800000008000FFFFFF0000FFFF00FFFFFF0000FFFF00FFFFFF0000FFFF00FFFF
+      FF0000FFFF00FFFFFF0000000000808080000000000000000000000000000000
+      0000000000008080000080800000808000008080000080800000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      000000000000000000000000000000000000FFFFFF0000FFFF008080800000FF
+      FF00FFFFFF008080800080808000808080008080800000000000000000000000
+      0000000000000000000000000000000000008080800000008000000080000000
+      8000000080008080800000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      000000000000000000000000000000000000000000008080800000FFFF008080
+      800000FFFF008080800000FFFF00000000000000000000000000000000000000
+      0000000000000000000000000000000000000000800000008000808080000000
+      0000000080000000800080808000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000808000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000080800000808000008080000000000000000000000000
+      0000000000000000000000000000000000008080800000FFFF00000000008080
+      8000FFFFFF00000000008080800000FFFF000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000800000008000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000FFFF0000000000000000008080
+      800000FFFF000000000000000000808080000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000008000000080008080800000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008080
+      8000FFFFFF000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000424D3E000000000000003E000000
+      2800000040000000300000000100010000000000800100000000000000000000
+      000000000000000000000000FFFFFF0000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFF83F8EAD
+      8001F183E7CF8DB58003FBC7DFF7FFFF8007F9C7B01B8C5F800FF807B83B8DD5
+      881FFD8F7C7D8FDB801FFC8F7E8DFFFF804FFC8F41058CD580C7FE1F41058DB5
+      81C3FE1F41058ED783C1FE1F818BFFFF87E5FF3F81FB8E978FF0FF7FDFF78DB5
+      9FF0FFFFE7CF8C97FFF8FFFFF83FFFFFFFFFFFFFFFFFFFFFC000C000FFFFFFFF
+      80008000FFFFFFFF80008000FFFFFFFF80000000F83FFEFF80000000F83FFC7F
+      80000000F83FF83F00000000F83FF01F00008000C007E00F80008000E00FC007
+      00008000F01FF83F00010001F83FF83F81FF11FFFC7FF83F24FFF8FFFEFFF83F
+      66FFFC7FFFFFFFFFE7FFFFFFFFFFFFFF00000000000000000000000000000000
+      000000000000}
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'tee'
+    Filter = 'TeeChart files (*.tee)|*.tee'
+    Title = 'Open TeeChart'
+    Left = 616
+    Top = 116
+  end
+  object ImageList3: TImageList
+    Left = 616
+    Top = 344
+  end
+  object PopupMenuInspector: TPopupMenu
+    Left = 104
+    Top = 415
+    object Hideinspector1: TMenuItem
+      Caption = '&Hide inspector'
+      OnClick = Hideinspector1Click
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = 'tee'
+    Filter = 'TeeChart files (*.tee)|*.tee'
+    Left = 24
+    Top = 359
+  end
+  object TimerStatus: TTimer
+    OnTimer = TimerStatusTimer
+    Left = 108
+    Top = 266
+  end
+  object PopupMenuToolbar: TPopupMenu
+    Left = 106
+    Top = 319
+    object AligntoTop1: TMenuItem
+      Caption = 'Align to &Top'
+      Checked = True
+      RadioItem = True
+      OnClick = AligntoBottom1Click
+    end
+    object AligntoBottom1: TMenuItem
+      Caption = 'Align to &Bottom'
+      RadioItem = True
+      OnClick = AligntoBottom1Click
+    end
+  end
+  object PopupMenuGallery: TPopupMenu
+    OnPopup = PopupMenuGalleryPopup
+    Left = 106
+    Top = 367
+    object Borders1: TMenuItem
+      Caption = 'Border'
+      Checked = True
+      OnClick = Borders1Click
+    end
+    object Rightside1: TMenuItem
+      Caption = '&Right side'
+      Checked = True
+      OnClick = Rightside1Click
+    end
+    object ShowHints1: TMenuItem
+      Caption = '&Show Hints'
+      Checked = True
+      OnClick = ShowHints1Click
+    end
+    object Small1: TMenuItem
+      Caption = 'Sm&all'
+      Checked = True
+      OnClick = Small1Click
+    end
+    object Smooth1: TMenuItem
+      Caption = 'S&mooth'
+    end
+    object View3D1: TMenuItem
+      Caption = 'View &3D'
+      Checked = True
+      OnClick = View3D1Click
+    end
+    object N23: TMenuItem
+      Caption = '-'
+    end
+    object Hide1: TMenuItem
+      Caption = '&Hide'
+      OnClick = Hide1Click
+    end
+  end
+  object PopupLegend: TPopupMenu
+    Images = ImageListSeries
+    OnPopup = PopupLegendPopup
+    Left = 338
+    Top = 89
+    object Visible1: TMenuItem
+      Caption = '&Visible'
+      Checked = True
+      HelpContext = 1
+      OnClick = Legend1Click
+    end
+    object Checkboxes1: TMenuItem
+      Caption = 'Chec&k-boxes'
+      HelpContext = 1
+      OnClick = Checkboxes1Click
+    end
+    object Dividinglines1: TMenuItem
+      Caption = '&Dividing lines'
+      HelpContext = 3
+      OnClick = Dividinglines1Click
+    end
+    object Inverted1: TMenuItem
+      Caption = '&Inverted'
+      HelpContext = 1
+      OnClick = Inverted1Click
+    end
+    object UseSeriesColor1: TMenuItem
+      Caption = 'S&eries Color'
+      HelpContext = 1
+      OnClick = UseSeriesColor1Click
+    end
+    object N10: TMenuItem
+      Caption = '-'
+    end
+    object Position1: TMenuItem
+      Caption = '&Position'
+      object Right1: TMenuItem
+        Caption = '&Right'
+        Checked = True
+        RadioItem = True
+        OnClick = Bottom1Click
+      end
+      object Left1: TMenuItem
+        Caption = 'Left'
+        RadioItem = True
+        OnClick = Bottom1Click
+      end
+      object Top1: TMenuItem
+        Caption = '&Top'
+        RadioItem = True
+        OnClick = Bottom1Click
+      end
+      object Bottom1: TMenuItem
+        Caption = '&Bottom'
+        RadioItem = True
+        OnClick = Bottom1Click
+      end
+    end
+    object Style1: TMenuItem
+      Caption = '&Style'
+      object Seriesnames1: TMenuItem
+        Caption = '&Series names'
+        RadioItem = True
+        OnClick = Lastvalues1Click
+      end
+      object Values1: TMenuItem
+        Caption = '&Values'
+        Checked = True
+        RadioItem = True
+        OnClick = Lastvalues1Click
+      end
+      object Lastvalues1: TMenuItem
+        Caption = '&Last values'
+        RadioItem = True
+        OnClick = Lastvalues1Click
+      end
+    end
+    object Symbols1: TMenuItem
+      Caption = 'Sy&mbols'
+      object Left2: TMenuItem
+        Caption = '&Left'
+        Checked = True
+        RadioItem = True
+        OnClick = Right2Click
+      end
+      object Right2: TMenuItem
+        Caption = '&Right'
+        RadioItem = True
+        OnClick = Right2Click
+      end
+      object N12: TMenuItem
+        Caption = '-'
+      end
+      object Continous1: TMenuItem
+        Caption = '&Continous'
+        HelpContext = 1
+        OnClick = Continous1Click
+      end
+    end
+    object N11: TMenuItem
+      Caption = '-'
+    end
+    object LegendBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = LegendBorderClick
+    end
+    object Color4: TMenuItem
+      Bitmap.Data = {
+        F6000000424DF600000000000000760000002800000010000000100000000100
+        0400000000008000000000000000000000001000000010000000000000000000
+        8000008000000080800080000000800080008080000080808000C0C0C0000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FF0000000000
+        0FFFFF01111111110FFFFF01111111110FFFFF01111111110FFFFF0111111111
+        0FFFFF01111111110FFFFF01111111110FFFFF01111111B10FFFFF0111111111
+        0FFFFF01111111110FFFFF011EEEEE110FFFFF011EEEEE110FFFFF011EEEEE11
+        0FFFFF01111111110FFFFF01111111110FFFFF00000000000FFF}
+      Caption = '&Color...'
+      HelpContext = 2
+      OnClick = Color4Click
+    end
+    object LegendFont: TMenuItem
+      Caption = '&Font...'
+      HelpContext = 7
+      ImageIndex = 5
+      OnClick = LegendFontClick
+    end
+    object LegendGradient: TMenuItem
+      Caption = '&Gradient...'
+      HelpContext = 4
+      OnClick = LegendGradientClick
+    end
+    object LegendTransparent: TMenuItem
+      Caption = '&Transparent'
+      HelpContext = 1
+      OnClick = LegendTransparentClick
+    end
+  end
+  object PopupMenuTitle: TPopupMenu
+    Images = ImageListSeries
+    OnPopup = PopupMenuTitlePopup
+    Left = 258
+    Top = 89
+    object Text1: TMenuItem
+      Caption = '&Text...'
+      OnClick = Text1Click
+    end
+    object Alignment1: TMenuItem
+      Caption = '&Alignment'
+      object TitleLeft: TMenuItem
+        Caption = '&Left'
+        RadioItem = True
+        OnClick = TitleRightClick
+      end
+      object TitleCenter: TMenuItem
+        Caption = '&Center'
+        Checked = True
+        RadioItem = True
+        OnClick = TitleRightClick
+      end
+      object TitleRight: TMenuItem
+        Caption = '&Right'
+        RadioItem = True
+        OnClick = TitleRightClick
+      end
+      object N14: TMenuItem
+        Caption = '-'
+      end
+      object TitleAutosize: TMenuItem
+        Caption = '&Autosize'
+        Checked = True
+        HelpContext = 1
+        OnClick = TitleAutosizeClick
+      end
+    end
+    object CustomPosition1: TMenuItem
+      Caption = '&Custom Position'
+      HelpContext = 1
+      OnClick = CustomPosition1Click
+    end
+    object N13: TMenuItem
+      Caption = '-'
+    end
+    object TitleBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = TitleBorderClick
+    end
+    object Color1: TMenuItem
+      Caption = '&Color...'
+      OnClick = Color1Click
+    end
+    object TitleFont: TMenuItem
+      Caption = '&Font...'
+      HelpContext = 7
+      ImageIndex = 5
+      OnClick = TitleFontClick
+    end
+    object TitleGradient: TMenuItem
+      Caption = '&Gradient...'
+      HelpContext = 4
+      OnClick = TitleGradientClick
+    end
+    object TitleShadow: TMenuItem
+      Caption = '&Shadow'
+      Checked = True
+      HelpContext = 1
+      OnClick = TitleShadowClick
+    end
+    object TitleTransparent: TMenuItem
+      Caption = 'T&ransparent'
+      Checked = True
+      HelpContext = 1
+      OnClick = TitleTransparentClick
+    end
+    object TitleVisible: TMenuItem
+      Caption = '&Visible'
+      Checked = True
+      HelpContext = 1
+      OnClick = TitleVisibleClick
+    end
+  end
+  object PopupMenuPanel: TPopupMenu
+    OnPopup = PopupMenuPanelPopup
+    Left = 426
+    Top = 89
+    object Edit2: TMenuItem
+      Caption = '&Edit...'
+      OnClick = Edit2Click
+    end
+    object N22: TMenuItem
+      Caption = '-'
+    end
+    object PanelBackimage: TMenuItem
+      Caption = 'Back &Image...'
+      HelpContext = 8
+      OnClick = PanelBackimageClick
+    end
+    object Bevel1: TMenuItem
+      Caption = 'Be&vel'
+      object Lower1: TMenuItem
+        Caption = '&Lowered'
+        RadioItem = True
+        OnClick = None1Click
+      end
+      object Raise1: TMenuItem
+        Caption = '&Raised'
+        RadioItem = True
+        OnClick = None1Click
+      end
+      object None1: TMenuItem
+        Caption = '&None'
+        RadioItem = True
+        OnClick = None1Click
+      end
+    end
+    object PanelBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = PanelBorderClick
+    end
+    object PanelColor: TMenuItem
+      Caption = '&Color...'
+      HelpContext = 2
+      OnClick = PanelColorClick
+    end
+    object GrayScale1: TMenuItem
+      Caption = 'Color &mode'
+      object Colors1: TMenuItem
+        Caption = '&Colors'
+        Checked = True
+        RadioItem = True
+        OnClick = Colors1Click
+      end
+      object GrayScale2: TMenuItem
+        Caption = '&Gray Scale'
+        RadioItem = True
+        OnClick = GrayScale2Click
+      end
+      object GrayScaleVisual1: TMenuItem
+        Caption = 'Gray &Scale Visual'
+        RadioItem = True
+        OnClick = GrayScaleVisual1Click
+      end
+      object InvertedGrayScale1: TMenuItem
+        Caption = '&Inverted Gray Scale'
+        RadioItem = True
+        OnClick = InvertedGrayScale1Click
+      end
+      object Monochrome1: TMenuItem
+        Caption = '&Monochrome'
+        RadioItem = True
+        OnClick = Monochrome1Click
+      end
+    end
+    object Frame1: TMenuItem
+      Caption = '&Frame...'
+      HelpContext = 3
+      OnClick = Frame1Click
+    end
+    object PanelGradient: TMenuItem
+      Caption = '&Gradient...'
+      HelpContext = 4
+      OnClick = PanelGradientClick
+    end
+    object PanelView3D: TMenuItem
+      Caption = 'View &3D'
+      Checked = True
+      HelpContext = 1
+      OnClick = PanelView3DClick
+    end
+    object N15: TMenuItem
+      Caption = '-'
+    end
+    object AutoSize1: TMenuItem
+      Caption = '&Auto Size'
+      Checked = True
+      HelpContext = 1
+      OnClick = AutoSize1Click
+    end
+  end
+  object PopupMenuAnn: TPopupMenu
+    Images = ImageListSeries
+    OnPopup = PopupMenuAnnPopup
+    Left = 250
+    Top = 137
+    object EditAnnotation: TMenuItem
+      Caption = '&Text...'
+      OnClick = EditAnnotationClick
+    end
+    object Delete1: TMenuItem
+      Caption = '&Delete'
+      HelpContext = 5
+      OnClick = Delete1Click
+    end
+    object N17: TMenuItem
+      Caption = '-'
+    end
+    object Position2: TMenuItem
+      Caption = '&Position'
+      object LeftTop1: TMenuItem
+        Caption = '&Left Top'
+        Checked = True
+        RadioItem = True
+        OnClick = RightBottom1Click
+      end
+      object LeftBottom1: TMenuItem
+        Caption = 'Left &Bottom'
+        RadioItem = True
+        OnClick = RightBottom1Click
+      end
+      object RightTop1: TMenuItem
+        Caption = '&Right Top'
+        RadioItem = True
+        OnClick = RightBottom1Click
+      end
+      object RightBottom1: TMenuItem
+        Caption = 'Right B&ottom'
+        RadioItem = True
+        OnClick = RightBottom1Click
+      end
+      object N18: TMenuItem
+        Caption = '-'
+      end
+      object Custom1: TMenuItem
+        Caption = '&Custom'
+        HelpContext = 1
+        OnClick = Custom1Click
+      end
+    end
+    object N19: TMenuItem
+      Caption = '-'
+    end
+    object AnnBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = AnnBorderClick
+    end
+    object AnnColor: TMenuItem
+      Caption = '&Color...'
+      HelpContext = 2
+      OnClick = AnnColorClick
+    end
+    object AnnoFont: TMenuItem
+      Caption = '&Font...'
+      HelpContext = 7
+      ImageIndex = 5
+      OnClick = AnnoFontClick
+    end
+    object AnnGradient: TMenuItem
+      Caption = '&Gradient...'
+      HelpContext = 4
+      OnClick = AnnGradientClick
+    end
+    object Shadow1: TMenuItem
+      Caption = '&Shadow...'
+      OnClick = Shadow1Click
+    end
+    object Transparent1: TMenuItem
+      Caption = '&Transparent'
+      HelpContext = 1
+      OnClick = Transparent1Click
+    end
+  end
+  object PopupMenuMarks: TPopupMenu
+    Images = ImageListSeries
+    OnPopup = PopupMenuMarksPopup
+    Left = 338
+    Top = 137
+    object Edit4: TMenuItem
+      Caption = '&Edit...'
+      OnClick = Edit4Click
+    end
+    object N20: TMenuItem
+      Caption = '-'
+    end
+    object Arrow1: TMenuItem
+      Caption = '&Arrow...'
+      HelpContext = 3
+      OnClick = Arrow1Click
+    end
+    object MarksBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = MarksBorderClick
+    end
+    object Color3: TMenuItem
+      Caption = '&Color...'
+      OnClick = Color3Click
+    end
+    object MarksFont: TMenuItem
+      Caption = '&Font...'
+      HelpContext = 7
+      ImageIndex = 5
+      OnClick = MarksFontClick
+    end
+    object MarksGradient: TMenuItem
+      Caption = '&Gradient...'
+      HelpContext = 4
+      OnClick = MarksGradientClick
+    end
+    object MarksStyle: TMenuItem
+      Caption = '&Style'
+      object Value1: TMenuItem
+        Caption = '&Value'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object Percent1: TMenuItem
+        Caption = '&Percent'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object Label1: TMenuItem
+        Caption = '&Label'
+        Checked = True
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object LabelPercent1: TMenuItem
+        Caption = 'Label P&ercent'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object LabelValue1: TMenuItem
+        Caption = 'Label V&alue'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object Legend2: TMenuItem
+        Caption = 'Lege&nd'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object PercentTotal1: TMenuItem
+        Caption = 'Percent &Total'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object LabelPercentTotal1: TMenuItem
+        Caption = 'Label Percent T&otal'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object XValue1: TMenuItem
+        Caption = '&X Value'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+      object XY1: TMenuItem
+        Caption = 'X&Y'
+        RadioItem = True
+        OnClick = XY1Click
+      end
+    end
+    object Symbol1: TMenuItem
+      Caption = 'S&ymbol...'
+      OnClick = Symbol1Click
+    end
+    object Transparent2: TMenuItem
+      Caption = '&Transparent'
+      HelpContext = 1
+      OnClick = Transparent2Click
+    end
+    object Visible3: TMenuItem
+      Caption = '&Visible'
+      Checked = True
+      HelpContext = 1
+      OnClick = Visible3Click
+    end
+  end
+  object PopupMenuAxis: TPopupMenu
+    OnPopup = PopupMenuAxisPopup
+    Left = 200
+    Top = 336
+    object Edit5: TMenuItem
+      Caption = '&Edit...'
+      OnClick = Edit5Click
+    end
+    object N21: TMenuItem
+      Caption = '-'
+    end
+    object Axisline1: TMenuItem
+      Caption = '&Axis line...'
+      HelpContext = 3
+      OnClick = Axisline1Click
+    end
+    object AxisFont: TMenuItem
+      Caption = '&Font...'
+      HelpContext = 7
+      OnClick = AxisFontClick
+    end
+    object LabelsFormat1: TMenuItem
+      Caption = 'F&ormat...'
+      OnClick = LabelsFormat1Click
+    end
+    object Grid1: TMenuItem
+      Caption = '&Grid...'
+      HelpContext = 3
+      OnClick = Grid1Click
+    end
+    object Inverted2: TMenuItem
+      Caption = '&Inverted'
+      HelpContext = 1
+      OnClick = Inverted2Click
+    end
+    object Labels1: TMenuItem
+      Caption = '&Labels'
+      Checked = True
+      HelpContext = 1
+      OnClick = Labels1Click
+    end
+    object AxisMinorGrid: TMenuItem
+      Caption = '&Minor Grid...'
+      HelpContext = 3
+      OnClick = AxisMinorGridClick
+    end
+    object Ticks1: TMenuItem
+      Caption = '&Ticks...'
+      HelpContext = 3
+      OnClick = Ticks1Click
+    end
+    object AxisVisible: TMenuItem
+      Caption = '&Visible'
+      HelpContext = 1
+      OnClick = AxisVisibleClick
+    end
+  end
+  object ImageListTabs: TImageList
+    Left = 200
+    Top = 400
+  end
+  object PopupMenuSeries: TPopupMenu
+    OnPopup = PopupMenuSeriesPopup
+    Left = 288
+    Top = 336
+    object Edit6: TMenuItem
+      Caption = '&Edit...'
+      OnClick = SBEditClick
+    end
+    object N25: TMenuItem
+      Caption = '-'
+    end
+    object Color5: TMenuItem
+      Caption = '&Color...'
+      HelpContext = 2
+      OnClick = Color5Click
+    end
+    object Coloreach1: TMenuItem
+      Caption = 'Color &each point'
+      Checked = True
+      HelpContext = 1
+      OnClick = Coloreach1Click
+    end
+    object Datasource1: TMenuItem
+      Caption = '&Datasource...'
+      OnClick = Datasource1Click
+    end
+    object ShowatLegend1: TMenuItem
+      Caption = 'Show at &Legend'
+      Checked = True
+      HelpContext = 1
+      OnClick = ShowatLegend1Click
+    end
+    object ShowMarks1: TMenuItem
+      Caption = 'Show &Marks'
+      Checked = True
+      HelpContext = 1
+      OnClick = ShowMarks1Click
+    end
+    object Title2: TMenuItem
+      Caption = '&Title...'
+      OnClick = Title1Click
+    end
+    object Visible2: TMenuItem
+      Caption = '&Visible'
+      Checked = True
+      HelpContext = 1
+      OnClick = Visible2Click
+    end
+    object SeriesPopupSep: TMenuItem
+      Caption = '-'
+    end
+  end
+  object PopupLine: TPopupMenu
+    OnPopup = PopupLinePopup
+    Left = 512
+    Top = 336
+    object PopupLineBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = PopupLineBorderClick
+    end
+    object PopupLineOutline: TMenuItem
+      Caption = '&Outline...'
+      HelpContext = 3
+      OnClick = PopupLineOutlineClick
+    end
+    object PopupLinePattern: TMenuItem
+      Caption = '&Pattern...'
+      OnClick = PopupLinePatternClick
+    end
+    object PopupLineStairs: TMenuItem
+      Caption = '&Stairs'
+      HelpContext = 1
+      OnClick = PopupLineStairsClick
+    end
+    object PopupLineInverted: TMenuItem
+      Caption = 'Stairs &Inverted'
+      HelpContext = 1
+      OnClick = PopupLineInvertedClick
+    end
+  end
+  object PopupMenuWall: TPopupMenu
+    OnPopup = PopupMenuWallPopup
+    Left = 376
+    Top = 336
+    object Edit3: TMenuItem
+      Caption = '&Edit...'
+      OnClick = Edit3Click
+    end
+    object N26: TMenuItem
+      Caption = '-'
+    end
+    object WallBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = WallBorderClick
+    end
+    object WallColor: TMenuItem
+      Caption = '&Color...'
+      HelpContext = 2
+      OnClick = WallColorClick
+    end
+    object WallDark3D: TMenuItem
+      Caption = '&Dark 3D'
+      HelpContext = 1
+      OnClick = WallDark3DClick
+    end
+    object WallGradient: TMenuItem
+      Caption = '&Gradient...'
+      HelpContext = 4
+      OnClick = WallGradientClick
+    end
+    object WallTransparent: TMenuItem
+      Caption = '&Transparent'
+      HelpContext = 1
+      OnClick = WallTransparentClick
+    end
+    object WallVisible: TMenuItem
+      Caption = '&Visible'
+      HelpContext = 1
+      OnClick = WallVisibleClick
+    end
+  end
+  object PopupBar: TPopupMenu
+    OnPopup = PopupBarPopup
+    Left = 448
+    Top = 336
+    object BarBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = PopupLineBorderClick
+    end
+    object BarGradient: TMenuItem
+      Caption = '&Gradient...'
+      HelpContext = 4
+      OnClick = BarGradientClick
+    end
+    object BarPattern: TMenuItem
+      Caption = '&Pattern...'
+      OnClick = PopupLinePatternClick
+    end
+    object BarSideMargins: TMenuItem
+      Caption = 'S&ide Margins'
+      Checked = True
+      HelpContext = 1
+      OnClick = BarSideMarginsClick
+    end
+    object BarStyleItem: TMenuItem
+      Caption = '&Style'
+      object BarRectangle: TMenuItem
+        Caption = '&Rectangle'
+        Checked = True
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+      object BarPyramid: TMenuItem
+        Caption = '&Pyramid'
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+      object BarInvertPyramid: TMenuItem
+        Caption = '&Inverted Pyramid'
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+      object BarCyllinder: TMenuItem
+        Caption = '&Cyllinder'
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+      object BarEllipse: TMenuItem
+        Caption = '&Ellipse'
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+      object BarArrow: TMenuItem
+        Caption = '&Arrow'
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+      object BarGradientStyle: TMenuItem
+        Caption = '&Gradient'
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+      object BarCone: TMenuItem
+        Caption = '&Cone'
+        RadioItem = True
+        OnClick = BarEllipseClick
+      end
+    end
+    object BarUseOrigin: TMenuItem
+      Caption = '&Use Origin'
+      Checked = True
+      HelpContext = 1
+      OnClick = BarUseOriginClick
+    end
+    object BarWidthItem: TMenuItem
+      Caption = '&Width...'
+      HelpContext = 6
+      OnClick = BarWidthItemClick
+    end
+  end
+  object PopupPie: TPopupMenu
+    OnPopup = PopupPiePopup
+    Left = 512
+    Top = 400
+    object PieBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = PopupLineBorderClick
+    end
+    object PieCircled: TMenuItem
+      Caption = '&Circled'
+      HelpContext = 1
+      OnClick = PieCircledClick
+    end
+    object PieDark3D: TMenuItem
+      Caption = '&Dark 3D'
+      HelpContext = 1
+      OnClick = PieDark3DClick
+    end
+    object PiePatterns: TMenuItem
+      Caption = '&Patterns'
+      HelpContext = 1
+      OnClick = PiePatternsClick
+    end
+    object PieRotation: TMenuItem
+      Caption = '&Rotation...'
+      HelpContext = 6
+      OnClick = PieRotationClick
+    end
+  end
+  object PopupFastLine: TPopupMenu
+    OnPopup = PopupFastLinePopup
+    Left = 448
+    Top = 400
+    object FastLineBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = PopupLineBorderClick
+    end
+  end
+  object PopupPoint: TPopupMenu
+    OnPopup = PopupPointPopup
+    Left = 376
+    Top = 400
+    object PointBorder: TMenuItem
+      Caption = '&Border...'
+      HelpContext = 3
+      OnClick = PopupLineBorderClick
+    end
+    object PointDark: TMenuItem
+      Caption = 'Dark &3D'
+      HelpContext = 1
+      OnClick = PointDarkClick
+    end
+    object PointDraw3D: TMenuItem
+      Caption = '&Draw 3D'
+      HelpContext = 1
+      OnClick = PointDraw3DClick
+    end
+    object PointHeight: TMenuItem
+      Caption = '&Height...'
+      HelpContext = 6
+      OnClick = PointHeightClick
+    end
+    object PointStyleItem: TMenuItem
+      Caption = '&Style'
+      object Rectangle1: TMenuItem
+        Caption = '&Square'
+        Checked = True
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object Circle1: TMenuItem
+        Caption = '&Circle'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object Triangle1: TMenuItem
+        Caption = '&Triangle'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object DownTriangle1: TMenuItem
+        Caption = '&Down Triangle'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object Cross1: TMenuItem
+        Caption = 'C&ross'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object DiagonalCross1: TMenuItem
+        Caption = '&Diagonal Cross'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object Star1: TMenuItem
+        Caption = 'St&ar'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object Diamond1: TMenuItem
+        Caption = 'D&iamond'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+      object Smalldot1: TMenuItem
+        Caption = 'Small d&ot'
+        RadioItem = True
+        OnClick = Smalldot1Click
+      end
+    end
+    object PointWidth: TMenuItem
+      Caption = '&Width...'
+      HelpContext = 6
+      OnClick = PointWidthClick
+    end
+  end
+  object PopupTabs: TPopupMenu
+    Left = 288
+    Top = 400
+    object LeftTab: TMenuItem
+      Caption = '&Left'
+      RadioItem = True
+      OnClick = BottomTabClick
+    end
+    object RightTab: TMenuItem
+      Caption = '&Right'
+      RadioItem = True
+      OnClick = BottomTabClick
+    end
+    object TopTab: TMenuItem
+      Caption = '&Top'
+      RadioItem = True
+      OnClick = BottomTabClick
+    end
+    object BottomTab: TMenuItem
+      Caption = '&Bottom'
+      Checked = True
+      RadioItem = True
+      OnClick = BottomTabClick
+    end
+  end
+  object PopupToolSeries: TPopupMenu
+    Left = 104
+    Top = 176
+    object TopToolBar: TMenuItem
+      Caption = '&Top'
+      Checked = True
+      RadioItem = True
+      OnClick = Bottom2Click
+    end
+    object Bottom2: TMenuItem
+      Caption = '&Bottom'
+      RadioItem = True
+      OnClick = Bottom2Click
+    end
+  end
+  object PopupMenuGrid: TPopupMenu
+    OnPopup = PopupMenuGridPopup
+    Left = 432
+    Top = 140
+    object Top2: TMenuItem
+      Caption = '&Align to Top'
+      Checked = True
+      OnClick = Top2Click
+    end
+    object N28: TMenuItem
+      Caption = '-'
+    end
+    object AlignGrid1: TMenuItem
+      Caption = 'Align Grid'
+      object Top3: TMenuItem
+        Caption = 'Top'
+        RadioItem = True
+        OnClick = Right3Click
+      end
+      object Bottom3: TMenuItem
+        Caption = 'Bottom'
+        Checked = True
+        RadioItem = True
+        OnClick = Right3Click
+      end
+      object Left3: TMenuItem
+        Caption = 'Left'
+        RadioItem = True
+        OnClick = Right3Click
+      end
+      object Right3: TMenuItem
+        Caption = 'Right'
+        RadioItem = True
+        OnClick = Right3Click
+      end
+    end
+  end
+  object PopupData: TPopupMenu
+    OnPopup = PopupDataPopup
+    Left = 332
+    Top = 544
+    object EditColor1: TMenuItem
+      Caption = '&Edit Color...'
+      OnClick = EditColor1Click
+    end
+    object DefaultColor1: TMenuItem
+      Caption = 'Default &Color'
+      OnClick = DefaultColor1Click
+    end
+    object Makenullpoint1: TMenuItem
+      Caption = 'Make &null point'
+      OnClick = Makenullpoint1Click
+    end
+    object MenuItem4: TMenuItem
+      Caption = '-'
+    end
+    object Insertrow1: TMenuItem
+      Caption = '&Append row'
+      OnClick = Insertrow1Click
+    end
+    object Deleterow1: TMenuItem
+      Caption = '&Delete row'
+      OnClick = Deleterow1Click
+    end
+    object MenuItem5: TMenuItem
+      Caption = '-'
+    end
+    object extfont1: TMenuItem
+      Caption = '&Text font...'
+      OnClick = extfont1Click
+    end
+  end
+end

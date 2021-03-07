@@ -1,0 +1,73 @@
+inherited MarksCancelHintForm: TMarksCancelHintForm
+  Left = 271
+  Top = 151
+  Height = 435
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The MarkTips tool triggers the CancelHint event as the Mark hide' +
+        's.'
+      ''
+      'eg.'
+      
+        'procedure TMarksCancelHintForm.ChartTool1CancelHint(Sender: TObj' +
+        'ect);'
+      'begin'
+      '  Label1.Caption:='#39'Cancelled Hint : '#39' + HintText;'
+      'end;')
+  end
+  inherited Chart1: TChart
+    Height = 252
+    BackWall.Color = clNavy
+    BackWall.Transparent = False
+    Legend.Color = clNavy
+    Legend.ColorWidth = 40
+    Legend.Font.Color = clWhite
+    Legend.HorizMargin = 16
+    Legend.Shadow.Color = clGray
+    Legend.Symbol.Width = 40
+    Legend.TopPos = 34
+    Title.Font.Color = clNavy
+    Title.Text.Strings = (
+      'MarkTips - Cancel Hint')
+    BottomAxis.Axis.Width = 1
+    BottomAxis.MaximumOffset = 14
+    LeftAxis.Axis.Width = 1
+    View3D = False
+    ColorPaletteIndex = 6
+    object Series1: THorizBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 8454143
+      BarStyle = bsArrow
+      BarWidthPercent = 100
+      Gradient.Direction = gdLeftRight
+      Shadow.HorizSize = 1
+      Shadow.VertSize = 1
+      XValues.Name = 'Bar'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loAscending
+      Data = {
+        00050000000000000000A0644000000000004050400000000000E06040000000
+        0000805B400000000000106D40}
+    end
+    object ChartTool1: TMarksTipTool
+      OnCancelHint = ChartTool1CancelHint
+      OnGetText = ChartTool1GetText
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 16
+      Top = 15
+      Width = 78
+      Height = 13
+      Caption = 'Cancelled Hint : '
+    end
+  end
+end

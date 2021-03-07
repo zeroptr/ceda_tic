@@ -1,0 +1,57 @@
+inherited ChartEditorForm: TChartEditorForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 47
+    Lines.Strings = (
+      'The ChartEditor component has been updated, '
+      
+        'to optionally show or hidden the new editor tabs like "Tools" an' +
+        'd "Data".')
+  end
+  inherited Chart1: TChart
+    Top = 88
+    Height = 249
+    object Series1: THorizBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdLeftRight
+      XValues.DateTime = False
+      XValues.Name = 'Bar'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loAscending
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 47
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 120
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = 'Show new &Tabs'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 368
+    Top = 18
+  end
+end

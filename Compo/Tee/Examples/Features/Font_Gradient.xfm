@@ -1,0 +1,61 @@
+inherited FontGradient: TFontGradient
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 41
+    Lines.Strings = (
+      
+        'All fonts now include a Gradient property to fill the font inter' +
+        'ior.'
+      'Note: Use big font sizes for a better visual appearance.')
+  end
+  inherited Chart1: TChart
+    Top = 82
+    Height = 255
+    Title.Font.Charset = ANSI_CHARSET
+    Title.Font.Height = -37
+    Title.Font.Name = 'Arial Black'
+    Title.Font.Style = [fsBold]
+    Title.Font.OutLine.Color = clNavy
+    Title.Font.OutLine.Visible = True
+    Title.Font.Shadow.Color = clGray
+    Title.Font.Shadow.HorizSize = 2
+    Title.Font.Shadow.VertSize = 2
+    Title.Text.Strings = (
+      'This Font is filled'
+      'using a Gradient !')
+  end
+  inherited Panel1: TPanel
+    Top = 41
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = '&Edit Gradient...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 140
+      Top = 12
+      Width = 109
+      Height = 17
+      Caption = 'Gradient &Visible'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 264
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Outline gradient'
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+  end
+end

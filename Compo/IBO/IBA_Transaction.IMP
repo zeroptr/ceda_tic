@@ -1,0 +1,2271 @@
+// IBA_Transaction.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_Transaction.Create(AOwner : TComponent);
+begin
+  inherited Create( AOwner );
+  FStatementList := TList.Create;
+  FDatasetList := TList.Create;
+  FConnectionLinkList := TList.Create;
+  FTransactionLinkList := TList.Create;
+  FConfirmCancelPrompt := TIB_StringList.Create;
+  FConfirmClosePrompt := TIB_StringList.Create;
+  FDMLCache := TIB_TransactionDMLCache.Create( Self );
+  FtrHandle := nil;
+  FRecVersion := true;
+  FTPBLength := 1024;
+  FStartedDateTime := now;
+  FLastStarted := now;
+  FLastStopped := now;
+  FPaused := 0;
+  FPauseDisabled := 0;
+  FResumeFromCommit := false;
+  FTimeoutProps := TIB_TimeoutProps.Create;
+  FTimeoutProps.FAllowCheckOAT := 120;
+  FTimeoutProps.FNextAttempt := 900;
+  FTimeoutProps.FAttempt := 1200;
+  FTimeoutProps.FAttemptMaxRows := 5000;
+  FTimeoutProps.FAttemptTicks := 150;
+  FTimeoutProps.FAttemptRetry := 5;
+  FTimeoutProps.FForceClosed := 0;
+  FTimeoutProps.FNextPromptUser := 0;
+  FTimeoutProps.FPromptUser := 0;
+  FTimeoutProps.FPromptUserDuration := 15;
+  FTimeoutProps.FPromptUserRetry := 60;
+end;
+
+destructor TIB_Transaction.Destroy;
+begin
+  while IsPaused do
+    Resume( false );
+  if Started or InTransaction or TransactionIsActive then
+    Close;
+  while TransactionLinkCount > 0 do
+    TIB_TransactionLink(FTransactionLinkList.Items[ 0 ]).IB_Transaction := nil;
+  SysRemoveAllConnections;
+  inherited Destroy;
+  FTransactionLinkList.Free;
+  FConnectionLinkList.Free;
+  FStatementList.Free;
+  FDatasetList.Free;
+  FConfirmCancelPrompt.Free;
+  FConfirmClosePrompt.Free;
+  FDMLCache.Free;
+  FDMLCache := nil;
+  FTimeoutProps.Free;
+  FTimeoutProps := nil;
+end;
+
+{  Public methods                                                              }
+
+procedure TIB_Transaction.ApplyUpdates(
+                                       const ADatasets: array of TIB_BDataset );
+var
+  ii: integer;
+  tmpDataset: TIB_BDataset;
+begin
+  if TransactionState = tsActive then
+    raise EIB_TransactionError.Create( E_Transaction_Is_Active );
+  try
+    BeginBusy( true );
+    StartTransaction;
+    try
+      if ( High( ADatasets ) < 0 ) or
+         ( ADatasets[ Low( ADatasets ) ] = nil ) then
+      begin
+        for ii := 0 to DatasetCount - 1 do
+        begin
+          if Datasets[ ii ] is TIB_BDataset then
+            TIB_BDataset(Datasets[ ii ]).ApplyUpdates;
+        end;
+      end
+      else
+        for ii := Low( ADatasets ) to High( ADatasets ) do
+        begin
+          tmpDataset := ADatasets[ii];
+          if tmpDataset.IB_Transaction <> Self then
+            raise EIB_TransactionError.Create( Format( E_UpdateWrongTrn,
+                                                      [tmpDataset.Name, Name]));
+          ADatasets[ii].ApplyUpdates;
+        end;
+      Commit;
+    except
+      Rollback;
+      raise;
+    end;
+    if ( High( ADatasets ) < 0 ) or
+       ( ADatasets[ Low( ADatasets ) ] = nil ) then
+    begin
+      for ii := 0 to DatasetCount - 1 do
+      begin
+        if Datasets[ ii ] is TIB_BDataset then
+          TIB_BDataset(Datasets[ ii ]).CommitUpdates;
+      end;
+    end
+    else
+      for ii := Low( ADatasets ) to High( ADatasets ) do
+        ADatasets[ii].CommitUpdates;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Transaction.CancelUpdates(
+                                       const ADatasets: array of TIB_BDataset );
+var
+  ii: Integer;
+  tmpDataset: TIB_BDataset;
+begin
+  if ( High( ADatasets ) < 0 ) or
+     ( ADatasets[ Low( ADatasets ) ] = nil ) then
+  begin
+    for ii := 0 to DatasetCount - 1 do
+    begin
+      if Datasets[ ii ] is TIB_BDataset then
+        TIB_BDataset(Datasets[ ii ]).CancelUpdates;
+    end;
+  end
+  else
+    for ii := 0 to High( ADatasets ) do
+    begin
+      tmpDataset := ADatasets[ii];
+      if tmpDataset.IB_Transaction <> Self then
+        raise EIB_TransactionError.Create( Format( E_UpdateWrongTrn,
+                                                   [ tmpDataset.Name, Name ]));
+      ADatasets[ii].CancelUpdates;
+    end;
+end;
+
+procedure TIB_Transaction.AddDMLCacheItem( AConnection: TIB_Connection;
+                                           ADataset: TIB_Dataset;
+                                           const AKeyFieldNames: string;
+                                           AKeyFieldValues: variant;
+                                           ADMLItemType: TIB_DMLCacheItemType );
+begin
+  FDMLCache.AddItem( AConnection,
+                     ADataset,
+                     AKeyFieldNames,
+                     AKeyFieldValues,
+                     ADMLItemType );
+end;
+
+procedure TIB_Transaction.ExecuteImmediate( const ACommand: string );
+begin
+  Started := true;
+  if Started then
+    API_ExecuteImmediate( ACommand, nil );
+end;
+
+procedure TIB_Transaction.API_ExecuteImmediate( const ACommand: string;
+                                                      AParam: PXSQLDA );
+var
+  ii: integer;
+  WasStarted: boolean;
+  SaveCW: word;
+begin
+  WasStarted := Started;
+  try
+    with IB_Session do
+    begin
+      for ii := 0 to ConnectionCount - 1 do
+      begin
+        with Connections[ ii ] do
+        begin
+          asm fstcw [SaveCW] end;
+          errcode := isc_dsql_execute_immediate( @status,
+                                                 PdbHandle,
+                                                 PtrHandle,
+                                                 Length(ACommand),
+                                                 PChar(ACommand),
+                                                 SQLDialect,
+                                                 AParam );
+          asm fldcw [SaveCW] end;
+          if errcode <> 0 then
+            HandleException( Self );
+        end;
+      end;
+    end;
+  finally
+    if WasStarted and not Started then
+    begin
+      for ii := 0 to ConnectionCount - 1 do
+        Dec( Connections[ ii ].FStartedTransactionCount );
+      UpdateStatus;
+      IB_Session.ResetTimerNotification( Self );
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.StartTransaction;
+begin
+  if InTransaction then
+    raise EIB_TransactionError.Create( E_TRANS_STARTED )
+  else
+  if ServerAutoCommit then
+    raise EIB_TransactionError.Create( E_SVRAUTOCMT_NOEXP )
+  else
+    FInTransaction := true;
+  UpdateStatus;
+end;
+
+procedure TIB_Transaction.Commit;
+begin
+  if Started or InTransaction or TransactionIsActive then
+    try
+      BeginBusy( false );
+      SysCommit( false );
+    finally
+      EndBusy;
+    end
+  else
+    UpdateStatus;
+end;
+
+procedure TIB_Transaction.CommitRetaining;
+begin
+  if Started or InTransaction or TransactionIsActive then
+    try
+      BeginBusy( false );
+      SysCommitRetaining( false );
+    finally
+      EndBusy;
+    end
+  else
+    UpdateStatus;
+end;
+
+procedure TIB_Transaction.SavePoint;
+begin
+  if Started then
+    try
+      BeginBusy( false );
+      SysCommitRetaining( true );
+    finally
+      EndBusy;
+    end
+  else
+    UpdateStatus;
+end;
+
+procedure TIB_Transaction.Rollback;
+begin
+  if Started or InTransaction or TransactionIsActive then
+    try
+      BeginBusy( false );
+      SysRollback( false );
+    finally
+      EndBusy;
+    end
+  else
+    UpdateStatus;
+end;
+
+procedure TIB_Transaction.RollbackRetaining;
+begin
+  if Started or InTransaction or TransactionIsActive then
+    try
+      BeginBusy( false );
+      SysRollbackRetaining;
+    finally
+      EndBusy;
+    end
+  else
+    UpdateStatus;
+end;
+
+procedure TIB_Transaction.Refresh( CommitChanges: boolean );
+begin
+  try
+    BeginBusy( false );
+    if CommitChanges then
+      SysCommit( true )
+    else
+      SysRollback( true );
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Transaction.ChangeIsolation( NewIsolation: TIB_Isolation;
+                                           CommitChanges: boolean );
+begin
+  if Isolation <> NewIsolation then
+    if Started or InTransaction or TransactionIsActive then
+      try
+        BeginBusy( false );
+        if CommitChanges then
+        begin
+          if SysCommitBegin( true ) then
+          begin
+            Isolation := NewIsolation;
+            SysCommitEnd( true );
+          end;
+        end else if SysRollbackBegin( true ) then
+        begin
+          Isolation := NewIsolation;
+          SysRollbackEnd( true );
+        end;
+      finally
+        EndBusy;
+      end
+      else
+        Isolation := NewIsolation;
+end;
+
+procedure TIB_Transaction.PostAll;
+begin
+  if Started or InTransaction or TransactionIsActive then
+    try
+      BeginBusy( false );
+      SysPostAll( true );
+    finally
+      EndBusy;
+    end;
+end;
+
+procedure TIB_Transaction.CancelAll;
+begin
+  if Started or InTransaction or TransactionIsActive then try
+    BeginBusy( false );
+    SysCancelAll( true );
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Transaction.Close;
+begin
+  if Started or InTransaction or TransactionIsActive then try
+    BeginBusy( false );
+    if not FClosePending then
+    try
+      try
+        FClosePending := true;
+        if AutoCommit and not FConnectionWasLost and not InTransaction then
+          try
+    //!! Check for a lost connection.
+            SysCommit( false );
+          except
+            if Started or InTransaction or TransactionIsActive then
+              SysRollback( false )
+            else
+            if not ( csDestroying in ComponentState ) then
+              raise;
+          end
+        else
+          SysRollback( false );
+      except
+        if not ( csDestroying in ComponentState ) then
+          raise;
+      end;
+    finally
+      FClosePending := false;
+    end;
+    if FInTransaction then
+      FInTransaction := false;
+  finally
+    EndBusy;
+  end;
+end;
+
+{$IFNDEF IBO4_BETA}
+function TIB_Transaction.CloseWithConfirm: TModalResult;
+{$ELSE}
+function TIB_Transaction.CloseWithConfirm: integer;
+{$ENDIF}
+var
+  AMessage: string;
+begin
+  Result := idOk; //mrOk;
+  try
+    if TransactionIsActive then
+    begin
+      if ConfirmClosePrompt.Count = 0 then
+        AMessage := M_Save_Changes
+      else
+        AMessage := ConfirmClosePrompt.Text;
+      case MessageDlg( AMessage, mtConfirmation, mbYesNoCancel, 0 ) of
+        idYes: //mrYes:
+          if CachedUpdatePendingCount > 0 then
+            ApplyUpdates( [nil] )
+          else
+            Commit;
+        idNo: //mrNo:
+          if CachedUpdatePendingCount > 0 then
+            CancelUpdates( [nil] )
+          else
+            Rollback;
+        idCancel: //mrCancel:
+          Result := idCancel; //mrCancel;
+      end;
+    end
+    else
+    if Started or InTransaction then
+      try
+        Commit;
+      except
+        Rollback;
+        raise;
+      end;
+  except
+    on E: Exception do
+    begin
+      Result := idAbort; //mrAbort;
+      Application.HandleException( E );
+    end;
+  end;
+end;
+
+{$IFNDEF IBO4_BETA}
+function TIB_Transaction.EndWithConfirm: TModalResult;
+{$ELSE}
+function TIB_Transaction.EndWithConfirm: integer;
+{$ENDIF}
+var
+  AMessage: string;
+begin
+  Result := idOk; //mrOk;
+  try
+    if TransactionIsActive then
+    begin
+      if ConfirmClosePrompt.Count = 0 then
+        AMessage := M_Save_Changes
+      else
+        AMessage := ConfirmClosePrompt.Text;
+      case MessageDlg( AMessage, mtConfirmation, mbYesNoCancel, 0 ) of
+        idYes: //mrYes:
+          if CachedUpdatePendingCount > 0 then
+            ApplyUpdates( [nil] )
+          else
+            CommitRetaining;
+        idNo: //mrNo:
+          if CachedUpdatePendingCount > 0 then
+            CancelUpdates( [nil] )
+          else
+            RollbackRetaining;
+        idCancel: //mrCancel:
+          Result := idCancel; //mrCancel;
+      end;
+    end
+    else
+    if InTransaction then
+      CommitRetaining;
+  except
+    on E: Exception do
+    begin
+      Result := idAbort; //mrAbort;
+      Application.HandleException( E );
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SetConfirmCancelPrompt( AValue: TStrings );
+begin
+  FConfirmCancelPrompt.Assign( AValue );
+end;
+
+procedure TIB_Transaction.SetConfirmClosePrompt( AValue: TStrings );
+begin
+  FConfirmClosePrompt.Assign( AValue );
+end;
+
+procedure TIB_Transaction.SysAdjustPendingCount;
+begin
+  if ( FPostPendingCount = 0 ) and ( FCachedUpdatePendingCount = 0 ) then
+  begin
+    if TransactionState = tsActivePending then
+    begin
+      SetTransactionState( tsInactive );
+      UpdateStatus;
+    end;
+  end
+  else
+  if TransactionState in [ tsNone, tsInactive ] then
+  begin
+    SetTransactionState( tsActivePending );
+    UpdateStatus;
+  end;
+end;
+
+procedure TIB_Transaction.SysAdjustPostPendingCount( Adj: integer );
+begin
+  Inc( FPostPendingCount, Adj );
+  SysAdjustPendingCount;
+  if FWantPostPendingChanged > 0 then
+    ProcessEvent( tetOnPostPendingChanged );
+end;
+
+procedure TIB_Transaction.SysAdjustCachedUpdatePendingCount( Adj: integer );
+begin
+  Inc( FCachedUpdatePendingCount, Adj );
+  SysAdjustPendingCount;
+  if FWantCachedUpdatePendingChanged > 0 then
+    ProcessEvent( tetOnCachedUpdatePendingChanged );
+end;
+
+procedure TIB_Transaction.Activate;
+begin
+  if TransactionState in [ tsNone,
+                           tsInactive,
+                           tsActivePending ] then
+  begin
+    SetTransactionState( tsActive );
+    UpdateStatus;
+  end
+  else
+  if TransactionState = tsActive then
+    SetTransactionState( tsActive )
+  else
+  if TransactionState in PendingTransactionStates then
+  // Allow changes to be posted during the completion of a transaction.
+  else
+    raise EIB_TransactionError.Create( E_Cannot_Activate );
+  try
+    Inc( FActivateCount );
+  except
+  // Avoid a problem if the statistic counter rolls past 4 billion.
+  // Let it just stay at the maximum number possible.
+  end;
+  if TimeoutProps.FDisableCheckOATFromError then
+    TimeoutProps.FDisableCheckOATFromError := false;
+end;
+
+procedure TIB_Transaction.UpdateStatus;
+begin
+  ProcessEvent( tetOnStatusChanged );
+end;
+
+function TIB_Transaction.GetTransactionIsActive: boolean;
+begin
+  Result := ( PostPendingCount > 0 ) or
+            ( CachedUpdatePendingCount > 0 ) or
+            ( TransactionState in [ tsActivePending, tsActive ] ) or
+            ( TransactionState in PendingTransactionStates );
+end;
+
+{  Protected methods                                                           }
+
+function TIB_Transaction.SysStart: boolean;
+begin
+  if not Started then
+  begin
+    if ( csReading in ComponentState ) or
+       ( csFixups  in ComponentState ) then
+      SetTransactionState( tsInactivePending )
+    else
+    begin
+      SysBeforeStart;
+      if not Started and ( TransactionState <> tsNone ) then
+      begin
+        API_Start;
+        SysAfterStart;
+        UpdateStatus;
+      end;
+    end;
+  end;
+  Result := Started;
+end;
+
+procedure TIB_Transaction.SysBeforeStart;
+var
+  ii: integer;
+begin
+  if TransactionState = tsNone then
+    SetTransactionState( tsInactivePending );
+  try
+    DoBeforeStart;
+    ProcessEvent( tetBeforeStart );
+    if ConnectionCount > 0 then
+      for ii := 0 to ConnectionCount - 1 do
+        with Connections[ ii ] do
+          if (( ConnectionStatus in [ csDisconnectPending,
+                                      csDropPending ] ) and not ReadOnly ) or
+             not SysConnect( false ) then
+            SysFailedStart;
+  except
+    SysFailedStart;
+    raise;
+  end;
+end;
+
+procedure TIB_Transaction.SysFailedStart;
+begin
+  ResetTransactionState( true );
+  UpdateStatus;
+end;
+
+procedure TIB_Transaction.ResetTransactionState( LogicalEnd: boolean );
+var
+  NewTransactionState: TIB_TransactionState;
+begin
+  if TransactionState in [ tsSavePointPending,
+                           tsCommitRetainingPending,
+                           tsRollbackRetainingPending ] then
+  begin
+    if Started then
+      NewTransactionState := tsInactive
+    else
+      NewTransactionState := tsNone;
+  end
+  else
+    if TransactionState in [ tsInactivePending,
+                             tsCommitPending,
+                             tsCommitRefreshPending,
+                             tsRollbackPending,
+                             tsRollbackRefreshPending ] then
+      NewTransactionState := tsNone
+    else
+      NewTransactionState := TransactionState;
+  if ( PostPendingCount > 0 ) or
+     ( CachedUpdatePendingCOunt > 0 ) then
+  begin
+    if NewTransactionState in [ tsNone, tsInactive ] then
+      NewTransactionState := tsActivePending;
+  end
+  else
+    if Started then
+      if NewTransactionState in [ tsNone ] then
+        NewTransactionState := tsInactive;
+  if not LogicalEnd and ( NewTransactionState = tsNone ) then
+    NewTransactionState := tsInactive;
+  SetTransactionState( NewTransactionState );
+end;
+
+procedure TIB_Transaction.SysAfterStart;
+begin
+  if TransactionState = tsInactivePending then
+    SetTransactionState( tsInactive )
+  else
+    SetTransactionState( TransactionState );
+  ProcessEvent( tetAfterStart );
+  DoAfterStart;
+end;
+
+procedure TIB_Transaction.SysCommit( ARefreshing: boolean );
+begin
+  if SysCommitBegin( ARefreshing ) then
+    SysCommitEnd( ARefreshing );
+end;
+
+procedure TIB_Transaction.SysProcessCommitAction( const ABeforeEnd,
+                                                        ACommitChanges,
+                                                        ARefreshing,
+                                                        ARetaining: boolean );
+var
+  ii: integer;
+  tmpDataset: TIB_Dataset;
+begin
+  if ARetaining then Exit;
+  ii := 0;
+  while ii < DatasetCount do
+  begin
+    tmpDataset := Datasets[ ii ];
+    if ABeforeEnd then
+      if tmpDataset.NeedToPost and not tmpDataset.FCachedUpdates then
+        if ACommitChanges then
+        begin
+          if not FOATPending then
+            tmpDataset.SysPost( false, false );
+        end
+        else
+          tmpDataset.SysCancel;
+    try
+      with tmpDataset do
+      begin
+        if Self.FClosePending or tmpDataset.Unidirectional then
+        begin
+          if ABeforeEnd then
+            Close;
+        end
+        else
+        if ARefreshing then
+        begin
+          if Unidirectional then
+            Close
+          else
+          if ABeforeEnd then
+            {KillCursor}
+          else
+            Refresh;
+        end
+        else
+          case CommitAction of
+            caClose: if ( CursorIsOpen ) or
+                        ( BufferActive and not FOATPending ) then
+            begin
+              if ABeforeEnd then
+              begin
+                if not FOATPending or ( RefreshAction = raOpen ) then
+                  Close;
+              end
+              else
+              begin
+                if FOATPending and ( RefreshAction <> raOpen ) and
+                   CursorIsOpen then
+                  RefreshKeys;
+              end;
+            end;
+            caInvalidateCursor:
+              if ( CursorIsOpen ) or
+                 (( not ACommitChanges and
+                    not ARetaining and
+                    not ARefreshing and
+                    ( FDatasetFlags * [ dsfInsertWasPosted,
+                                        dsfEditWasPosted,
+                                        dsfDeleteWasPosted,
+                                        dsfWasInvalidated,
+                                        dsfWasRefreshed ] <> [] ) )) then
+                if ABeforeEnd then
+                begin
+                  if FCachedUpdates and NeedToPost then
+                    FetchAll; // This really never should happen.
+                end
+                else
+                  RefreshKeys;
+            caFetchAll:
+              if ABeforeEnd then
+                if Active then
+                  FetchAll;
+            caRefresh,
+            caRefreshKeys:
+              if ABeforeEnd then
+                {KillCursor}
+              else
+                if Active then
+                  if CommitAction = caRefresh then
+                    Refresh
+                  else
+                    RefreshKeys;
+          end;
+        if not ABeforeEnd and ( FDatasetFlags <> [] ) then
+          FDatasetFlags := FDatasetFlags - [ dsfInsertWasPosted,
+                                             dsfEditWasPosted,
+                                             dsfDeleteWasPosted,
+                                             dsfWasInvalidated,
+                                             dsfWasRefreshed ];
+      end;
+    except
+      on E: Exception do
+        Application.HandleException( E );
+    end;
+    if FDatasetList.IndexOf( tmpDataset ) >= 0 then
+      Inc( ii );
+  end;
+end;
+
+function TIB_Transaction.SysCommitBegin( ARefreshing: boolean ): boolean;
+var
+  OldStatus: TIB_TransactionState;
+begin
+  Result := false; 
+  if Started or InTransaction or TransactionIsActive then
+  begin
+    if not ( TransactionState in [ tsCommitPending,
+                                   tsCommitRefreshPending,
+                                   tsRollbackPending,
+                                   tsRollbackRefreshPending ] ) then
+    begin
+      OldStatus := TransactionState;
+      Result := true;
+      if ARefreshing then
+        SetTransactionState( tsCommitRefreshPending )
+      else
+        SetTransactionState( tsCommitPending );
+      try
+        SysBeforeEnd;
+        DoBeforeCommit;
+        ProcessEvent( tetBeforeCommit );
+        // Make sure all datasets are posted prior to applying commit actions.
+        if not FOATPending then
+          SysPostAll( false );
+        SysProcessCommitAction( true, true, ARefreshing, false );
+        if Started then
+          API_Commit;
+        try
+          FDMLCache.ProcessItems( true );
+        except
+          // Do nothing.
+        end;
+      except
+        SetTransactionState( OldStatus );
+        raise;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SysCommitEnd( ARefreshing: boolean );
+begin
+  SysProcessCommitAction( false, true, ARefreshing, false );
+  try
+    ProcessEvent( tetAfterCommit );
+  finally
+    ResetTransactionState( true );
+    if not ARefreshing then
+      FInTransaction := false;
+    DoAfterCommit;
+    SysAfterEnd( true );
+    UpdateStatus;
+  end;
+end;
+
+procedure TIB_Transaction.SysCommitRetaining( ASavePointOnly: boolean );
+var
+  ii: integer;
+  OldStatus: TIB_TransactionState;
+  WasEnded: boolean;
+begin
+  if Started or InTransaction or TransactionIsActive then
+  begin
+    OldStatus := TransactionState;
+    if ASavePointOnly then
+      SetTransactionState( tsSavePointPending )
+    else
+      SetTransactionState( tsCommitRetainingPending );
+    try
+      if ASavePointOnly then
+        DoBeforeSavePoint
+      else
+      begin
+        DoBeforeCommitRetaining;
+        ProcessEvent( tetBeforeCommitRetaining );
+        SysPostAll( false );
+      end;
+      WasEnded := false;
+      if TransactionState in [ tsSavePointPending,
+                               tsCommitRetainingPending ] then
+      begin
+        if Started then
+        begin
+          if ( FOpenCursors = 0 ) and
+             ( Isolation = tiCommitted ) and
+             ( not ( ASavePointOnly and InTransaction )) and
+             ( TimeActive > ( TimeoutProps.AllowCheckOAT / 88400 )) then
+          begin
+            API_Commit;
+            WasEnded := true;
+          end
+          else
+            API_CommitRetaining;
+          if ASavePointOnly then
+            if FPessimisticLockCount > 0 then
+              for ii := 0 to DatasetCount - 1 do
+                with Datasets[ ii ] do
+                  if FIsRowLocked then
+                  begin
+                    FIsRowLocked := false;
+                    Dec( FPessimisticLockCount );
+                  end;
+        end;
+        try
+          FDMLCache.ProcessItems( true );
+        except
+          // Do nothing.
+        end;
+      end;
+    except
+      FTransactionState := OldStatus;
+      UpdateStatus;
+      raise;
+    end;
+    try
+      if not ASavePointOnly then
+        ProcessEvent( tetAfterCommitRetaining );
+    finally
+      ResetTransactionState( true );
+      if ASavePointOnly then
+        DoAfterSavePoint
+      else
+      begin
+        FInTransaction := false;
+        DoAfterCommitRetaining;
+      end;
+      if WasEnded then
+        SysAfterEnd( true );
+      UpdateStatus;
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SysRollbackRetaining;
+var
+  OldStatus: TIB_TransactionState;
+begin
+  if Started or InTransaction or TransactionIsActive then
+  begin
+    OldStatus := TransactionState;
+    SetTransactionState( tsRollbackRetainingPending );
+    DoBeforeRollbackRetaining;
+    try
+      ProcessEvent( tetBeforeRollbackRetaining );
+      SysCancelAll( false );
+      if TransactionState = tsRollbackRetainingPending then begin
+        if Started then
+          API_RollbackRetaining;
+        try
+          FDMLCache.ProcessItems( true );
+        except
+          // Do nothing.
+        end;
+      end;
+    except
+      FTransactionState := OldStatus;
+      UpdateStatus;
+      raise;
+    end;
+    try
+      ProcessEvent( tetAfterRollbackRetaining );
+    finally
+      ResetTransactionState( true );
+      FInTransaction := false;
+      DoAfterRollbackRetaining;
+      CheckOAT;
+      UpdateStatus;
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SysRollback( ARefreshing: boolean );
+begin
+  if SysRollbackBegin( ARefreshing ) then
+    SysRollbackEnd( ARefreshing );
+end;
+
+function TIB_Transaction.SysRollbackBegin( ARefreshing: boolean ): boolean;
+var
+  OldStatus: TIB_TransactionState;
+begin
+  Result := false;
+  if Started or InTransaction or TransactionIsActive then
+  begin
+    if not ( TransactionState in [ tsCommitPending,
+                                   tsCommitRefreshPending,
+                                   tsRollbackPending,
+                                   tsRollbackRefreshPending ] ) then
+    begin
+      OldStatus := TransactionState;
+      Result := true;
+      if ARefreshing then
+        SetTransactionState( tsRollbackRefreshPending )
+      else
+        SetTransactionState( tsRollbackPending );
+      try
+        SysBeforeEnd;
+        DoBeforeRollback;
+        ProcessEvent( tetBeforeRollback );
+        SysProcessCommitAction( true, false, ARefreshing, false );
+        if Started then
+          API_Rollback;
+        try
+          FDMLCache.ProcessItems( false );
+        except
+          // Do nothing.
+        end;
+      except
+        SetTransactionState( OldStatus );
+        raise;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SysRollbackEnd( ARefreshing: boolean );
+begin
+  SysProcessCommitAction( false, false, ARefreshing, false );
+  try
+    ProcessEvent( tetAfterRollback );
+  finally
+    ResetTransactionState( true );
+    if not ARefreshing then
+      FInTransaction := false;
+    DoAfterRollback;
+    SysAfterEnd( false );
+    UpdateStatus;
+  end;
+end;
+
+procedure TIB_Transaction.SysBeforeEnd;
+begin
+  DoBeforeEnd;
+  ProcessEvent( tetBeforeEnd );
+end;
+
+procedure TIB_Transaction.SysAfterEnd( WasCommitted: boolean );
+begin
+  ProcessEvent( tetAfterEnd );
+  DoAfterEnd;
+end;
+
+procedure TIB_Transaction.SysPostAll( IncludeCachedUpdates: boolean );
+var
+  ii: integer;
+  tmpDataset: TIB_Dataset;
+  tmpCnt: integer;
+begin
+  tmpCnt := 0;
+  for ii := 0 to DatasetCount - 1 do
+  begin
+    tmpDataset := Datasets[ ii ];
+    if ( tmpDataset.NeedToPost ) and
+       ( not tmpDataset.FCachedUpdates or IncludeCachedUpdates ) then
+    begin
+      if Assigned( tmpDataset.MasterSource ) and
+         Assigned( tmpDataset.MasterSource.Dataset ) then
+        if ( tmpDataset.MasterSource.Dataset.IB_Transaction = Self ) and
+           ( tmpDataset.MasterSource.Dataset.State = dssInsert ) then
+          tmpDataset.MasterSource.Dataset.SysPost( false, false );
+      tmpDataset.SysPost( false, false );
+    end;
+    if tmpDataset.NeedToPost and tmpDataset.FCachedUpdates then
+      Inc( tmpCnt );
+  end;
+  if ( PostPendingCount - tmpCnt ) > 0 then
+    raise EIB_TransactionError.Create( E_Failed_To_Post_Datasets );
+end;
+
+procedure TIB_Transaction.SysCancelAll( IncludeCachedUpdates: boolean );
+var
+  ii: integer;
+  tmpDataset: TIB_Dataset;
+  tmpCnt: integer;
+begin
+  tmpCnt := 0;
+  for ii := 0 to DatasetCount - 1 do
+  begin
+    tmpDataset := Datasets[ ii ];
+    if ( tmpDataset.NeedToPost ) and
+       ( not tmpDataset.FCachedUpdates or IncludeCachedUpdates ) then
+      tmpDataset.SysCancel;
+    if tmpDataset.NeedToPost and tmpDataset.FCachedUpdates then
+      Inc( tmpCnt );
+  end;
+  if ( PostPendingCount - tmpCnt ) > 0 then
+    raise EIB_TransactionError.Create( E_Failed_To_Cancel_Datasets );
+end;
+
+procedure TIB_Transaction.SysBeforeExecDDL;
+begin
+// Abstract.
+end;
+
+procedure TIB_Transaction.SysAfterExecDDL;
+begin
+// Abstract.
+end;
+
+procedure TIB_Transaction.SetAutoCommit( AValue: boolean );
+begin
+  if FAutoCommit <> AValue then
+  begin
+    FAutoCommit := AValue;
+    SetTransactionState( TransactionState );
+  end;
+end;
+
+function TIB_Transaction.GetAutoCommit: boolean;
+begin
+  Result := FAutoCommit or FServerAutoCommit;
+end;
+
+function TIB_Transaction.IsAutoCommitStored: boolean;
+begin
+  Result := AutoCommit and not ServerAutoCommit;
+end;
+
+procedure TIB_Transaction.SetServerAutoCommit( AValue: boolean );
+begin
+  if ServerAutoCommit <> AValue then
+  begin
+    if Started then
+      if AValue then
+        Commit;
+      Close;
+    FServerAutoCommit := AValue;
+  end;
+end;
+
+procedure TIB_Transaction.SetStarted( AValue: boolean );
+begin
+  if Started <> AValue then
+  begin
+    if AValue then
+      SysStart
+    else
+      Close;
+  end;
+end;
+
+function TIB_Transaction.NeedTimerNotifications: boolean;
+begin
+  Result := Started or inherited NeedTimerNotifications;
+end;
+
+procedure TIB_Transaction.SetTransactionState( AValue: TIB_TransactionState );
+begin
+  if IsPaused then
+    IsPausedError;
+  if AutoCommit and ( AValue = tsActive ) and not InTransaction then
+  begin
+    if not ServerAutoCommit then
+      SavePoint;
+  end
+  else
+  if TransactionState <> AValue then
+  begin
+    if TransactionState = tsNone then
+    begin
+      FActivateCount := 0;
+      FStartedDateTime := now;
+    end;
+    FTransactionState := AValue;
+    UpdateStatus;
+  end;
+end;
+
+function TIB_Transaction.GetStarted: boolean;
+begin
+  Result := FtrHandle <> nil;
+end;
+
+function TIB_Transaction.GetPdbHandles( Index: integer ): pisc_db_handle;
+begin
+  if ( Index < 0 ) or ( Index > ConnectionCount ) then
+    Result := nil
+  else
+    Result := Connections[ Index ].PdbHandle;
+end;
+
+function TIB_Transaction.GetPtrHandle: pisc_tr_handle;
+begin
+  Result := @FtrHandle;
+end;
+
+function TIB_Transaction.GetStatementCount: integer;
+begin
+  if FStatementList <> nil then
+    Result := FStatementList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Transaction.GetStatement( Index: integer ): TIB_Statement;
+begin
+  if ( Index >= 0 ) and
+     ( Index <= StatementCount - 1 ) and
+     ( FStatementList <> nil )then
+    Result := TIB_Statement( FStatementList.Items[ Index ] )
+  else
+    Result := nil;
+end;
+
+function TIB_Transaction.GetDatasetCount: integer;
+begin
+  if FDatasetList <> nil then
+    Result := FDatasetList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Transaction.GetDataset( Index: integer ): TIB_Dataset;
+begin
+  if ( Index >= 0 ) and
+     ( Index <= DatasetCount - 1 ) and
+     ( FDatasetList <> nil )then
+    Result := TIB_Dataset( FDatasetList.Items[ Index ] )
+  else
+    Result := nil;
+end;
+
+function TIB_Transaction.GetConnectionCount: integer;
+begin
+  if FConnectionLinkList <> nil then
+    Result := FConnectionLinkList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Transaction.GetConnection( Index: integer ): TIB_Connection;
+begin
+  if ( Index >= 0 ) and
+     ( Index <= ConnectionCount - 1 ) and
+     ( FConnectionLinkList <> nil ) then
+    Result := TIB_ConnectionLink(
+                              FConnectionLinkList.Items[ Index ] ).IB_Connection
+  else
+    Result := nil;
+end;
+
+function TIB_Transaction.GetConnectionIndex( Index: TIB_Connection ): integer;
+var
+  i: integer;
+begin
+  Result := -1;
+  for i := 0 to ConnectionCount - 1 do
+    if Index = Connections[ i ] then
+    begin
+      Result := i;
+      Break;
+    end;
+end;
+
+procedure TIB_Transaction.SetReadOnly( AValue: boolean );
+begin
+  if ReadOnly <> AValue then
+  begin
+    CheckOAT;
+    if Started then
+      raise EIB_TransactionError.Create( E_NO_CHANGE_READONLY )
+    else
+      FReadOnly := AValue;
+  end;
+end;
+
+procedure TIB_Transaction.SetIsolation( AValue: TIB_Isolation );
+begin
+  if Isolation <> AValue then
+  begin
+    CheckOAT;
+    if Started then
+      raise EIB_TransactionError.Create( E_NO_CHANGE_ISOLATION )
+    else
+      FIsolation := AValue;
+  end;
+end;
+
+procedure TIB_Transaction.SetRecVersion( AValue: boolean );
+begin
+  if RecVersion <> AValue then
+  begin
+    CheckOAT;
+    if Started then
+      raise EIB_TransactionError.Create( E_NO_CHANGE_RECVERSION )
+    else
+      FRecVersion := AValue;
+  end;
+end;
+
+procedure TIB_Transaction.SetLockWait( AValue: boolean );
+begin
+  if LockWait <> AValue then
+  begin
+    CheckOAT;
+    if Started then
+      raise EIB_TransactionError.Create( E_NO_CHANGE_LOCKWAIT )
+    else
+      FLockWait := AValue;
+  end;
+end;
+
+function TIB_Transaction.GetIsPaused: boolean;
+begin
+  Result := FPaused > 0;
+end;
+
+function TIB_Transaction.GetIsPauseDisabled: boolean;
+begin
+  Result := not ( FPauseDisabled = 0 );
+end;
+
+function TIB_Transaction.GetTimeActive: TDateTime;
+begin
+  if not Started then
+    Result := 0
+  else
+    Result := now - FLastStarted;
+end;
+
+procedure TIB_Transaction.IsPausedError;
+begin
+  raise EIB_TransactionError.Create( E_TransactionPaused );
+end;
+
+// Note that this function theoretically allows a transaction that
+// has not been started to be paused.  Essentially "locking" the
+// transaction from auto-start until the transaction is resumed.
+// It can also return true when already paused, allowing pause
+// to go into multiple depth.
+function TIB_Transaction.GetCanPause: boolean;
+begin
+  // Only pause a live transaction
+  // NB. NEVER allow override of FPauseDisabled
+  Result := Started and ( FPauseDisabled = 0 );
+  if Result then
+  begin
+    // Dont permit a pause in the middle of any commit/rollback
+    // pending states.
+    // Not sure about Active/Inactive Pending - I'll try without
+    // for the moment because I think these are potentially long
+    // term states (started but not "InTransaction").
+    if TransactionState in PendingTransactionStates then
+    begin
+      Result := false;
+    end else
+    begin
+      Result := not TransactionIsActive;
+      if Assigned( FOnGetCanPause ) then
+        FOnGetCanPause( Self, Result )
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.DoPauseChanged;
+begin
+  if Assigned( FOnPauseChanged ) then
+    FOnPauseChanged( Self );
+end;
+
+function TIB_Transaction.Pause( CommitChanges: boolean ): boolean;
+begin
+  if CanPause then
+  begin
+    if FPaused = 0 then
+    begin
+      try
+        FIsPausePending := true;
+        BeginBusy( false );
+        if CommitChanges then
+        begin
+          SysCommitBegin( true );
+          FResumeFromCommit := true;
+        end
+        else
+        begin
+          SysRollbackBegin( true );
+          FResumeFromCommit := false;
+        end;
+      finally
+        FIsPausePending := false;
+        EndBusy;
+      end;
+      Inc( FPaused );
+      DoPauseChanged;
+    end
+    else
+      Inc( FPaused );
+  end;
+  Result := IsPaused;
+end;
+
+function TIB_Transaction.Resume( WithRestart: boolean ): boolean;
+begin
+  if IsPaused then
+  begin
+    Dec( FPaused ); // Must occur BEFORE the *End calls to allow state change
+    if FPaused = 0 then
+    begin
+      try
+        BeginBusy( false );
+        try
+          if FResumeFromCommit then
+          begin
+            SysCommitEnd( WithRestart );
+            FResumeFromCommit := false;
+          end
+          else
+            SysRollbackEnd( WithRestart );
+        except
+          Inc( FPaused ); // reset pause state if except occurs
+          raise;
+        end;
+      finally
+        EndBusy;
+      end;
+      DoPauseChanged;
+    end;
+  end;
+  Result := not IsPaused;
+end;
+
+procedure TIB_Transaction.DisablePause;
+begin
+  if IsPaused then
+    IsPausedError;
+  Inc( FPauseDisabled );
+end;
+
+procedure TIB_Transaction.EnablePause;
+begin
+  if FPauseDisabled > 0 then
+    Dec( FPauseDisabled );
+end;
+
+{  Action routines                                                             }
+
+procedure TIB_Transaction.API_Start;
+var
+  pteb: pisc_teb;
+  teb_buffer: pointer;
+  ii: integer;
+  BufInd: longint;
+  buffer: pchar;
+  tmpTPBLen: smallint;
+  ticks: DWORD;
+  procedure BuildTPB( Item: byte; Contents: string);
+  begin
+    buffer[ BufInd ] := Char(Item);
+    Inc( BufInd );
+    buffer[ BufInd ] := Char(Length(Contents));
+    Inc( BufInd );
+    StrPCopy( @buffer[ BufInd ], Contents );
+    Inc( BufInd, Length( Contents ));
+  end;
+var
+  tmpReadOnly: boolean;
+begin
+  if ( ConnectionCount = 0 ) and
+     IB_Session.AllowDefaultConnection then
+    SysAddConnection( IB_Session.DefaultConnection );
+  if ConnectionCount = 0 then
+    raise EIB_TransactionError.Create( E_NO_CONNECTIONS );
+  tmpReadOnly := false;
+  for ii := 0 to ConnectionCount - 1 do
+    with Connections[ ii ] do
+    begin
+      Connected := true;
+      if not Connected then
+        Exit { The connection component is still being loaded in.             }
+             { Otherwise the above Connection would have raised an exception. }
+      else
+        tmpReadOnly := tmpReadOnly or Characteristics.dbReadOnly;
+    end;
+  if Started then
+    Exit; { The above code may cause a recursive call. }
+          { This will terminate it!                    }
+  if IsPaused then // dont permit start while paused
+    IsPausedError;
+// Localize the buffer length.
+  tmpTPBLen := TPBLength;
+  Buffer := StrAlloc( tmpTPBLen );
+  try
+    BufInd := 0;
+    buffer[ BufInd ] := Char( isc_tpb_version3 );
+    Inc( BufInd );
+    if ReadOnly or tmpReadOnly then 
+      buffer[ BufInd ] := Char( isc_tpb_read )
+    else
+      buffer[ BufInd ] := Char( isc_tpb_write );
+    Inc( BufInd );
+    case Isolation of
+      tiConcurrency: buffer[ BufInd ] := Char( isc_tpb_concurrency );
+      tiConsistency: buffer[ BufInd ] := Char( isc_tpb_consistency );
+      tiCommitted: buffer[ BufInd ] := Char( isc_tpb_read_committed );
+    end;
+    Inc( BufInd );
+    if Isolation = tiCommitted then
+    begin
+      if RecVersion then
+        buffer[ BufInd ] := Char( isc_tpb_rec_version )
+      else
+        buffer[ BufInd ] := Char( isc_tpb_no_rec_version );
+      Inc( BufInd );
+    end;
+    if LockWait then
+      buffer[ BufInd ] := Char( isc_tpb_wait )
+    else
+      buffer[ BufInd ] := Char( isc_tpb_nowait );
+    Inc( BufInd );
+    if ServerAutoCommit then
+    begin
+      buffer[ BufInd ] := Char( isc_tpb_autocommit );
+      Inc( BufInd );
+    end;
+//    buffer[ BufInd ] := Char( isc_tpb_no_auto_undo );
+//    Inc( BufInd );
+// Use nil to indicate that customizations should be applied to all connections.
+    if ConnectionCount > 1 then
+      DoCustomizeTPB( nil, BufInd, buffer );
+    teb_buffer := AllocMem(( SizeOf(isc_teb) + tmpTPBLen ) * ConnectionCount );
+    try
+      for ii := 0 to ConnectionCount - 1 do
+      begin
+        pteb := ptr( integer( teb_buffer ) + SizeOf( isc_teb ) * ii );
+        with Connections[ ii ], pteb^ do
+        begin
+          db_ptr  := PdbHandle;
+          tpb_len := BufInd;
+          tpb_ptr := pchar( integer( teb_buffer ) +
+                            SizeOf( isc_teb ) * ConnectionCount +
+                            tmpTPBLen * ii );
+          Move( Buffer^, tpb_ptr^, tpb_len );
+          DoCustomizeTPB( Connections[ ii ], tpb_len, tpb_ptr );
+        end;
+      end;
+      pteb := teb_buffer;
+      with IB_Session do
+      begin
+        errcode := isc_conn_lost;
+        ticks := GetTickCount + 2000;
+        while ( errcode = isc_conn_lost ) and ( ticks > GetTickCount ) do
+          errcode := isc_start_multiple( @status,
+                                         PtrHandle,
+                                         ConnectionCount,
+                                         pteb );
+        if errcode <> 0 then HandleException( Self );
+      end;
+    finally
+      FreeMem( teb_buffer );
+    end;
+  finally
+    StrDispose( Buffer );
+  end;
+  if Started then
+  begin
+    TimeOutProps.FDisableCheckOATFromError := false;
+    TimeoutProps.FNextAttempt := TimeoutProps.FAttempt;
+    TimeoutProps.FNextPromptUser := TimeoutProps.FPromptUser;
+    FLastStarted := now;
+    FConnectionWasLost := false;
+    for ii := 0 to ConnectionCount - 1 do
+      Inc( Connections[ ii ].FStartedTransactionCount );
+    IB_Session.ResetTimerNotification( Self );
+  end;
+end;
+
+function TIB_Transaction.CheckLostConnection: boolean;
+var
+  ii: integer;
+begin
+  with IB_Session do
+  begin
+    Result := ( errcode = isc_network_error ) or
+              ( errcode = isc_conn_lost ) or
+              ( errcode = isc_shutdown );
+    if Result then
+    begin
+      FConnectionWasLost := true;
+      if ConnectionCount = 1 then
+        Connections[0].SetLostConnection
+      else
+        for ii := 0 to ConnectionCount - 1 do
+          Connections[ii].VerifyConnection;
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.API_Commit;
+var
+  ii: integer;
+  SaveCW: word;
+begin
+  if not Started then Exit;
+  with IB_Session do
+  begin
+    asm fstcw [SaveCW] end;
+    errcode := isc_commit_transaction( @status, PtrHandle );
+    asm fldcw [SaveCW] end;
+//  if errcode = isc_no_meta_update then begin
+    if errcode <> 0 then
+    begin
+      if not CheckLostConnection then
+      begin
+        for ii := 0 to ConnectionCount - 1 do
+          Connections[ ii ].FlushSchemaCache;
+        if Started then
+        begin
+          asm fstcw [SaveCW] end;
+          errcode := isc_commit_transaction( @status, PtrHandle );
+          asm fldcw [SaveCW] end;
+        end;
+      end;
+    end;
+    if errcode <> 0 then
+    begin
+      TimeOutProps.FDisableCheckOATFromError := true;
+      HandleException( Self );
+    end;
+  end;
+  if not Started then
+  begin
+    FLastStopped := now;
+    for ii := 0 to ConnectionCount - 1 do
+      Dec( Connections[ ii ].FStartedTransactionCount );
+    IB_Session.ResetTimerNotification( Self );
+  end;
+end;
+
+procedure TIB_Transaction.API_CommitRetaining;
+var
+  ii: integer;
+  SaveCW: word;
+begin
+  with IB_Session do
+  begin
+    asm fstcw [SaveCW] end;
+    errcode := isc_commit_retaining( @status, PtrHandle);
+    asm fldcw [SaveCW] end;
+//  if errcode = isc_no_meta_update then begin
+    if errcode <> 0 then
+    begin
+      if not CheckLostConnection then
+      begin
+        for ii := 0 to ConnectionCount - 1 do
+          Connections[ ii ].FlushSchemaCache;
+        asm fstcw [SaveCW] end;
+        errcode := isc_commit_retaining( @status, PtrHandle);
+        asm fldcw [SaveCW] end;
+      end;
+    end;
+    if errcode <> 0 then HandleException( Self );
+  end;
+  // NB. The transaction was NOT stopped here?
+end;
+
+procedure TIB_Transaction.API_Rollback;
+var
+  ii: integer;
+  SaveCW: word;
+begin
+  if not Started then Exit;
+  if not FConnectionWasLost then
+    with IB_Session do
+    begin
+      asm fstcw [SaveCW] end;
+      isc_rollback_transaction( @status, PtrHandle );
+      asm fldcw [SaveCW] end;
+    end;
+  PtrHandle^ := nil;
+  FLastStopped := now;
+  for ii := 0 to ConnectionCount - 1 do
+    Dec( Connections[ ii ].FStartedTransactionCount );
+  IB_Session.ResetTimerNotification( Self );
+end;
+
+procedure TIB_Transaction.API_RollbackRetaining;
+var
+  ii: integer;
+  SaveCW: word;
+begin
+  if Assigned( dll_rollback_retaining ) then
+  begin
+    with IB_Session do
+    begin
+      asm fstcw [SaveCW] end;
+      errcode := isc_rollback_retaining( @status, PtrHandle);
+      asm fldcw [SaveCW] end;
+      if errcode <> 0 then HandleException( Self );
+    end;
+  end
+  else
+  begin
+    API_Rollback;
+    API_Start;
+  end;
+  for ii := 0 to DatasetCount - 1 do
+    try
+      with Datasets[ ii ] do
+      begin
+        if Unidirectional then
+        begin
+          if not Assigned( dll_rollback_retaining ) then
+            Close;
+        end
+        else
+        if not ReadOnly and ( RefreshAction <> raOpen ) and
+           ( not Assigned( dll_rollback_retaining ) or
+           ( FDatasetFlags * [ dsfInsertWasPosted,
+                               dsfEditWasPosted,
+                               dsfDeleteWasPosted,
+                               dsfWasInvalidated,
+                               dsfWasRefreshed ] <> [] )) then
+        begin
+          if BufferActive then
+            Refresh;
+          FDatasetFlags := FDatasetFlags - [ dsfInsertWasPosted,
+                                             dsfEditWasPosted,
+                                             dsfDeleteWasPosted,
+                                             dsfWasInvalidated,
+                                             dsfWasRefreshed ];
+        end;
+      end;
+    except
+      on E: Exception do Application.HandleException( E );
+    end;
+  IB_Session.ResetTimerNotification( Self );
+end;
+
+{  Event dispatch routines                                                     }
+
+procedure TIB_Transaction.DoCustomizeTPB(     AConnection: TIB_Connection;
+                                          var AIndex: longint;
+                                          var ABuffer: pchar );
+begin
+  if Assigned( FOnCustomizeTPB ) then
+    FOnCustomizeTPB( Self, AConnection, AIndex, ABuffer );
+end;
+
+procedure TIB_Transaction.DoBeforeStart;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FBeforeStart) then
+      FBeforeStart( Self );
+end;
+
+procedure TIB_Transaction.DoAfterStart;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FAfterStart) then
+      FAfterStart( Self );
+end;
+
+procedure TIB_Transaction.DoBeforeCommit;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FBeforeCommit) then
+      FBeforeCommit( Self );
+end;
+
+procedure TIB_Transaction.DoAfterCommit;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FAfterCommit) then
+      FAfterCommit( Self );
+end;
+
+procedure TIB_Transaction.DoBeforeCommitRetaining;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FBeforeCommitRetaining) then
+      FBeforeCommitRetaining( Self );
+end;
+
+procedure TIB_Transaction.DoAfterCommitRetaining;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FAfterCommitRetaining) then
+      FAfterCommitRetaining( Self );
+end;
+
+procedure TIB_Transaction.DoBeforeSavePoint;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FBeforeSavePoint) then
+      FBeforeSavePoint( Self );
+end;
+
+procedure TIB_Transaction.DoAfterSavePoint;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FAfterSavePoint) then
+      FAfterSavePoint( Self );
+end;
+
+procedure TIB_Transaction.DoBeforeRollbackRetaining;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FBeforeRollbackRetaining) then
+      FBeforeRollbackRetaining( Self );
+end;
+
+procedure TIB_Transaction.DoAfterRollbackRetaining;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FAfterRollbackRetaining) then
+      FAfterRollbackRetaining( Self );
+end;
+
+procedure TIB_Transaction.DoBeforeRollback;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FBeforeRollback) then
+      FBeforeRollback( Self );
+end;
+
+procedure TIB_Transaction.DoAfterRollback;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned(FAfterRollback) then
+      FAfterRollback( Self );
+end;
+
+procedure TIB_Transaction.DoBeforeEnd;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( FBeforeEnd ) then
+      FBeforeEnd( Self );
+end;
+
+procedure TIB_Transaction.DoAfterEnd;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( FAfterEnd ) then
+      FAfterEnd( Self );
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Transaction.GetTransactionLinkCount: integer;
+begin
+  if FTransactionLinkList <> nil then
+    Result := FTransactionLinkList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Transaction.GetTransactionLink(Index:integer): TIB_TransactionLink;
+begin
+  if ( Index >= 0 ) and
+     ( Index < TransactionLinkCount ) and
+     ( FTransactionLinkList <> nil ) then
+    Result := TIB_TransactionLink( FTransactionLinkList.Items[ Index ] )
+  else
+    Result := nil;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Transaction.SysAddConnection( NewConnection: TIB_Connection );
+var
+  i: integer;
+  tmpInt: integer;
+  tmpConnLink: TIB_ConnectionLink;
+begin
+  if ( NewConnection <> nil ) then
+  begin
+    tmpInt := -1;
+    for i := 0 to ConnectionCount - 1 do
+      if NewConnection = Connections[ i ] then
+      begin
+        tmpInt := i;
+        Break;
+      end;
+    if ( tmpInt < 0 ) then
+    begin
+      tmpConnLink := TIB_ConnectionLink.Create( Self );
+      with tmpConnLink do
+      begin
+        OnProcessEvent := ProcessConnectionEvent;
+        IB_Connection := NewConnection;
+      end;
+      FConnectionLinkList.Add( tmpConnLink );
+      NewConnection.FTransactionList.Add( Self );
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SysRemoveConnection( OldConnection: TIB_Connection );
+var
+  i: integer;
+  tmpInt: integer;
+  tmpConnLink: TIB_ConnectionLink;
+begin
+  if ( OldConnection <> nil ) then
+  begin
+    tmpInt := -1;
+    for i := 0 to ConnectionCount - 1 do
+      if OldConnection = Connections[ i ] then
+      begin
+        tmpInt := i;
+        Break;
+      end;
+    if ( tmpInt >= 0 ) then
+    begin
+      tmpConnLink := TIB_ConnectionLink( FConnectionLinkList.Items[ tmpInt ] );
+      tmpConnLink.IB_Connection := nil;
+      tmpConnLink.OnProcessEvent := ProcessConnectionEvent;
+      FConnectionLinkList.Remove( tmpConnLink );
+      tmpConnLink.Free;
+      OldConnection.FTransactionList.Remove( Self );
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SysRemoveAllConnections;
+begin
+  while ConnectionCount > 0 do
+    SysRemoveConnection( Connections[ ConnectionCount - 1 ] );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Transaction.ProcessConnectionEvent( Sender: TIB_ConnectionLink;
+                                                  AEvent: TIB_ConnectionEventType );
+begin
+  if AEvent = cetBeforeAssignment then
+    Close;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Transaction.GetIB_Connection: TIB_Connection;
+begin
+  Result := Connections[ 0 ];
+end;
+function TIB_Transaction.GetIB_Connection1: TIB_Connection;
+begin
+  Result := Connections[ 1 ];
+end;
+function TIB_Transaction.GetIB_Connection2: TIB_Connection;
+begin
+  Result := Connections[ 2 ];
+end;
+
+procedure TIB_Transaction.SetIB_Connection( AValue: TIB_Connection );
+begin
+  if ( AValue = nil ) or
+     (( AValue <> IB_Connection ) and
+      ( AValue <> IB_Connection1 ) and
+      ( AValue <> IB_Connection2 )) then
+  begin
+    SysRemoveConnection( IB_Connection );
+    if Assigned( AValue ) then
+      SysAddConnection( AValue );
+  end;
+end;
+
+procedure TIB_Transaction.SetIB_Connection1( AValue: TIB_Connection );
+begin
+  if ( AValue = nil ) or
+     (( AValue <> IB_Connection ) and
+      ( AValue <> IB_Connection1 ) and
+      ( AValue <> IB_Connection2 )) then
+  begin
+    SysRemoveConnection( IB_Connection1 );
+    if Assigned( AValue ) then
+      SysAddConnection( AValue );
+  end;
+end;
+
+procedure TIB_Transaction.SetIB_Connection2( AValue: TIB_Connection );
+begin
+  if ( AValue = nil ) or
+     (( AValue <> IB_Connection ) and
+      ( AValue <> IB_Connection1 ) and
+      ( AValue <> IB_Connection2 )) then
+  begin
+    SysRemoveConnection( IB_Connection2 );
+    if Assigned( AValue ) then
+      SysAddConnection( AValue );
+  end;
+end;
+
+procedure TIB_Transaction.AddConnection( New: TIB_Connection );
+begin
+  SysAddConnection( New );
+end;
+
+procedure TIB_Transaction.RemoveConnection( Old: TIB_Connection );
+begin
+  SysRemoveConnection( Old );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Transaction.SetFocus;
+begin
+  IB_Session.FocusedTransaction := Self;
+end;
+
+procedure TIB_Transaction.DoGainFocus;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( OnGainFocus ) then
+      OnGainFocus( Self );
+end;
+
+procedure TIB_Transaction.DoLoseFocus;
+begin
+  if not ( csDestroying in ComponentState ) then
+    if Assigned( OnLoseFocus ) then
+      OnLoseFocus( Self );
+end;
+
+procedure TIB_Transaction.SetAnnounceFocus( AValue: boolean );
+begin
+  if AnnounceFocus <> AValue then
+  begin
+    FAnnounceFocus := AValue;
+    if AnnounceFocus then
+      IB_Session.FocusedTransaction := Self;
+  end;
+end;
+
+procedure TIB_Transaction.ProcessEvent( AEvent: TIB_TransactionEventType );
+var
+  ii: integer;
+begin
+  for ii := 0 to TransactionLinkCount - 1 do
+    with TIB_TransactionLink( FTransactionLinkList.Items[ ii ] ) do
+      ProcessEvent( AEvent );
+end;
+
+procedure TIB_Transaction.BeginPostPendingNotify;
+begin
+  Inc( FWantPostPendingChanged );
+end;
+
+procedure TIB_Transaction.EndPostPendingNotify;
+begin
+  Dec( FWantPostPendingChanged );
+end;
+
+procedure TIB_Transaction.BeginCachedUpdatePendingNotify;
+begin
+  Inc( FWantCachedUpdatePendingChanged );
+end;
+
+procedure TIB_Transaction.EndCachedUpdatePendingNotify;
+begin
+  Dec( FWantCachedUpdatePendingChanged );
+end;
+
+procedure TIB_Transaction.CheckOAT;
+begin
+  if ( Started ) and
+     ( Isolation = tiCommitted ) and
+     ( FOpenCursors = 0 ) and
+     ( FPessimisticLockCount = 0 ) and
+//   ( not InTransaction ) and // This is actually totally irrelevant.
+     ( TransactionState in [ tsNone, tsInactive, tsActivePending ] ) and
+     ( TimeActive > ( TimeoutProps.AllowCheckOAT / 88400 )) and
+     ( not TimeoutProps.FDisableCheckOATFromError ) then
+// I removed this because it was preventing cycling during a refresh.
+// The session is always flagged as busy and yet it is only during a
+// refresh that the transaction can be cycled.
+// There are sufficient checks to make sure that this won't cause a problem
+// of any kind.
+//     ( IB_Session.BusyLevel = 0 ) then
+  begin
+    try
+      API_Commit;
+      ResetTransactionState( false );
+      SysAfterEnd( true );
+      UpdateStatus;
+    except
+      // Ignore an exception here.
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.ProcessPassiveTasks( var IsDone,
+                                                   IsWaiting,
+                                                   Terminate: boolean );
+var
+  TranIsDone: boolean;
+begin
+  inherited ProcessPassiveTasks( IsDone, IsWaiting, Terminate );
+  if Started then
+  begin
+    if TimeActive > ( TimeoutProps.AllowCheckOAT / 88400 ) then
+    begin
+      if IB_Session.BusyLevel = 0 then // Don't use IB_Session.IsBusy here.
+      begin
+        TranIsDone := true;
+        CheckOAT;
+        if Started and
+           ( TimeoutProps.Attempt > 0 ) and
+           ( TimeActive > ( TimeoutProps.FNextAttempt / 88400 )) then
+        begin
+          Inc( TimeoutProps.FNextAttempt, TimeoutProps.AttemptRetry );
+          SysTimeOutAttempt( TranIsDone );
+          CheckOAT;
+        end;
+        if Started and
+           ( FTimeoutProps.PromptUser > 0 ) and
+           ( TimeActive > ( FTimeoutProps.FNextPromptUser / 88400 )) then
+        begin
+          Inc( FTimeoutProps.FNextPromptUser, FTimeoutProps.PromptUserRetry );
+          SysTimeOutPromptUser;
+          CheckOAT;
+        end;
+        if Started and
+           ( FTimeoutProps.ForceClosed > 0 ) and
+           ( TimeActive > ( FTimeoutProps.ForceClosed / 88400 )) then
+          Close;
+        if IsDone then
+          IsDone := TranIsDone;
+      end;
+    end;
+    if not IsWaiting then
+      IsWaiting := Started;
+  end;
+end;
+
+procedure TIB_Transaction.SysTimeoutAttempt( var Done: boolean );
+var
+  ii: integer;
+  CanAttemptCommit: boolean;
+  WasInTransaction: boolean;
+  tmpMult: dword;
+  tmpTicks: dword;
+begin
+  if ( Started ) and
+     ( Isolation = tiCommitted ) and
+     ( FOpenCursors > 0 ) and
+     ( FPessimisticLockCount = 0 ) and
+     ( TransactionState in [ tsNone, tsInactive, tsActivePending ] ) then
+  begin
+    CanAttemptCommit := true;
+    for ii := 0 to DatasetCount - 1 do
+      with Datasets[ ii ] do
+      begin
+        if CursorIsOpen then
+          if Unidirectional or Fetching {or ( BufferRowCount > 1000 )} then
+          begin
+            CanAttemptCommit := false;
+            Break;
+          end
+          else
+          if CommitAction = caClose then
+          begin
+            if BufferRowCount < TimeOutProps.AttemptMaxRows then
+            begin
+              CanAttemptCommit := false;
+              SysFetchAll( TimeOutProps.AttemptTicks );
+              CheckOAT;
+              if Done and CursorIsOpen then
+                Done := BufferRowCount >= TimeOutProps.AttemptMaxRows;
+              Break;
+            end;
+            if RefreshAction = raOpen then
+              CanAttemptCommit := false;
+          end
+          else
+          if CommitAction = caFetchAll then
+          begin
+            CanAttemptCommit := false;
+            SysFetchAll( TimeOutProps.AttemptTicks );
+            CheckOAT;
+            if Done then
+              Done := not CursorIsOpen;
+            Break;
+          end;
+        // We don't want the cursor position to get messed up in a way that
+        // can possibly throw the user off. So, if a refresh will possibly
+        // move the record pointer then don't allow the Commit which will
+        // force a refresh somewhere and lose the current record pointer.
+        if ( RefreshAction = raOpen ) then
+          if (( CommitAction in [ caRefresh, caRefreshKeys ] )) or
+             (( CommitAction = caInvalidateCursor ) and CursorIsOpen ) then
+          begin
+            CanAttemptCommit := false;
+            Break;
+          end;
+      end;
+    if Started and CanAttemptCommit then
+    begin
+      // Make one last effort to try to get cursors permanently freed up...
+      // Allow up to 6 times the normal AttemptTicks duration to get a clean
+      // shot at clearing things up.
+      // Allow less time if the transaction is active since it won't actually
+      // attempt to perform the commit. This will lessen the apparent background
+      // activity to the user.
+      // It is much better to fetch all records in than have a loop of records
+      // continuously being fetched due to the the refresh taking place.
+      // I need to just get the caInvalidateCursor property finished up the
+      // way I intend for it to operate which won't require a fetchall or an
+      // immediate refresh of the dataset (which will leave a new transaction
+      // in an opened state just to cause another refresh, and on and on...
+      tmpMult := dword(Abs(DatasetCount)) * 2;
+      if TransactionIsActive and ( tmpMult > 4 ) then
+        tmpMult := 4
+      else if ( tmpMult > 6 ) then
+        tmpMult := 6;
+      tmpTicks := GetTickCount + TimeOutProps.AttemptTicks * tmpMult;
+      for ii := 0 to DatasetCount - 1 do with Datasets[ ii ] do
+      begin
+        if FCursorIsOpen then
+          if not ( CommitAction in [ caClose, caFetchAll ] ) then
+            if BufferRowCount < TimeOutProps.AttemptMaxRows then
+              SysFetchAll( TimeOutProps.AttemptTicks * 3 );
+        if GetTickCount > tmpTicks then
+          Break;
+      end;
+      CheckOAT;
+      if not TransactionIsActive then
+      begin
+        if Started then
+        begin
+          WasInTransaction := InTransaction;
+          try
+            FOATPending := true;
+            Commit;
+          finally
+            FOATPending := false;
+            if WasInTransaction and not InTransaction then
+              StartTransaction;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Transaction.SysTimeOutPromptUser;
+begin
+  if Assigned( FOnTimeoutPromptUser ) then
+    FOnTimeoutPromptUser( Self )
+  else
+  if not IB_Session.IsBusy and TransactionIsActive then
+  begin
+    MessageBeep( 0 );
+    EndWithConfirm;
+  end;
+end;
+
+procedure TIB_Transaction.SetTimeoutProps( AValue: TIB_TimeoutProps);
+begin
+  with FTimeOutProps do
+  begin
+    FAllowCheckOAT      := AValue.FAllowCheckOAT;
+    FAttempt            := AValue.FAttempt;
+    FAttemptTicks       := AValue.FAttemptTicks;
+    FAttemptRetry       := AValue.FAttemptRetry;
+    FNextAttempt        := AValue.FNextAttempt;
+    FAttemptMaxRows     := AValue.FAttemptMaxRows;
+    FPromptUser         := AValue.FPromptUser;
+    FPromptUserDuration := AValue.FPromptUserDuration;
+    FPromptUserRetry    := AValue.FPromptUserRetry;
+    FNextPromptUser     := AValue.FNextPromptUser;
+    FForceClosed        := AValue.FForceClosed;        
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+constructor TIB_TransactionDefault.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  inherited AutoCommit := true;
+  inherited Isolation := tiCommitted;
+end;
+
+constructor TIB_TransactionInternal.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  inherited ReadOnly := true;
+end;
+

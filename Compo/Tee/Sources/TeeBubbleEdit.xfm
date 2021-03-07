@@ -1,0 +1,15 @@
+inherited BubbleSeriesEditor: TBubbleSeriesEditor
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited GPPoint: TGroupBox
+    inherited CBIgnoreNulls: TCheckBox
+      TabOrder = 11
+    end
+    inherited Button2: TButton
+      TabOrder = 12
+    end
+    inherited TBTransp: TTrackBar
+      TabOrder = 10
+    end
+  end
+end

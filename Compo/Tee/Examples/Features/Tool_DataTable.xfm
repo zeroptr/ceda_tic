@@ -1,0 +1,271 @@
+inherited DataTableToolForm: TDataTableToolForm
+  Left = 341
+  Top = 141
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      
+        'The DataTable tool associate a table with the given Axis showing' +
+        ' the numeric value of each Point at that '
+      'Axis location.'
+      ''
+      
+        'The Series Legend elements may optionally be displayed at he sid' +
+        'e of the Grid.')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 329
+    BackWall.Gradient.Balance = 7
+    BackWall.Gradient.EndColor = 11402971
+    BackWall.Gradient.MidColor = 14988394
+    BackWall.Gradient.RadialX = 18
+    BackWall.Gradient.RadialY = -51
+    BackWall.Gradient.StartColor = 4536455
+    BackWall.Gradient.Visible = True
+    BackWall.Transparency = 40
+    BackWall.Transparent = False
+    BottomWall.Gradient.Balance = 6
+    BottomWall.Gradient.EndColor = 1380441
+    BottomWall.Gradient.MidColor = 9640241
+    BottomWall.Gradient.RadialX = 92
+    BottomWall.Gradient.RadialY = 79
+    BottomWall.Gradient.StartColor = 12031944
+    BottomWall.Transparency = 86
+    BottomWall.Transparent = True
+    Foot.Alignment = taRightJustify
+    Foot.Color = 1732418
+    Foot.Font.Color = 14525194
+    Foot.Font.Height = -13
+    Foot.Frame.Color = 13611440
+    Foot.Gradient.Balance = 86
+    Foot.Gradient.EndColor = 16683183
+    Foot.Gradient.MidColor = 9763149
+    Foot.Gradient.RadialX = 35
+    Foot.Gradient.RadialY = -27
+    Foot.Gradient.StartColor = 789104
+    Foot.Gradient.Visible = True
+    Foot.Shadow.HorizSize = 4
+    Foot.Shadow.VertSize = 4
+    Foot.Transparency = 44
+    Gradient.RadialX = 75
+    Gradient.RadialY = -21
+    LeftWall.Gradient.Balance = 67
+    LeftWall.Gradient.EndColor = 11652290
+    LeftWall.Gradient.MidColor = 12567901
+    LeftWall.Gradient.RadialX = 9
+    LeftWall.Gradient.RadialY = 92
+    LeftWall.Gradient.StartColor = 13157407
+    LeftWall.Transparency = 96
+    LeftWall.Transparent = True
+    Legend.CheckBoxes = True
+    Legend.Color = 9372389
+    Legend.Frame.Color = 10142083
+    Legend.Frame.Width = 0
+    Legend.Frame.Visible = False
+    Legend.Gradient.Balance = 33
+    Legend.Gradient.MidColor = 12615935
+    Legend.Gradient.RadialX = -95
+    Legend.Gradient.RadialY = 72
+    Legend.Gradient.StartColor = 9152383
+    Legend.Gradient.Visible = True
+    Legend.Transparency = 68
+    MarginTop = 10
+    RightWall.Gradient.Balance = 72
+    RightWall.Gradient.EndColor = 2477505
+    RightWall.Gradient.MidColor = 9642485
+    RightWall.Gradient.RadialX = 49
+    RightWall.Gradient.RadialY = 62
+    RightWall.Gradient.StartColor = 12893670
+    RightWall.Transparency = 31
+    SubFoot.Alignment = taLeftJustify
+    SubFoot.Color = 12750101
+    SubFoot.Font.Color = 5774205
+    SubFoot.Font.Height = -17
+    SubFoot.Frame.Color = 11584657
+    SubFoot.Gradient.Balance = 63
+    SubFoot.Gradient.EndColor = 8772690
+    SubFoot.Gradient.MidColor = 1902959
+    SubFoot.Gradient.RadialX = -99
+    SubFoot.Gradient.RadialY = 47
+    SubFoot.Gradient.StartColor = 6822280
+    SubFoot.Shadow.HorizSize = 4
+    SubFoot.Shadow.VertSize = 4
+    SubFoot.Transparency = 76
+    SubTitle.Alignment = taLeftJustify
+    SubTitle.Color = 14991546
+    SubTitle.Font.Color = 4832862
+    SubTitle.Font.Height = -15
+    SubTitle.Frame.Color = 13008106
+    SubTitle.Gradient.Balance = 18
+    SubTitle.Gradient.EndColor = 4784447
+    SubTitle.Gradient.MidColor = 3278887
+    SubTitle.Gradient.RadialX = -65
+    SubTitle.Gradient.RadialY = -62
+    SubTitle.Gradient.StartColor = 718883
+    SubTitle.Shadow.HorizSize = 0
+    SubTitle.Shadow.VertSize = 0
+    SubTitle.Transparency = 16
+    Title.Color = 13986749
+    Title.Frame.Color = 11226372
+    Title.Gradient.RadialX = -87
+    Title.Gradient.RadialY = 53
+    Title.Shadow.HorizSize = 4
+    Title.Shadow.VertSize = 4
+    Title.Transparency = 75
+    Title.Visible = False
+    TabOrder = 2
+    ColorPaletteIndex = 1
+    object Series1: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.BackColor = 12375224
+      Marks.Color = 12375224
+      Marks.Font.Color = 2527557
+      Marks.Frame.Color = 4522029
+      Marks.Gradient.Balance = 0
+      Marks.Gradient.EndColor = 8824657
+      Marks.Gradient.MidColor = 14677610
+      Marks.Gradient.RadialX = -12
+      Marks.Gradient.RadialY = 43
+      Marks.Gradient.StartColor = 5663413
+      Marks.Shadow.HorizSize = 0
+      Marks.Shadow.VertSize = 0
+      Marks.Transparency = 91
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000009A999999996761403433333333976540CECCCCCCCC106240696666
+        66668E594069666666662655406966666666D85140}
+    end
+    object Series2: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.BackColor = 2921646
+      Marks.Color = 2921646
+      Marks.Font.Color = 5084722
+      Marks.Frame.Color = 7549782
+      Marks.Gradient.Balance = 29
+      Marks.Gradient.EndColor = 2416755
+      Marks.Gradient.MidColor = 12870596
+      Marks.Gradient.RadialX = -2
+      Marks.Gradient.RadialY = 64
+      Marks.Gradient.StartColor = 7521196
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Transparency = 67
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        0006000000ABF1D24D62F144400F2DB29DEFFF4240CA76BE9F1A1A4740A445B6
+        F3FD5C3D40B147E17A143A2E402FB29DEFA7283540}
+    end
+    object Series3: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.BackColor = 8227949
+      Marks.Color = 8227949
+      Marks.Font.Color = 5029892
+      Marks.Frame.Color = 15465217
+      Marks.Gradient.Balance = 86
+      Marks.Gradient.EndColor = 11519822
+      Marks.Gradient.MidColor = 5180241
+      Marks.Gradient.RadialX = 49
+      Marks.Gradient.RadialY = -54
+      Marks.Gradient.StartColor = 15945311
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Transparency = 65
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        0006000000BB490C02CBD65040D44D6210787E544016AE47E13ACD5840D778E9
+        26D13C5A406B91ED7CBFD95F4022B0726881786240}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Button4: TButton
+      Left = 11
+      Top = 8
+      Width = 46
+      Height = 25
+      Caption = 'Fill 1'
+      TabOrder = 0
+      OnClick = Button4Click
+    end
+    object Button1: TButton
+      Left = 59
+      Top = 8
+      Width = 47
+      Height = 25
+      Caption = 'Fill 2'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 115
+      Top = 8
+      Width = 105
+      Height = 25
+      Caption = 'Vert <--> Horiz'
+      TabOrder = 2
+      OnClick = Button2Click
+    end
+    object Button3: TButton
+      Left = 222
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = 'Axis <--> Other Axis'
+      TabOrder = 3
+      OnClick = Button3Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 346
+      Top = 12
+      Width = 96
+      Height = 17
+      Caption = 'Axis Inverted'
+      TabOrder = 4
+      OnClick = CheckBox1Click
+    end
+    object Button5: TButton
+      Left = 446
+      Top = 8
+      Width = 57
+      Height = 25
+      Caption = '&Edit'
+      TabOrder = 5
+      OnClick = Button5Click
+    end
+  end
+end

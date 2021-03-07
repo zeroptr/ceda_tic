@@ -1,0 +1,154 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{B39765FC-42D9-4F39-B4EB-46BCCE0521E6}</ProjectGuid>
+			<MainSource>TeeLanguage811.dpk</MainSource>
+			<Config Condition="'$(Config)'==''">Debug</Config>
+			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+			<ProjectVersion>12.0</ProjectVersion>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Basis' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_UNSAFE_TYPE>true</DCC_UNSAFE_TYPE>
+			<DCC_ImageBase>43300000</DCC_ImageBase>
+			<DCC_UNSAFE_CAST>true</DCC_UNSAFE_CAST>
+			<DCC_UNSAFE_CODE>true</DCC_UNSAFE_CODE>
+			<DCC_DependencyCheckOutputName>..\..\..\Bpl\TeeLanguage811.bpl</DCC_DependencyCheckOutputName>
+			<DCC_Platform>x86</DCC_Platform>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+			<RuntimeOnlyPackage>true</RuntimeOnlyPackage>
+			<DCC_Description>TeeChart Pro 8 Languages</DCC_Description>
+			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+			<DCC_S>false</DCC_S>
+			<DCC_N>true</DCC_N>
+			<GenDll>true</GenDll>
+			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+			<DCC_K>false</DCC_K>
+			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+			<GenPackage>true</GenPackage>
+			<DCC_F>false</DCC_F>
+			<DCC_E>false</DCC_E>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+			<DCC_DebugInformation>false</DCC_DebugInformation>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="TeeLanguage811.dpk">
+				<MainSource>MainSource</MainSource>
+			</DelphiCompile>
+			<DCCReference Include="vcl.dcp"/>
+			<DCCReference Include="Tee811.dcp"/>
+			<DCCReference Include="TeePro811.dcp"/>
+			<DCCReference Include="TeeSpanish.pas"/>
+			<DCCReference Include="TeeGerman.pas"/>
+			<DCCReference Include="TeeCatalan.pas"/>
+			<DCCReference Include="TeeFrench.pas"/>
+			<DCCReference Include="TeeDanish.pas"/>
+			<DCCReference Include="TeeDutch.pas"/>
+			<DCCReference Include="TeeChinese.pas"/>
+			<DCCReference Include="TeeChineseSimp.pas"/>
+			<DCCReference Include="TeeBrazil.pas"/>
+			<DCCReference Include="TeeSwedish.pas"/>
+			<DCCReference Include="TeePortuguese.pas"/>
+			<DCCReference Include="TeeRussian.pas"/>
+			<DCCReference Include="TeeSlovene.pas"/>
+			<DCCReference Include="TeeNorwegian.pas"/>
+			<DCCReference Include="TeeJapanese.pas"/>
+			<DCCReference Include="TeePolish.pas"/>
+			<DCCReference Include="TeeTurkish.pas"/>
+			<DCCReference Include="TeeHungarian.pas"/>
+			<DCCReference Include="TeeItalian.pas"/>
+			<DCCReference Include="TeeArabic.pas"/>
+			<DCCReference Include="TeeHebrew.pas"/>
+			<DCCReference Include="TeeUkrainian.pas"/>
+			<DCCReference Include="TeeKorean.pas"/>
+			<DCCReference Include="TeeIndonesian.pas"/>
+			<DCCReference Include="TeeFinnish.pas"/>
+			<DCCReference Include="TeeHellenic.pas"/>
+			<DCCReference Include="TeeRomanian.pas"/>
+			<DCCReference Include="TeeSerbian.pas"/>
+			<DCCReference Include="TeeFarsi.pas"/>
+			<DCCReference Include="TeeCzech.pas"/>
+			<DCCReference Include="TeeSlovak.pas"/>
+			<DCCReference Include="TeeHindi.pas"/>
+			<DCCReference Include="TeeUrdu.pas"/>
+			<DCCReference Include="TeeGalician.pas"/>
+			<DCCReference Include="TeeCroatian.pas"/>
+			<DCCReference Include="TeeMalaysian.pas"/>
+			<DCCReference Include="TeeTranslate.pas">
+				<Form>AskLanguage</Form>
+			</DCCReference>
+			<BuildConfiguration Include="Basis">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+		<ProjectExtensions>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
+			<Borland.ProjectType>Package</Borland.ProjectType>
+			<BorlandProject>
+				<Delphi.Personality>
+					<Source>
+						<Source Name="MainSource">TeeLanguage811.dpk</Source>
+					</Source>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">8</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1033</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">Steema Software</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">TeeChart Pro</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">8.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName">TeeLanguage811</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (c) 2006-2007 by David Berneda</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename">TeeLanguage811</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductName">TeeChart Pro</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">8.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+				</Delphi.Personality>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>

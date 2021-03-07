@@ -1,0 +1,119 @@
+inherited SeriesInvertPalette: TSeriesInvertPalette
+  Left = 379
+  Top = 236
+  Width = 642
+  Height = 501
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 634
+  end
+  inherited Memo1: TMemo
+    Width = 634
+    Lines.Strings = (
+      
+        '3D Series color palette can be "inverted" with a single method c' +
+        'all:'
+      ''
+      'Series1.InvertPalette'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 634
+    Height = 318
+    Title.Visible = False
+    AxisVisible = False
+    View3DOptions.Zoom = 80
+    View3DWalls = False
+    object Series1: TIsoSurfaceSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pen.Visible = False
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+      OnGetYValue = Series1GetYValue
+      Sides.Brush.Color = clWhite
+      Sides.Brush.Style = bsClear
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 634
+    object Label1: TLabel
+      Left = 142
+      Top = 14
+      Width = 36
+      Height = 13
+      Caption = '&Palette:'
+      FocusControl = CBPalette
+    end
+    object Label3: TLabel
+      Left = 415
+      Top = 14
+      Width = 36
+      Height = 13
+      Caption = 'Tr&ansp:'
+      FocusControl = sbTransp
+    end
+    object Label4: TLabel
+      Left = 278
+      Top = 14
+      Width = 30
+      Height = 13
+      Caption = '&Steps:'
+      FocusControl = sbSteps
+    end
+    object bInvert: TBitBtn
+      Left = 10
+      Top = 8
+      Width = 122
+      Height = 25
+      Caption = '&Invert Palette'
+      TabOrder = 0
+      OnClick = bInvertClick
+      Kind = bkRetry
+    end
+    object CBPalette: TComboFlat
+      Left = 183
+      Top = 11
+      Width = 86
+      TabOrder = 1
+      OnChange = CBPaletteChange
+      Items.Strings = (
+        'Pale'
+        'Strong'
+        'Gray'
+        'Inv. Gray'
+        'Rainbow')
+    end
+    object sbTransp: TScrollBar
+      Left = 457
+      Top = 13
+      Width = 90
+      Height = 16
+
+      TabOrder = 2
+      OnChange = sbTranspChange
+    end
+    object sbSteps: TScrollBar
+      Left = 314
+      Top = 13
+      Width = 91
+      Height = 16
+
+      TabOrder = 3
+      OnChange = sbStepsChange
+    end
+  end
+end

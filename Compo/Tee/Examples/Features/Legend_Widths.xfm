@@ -1,0 +1,112 @@
+inherited LegendWidths: TLegendWidths
+  Caption = 'LegendWidths'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Legend now aligns numeric data and allows customization of c' +
+        'olumn widths.'
+      ''
+      'Example:   Chart1.Legend.ColumnWidthAuto:=False ;'
+      '                 Chart1.Legend.ColumnWidths[0]:= 44;'
+      '                 Chart1.Repaint;')
+  end
+  inherited Chart1: TChart
+    Legend.LegendStyle = lsValues
+    Legend.TextStyle = ltsXAndValue
+    object Series1: TCandleSeries
+      CloseValues.Name = 'Close'
+      CloseValues.Order = loNone
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      OpenValues.Name = 'Open'
+      OpenValues.Order = loNone
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Style = smsPercent
+      Marks.Visible = False
+      DownCloseGradient.StartColor = clRed
+      HighLowPen.Color = 536870912
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 131
+      Top = 16
+      Width = 78
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Column 1 Width:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 291
+      Top = 16
+      Width = 78
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'C&olumn 2 Width:'
+      FocusControl = Edit2
+    end
+    object Edit1: TEdit
+      Left = 214
+      Top = 13
+      Width = 33
+      Height = 21
+      Enabled = False
+      TabOrder = 0
+      Text = '30'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 247
+      Top = 13
+      Width = 16
+      Height = 21
+      Associate = Edit1
+      Enabled = False
+      Min = 0
+      Position = 30
+      TabOrder = 1
+      Wrap = False
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 14
+      Width = 113
+      Height = 17
+      Caption = '&Automatic widths'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox1Click
+    end
+    object Edit2: TEdit
+      Left = 374
+      Top = 13
+      Width = 33
+      Height = 21
+      Enabled = False
+      TabOrder = 3
+      Text = '14'
+      OnChange = Edit2Change
+    end
+    object UpDown2: TUpDown
+      Left = 407
+      Top = 13
+      Width = 16
+      Height = 21
+      Associate = Edit2
+      Enabled = False
+      Min = 0
+      Position = 14
+      TabOrder = 4
+      Wrap = False
+    end
+  end
+end

@@ -1,0 +1,157 @@
+inherited FilterTile: TFilterTile
+  Left = 271
+  Top = 219
+  Width = 648
+  Height = 490
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 640
+  end
+  inherited Memo1: TMemo
+    Width = 640
+    Lines.Strings = (
+      
+        'This filter makes several copies of the original image, in a sam' +
+        'e or reduced size, into a bigger (new) image. '
+      'You can specify the Rows and Columns to be used.'
+      ''
+      'Example :'
+      '  with TileFilter do'
+      '  begin'
+      '    NumCols:=3'
+      '    NumRows:=3;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 640
+    Height = 307
+    BackWall.Gradient.EndColor = 11118482
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Border.Color = 14645801
+    Border.Width = 7
+    Border.Visible = True
+    BottomWall.Gradient.EndColor = 16580349
+    BottomWall.Gradient.StartColor = 3114493
+    BottomWall.Gradient.Visible = True
+    Gradient.Direction = gdDiagonalDown
+    Gradient.EndColor = 11645361
+    Gradient.Visible = True
+    LeftWall.Gradient.EndColor = 2413052
+    LeftWall.Gradient.StartColor = 900220
+    LeftWall.Gradient.Visible = True
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = clYellow
+    Legend.Gradient.StartColor = clWhite
+    Legend.Gradient.Visible = True
+    Legend.Shadow.Color = clGray
+    Legend.Shadow.Transparency = 50
+    Title.Font.Style = [fsBold]
+    BottomAxis.MinorTicks.Color = clBlack
+    BottomAxis.TicksInner.Color = clBlack
+    DepthAxis.MinorTicks.Color = clBlack
+    DepthAxis.TicksInner.Color = clBlack
+    DepthTopAxis.MinorTicks.Color = clBlack
+    DepthTopAxis.TicksInner.Color = clBlack
+    LeftAxis.MinorTicks.Color = clBlack
+    LeftAxis.TicksInner.Color = clBlack
+    RightAxis.MinorTicks.Color = clBlack
+    RightAxis.TicksInner.Color = clBlack
+    Shadow.Color = clBlack
+    Shadow.HorizSize = 10
+    Shadow.VertSize = 10
+    TopAxis.MinorTicks.Color = clBlack
+    TopAxis.TicksInner.Color = clBlack
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    BevelOuter = bvNone
+    ColorPaletteIndex = 9
+    object Series1: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        0408000000000000000080844004436172730000000000B07D400650686F6E65
+        730000000000003840065461626C65730000000000208A40084D6F6E69746F72
+        730000000000C07C40054C616D70730000000000C88840094B6579626F617264
+        7300000000006089400542696B65730000000000406F4006436861697273}
+    end
+    object ChartTool1: TAntiAliasTool
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 640
+    object Label1: TLabel
+      Left = 83
+      Top = 15
+      Width = 43
+      Height = 13
+      Caption = '&Columns:'
+      FocusControl = EditColumns
+    end
+    object Label2: TLabel
+      Left = 190
+      Top = 15
+      Width = 30
+      Height = 13
+      Caption = '&Rows:'
+      FocusControl = EditRows
+    end
+    object EditColumns: TEdit
+      Left = 134
+      Top = 12
+      Width = 25
+      Height = 21
+      TabOrder = 0
+      Text = '3'
+      OnChange = EditColumnsChange
+    end
+    object EditRows: TEdit
+      Left = 227
+      Top = 12
+      Width = 25
+      Height = 21
+      TabOrder = 1
+      Text = '3'
+      OnChange = EditRowsChange
+    end
+    object UDRows: TUpDown
+      Left = 252
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = EditRows
+      Position = 3
+      TabOrder = 2
+    end
+    object UDColumns: TUpDown
+      Left = 159
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = EditColumns
+      Position = 3
+      TabOrder = 3
+    end
+    object cbActive: TCheckBox
+      Left = 16
+      Top = 14
+      Width = 65
+      Height = 17
+      Caption = '&Active'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = cbActiveClick
+    end
+  end
+end

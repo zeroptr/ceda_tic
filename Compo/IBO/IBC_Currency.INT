@@ -1,0 +1,231 @@
+
+{                                                                              }
+{ TIB_Currency                                                                 }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Original Author: Marco Menardi <mmenaz@lycosmail.com>  2001/11/01           }
+{           Copyright (C) 2001 Marco Menardi                                   }
+{                                                                              }
+{  Attention: since the control is finalized to the monetary input, it's good  }
+{             for a number of decimal digits between 0 and 3. For 4 decimal    }
+{             digits, internal rounding when formatting could be inaccurate.   }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{   Fixes needed: once the form is reloaded, the name of the control is no more}
+{                 displayed.                                                   }
+{                                                                              }
+{   2002/08/31 Marco Menardi                                                   }
+{     - fixed bad display formatting when control is unbound and data changed  }
+{       with .Value                                                            }
+{                                                                              }
+{   2002/04/25 Marco Menardi                                                   }
+{     - calculator now supports 'cascade' operations (like 1+2+4-6=)           }
+{                                                                              }
+{   2002/01/26 Marco Menardi                                                   }
+{     - changed RoundDecimalPos default and interpretation as 'round to the    }
+{       number of decimals taken from DisplayFormat' from -9 to -99, to avoid  }
+{       conflicts if you really want to round to -9 position. Change your      }
+{       program code replacing -9 with -99.                                    }
+{     - RoundMode default value is now crmNearBool, the equivalent of standard }
+{       delphi Round() function (it was crmNearUp). If you use crmNearUp (like }
+{       me) you have to set it manually for the new components you create.     }
+{       The change will reduce code bugs since Delphi and IB_Currency now have }
+{       then same default behaviour.                                           }
+{     - The value entered or resulting from a conversion is not more checked   }
+{       to be less than 8999999999999.99, since IBO>4.2Fp handles currency far }
+{       better, so no false overflow are raised. But if you have a domain for  }
+{       your monetary values, since the database has some problems,  consider  }
+{       adding a check to the range (i.e. AS NUMERIC(18,2)                     }
+{       CHECK( VALUE BETWEEN -99999999999999.99 AND +99999999999999.99 );      }
+{     - Value is no more stored/retrived with a forced AsCurrency, since IBO   }
+{       4.2fp does it automatically if CURRENCY is in the ColumnAttributes.    }
+{       Note that control .Value property always uses AsCurrency               }
+{                                                                              }
+{   2002/01/18 Marco Menardi                                                   }
+{     - Exiting in unbound mode now correctly reformats using DisplayFormat    }
+{       property, if set                                                       }
+{                                                                              }
+{   2001/12/06 Marco Menardi                                                   }
+{     - Added DisplayFormat property that works in unbound mode or overrides   }
+{       column definition                                                      }
+{                                                                              }
+{   2001/11/06 Marco Menardi                                                   }
+{    - Added BeforeConversion event, so you can customize conversion rate/etc. }
+{    - If value is 0 and no operation is pending, the first '-' is interpreted }
+{      as sign, even if inline calculator is active                            }
+{                                                                              }
+{   2001/11/06 Marco Menardi                                                   }
+{    - Runtime property 'Value' for getting or setting control value as        }
+{      currency (useful when in unbound mode, since Text returns a formatted   }
+{      string)                                                                 }
+{    - Better handling of any literal chars of the DisplayFormat (like $, TL.  }
+{      EUR) now everything is ignored.                                         }
+{    - Currency is now stored with AsCurrency, not through AsFloat             }
+{    - Basic calculation inside the control allowed (+-*/%)                    }
+{    - 'Canc' key as 'CelarAll' for the control                                }
+{    - CalculatorKind for none, inline, dropdown, both. If inline or both are  }
+{      set, to enter negative numbers press '=' after (i.e. -12=) or TAB out   }
+{      Inline is limited by the use of currency type for all the operation     }
+{      involved, but it's fast and convenient for simple additions or subs.    }
+{                                                                              }
+{   2001/11/05 Marco Menardi                                                   }
+{    - added support for cut/copy/paste in unbound mode, and editing of whole  }
+{      numbers (',0'). Bugfix.                                                 }
+{      Changed property name from ForeignToActualRatio to ConversionRatio      }
+{      Digits edited forced to be inside max currency range (and not float     }
+{      range as IBO <= 4.2Fb does). Needs to be improved.                      }
+{                                                                              }
+{   2001/11/04 Marco Menardi                                                   }
+{      First beta of the calculator created. Thanks to TIB_Date.               }
+{                                                                              }
+
+{: These are the different kind of calculator allowed.
+<br>
+<br>cucNone no calculator used. The '-' is always interpreted as sign
+<br>cucInline you can enter operators in the control, where results are displayed.
+<br>          '-' is sign only if no calculation is pending and the actual value is 0
+<br>cucDropDown operators can be entered only if in the embedded drop down calculator
+<br>cucBoth you can enter operators inside the control and drop down the embedded calculator too.}
+TIB_CurrencyCalcKind = (cucNone, cucInline, cucDropDown, cucBoth);
+
+{: These are the different kind of rounding allowed.
+<br>
+<br>crmNearUp rounds x.5 always up
+<br>crmDown
+<br>crmUp
+<br>crmTruncate
+<br>crmNearBool is Delphi Round() equivalent.}
+TIB_CurrencyRoundingMode = (crmNearUp, crmDown, crmUp, crmTruncate, crmNearBool);
+
+{: This control is used for entry field of columns that store currency only or that are currency compatible.
+<br>Right alignment, formatting while editing and settings of the number of decimals allowed, combined with optional inline calculator, simplifies and enhances
+monetary data entry.
+<br>The input is based on the DisplayFormat of the field. Tested formats are like ',0.00' or 'Lit ,0.00' and so on. Don't use literal chars on the right of the decimal separator (i.e. ',0.00 $'). Some formats have special meanings, though:
+<br>   if no decimal separator is given, only whole number are allowed, even if the field is defined with them (i.e. Numeric(15,2)).
+<br>   If the decimal separator is provided, but no '0' or '#' follows (like '$ ,0.'), then the lower between the global variable CurrencyDecimal and the field number of decimals is used.
+<br>There is also the possibility to convert from a foreign currency to the actual stored. Just enter the foreign and press the conversion key (see property ConversionShortCut)
+<br>
+<br>The control works as unbound too, using a generic data entry mask or one provided with DisplayFormat property.
+<br>
+<br>Interbase has not 'currency' data type, but from version 6 a NUMERIC(p,s) with p between 10 and 18 and s between 1 and 4 are stored as INT64 to avoid rounding errors.
+<br>This is roughly the same as Delphi currency data type, so using this control with above numeric type minimizes storage and manipulation rounding problems.
+}
+TIB_Currency = class(TIB_CustomEdit)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomEdit.PBL}
+{$UNDEF IB_AutoLabel}
+private
+  FDecimalPlaces: integer;
+  FFormatting: boolean;
+  FDisplayEditingFormat: string;
+  FDisplayFormat: string;
+  FUnboundDisplayFormat: string;
+  FConversionRatio: extended;
+  FConversionShortCut: TShortCut;
+  FRoundMode: TIB_CurrencyRoundingMode;
+  FRoundDecimalPos: integer;
+  FCalcLastValue: extended;
+  FCalcLastOp: Char;
+  FCalcClearDisplay: boolean;
+  FCalcPending: boolean;
+  FCalculatorKind: TIB_CurrencyCalcKind;
+  FBeforeConversion: TNotifyEvent;
+  procedure CMEnter( var Message: TCMEnter ); message CM_ENTER;
+  procedure CMExit(var Message: TCMExit); message CM_EXIT;
+  function CheckCurrencyOverRange( S : string ) : boolean;
+  function GetValue : currency;
+  procedure SetValue( AValue : currency );
+  procedure SetDisplayFormat(const AValue: string);
+  procedure InLineCalc(var Key: Char);
+  procedure ResetInLineCalcStatus;
+  procedure UpdateDisplayFormat;
+protected
+  procedure CreateParams(var Params: TCreateParams); override;
+  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  procedure KeyPress(var Key: Char); override;
+  function EditCanModify: Boolean; override;
+  procedure UpdateMask( UnboundMask: string ); override;
+  procedure SysUpdateData( AField: TIB_Column ); override;
+  procedure FormatCurrentText; dynamic;
+  procedure Change; override;
+  procedure ConvertCurrency; dynamic;
+public
+{$IFDEF IBO_VCL40_OR_GREATER}
+  procedure ValidateEdit; override;
+{$ENDIF}
+  constructor Create( AOwner: TComponent ); override;
+{: Retrieves or sets the value in unbound mode as Currency type. If you use Text instead you get
+the content with formatting.}
+  property Value : Currency read GetValue write SetValue;
+published
+{: This event is fired before the conversion takes place, so you can change conversion
+parameters 'on the fly'.}
+  property BeforeConversion: TNotifyEvent read FBeforeConversion write FBeforeConversion;
+{: This property determines the ratio of the conversion from foreign currency to
+the actual one (stored). The formula is Actual = Foreign/Ratio.}
+  property ConversionRatio : extended read FConversionRatio write FConversionRatio;
+{: This property sets the key shortcut to perform the conversion of the actual
+content using ConversionRatio. Default is 'c'.}
+  property ConversionShortCut : TShortCut read FConversionShortCut write FConversionShortCut default 67; // 'C'
+{: This property sets the mode rounding is performed when converting from one
+currency to another.
+<br> Note the existence of crmNearUp that rounds x.5 ALWAYS UP (contrary to the
+Delphi round(), that performs a 'bankers round'), widely used, for instance,
+in Italy and many other countries.}
+  property RoundMode : TIB_CurrencyRoundingMode read FRoundMode write FRoundMode default crmNearUp;
+{: This property determines the decimals position where rounding occurs when
+converting from one currency to the actual. If negative, the rounding is
+performed to the left side of the decimal separator, e. if -1, 206 -> 210
+(assuming ConversionRatio = 1). This is useful for example when you have to
+round a number for tax purpose. If set to -99 (default) the actual currency
+decimals taken from DisplayFormat is used as position.
+<br>In unbound mode and empty DisplayFormat, it sets the actual currency number
+of decimals (if -99, CurrencyDecimals is assumed).}
+  property RoundDecimalPos: integer read FRoundDecimalPos write FRoundDecimalPos default -99;
+{: This property sets the kind of embedded calculator use. Default is none, since when any calculator is enabled, the '-' is unable to be used as a sign indicator (it's interpreted as the subtraction operator).
+<br>DropDown calculator is not yet implemented, only inline is.
+<br>For inline calculator, the following keys have special meanings:
+<br>+-*/%   operations allowed
+<br>CANC    clears the content and the operation buffer
+<br>=       result of the operation. If a calculation is in progress,  when the control
+looses focus (i.e. hitting TAB) the = is performed.
+}
+  property CalculatorKind : TIB_CurrencyCalcKind read FCalculatorKind write FCalculatorKind default cucNone;
+{: This property overrides column DisplayFormat property. Fundamental when the control is used in unbound mode to specify a DisplayFormat different from the one that can be guess from locale settings }
+  property DisplayFormat : string read FDisplayFormat write SetDisplayFormat;
+end;
+
+// IBC_Currency.IMP

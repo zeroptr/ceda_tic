@@ -1,0 +1,20 @@
+inherited ChartSubGallery: TChartSubGallery
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'Each Series in the Chart Gallery now has "sub-styles". '
+      
+        'Click on the left bottom triangle to show the sub-styles gallery' +
+        '. '
+      'Press the Escape key or double-click a sub-style to close.')
+  end
+  inherited Chart1: TChart
+    Top = 90
+    Height = 247
+  end
+  inherited Panel1: TPanel
+    Top = 49
+  end
+end

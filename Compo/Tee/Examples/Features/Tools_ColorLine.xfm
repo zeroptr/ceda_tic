@@ -1,0 +1,162 @@
+inherited ColorLineForm: TColorLineForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        '"Color Line" tools are small objects that draw a line at a speci' +
+        'fic axis '
+      
+        'and axis position. They can be used to mark axis values or to se' +
+        'parate'
+      'regions defined by custom axes.'
+      'Try to drag the lines with the mouse.')
+  end
+  inherited Chart1: TChart
+    Top = 127
+    Height = 210
+    CustomAxes = <
+      item
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 80.000000000000000000
+      end>
+    LeftAxis.Automatic = False
+    LeftAxis.AutomaticMinimum = False
+    LeftAxis.EndPosition = 80.000000000000000000
+    object Series1: TPointSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      VertAxis = aCustomVertAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomVertAxis = 0
+    end
+    object ChartTool1: TColorLineTool
+      Pen.Color = clBlue
+      Pen.Width = 2
+      OnDragLine = ChartTool1DragLine
+      OnEndDragLine = ChartTool1EndDragLine
+      AxisID = 2
+    end
+    object ChartTool2: TColorLineTool
+      Pen.Color = clLime
+      Pen.Width = 2
+      Value = 10.000000000000000000
+      OnDragLine = ChartTool1DragLine
+      OnEndDragLine = ChartTool1EndDragLine
+      AxisID = 0
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 52
+    object Label1: TLabel
+      Left = 379
+      Top = 8
+      Width = 45
+      Height = 13
+      AutoSize = False
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 8
+      Width = 81
+      Height = 17
+      Caption = '&Show Lines'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 93
+      Top = 8
+      Width = 41
+      Height = 17
+      Caption = '&3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 8
+      Top = 29
+      Width = 81
+      Height = 17
+      Caption = 'Allow &Drag'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+    object ButtonPen1: TButtonPen
+      Left = 314
+      Top = 24
+      Width = 25
+      TabOrder = 3
+    end
+    object ButtonPen2: TButtonPen
+      Left = 344
+      Top = 24
+      Width = 25
+      TabOrder = 4
+    end
+    object CheckBox4: TCheckBox
+      Left = 93
+      Top = 29
+      Width = 89
+      Height = 17
+      Caption = 'Drag &Repaint'
+      TabOrder = 5
+      OnClick = CheckBox4Click
+    end
+    object CheckBox5: TCheckBox
+      Left = 184
+      Top = 29
+      Width = 89
+      Height = 17
+      Caption = '&No Limit drag'
+      TabOrder = 6
+      OnClick = CheckBox5Click
+    end
+    object CB3DLines: TCheckBox
+      Left = 141
+      Top = 8
+      Width = 76
+      Height = 17
+      Caption = '3D Lines'
+      Checked = True
+      State = cbChecked
+      TabOrder = 7
+      OnClick = CB3DLinesClick
+    end
+    object CBDrawBehind: TCheckBox
+      Left = 215
+      Top = 8
+      Width = 98
+      Height = 17
+      Caption = 'Draw Behind'
+      TabOrder = 8
+      OnClick = CBDrawBehindClick
+    end
+  end
+end

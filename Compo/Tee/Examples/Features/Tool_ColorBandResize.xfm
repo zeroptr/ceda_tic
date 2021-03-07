@@ -1,0 +1,88 @@
+inherited ColorBandResizeForm: TColorBandResizeForm
+  Left = 182
+  Top = 181
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      
+        'A Resize event has been added to the ColorBand tool to enable ca' +
+        'll back on redimensioning of the '
+      'ColorBand itself.'
+      ''
+      
+        'The demo updates the location information for Start and End Valu' +
+        'es when the Band border is dragged.')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 289
+    Title.Text.Strings = (
+      'ColorBand OnResized')
+    TabOrder = 2
+    ColorPaletteIndex = 7
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      BarStyle = bsRectGradient
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        0006000000000000000000544000000000003061400000000000405A40000000
+        0000C04C4000000000008051400000000000803B40}
+    end
+    object ChartTool1: TColorBandTool
+      Color = clNavy
+      DrawBehind = False
+      EndValue = 130.000000000000000000
+      StartValue = 40.000000000000000000
+      Transparency = 60
+      OnResized = ChartTool1Resized
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 16
+      Top = 16
+      Width = 60
+      Height = 13
+      Caption = 'Start value : '
+    end
+    object Label2: TLabel
+      Left = 245
+      Top = 16
+      Width = 54
+      Height = 13
+      Caption = 'End value :'
+    end
+    object labelStart: TLabel
+      Left = 84
+      Top = 16
+      Width = 3
+      Height = 13
+    end
+    object labelEnd: TLabel
+      Left = 310
+      Top = 16
+      Width = 3
+      Height = 13
+    end
+  end
+end

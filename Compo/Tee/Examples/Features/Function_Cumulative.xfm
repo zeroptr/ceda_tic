@@ -1,0 +1,66 @@
+inherited CumulativeForm: TCumulativeForm
+  Top = 187
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      'The Cumulative function calculates the incremental sum of the'
+      'data source point values.'
+      ''
+      
+        'Example: Source is 7,5,6  - Cumulative is 7, 7+5, 7+5+6  (7,12 a' +
+        'nd 18)')
+  end
+  inherited Chart1: TChart
+    Top = 106
+    Height = 231
+    Title.Text.Strings = (
+      'Cumulative function example')
+    Chart3DPercent = 15
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.BackColor = 16750079
+      Marks.Color = 16750079
+      Marks.Font.Color = clMaroon
+      Marks.Transparent = True
+      Marks.Visible = True
+      SeriesColor = clRed
+      Title = 'Source'
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.BackColor = 8454143
+      Marks.Color = 8454143
+      Marks.Visible = True
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Cumulative'
+      Pointer.Brush.Color = clYellow
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TCumulative
+        Period = 1
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    Visible = False
+  end
+end

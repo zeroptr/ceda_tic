@@ -1,0 +1,102 @@
+inherited FaderToolForm: TFaderToolForm
+  Left = 220
+  Top = 215
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      'User the Fader to to fade in/out the visibility of your Chart.'
+      ''
+      'You can control the speed, direction and target color.')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 289
+    LeftWall.Gradient.EndColor = 33023
+    LeftWall.Gradient.MidColor = 12180735
+    LeftWall.Gradient.Visible = True
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    LeftAxis.Axis.Width = 1
+    View3DOptions.Elevation = 341
+    View3DOptions.HorizOffset = -14
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 106
+    View3DOptions.Rotation = 347
+    View3DOptions.VertOffset = 14
+    View3DOptions.Zoom = 88
+    TabOrder = 2
+    object Series1: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      BarStyle = bsRectGradient
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        000600000000000000003061400000000000406A400000000000906F40000000
+        000070624000000000003066400000000000907040}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object bReset: TButton
+      Left = 10
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Reset'
+      TabOrder = 0
+      OnClick = bResetClick
+    end
+    object GroupBox1: TGroupBox
+      Left = 104
+      Top = 3
+      Width = 189
+      Height = 32
+      TabOrder = 1
+      object rbFadeIn: TRadioButton
+        Left = 12
+        Top = 12
+        Width = 73
+        Height = 17
+        Caption = 'Fade In'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+        OnClick = rbFadeInClick
+      end
+      object rbFadeOut: TRadioButton
+        Left = 92
+        Top = 12
+        Width = 85
+        Height = 17
+        Caption = 'Fade Out'
+        TabOrder = 1
+        OnClick = rbFadeOutClick
+      end
+    end
+    object bEdit: TButton
+      Left = 306
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = bEditClick
+    end
+  end
+end

@@ -1,0 +1,137 @@
+inherited CustomSeriesTreatNulls: TCustomSeriesTreatNulls
+  Width = 570
+  Height = 464
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 562
+  end
+  inherited Memo1: TMemo
+    Width = 562
+    Lines.Strings = (
+      
+        'Polar series (and derived Radar, WindRose, etc) can optionally d' +
+        'isplay or not'
+      'their "Null" values, in three different ways:'
+      ''
+      'Series1.SetNull( 5, True) ;   // <-- make point #5 "null"'
+      'Series1.TreatNulls := tnSkip;   // <-- "null" points are ignored')
+  end
+  inherited Chart1: TChart
+    Width = 562
+    Height = 281
+    Title.Visible = False
+    BottomAxis.Increment = 10.000000000000000000
+    View3D = False
+    object Series1: TPolarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ColorEachPoint = True
+      AngleIncrement = 10.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Pen.Color = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      Data = {
+        0119000000CDCCCCCCCCCC2C400000000000207040CDCCCCCCCCCC3C40000000
+        0000E067409A999999999945400000000000D08940CDCCCCCCCCCC4C40000000
+        000058874000000000000052400000000000E886409A99999999995540000000
+        000000444033333333333359400000000000405640CDCCCCCCCCCC5C40000000
+        0000307840333333333333604000000000007087400000000000006240000000
+        0000A06040CDCCCCCCCCCC634000000000008071409A99999999996540000000
+        0000207240676666666666674000000000000082403333333333336940000000
+        00003886400000000000006B400000000000808940CDCCCCCCCCCC6C40000000
+        0000D075409A99999999996E400000000000407D403333333333337040000000
+        00008087409A999999991971400000000000888B400000000000007240000000
+        0000B885406766666666E672400000000000F88C40CDCCCCCCCCCC7340000000
+        0000E886403333333333B374400000000000807A409A99999999997540000000
+        000038844000000000008076400000000000006040}
+    end
+    object ChartTool1: TAntiAliasTool
+      Active = False
+      AntiAlias = False
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 562
+    object Label1: TLabel
+      Left = 7
+      Top = 16
+      Width = 58
+      Height = 13
+      Caption = '&Series type :'
+      FocusControl = cbSeriesType
+    end
+    object Label3: TLabel
+      Left = 174
+      Top = 16
+      Width = 52
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Treat &nulls:'
+      FocusControl = CBNulls
+    end
+    object cbSeriesType: TComboFlat
+      Left = 70
+      Top = 12
+      Width = 97
+      ItemIndex = 0
+      TabOrder = 0
+      Text = 'Polar'
+      OnChange = cbSeriesTypeChange
+      Items.Strings = (
+        'Polar'
+        'Radar'
+        'Polar Bar'
+        'Polar Grid'
+        'Wind Rose')
+    end
+    object CBNulls: TComboFlat
+      Left = 231
+      Top = 12
+      Width = 89
+      ItemIndex = 0
+      TabOrder = 1
+      Text = 'Dont Paint'
+      OnChange = CBNullsChange
+      Items.Strings = (
+        'Dont Paint'
+        'Skip'
+        'Ignore')
+    end
+    object cbNullPoint: TCheckBox
+      Left = 328
+      Top = 15
+      Width = 82
+      Height = 17
+      Caption = 'Null &point 5'
+      TabOrder = 2
+      OnClick = cbNullPointClick
+    end
+    object cbFilled: TCheckBox
+      Left = 416
+      Top = 15
+      Width = 62
+      Height = 17
+      Caption = '&Filled'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = cbFilledClick
+    end
+    object cbAntialias: TCheckBox
+      Left = 479
+      Top = 15
+      Width = 77
+      Height = 17
+      Caption = 'Antialias'
+      TabOrder = 4
+      OnClick = cbAntialiasClick
+    end
+  end
+end

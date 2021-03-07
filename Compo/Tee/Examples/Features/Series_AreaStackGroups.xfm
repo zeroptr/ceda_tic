@@ -1,0 +1,194 @@
+inherited SeriesAreaStackGroups: TSeriesAreaStackGroups
+  Left = 308
+  Top = 141
+  Width = 555
+  Height = 424
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 129
+    Width = 547
+  end
+  inherited Memo1: TMemo
+    Width = 547
+    Height = 129
+    Lines.Strings = (
+      'Multiple Area series can be stacked, one on top of another.'
+      'Additionally, stacking can be made in groups of series.'
+      ''
+      
+        'You can assign a group number to each series you want to stack t' +
+        'ogether:'
+      ''
+      'Series1.MultiArea := maStacked;'
+      'Series2.MultiArea := maStacked;'
+      'Series3.MultiArea := maStacked;'
+      'Series4.MultiArea := maStacked;'
+      ''
+      '// Now create two groups:'
+      ''
+      'Series1.StackGroup := 0;'
+      'Series2.StackGroup := 0;'
+      'Series3.StackGroup := 1;'
+      'Series4.StackGroup := 1;'
+      ''
+      ''
+      ''
+      '')
+  end
+  inherited Chart1: TChart
+    Top = 172
+    Width = 547
+    Height = 225
+    Legend.Alignment = laBottom
+    Legend.Symbol.Squared = True
+    Legend.TopPos = 0
+    Legend.Transparent = True
+    Title.Text.Strings = (
+      'Area series stacked by groups')
+    ColorPaletteIndex = 1
+    object Series1: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000000000000000E481400000000000F07E400000000000687F40000000
+        0000D87840000000000068754000000000000079400000000000987C40000000
+        0000007E400000000000CC80400000000000D482400000000000EC8340000000
+        0000E8824000000000004080400000000000E87C400000000000D08140000000
+        000004804000000000005079400000000000287E400000000000187F40000000
+        0000FC82400000000000F881400000000000F07E400000000000387D40000000
+        0000B87F400000000000387D40}
+    end
+    object Series2: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000009A99999999557D406766666666FE7E409A99999999A37F40CDCCCC
+        CCCC4780400000000000778040CDCCCCCC4C8C81400000000000638140000000
+        008080814000000000009E814033333333B325824033333333B39B8240666666
+        666672824099999999998D8340FFFFFFFFFF6184403233333333078540323333
+        33B3388440FFFFFFFF7F098440CCCCCCCCCC6D844066666666E6F18340666666
+        66E605834099999999197083406666666666E882409999999919498240CCCCCC
+        CC4C8C81403233333333438240}
+    end
+    object Series3: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000726891ED7C7F7B405FE5D022DBF97D40428B6CE7FBAD7F406F3D0A
+        D7A3EC7D40428B6CE7FBAD7F40E5D022DBF96E80406891ED7C3F058040323333
+        3333BB7F406891ED7C3F0580401283C0CAA1D57F4037894160E52C8040643BDF
+        4F8D937F40A245B6F3FDC47D40CFF753E3A5037C40F2D24D62107C7940F853E3
+        A59BA878408C6CE7FBA9317840C74B378941D07840B4C876BE9F4A7B40B81E85
+        EB51E47C40355EBA490C4E7D40C64B378941447F4095438B6CE76B7F40BC7493
+        1804908040AC1C5A643B9D8040}
+    end
+    object Series4: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000002506819543E776408716D9CEF79776403108AC1C5A407540C520B0
+        7268C974405939B4C87652744086EB51B81E917240ABF1D24D62107440769318
+        04569E724018D9CEF753877440816ABC74936473401583C0CAA1ED72405A39B4
+        C876527440663BDF4F8DAB72402B5C8FC2F50C7240701283C0CA717340E9FBA9
+        F1D2417240283108AC1C7A7440C84B3789415C7240C4F5285C8FC27040E9FBA9
+        F1D241724016AE47E17A80704031DD24068139714025B0726891CD6D40E22406
+        8195FB6940EAD022DBF92E6D40}
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 131
+    Width = 547
+    object Label1: TLabel
+      Left = 240
+      Top = 14
+      Width = 35
+      Height = 13
+      Caption = '&Group :'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 105
+      Top = 14
+      Width = 32
+      Height = 13
+      Caption = 'S&eries:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 280
+      Top = 11
+      Width = 27
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object cbStacked: TCheckBox
+      Left = 14
+      Top = 12
+      Width = 78
+      Height = 17
+      Caption = '&Stacked'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbStackedClick
+    end
+    object UpDown1: TUpDown
+      Left = 307
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      TabOrder = 2
+    end
+    object ComboFlat1: TComboFlat
+      Left = 142
+      Top = 10
+      Width = 81
+      TabOrder = 3
+      OnChange = ComboFlat1Change
+    end
+  end
+end

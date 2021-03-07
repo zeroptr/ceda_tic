@@ -1,0 +1,63 @@
+object InternetCharts: TInternetCharts
+  Left = 362
+  Top = 241
+  Width = 369
+  Height = 343
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 361
+    Height = 316
+    Align = alClient
+    Lines.Strings = (
+      'TeeChart can be used on the Internet in several ways.'
+      ''
+      'At the server-side, it can be included in ISAPI, CGI or WINCGI'
+      
+        'modules. These modules can return charts as pictures (in GIF, PN' +
+        'G,'
+      'JPEG, BMP or WMF formats). '
+      ''
+      
+        'At the server-side, the ActiveX TeeChart can be used in ASP scri' +
+        'pts'
+      'to create and return static chart pictures.'
+      ''
+      
+        'At the client side, charts can be embedded in HTML pages using t' +
+        'he '
+      
+        'html "img" tag:   <img src="http://myserver.com/cgi-bin/getchart' +
+        '.dll">'
+      ''
+      'TeeChart ActiveX can be inserted in HTML pages as normal ActiveX'
+      
+        'controls, using the <object> tag (or using FrontPage / Visual In' +
+        'terdev ).'
+      
+        'These charts are dynamic and fully scriptable using VBScript and' +
+        #39' '
+      'JavaScript.'
+      ''
+      
+        'Normal Chart controls can download chart templates and data from' +
+        #39' '
+      'remote Web URL addresses using the ChartWebSource component.'
+      ''
+      
+        'Series data can be imported from remote web addresses (in text f' +
+        'ormat).'
+      '')
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+end

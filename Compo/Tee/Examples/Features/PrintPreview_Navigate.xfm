@@ -1,0 +1,57 @@
+inherited PrintPreviewNavigate: TPrintPreviewNavigate
+  Left = 281
+  Top = 188
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Splitter1: TSplitter
+    Top = 98
+    Height = 239
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      'The Print Preview panel can show several pages when the Chart'
+      'paging is enabled ( Chart1.MaxPointsPerPage := 10 )'
+      'The ChartPageNavigator buttons are used to scroll through pages.')
+  end
+  inherited Chart1: TChart
+    Top = 98
+    Height = 239
+    MaxPointsPerPage = 6
+    View3D = False
+    OnPageChange = Chart1PageChange
+    PrintMargins = (
+      13
+      15
+      13
+      15)
+    object Series1: THistogramSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    object ChartPageNavigator1: TChartPageNavigator
+      Left = 120
+      Top = 8
+      Width = 168
+      Height = 25
+      TabOrder = 1
+      Chart = Chart1
+    end
+  end
+  inherited TeePreviewPanel1: TTeePreviewPanel
+    Top = 98
+    Height = 239
+    Orientation = ppoPortrait
+  end
+end

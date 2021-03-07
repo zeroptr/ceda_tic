@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008.04.01 19:29:03.562.pas,C:\CedaLite\Prog\Arac\ufrmGRABBER_WINDOW.pas=</Transaction>
+    <Transaction>2008.04.01 19:29:03.562.dfm,C:\CedaLite\Prog\Arac\ufrmGRABBER_WINDOW.dfm=</Transaction>
+    <Transaction>2008.04.01 19:33:52.671.pas,C:\CedaLite\Prog\Arac\ufrmSETTINGS.pas=</Transaction>
+    <Transaction>2008.04.01 19:33:52.671.dfm,C:\CedaLite\Prog\Arac\ufrmSETTINGS.dfm=</Transaction>
+    <Transaction>2008.04.01 19:37:54.656.pas,C:\CedaLite\Prog\Arac\unGLOBALS.pas=</Transaction>
+    <Transaction>2008.08.26 11:56:46.375.dproj,C:\CedaLite\Prog\PRJ2001.dproj=C:\CedaLite\Prog\CedaLite.dproj</Transaction>
+    <Transaction>2009.03.04 11:09:11.859.pas,C:\CedaLite\Prog\Unit2.pas=C:\CedaLite\Prog\Antrepo\ufrmANT_GIRIS.pas</Transaction>
+    <Transaction>2009.03.04 11:09:11.859.dfm,C:\CedaLite\Prog\Unit2.dfm=C:\CedaLite\Prog\Antrepo\ufrmANT_GIRIS.dfm</Transaction>
+    <Transaction>2009.03.07 12:38:42.671.pas,C:\CedaLite\Prog\Unit2.pas=C:\CedaLite\Prog\Antrepo\ufrmANT_SDLG.pas</Transaction>
+    <Transaction>2009.03.07 12:38:42.703.dfm,C:\CedaLite\Prog\Unit2.dfm=C:\CedaLite\Prog\Antrepo\ufrmANT_SDLG.dfm</Transaction>
+    <Transaction>2009.03.09 16:36:33.484.pas,C:\CedaLite\Prog\Antrepo\ufrmANT_GIRIS.pas=C:\CedaLite\Prog\Antrepo\ufrmANT_CIKIS.pas</Transaction>
+    <Transaction>2009.03.09 16:36:33.484.dfm,C:\CedaLite\Prog\Antrepo\ufrmANT_GIRIS.dfm=C:\CedaLite\Prog\Antrepo\ufrmANT_CIKIS.dfm</Transaction>
+    <Transaction>2009.03.13 12:06:09.015.pas,C:\CedaLite\Prog\Unit2.pas=C:\CedaLite\Prog\Antrepo\ufrmANT_REPORT.pas</Transaction>
+    <Transaction>2009.03.13 12:06:09.015.dfm,C:\CedaLite\Prog\Unit2.dfm=C:\CedaLite\Prog\Antrepo\ufrmANT_REPORT.dfm</Transaction>
+    <Transaction>2009.03.26 23:36:38.916.pas,D:\CedaLite\Prog\Antrepo\ufrmANT_REPORT.pas=</Transaction>
+    <Transaction>2009.03.26 23:36:38.916.dfm,D:\CedaLite\Prog\Antrepo\ufrmANT_REPORT.dfm=</Transaction>
+    <Transaction>2009.03.30 19:54:10.015.pas,C:\CedaLite\Prog\Antrepo\ufrmANT_REPORT.pas=</Transaction>
+    <Transaction>2009.03.30 19:54:10.015.dfm,C:\CedaLite\Prog\Antrepo\ufrmANT_REPORT.dfm=</Transaction>
+    <Transaction>2009.12.26 01:42:47.546.pas,C:\CedaLite\Prog\Unit2.pas=C:\CedaLite\Prog\ufrmDevirSifre.pas</Transaction>
+    <Transaction>2009.12.26 01:42:47.546.dfm,C:\CedaLite\Prog\Unit2.dfm=C:\CedaLite\Prog\ufrmDevirSifre.dfm</Transaction>
+    <Transaction>2011.07.21 15:23:43.177.pas,C:\CedaLite_Ym\Prog\Unit2.pas=C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip.pas</Transaction>
+    <Transaction>2011.07.21 15:23:43.177.dfm,C:\CedaLite_Ym\Prog\Unit2.dfm=C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip.dfm</Transaction>
+    <Transaction>2011.12.14 10:44:18.847.pas,C:\CedaLite_Ym\Prog\Unit2.pas=C:\CedaLite_Ym\Prog\Arac\ufrmSefer_TakipSDLG.pas</Transaction>
+    <Transaction>2011.12.14 10:44:18.847.dfm,C:\CedaLite_Ym\Prog\Unit2.dfm=C:\CedaLite_Ym\Prog\Arac\ufrmSefer_TakipSDLG.dfm</Transaction>
+    <Transaction>2020.11.28 21:15:52.852.pas,C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip.pas=C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip2.pas</Transaction>
+    <Transaction>2020.11.28 21:15:52.852.dfm,C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip.dfm=C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip2.dfm</Transaction>
+    <Transaction>2020.11.28 21:17:00.399.pas,C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip2.pas=</Transaction>
+    <Transaction>2020.11.28 21:17:00.399.dfm,C:\CedaLite_Ym\Prog\Arac\ufrmSefer_Takip2.dfm=</Transaction>
+  </Transactions>
+</BorlandProject>

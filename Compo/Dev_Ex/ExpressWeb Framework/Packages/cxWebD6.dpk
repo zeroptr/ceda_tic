@@ -1,0 +1,88 @@
+package cxWebD6;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressWeb FrameWork by Developer Express Inc.'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  inet,
+  vcljpg,
+  cxDataD6,
+  cxScriptEngineD6;
+
+contains
+  cxWebAppSrv,
+  cxWebCalendar,
+  cxWebClasses,
+  cxWebClientConsts,
+  cxWebColors,
+  cxWebControls,
+  cxWebData,
+  cxWebDataCtrls,
+  cxWebDataUtils,
+  cxWebDataNavigator,
+  cxWebExtData,
+  cxWebFiler,
+  cxWebGlobalDispImp,
+  cxWebGraphics,
+  cxWebGrids,
+  cxWebDateEdit,
+  cxWebCompProd,
+  cxWebHTMLProd,
+  cxWebIntf,
+  cxWebIntfImpl,
+  cxWebMainMenu,
+  cxWebMenus,
+  cxWebModFact,
+  cxWebModule,
+  cxWebScriptParser,
+  cxWebProd,
+  cxWebRender,
+  cxWebPathConst,
+  cxWebScript,
+  cxWebSess,
+  cxWebVariants,
+  cxWebScriptFactory,
+  cxWebStdCtrls,
+  cxWebTableBld,
+  cxWebTV,
+  cxWebTable,
+  cxWebDBTable,
+  cxWebTypes,
+  cxWebUtils,
+  cxWebStrs,
+  cxWebConsts,
+  cxWebUpdateControlPosition,
+  cxWebFileCacheManager,
+  cxWebDBLookup,
+  cxWebDBGrid,
+  cxWebExtCtrls,
+  cxWebDispImp,
+  cxWebNavBar,
+  cxWebImgList,
+  cxWebMetrics;
+
+end.

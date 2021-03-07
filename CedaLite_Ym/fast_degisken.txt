@@ -1,0 +1,7 @@
+IIF(SUM(<frxIBOCarilis."BORC">,MasterData1,2)>SUM(<frxIBOCarilis."ALACAK">,MasterData1,2),'B','A')
+
+
+
+
+
+[(<Ba>)]

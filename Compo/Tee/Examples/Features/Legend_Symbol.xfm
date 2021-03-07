@@ -1,0 +1,118 @@
+inherited LegendSymbol: TLegendSymbol
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Legend has a new Symbols property. This property controls wi' +
+        'dth and position of'
+      'the color rectangle associated to each Legend'#39's item. '
+      ''
+      'Example: Chart1.Legend.Symbol.Position := spRight ')
+  end
+  inherited Chart1: TChart
+    BackWall.Color = 16777088
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Dark3D = False
+    BottomWall.Size = 10
+    LeftWall.Size = 10
+    Legend.Symbol.Continuous = True
+    Legend.Symbol.WidthUnits = lcsPixels
+    BottomAxis.Inverted = True
+    DepthAxis.Inverted = True
+    DepthAxis.Visible = True
+    LeftAxis.Inverted = True
+    View3DOptions.Elevation = 300
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 74
+    View3DOptions.Rotation = 360
+    View3DOptions.Zoom = 65
+    object Series1: TContourSeries
+      ColorEachPoint = False
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      EndColor = clYellow
+      StartColor = clBlue
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YPosition = 0.189598284286995000
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 8
+      Top = 14
+      Width = 73
+      Height = 17
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'Symbol &width:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 160
+      Top = 16
+      Width = 40
+      Height = 13
+      Caption = '&Position:'
+      FocusControl = ComboBox1
+    end
+    object Edit1: TEdit
+      Left = 87
+      Top = 12
+      Width = 41
+      Height = 21
+      TabOrder = 0
+      Text = '12'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 128
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 0
+      Position = 12
+      TabOrder = 1
+      Wrap = False
+    end
+    object ComboBox1: TComboBox
+      Left = 208
+      Top = 12
+      Width = 81
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 2
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Left'
+        'Right')
+    end
+    object CheckBox1: TCheckBox
+      Left = 307
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Continuous'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox1Click
+    end
+  end
+end

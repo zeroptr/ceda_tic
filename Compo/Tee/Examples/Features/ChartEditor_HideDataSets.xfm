@@ -1,0 +1,74 @@
+object ChartEditorHideDataSets: TChartEditorHideDataSets
+  Left = 301
+  Top = 237
+  Width = 600
+  Height = 394
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 592
+    Height = 105
+    Align = alTop
+    Lines.Strings = (
+      
+        'It is possible to hide datasets from Chart Editor dialog, just c' +
+        'reating a'
+      'small chart class.'
+      'See source code of this example for details.'
+      
+        'Click the button to show the series datasource editor, see Table' +
+        '1 is'
+      'not listed at combobox.')
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 105
+    Width = 592
+    Height = 40
+    Align = alTop
+    TabOrder = 1
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 145
+      Height = 25
+      Caption = '&Show Chart Editor...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 196
+      Top = 12
+      Width = 149
+      Height = 17
+      Caption = '&Example: Hide Table1'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+  object Table1: TTable
+    DatabaseName = 'DBDEMOS'
+    TableName = 'ANIMALS.DBF'
+    Left = 80
+    Top = 176
+  end
+  object Table2: TTable
+    DatabaseName = 'DBDEMOS'
+    TableName = 'ORDERS.DB'
+    Left = 136
+    Top = 176
+  end
+end

@@ -1,0 +1,52 @@
+{ IBC_CustomLabel.pbl - publish properties for TIB_CustomLabel
+see IBC_CustomLabel.pas. }
+published
+  property CharCase;
+  property DotLeader;
+  property Suffix;
+  property SuffixBeforeDots;
+  property OnGetLabel;
+
+  // From TLabel
+  property Align;
+  property Alignment;
+  property AutoSize;
+  property Caption;
+  property Color;
+  property DragCursor;
+  property DragMode;
+  property Enabled;
+  property FocusControl;
+  property Font;
+  property ParentColor;
+  property ParentFont;
+  property ParentShowHint;
+  property PopupMenu;
+  property ShowAccelChar;
+  property ShowHint;
+  property Transparent;
+  property Layout;
+  property Visible;
+  property WordWrap;
+  property OnClick;
+  property OnDblClick;
+  property OnDragDrop;
+  property OnDragOver;
+  property OnEndDrag;
+  property OnMouseDown;
+  property OnMouseMove;
+  property OnMouseUp;
+  property OnStartDrag;
+
+  {$IFDEF IBO_VCL40_OR_GREATER}
+  property Anchors;
+  property BiDiMode;
+  property Constraints;
+  property DragKind;
+  property ParentBiDiMode;
+  property OnCanResize;
+  property OnResize;
+  {$ENDIF}
+  {$IFDEF IBO_VCL50_OR_GREATER}
+  property OnContextPopup;
+  {$ENDIF}

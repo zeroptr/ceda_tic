@@ -1,0 +1,91 @@
+inherited DragMarksToolDemo: TDragMarksToolDemo
+  Left = 370
+  Top = 250
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 44
+    Lines.Strings = (
+      
+        'The DragMarks tool is used to allow the user at run-time to move' +
+        ' series Marks.'
+      'Try moving a point mark using the mouse.'
+      '')
+  end
+  inherited Chart1: TChart
+    Top = 85
+    Height = 252
+    Chart3DPercent = 25
+    object Series1: TPointSeries
+      Marks.ArrowLength = 0
+      Marks.Visible = True
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.BackColor = clSilver
+      Marks.Color = clSilver
+      Marks.Font.Color = clBlue
+      Marks.Font.Shadow.Color = 16777088
+      Marks.Font.Shadow.HorizSize = 1
+      Marks.Font.Shadow.VertSize = 1
+      Marks.ShapeStyle = fosRoundRectangle
+      Marks.Visible = True
+      SeriesColor = clGreen
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TDragMarksTool
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 44
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 11
+      Width = 81
+      Height = 17
+      Caption = '&Active'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 112
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Reset'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 208
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button2Click
+    end
+  end
+end

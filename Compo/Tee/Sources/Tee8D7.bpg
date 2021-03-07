@@ -1,0 +1,55 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = tee87.bpl TeeUI87.bpl TeeDB87.bpl DclTee87.bpl TeePro87.bpl \
+  TeeLanguage87.bpl DclTeePro87.bpl TeeGL87.bpl DclTGL87.bpl TeeImage87.bpl \
+  TeeQR87.bpl DclTQR87.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+tee87.bpl: tee87.dpk
+  $(DCC)
+
+TeeDB87.bpl: TeeDB87.dpk
+  $(DCC)
+
+TeeUI87.bpl: TeeUI87.dpk
+  $(DCC)
+
+DclTee87.bpl: DclTee87.dpk
+  $(DCC)
+
+TeePro87.bpl: TeePro87.dpk
+  $(DCC)
+
+TeeLanguage87.bpl: TeeLanguage87.dpk
+  $(DCC)
+
+DclTeePro87.bpl: DclTeePro87.dpk
+  $(DCC)
+
+TeeGL87.bpl: TeeGL87.dpk
+  $(DCC)
+
+DclTGL87.bpl: DclTGL87.dpk
+  $(DCC)
+
+TeeImage87.bpl: TeeImage87.dpk
+  $(DCC)
+
+TeeQR87.bpl: TeeQR87.dpk
+  $(DCC)
+
+DclTQR87.bpl: DclTQR87.dpk
+  $(DCC)
+
+

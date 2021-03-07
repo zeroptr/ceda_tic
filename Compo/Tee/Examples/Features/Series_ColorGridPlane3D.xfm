@@ -1,0 +1,112 @@
+inherited SeriesColorGridPlane3D: TSeriesColorGridPlane3D
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'ColorGrid series DrawPlane3D and DrawPosition properties control' +
+        ' the 3D position'
+      'and rotation plane (X,Y or Z) of the grid.'
+      ''
+      '  Series1.DrawPlane3D  := cpY;    // can be cpX, cpY or cpZ'
+      '  Series1.DrawPosition := 23;     // in pixels'
+      '')
+  end
+  inherited Chart1: TChart
+    LeftWall.Transparent = True
+    Legend.Transparent = True
+    MarginTop = 10
+    Title.Visible = False
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Grid.Visible = False
+    object Series1: TColorGridSeries
+      Frame.Width = 3
+      Frame.EndStyle = esFlat
+      Frame.Visible = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.Length = 0
+      Marks.Visible = False
+      Pen.Color = 4210752
+      PaletteStyle = psStrong
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 118
+      Top = 15
+      Width = 40
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Position:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 11
+      Top = 15
+      Width = 30
+      Height = 13
+      Caption = 'Pl&ane:'
+      FocusControl = ComboFlat1
+    end
+    object cb3D: TCheckBox
+      Left = 231
+      Top = 14
+      Width = 60
+      Height = 17
+      Caption = '&3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cb3DClick
+    end
+    object Edit1: TEdit
+      Left = 161
+      Top = 12
+      Width = 40
+      Height = 21
+      TabOrder = 1
+      Text = '50'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 198
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = -400
+      Max = 400
+      Position = 50
+      TabOrder = 2
+    end
+    object ComboFlat1: TComboFlat
+      Left = 45
+      Top = 12
+      Width = 44
+      ItemIndex = 1
+      TabOrder = 3
+      Text = 'Y'
+      OnChange = ComboFlat1Change
+      Items.Strings = (
+        'X'
+        'Y'
+        'Z')
+    end
+    object ButtonPen1: TButtonPen
+      Left = 320
+      Top = 8
+      Caption = '&Frame...'
+      TabOrder = 4
+    end
+  end
+end

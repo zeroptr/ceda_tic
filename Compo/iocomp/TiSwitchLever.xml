@@ -1,0 +1,51 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Semi-Transparent [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Black Background</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>0</BackGroundColor>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>User Interface Scheme</Name>
+<Scheme>
+<Name>Non-Interlocked [Default]</Name>
+<Properties>
+<MouseControlStyle>1</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Interlocked</Name>
+<Properties>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>1</ShowFocusRect>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>TouchScreen</Name>
+<Properties>
+<MouseControlStyle>0</MouseControlStyle>
+<ShowFocusRect>0</ShowFocusRect>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

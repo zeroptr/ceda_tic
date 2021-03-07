@@ -1,0 +1,112 @@
+inherited MarksItemText: TMarksItemText
+  Left = 365
+  Top = 86
+  Width = 520
+  Height = 463
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 512
+  end
+  inherited Memo1: TMemo
+    Width = 512
+    Lines.Strings = (
+      
+        'Added Items[] property for TSeriesMarks which allows to customiz' +
+        'e each Series mark independently '
+      '(text, font, border,...)'
+      ''
+      'Example :'
+      '  Series1.Marks.Item[0].Text.Text:=Edit2.Text;'
+      '  Series1.Marks.Item[1].Transparent:=true;')
+  end
+  inherited Chart1: TChart
+    Width = 512
+    Height = 280
+    Title.Visible = False
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    ColorPaletteIndex = 8
+    object Series1: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Circled = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        0408000000000000000040524004436172730000000000F888400650686F6E65
+        730000000000488940065461626C65730000000000B08540084D6F6E69746F72
+        730000000000107040054C616D70730000000000088940094B6579626F617264
+        7300000000006083400542696B6573000000000080874006436861697273}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 512
+    object Label1: TLabel
+      Left = 18
+      Top = 15
+      Width = 23
+      Height = 13
+      Caption = '&Item:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 112
+      Top = 15
+      Width = 24
+      Height = 13
+      Caption = '&Text:'
+      FocusControl = Edit2
+    end
+    object Edit1: TEdit
+      Left = 46
+      Top = 12
+      Width = 25
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 71
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      TabOrder = 1
+    end
+    object Edit2: TEdit
+      Left = 144
+      Top = 12
+      Width = 153
+      Height = 21
+      TabOrder = 2
+      OnChange = Edit2Change
+    end
+    object Button1: TButton
+      Left = 318
+      Top = 9
+      Width = 70
+      Height = 25
+      Caption = '&Font'
+      TabOrder = 3
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 399
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Transparent'
+      TabOrder = 4
+      OnClick = CheckBox1Click
+    end
+  end
+end

@@ -1,0 +1,98 @@
+inherited AxisItemsDemo: TAxisItemsDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Axis can be customized to display labels at specific positions w' +
+        'ith'
+      'custom text and formatting, without using any event:'
+      ''
+      'Chart1.Axes.Left.Items.Add( 123, '#39'Hello'#39' )')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'Custom axis labels')
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 125
+      Top = 14
+      Width = 29
+      Height = 13
+      Caption = '&Label:'
+      FocusControl = Edit1
+    end
+    object CheckBox1: TCheckBox
+      Left = 14
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Custom labels'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Edit1: TEdit
+      Left = 157
+      Top = 11
+      Width = 30
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 187
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      TabOrder = 2
+    end
+    object Edit2: TEdit
+      Left = 216
+      Top = 11
+      Width = 57
+      Height = 21
+      TabOrder = 3
+      Text = '0'
+      OnChange = Edit2Change
+    end
+    object Button1: TButton
+      Left = 312
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 4
+      OnClick = Button1Click
+    end
+    object UpDown2: TUpDown
+      Left = 273
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Min = -10000
+      Max = 10000
+      Increment = 5
+      TabOrder = 5
+    end
+  end
+end

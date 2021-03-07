@@ -1,0 +1,128 @@
+inherited SeriesWindRoseMirrorAngles: TSeriesWindRoseMirrorAngles
+  Left = 459
+  Top = 326
+  Width = 642
+  Height = 511
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 634
+  end
+  inherited Memo1: TMemo
+    Width = 634
+    Lines.Strings = (
+      
+        'WindRose series value are displayed clockwise (North, East, Sout' +
+        'h, West).'
+      ''
+      
+        'You can display values counter-clockwise (mirror its values) or ' +
+        'mirror the circle labels'
+      'to display clockwise North, West, South, East.'
+      ''
+      'Series1.MirrorAngles := True;'
+      'Series1.MirrorLabels := True;')
+  end
+  inherited Chart1: TChart
+    Width = 634
+    Height = 328
+    Gradient.EndColor = 2621525
+    Gradient.Visible = True
+    Legend.Alignment = laBottom
+    Legend.Visible = False
+    Title.Visible = False
+    AxisVisible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Increment = 22.500000000000000000
+    LeftAxis.Axis.Width = 1
+    LeftAxis.LabelsFont.Color = clWhite
+    RightAxis.Axis.Width = 1
+    TopAxis.Axis.Width = 1
+    View3D = False
+    object Series1: TWindRoseSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Color = clWhite
+      Marks.Style = smsPointIndex
+      Marks.Transparent = True
+      Marks.Visible = True
+      SeriesColor = 8454143
+      Circled = True
+      Shadow.Visible = False
+      AngleIncrement = 22.500000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      CircleGradient.EndColor = clNavy
+      CircleGradient.Visible = True
+      CircleLabelsFont.Color = 33023
+      CircleLabelsFont.Height = -19
+      CircleLabelsFont.Style = [fsBold]
+      CircleLabelsFont.Shadow.Color = clBlack
+      CircleLabelsFont.Shadow.HorizSize = 1
+      CircleLabelsFont.Shadow.SmoothBlur = 2
+      CircleLabelsFont.Shadow.VertSize = 1
+      Pen.Color = clRed
+      Pen.SmallDots = True
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = True
+      Transparency = 60
+      Data = {
+        010A00000000000000000042400000000000C882400000000000005240000000
+        00000032400000000000005B400000000000C883400000000000006240000000
+        0000988C4000000000008066400000000000F078400000000000006B40000000
+        0000A882400000000000806F400000000000F085400000000000007240000000
+        0000206E4000000000004074400000000000307D400000000000807640000000
+        0000508940}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 634
+    object cbMirror: TCheckBox
+      Left = 16
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Mirror Angles'
+      TabOrder = 0
+      OnClick = cbMirrorClick
+    end
+    object cbMirrorLabels: TCheckBox
+      Left = 152
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = 'Mirror &Labels'
+      TabOrder = 1
+      OnClick = cbMirrorLabelsClick
+    end
+    object ComboFlat1: TComboFlat
+      Left = 296
+      Top = 10
+      Width = 97
+      DropDownCount = 12
+      ItemIndex = 3
+      TabOrder = 2
+      Text = '22.5'
+      OnChange = ComboFlat1Change
+      Items.Strings = (
+        '5'
+        '10'
+        '15'
+        '22.5'
+        '30'
+        '45'
+        '60'
+        '75'
+        '90'
+        '120'
+        '180'
+        '360')
+    end
+  end
+end

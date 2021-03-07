@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value=".\TeeLanguage8C5.bpl"/>
+    <OBJFILES value="TeeSpanish.obj TeeCatalan.obj TeeDanish.obj TeeDutch.obj TeeFrench.obj 
+      TeeGerman.obj TeeHungarian.obj TeeSwedish.obj TeeChinese.obj TeeUkrainian.obj
+      TeeChineseSimp.obj TeeBrazil.obj TeeRussian.obj TeeItalian.obj 
+      TeeSlovene.obj TeeSlovak.obj TeePortuguese.obj TeeGalician.obj TeeFinnish.obj TeeRomanian.obj 
+      TeeSerbian.obj TeeTurkish.obj TeeFarsi.obj TeeHindi.obj TeeUrdu.obj TeeCroatian.obj 
+      TeeHellenic.obj TeeNorwegian.obj TeeJapanese.obj TeePolish.obj TeeArabic.obj 
+      TeeIndonesian.obj TeeKorean.obj TeeHebrew.obj TeeCzech.obj TeeMalaysian.obj 
+      TeeLanguage8C5.obj"/>
+    <RESFILES value="TeeLanguage8C5.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="TEEUI8C5.lib TeePro8C5.lib"/>
+    <SPARELIBS value="Vcl50.lib TEEUI8C5.lib"/>
+    <PACKAGES value="vcl50.bpi Tee8C5.bpi TeePro8C5.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="TeeLanguage8C5.cpp"/>
+    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tW -tWM"/>
+    <PFLAGS value="-N2. -N0. -$Y- -$L- -$J- -$D- -$C- -v -M -JPHNE"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-l. -I. -D&quot;TeeChart 8 Languages&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=8
+MinorVer=0
+Release=2
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=1
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=Steema Software
+FileDescription=TeeChart 8 Languages
+FileVersion=8.0.0.0
+InternalName=
+LegalCopyright=Copyright 2001-2007 by David Berneda.
+LegalTrademarks=
+OriginalFilename=TeeLanguage8C5
+ProductName=TeeChart Pro
+ProductVersion=8.0.0.0
+Comments=TeeChart Pro Languages
+
+[Excluded Packages]
+
+[HistoryLists\hlIncludePath]
+
+[HistoryLists\hlLibraryPath]
+
+[HistoryLists\hlDebugSourcePath]
+
+[HistoryLists\hlConditionals]
+
+[HistoryLists\hlIntOutputDir]
+
+[HistoryLists\hlFinalOutputDir]
+
+[HistoryLists\hIBPIOutputDir]
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

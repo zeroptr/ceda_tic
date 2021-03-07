@@ -1,0 +1,2539 @@
+:Base TeeChart8.hlp
+1 TeeChart Pro v8 Component Library
+2 Alphabetical classes list
+3 AxisException - LegendException
+4 AxisException=AxisException
+4 ChartException=ChartException
+4 DBChartException=DBChartException
+4 ETriSurfaceException=ETriSurfaceException
+4 LegendException=LegendException
+3 TAddTeeFunction - TAxisScrollTool
+4 TAddTeeFunction=TAddTeeFunction
+4 TADXFunction=TADXFunction
+4 TAmountFilter=TAmountFilter
+4 TAnnotationCallout=TAnnotationCallout
+4 TAnnotationTool=TAnnotationTool
+4 TAntiAliasCanvas=TAntiAliasCanvas
+4 TAntiAliasTool=TAntiAliasTool
+4 TAreaSeries=TAreaSeries
+4 TArrowSeries=TArrowSeries
+4 TAskLanguage=TAskLanguage
+4 TAverageTeeFunction=TAverageTeeFunction
+4 TAxisArrowTool=TAxisArrowTool
+4 TAxisGridPen=TAxisGridPen
+4 TAxisItem=TAxisItem
+4 TAxisItems=TAxisItems
+4 TAxisScrollTool=TAxisScrollTool
+3 TBackImage - TBSpline
+4 TBackImage=TBackImage
+4 TBannerTool=TBannerTool
+4 TBar3DSeries=TBar3DSeries
+4 TBarJoinSeries=TBarJoinSeries
+4 TBarSeries=TBarSeries
+4 TBarSeriesGradient=TBarSeriesGradient
+4 TBaseFunctionEditor=TBaseFunctionEditor
+4 TBaseHighLowSeries=TBaseHighLowSeries
+4 TBevelFilter=TBevelFilter
+4 TBezierSeries=TBezierSeries
+4 TBigCandleSeries=TBigCandleSeries
+4 TBlueSkyTheme=TBlueSkyTheme
+4 TBlurFilter=TBlurFilter
+4 TBMPExportFormat=TBMPExportFormat
+4 TBollingerFunction=TBollingerFunction
+4 TBoxSeries=TBoxSeries
+4 TBrightnessFilter=TBrightnessFilter
+4 TBSpline=TBSpline
+3 TBubble3DSeries - TCCIFunction
+4 TBubble3DSeries=TBubble3DSeries
+4 TBubbleSeries=TBubbleSeries
+4 TBusinessTheme=TBusinessTheme
+4 TButtonColor=TButtonColor
+4 TButtonGradient=TButtonGradient
+4 TButtonPen=TButtonPen
+4 TCalendarCell=TCalendarCell
+4 TCalendarCellUpper=TCalendarCellUpper
+4 TCalendarSeries=TCalendarSeries
+4 TCallout=TCallout
+4 TCandleSeries=TCandleSeries
+4 TCanvas3D=TCanvas3D
+4 TCCIFunction=TCCIFunction
+3 TChart - TChartBrush
+4 TChart=TChart
+4 TChartAction=TChartAction
+4 TChartAction3D=TChartAction3D
+4 TChartActionAxes=TChartActionAxes
+4 TChartActionCopy=TChartActionCopy
+4 TChartActionEdit=TChartActionEdit
+4 TChartActionGrid=TChartActionGrid
+4 TChartActionLegend=TChartActionLegend
+4 TChartActionPrint=TChartActionPrint
+4 TChartActionSave=TChartActionSave
+4 TChartArrowPen=TChartArrowPen
+4 TChartAxes=TChartAxes
+4 TChartAxis=TChartAxis
+4 TChartAxisPen=TChartAxisPen
+4 TChartAxisTitle=TChartAxisTitle
+4 TChartBackWall=TChartBackWall
+4 TChartBook=TChartBook
+4 TChartBottomWall=TChartBottomWall
+4 TChartBrush=TChartBrush
+3 TChartChangePage - TChartImageTool
+4 TChartChangePage=TChartChangePage
+4 TChartCollection=TChartCollection
+4 TChartCustomAxes=TChartCustomAxes
+4 TChartDataSet=TChartDataSet
+4 TChartDepthAxis=TChartDepthAxis
+4 TChartEditForm=TChartEditForm
+4 TChartEditor=TChartEditor
+4 TChartEditorPanel=TChartEditorPanel
+4 TChartFootTitle=TChartFootTitle
+4 TChartGalleryPanel=TChartGalleryPanel
+4 TChartGradient=TChartGradient
+4 TChartGrid=TChartGrid
+4 TChartGridNavigator=TChartGridNavigator
+4 TChartHiddenPen=TChartHiddenPen
+4 TChartImage=TChartImage
+4 TChartImageTool=TChartImageTool
+3 TChartLeftWall - TChartValueLists
+4 TChartLeftWall=TChartLeftWall
+4 TChartLegend=TChartLegend
+4 TChartLegendGradient=TChartLegendGradient
+4 TChartList=TChartList
+4 TChartListBox=TChartListBox
+4 TChartPage=TChartPage
+4 TChartPageNavigator=TChartPageNavigator
+4 TChartPen=TChartPen
+4 TChartPreviewer=TChartPreviewer
+4 TChartRightWall=TChartRightWall
+4 TChartScrollBar=TChartScrollBar
+4 TChartSeries=TChartSeries
+4 TChartSeriesList=TChartSeriesList
+4 TChartShape=TChartShape
+4 TChartTheme=TChartTheme
+4 TChartThemeSelector=TChartThemeSelector
+4 TChartTitle=TChartTitle
+4 TChartTools=TChartTools
+4 TChartValueList=TChartValueList
+4 TChartValueLists=TChartValueLists
+3 TChartWall - TChartWebSource
+4 TChartWall=TChartWall
+4 TChartWalls=TChartWalls
+4 TChartWebSource=TChartWebSource
+3 TCircledSeries - TCountTeeFunction
+4 TCircledSeries=TCircledSeries
+4 TClassicTheme=TClassicTheme
+4 TClipSeriesTool=TClipSeriesTool
+4 TClockSeries=TClockSeries
+4 TCLVFunction=TCLVFunction
+4 TColorBandTool=TColorBandTool
+4 TColorFilter=TColorFilter
+4 TColorGridSeries=TColorGridSeries
+4 TColorLineTool=TColorLineTool
+4 TColorPalettes=TColorPalettes
+4 TComboFlat=TComboFlat
+4 TCompressFunction=TCompressFunction
+4 TContourLevel=TContourLevel
+4 TContourLevels=TContourLevels
+4 TContourMarks=TContourMarks
+4 TContourSeries=TContourSeries
+4 TContrastFilter=TContrastFilter
+4 TConvolveFilter=TConvolveFilter
+4 TCorrelationFunction=TCorrelationFunction
+4 TCountTeeFunction=TCountTeeFunction
+3 TCropFilter - TCurveFittingFunction
+4 TCropFilter=TCropFilter
+4 TCrossPointsFunction=TCrossPointsFunction
+4 TCumulative=TCumulative
+4 TCursorTool=TCursorTool
+4 TCurveFittingFunction=TCurveFittingFunction
+3 TCustom2DPolarSeries - TCustomImagePointSeries
+4 TCustom2DPolarSeries=TCustom2DPolarSeries
+4 TCustom3DGridSeries=TCustom3DGridSeries
+4 TCustom3DPaletteSeries=TCustom3DPaletteSeries
+4 TCustom3DSeries=TCustom3DSeries
+4 TCustomAxisPanel=TCustomAxisPanel
+4 TCustomBarSeries=TCustomBarSeries
+4 TCustomBoxSeries=TCustomBoxSeries
+4 TCustomChart=TCustomChart
+4 TCustomChartAction=TCustomChartAction
+4 TCustomChartEditor=TCustomChartEditor
+4 TCustomChartElement=TCustomChartElement
+4 TCustomChartGrid=TCustomChartGrid
+4 TCustomChartLegend=TCustomChartLegend
+4 TCustomChartLink=TCustomChartLink
+4 TCustomChartSeries=TCustomChartSeries
+4 TCustomChartWall=TCustomChartWall
+4 TCustomDBChart=TCustomDBChart
+4 TCustomErrorSeries=TCustomErrorSeries
+4 TCustomFittingFunction=TCustomFittingFunction
+4 TCustomImagePointSeries=TCustomImagePointSeries
+3 TCustomLineSeries - TCustomTriSurfaceSeries
+4 TCustomLineSeries=TCustomLineSeries
+4 TCustomPanelNoCaption=TCustomPanelNoCaption
+4 TCustomPolarSeries=TCustomPolarSeries
+4 TCustomSeries=TCustomSeries
+4 TCustomSeriesAction=TCustomSeriesAction
+4 TCustomSeriesList=TCustomSeriesList
+4 TCustomSortedFunction=TCustomSortedFunction
+4 TCustomTeeCommander=TCustomTeeCommander
+4 TCustomTeeFunction=TCustomTeeFunction
+4 TCustomTeeGradient=TCustomTeeGradient
+4 TCustomTeeNavigator=TCustomTeeNavigator
+4 TCustomTeePanel=TCustomTeePanel
+4 TCustomTeePanelExtended=TCustomTeePanelExtended
+4 TCustomTrendFunction=TCustomTrendFunction
+4 TCustomTriSurfaceSeries=TCustomTriSurfaceSeries
+3 TDarkGrayPen - TDrawLineTool
+4 TDarkGrayPen=TDarkGrayPen
+4 TDarvasSeries=TDarvasSeries
+4 TDataSourcesList=TDataSourcesList
+4 TDataTableTool=TDataTableTool
+4 TDBChart=TDBChart
+4 TDBChartDataSource=TDBChartDataSource
+4 TDBCrossTabSource=TDBCrossTabSource
+4 TDBSummarySource=TDBSummarySource
+4 TDefaultTheme=TDefaultTheme
+4 TDeltaPointSeries=TDeltaPointSeries
+4 TDivideTeeFunction=TDivideTeeFunction
+4 TDonutSeries=TDonutSeries
+4 TDottedGrayPen=TDottedGrayPen
+4 TDownSamplingFunction=TDownSamplingFunction
+4 TDragMarksTool=TDragMarksTool
+4 TDragPointTool=TDragPointTool
+4 TDraw3D=TDraw3D
+4 TDrawLine=TDrawLine
+4 TDrawLines=TDrawLines
+4 TDrawLineTool=TDrawLineTool
+3 TEmbossFilter - TExtraLegendTool
+4 TEmbossFilter=TEmbossFilter
+4 TEMFExportFormat=TEMFExportFormat
+4 TEPSCanvas=TEPSCanvas
+4 TEPSExportFormat=TEPSExportFormat
+4 TErrorBarSeries=TErrorBarSeries
+4 TErrorSeries=TErrorSeries
+4 TExcelTheme=TExcelTheme
+4 TExpAverageFunction=TExpAverageFunction
+4 TExpMovAveFunction=TExpMovAveFunction
+4 TExpTrendFunction=TExpTrendFunction
+4 TExtraLegendTool=TExtraLegendTool
+3 TFactsTheme - TFunnelSeries
+4 TFactsTheme=TFactsTheme
+4 TFaderTool=TFaderTool
+4 TFastLineSeries=TFastLineSeries
+4 TFilterItems=TFilterItems
+4 TFilterRegion=TFilterRegion
+4 TFlipFilter=TFlipFilter
+4 TFloatXYZ=TFloatXYZ
+4 TFormatEditor=TFormatEditor
+4 TFormCreator=TFormCreator
+4 TFormItem=TFormItem
+4 TFormItems=TFormItems
+4 TFrameTool=TFrameTool
+4 TFullScreenTool=TFullScreenTool
+4 TFunnelSeries=TFunnelSeries
+3 TGalleryChart - TGridTransposeTool
+4 TGalleryChart=TGalleryChart
+4 TGammaCorrectionFilter=TGammaCorrectionFilter
+4 TGanttSeries=TGanttSeries
+4 TGanttTool=TGanttTool
+4 TGaugeSeries=TGaugeSeries
+4 TGDIPlusCanvas=TGDIPlusCanvas
+4 TGIFExportFormat=TGIFExportFormat
+4 TGIFImage=TGIFImage
+4 TGLCanvas=TGLCanvas
+4 TGLLight=TGLLight
+4 TGLLightSource=TGLLightSource
+4 TGLPosition=TGLPosition
+4 TGLShape=TGLShape
+4 TGLTorus=TGLTorus
+4 TGrayScaleFilter=TGrayScaleFilter
+4 TGridBandBrush=TGridBandBrush
+4 TGridBandTool=TGridBandTool
+4 TGridColorPalette=TGridColorPalette
+4 TGridTransposeTool=TGridTransposeTool
+3 THighLowLineSeries - TIsoSurfaceSeries
+4 THighLowLineSeries=THighLowLineSeries
+4 THighLowSeries=THighLowSeries
+4 THighTeeFunction=THighTeeFunction
+4 THistogramFunction=THistogramFunction
+4 THistogramSeries=THistogramSeries
+4 THorizAreaSeries=THorizAreaSeries
+4 THorizBarSeries=THorizBarSeries
+4 THorizBoxSeries=THorizBoxSeries
+4 THorizHistogramSeries=THorizHistogramSeries
+4 THorizLineSeries=THorizLineSeries
+4 THueLumSatFilter=THueLumSatFilter
+4 TImageBarSeries=TImageBarSeries
+4 TImageFiltered=TImageFiltered
+4 TImagePointSeries=TImagePointSeries
+4 TImportChart=TImportChart
+4 TInspectorHeader=TInspectorHeader
+4 TInspectorItem=TInspectorItem
+4 TInspectorItems=TInspectorItems
+4 TInvertFilter=TInvertFilter
+4 TIsoSurfaceSeries=TIsoSurfaceSeries
+3 TJPEGExportFormat - TLowTeeFunction
+4 TJPEGExportFormat=TJPEGExportFormat
+4 TKagiSeries=TKagiSeries
+4 TLabelsList=TLabelsList
+4 TLanguageStrings=TLanguageStrings
+4 TLegendItem=TLegendItem
+4 TLegendItems=TLegendItems
+4 TLegendPaletteTool=TLegendPaletteTool
+4 TLegendScrollBar=TLegendScrollBar
+4 TLegendSymbol=TLegendSymbol
+4 TLegendTitle=TLegendTitle
+4 TLightFilter=TLightFilter
+4 TLightTool=TLightTool
+4 TLineSeries=TLineSeries
+4 TLowTeeFunction=TLowTeeFunction
+3 TMACDFunction - TNearestTool
+4 TMACDFunction=TMACDFunction
+4 TMagnifyTool=TMagnifyTool
+4 TManySeriesTeeFunction=TManySeriesTeeFunction
+4 TMapSeries=TMapSeries
+4 TMarksCallout=TMarksCallout
+4 TMarksItem=TMarksItem
+4 TMarksItems=TMarksItems
+4 TMarksTipTool=TMarksTipTool
+4 TMedianTeeFunction=TMedianTeeFunction
+4 TMirrorFilter=TMirrorFilter
+4 TModeTeeFunction=TModeTeeFunction
+4 TMomentumDivFunction=TMomentumDivFunction
+4 TMomentumFunction=TMomentumFunction
+4 TMosaicFilter=TMosaicFilter
+4 TMovingAverageFunction=TMovingAverageFunction
+4 TMultiplyTeeFunction=TMultiplyTeeFunction
+4 TMyPointSeries=TMyPointSeries
+4 TNearestTool=TNearestTool
+3 TOBVFunction - TOrgShape
+4 TOBVFunction=TOBVFunction
+4 TOHLCSeries=TOHLCSeries
+4 TOptionsForm=TOptionsForm
+4 TOrgItem=TOrgItem
+4 TOrgItemCollection=TOrgItemCollection
+4 TOrgSeries=TOrgSeries
+4 TOrgShape=TOrgShape
+3 TPageNumTool - TPNGExportFormat
+4 TPageNumTool=TPageNumTool
+4 TPCXExportFormat=TPCXExportFormat
+4 TPCXOptions=TPCXOptions
+4 TPDFCanvas=TPDFCanvas
+4 TPDFChartObject=TPDFChartObject
+4 TPDFExportFormat=TPDFExportFormat
+4 TPerformanceFunction=TPerformanceFunction
+4 TPerimeterFunction=TPerimeterFunction
+4 TPieMarks=TPieMarks
+4 TPieOtherSlice=TPieOtherSlice
+4 TPieSeries=TPieSeries
+4 TPieShadow=TPieShadow
+4 TPieTool=TPieTool
+4 TPNGExportFormat=TPNGExportFormat
+3 TPoint3DSeries - TPyramidSeries
+4 TPoint3DSeries=TPoint3DSeries
+4 TPointFigureSeries=TPointFigureSeries
+4 TPointSeries=TPointSeries
+4 TPolarBarSeries=TPolarBarSeries
+4 TPolarGridSeries=TPolarGridSeries
+4 TPolarSeries=TPolarSeries
+4 TPolygonSeries=TPolygonSeries
+4 TPreviewChartPen=TPreviewChartPen
+4 TPVOFunction=TPVOFunction
+4 TPyramidSeries=TPyramidSeries
+3 TQRChart - TSelectorTool
+4 TQRChart=TQRChart
+4 TQRDBChart=TQRDBChart
+4 TRadarSeries=TRadarSeries
+4 TRandomTheme=TRandomTheme
+4 TRectangleTool=TRectangleTool
+4 TRenkoSeries=TRenkoSeries
+4 TResizeFilter=TResizeFilter
+4 TReverseFilter=TReverseFilter
+4 TRMSFunction=TRMSFunction
+4 TRotateFilter=TRotateFilter
+4 TRotateTool=TRotateTool
+4 TRSIFunction=TRSIFunction
+4 TSARFunction=TSARFunction
+4 TScrollBarThumb=TScrollBarThumb
+4 TSelectorTool=TSelectorTool
+3 TSeriesAction - TSeriesPointer
+4 TSeriesAction=TSeriesAction
+4 TSeriesActionActive=TSeriesActionActive
+4 TSeriesActionEdit=TSeriesActionEdit
+4 TSeriesActionMarks=TSeriesActionMarks
+4 TSeriesAnimationTool=TSeriesAnimationTool
+4 TSeriesBandTool=TSeriesBandTool
+4 TSeriesData=TSeriesData
+4 TSeriesDataHTML=TSeriesDataHTML
+4 TSeriesDataSet=TSeriesDataSet
+4 TSeriesDataText=TSeriesDataText
+4 TSeriesDataXLS=TSeriesDataXLS
+4 TSeriesDataXML=TSeriesDataXML
+4 TSeriesGroup=TSeriesGroup
+4 TSeriesGroups=TSeriesGroups
+4 TSeriesMarkPosition=TSeriesMarkPosition
+4 TSeriesMarks=TSeriesMarks
+4 TSeriesMarksGradient=TSeriesMarksGradient
+4 TSeriesMarksPositions=TSeriesMarksPositions
+4 TSeriesMarksSymbol=TSeriesMarksSymbol
+4 TSeriesPointer=TSeriesPointer
+3 TSeriesRegionTool - TSeriesTextSource
+4 TSeriesRegionTool=TSeriesRegionTool
+4 TSeriesStatsTool=TSeriesStatsTool
+4 TSeriesTextField=TSeriesTextField
+4 TSeriesTextFields=TSeriesTextFields
+4 TSeriesTextSource=TSeriesTextSource
+3 TSharpenFilter - TSVGExportFormat
+4 TSharpenFilter=TSharpenFilter
+4 TSingleRecordSeriesSource=TSingleRecordSeriesSource
+4 TSliceValueList=TSliceValueList
+4 TSmithSeries=TSmithSeries
+4 TSmoothingFunction=TSmoothingFunction
+4 TSmoothPoints=TSmoothPoints
+4 TSoftenFilter=TSoftenFilter
+4 TSpacing=TSpacing
+4 TStdDeviationFunction=TStdDeviationFunction
+4 TStochasticFunction=TStochasticFunction
+4 TSubChart=TSubChart
+4 TSubChartTool=TSubChartTool
+4 TSubGradient=TSubGradient
+4 TSubsetTeeFunction=TSubsetTeeFunction
+4 TSubtractTeeFunction=TSubtractTeeFunction
+4 TSurfaceNearestTool=TSurfaceNearestTool
+4 TSurfaceSeries=TSurfaceSeries
+4 TSurfaceSides=TSurfaceSides
+4 TSVGCanvas=TSVGCanvas
+4 TSVGExportFormat=TSVGExportFormat
+3 TTableLegend - TTeeExportFormats
+4 TTableLegend=TTableLegend
+4 TTagCloudSeries=TTagCloudSeries
+4 TTeeBlend=TTeeBlend
+4 TTeeButton=TTeeButton
+4 TTeeCanvas=TTeeCanvas
+4 TTeeCanvas3D=TTeeCanvas3D
+4 TTeeCommander=TTeeCommander
+4 TTeeCustomShape=TTeeCustomShape
+4 TTeeCustomShapeBrushPen=TTeeCustomShapeBrushPen
+4 TTeeCustomShapePosition=TTeeCustomShapePosition
+4 TTeeCustomTool=TTeeCustomTool
+4 TTeeCustomToolAxis=TTeeCustomToolAxis
+4 TTeeCustomToolSeries=TTeeCustomToolSeries
+4 TTeeDataSet=TTeeDataSet
+4 TTeeDlgWizard=TTeeDlgWizard
+4 TTeeEvent=TTeeEvent
+4 TTeeExcelSource=TTeeExcelSource
+4 TTeeExportData=TTeeExportData
+4 TTeeExportFormat=TTeeExportFormat
+4 TTeeExportFormats=TTeeExportFormats
+3 TTeeFilter - TTeeOpenGL
+4 TTeeFilter=TTeeFilter
+4 TTeeFont=TTeeFont
+4 TTeeFontGradient=TTeeFontGradient
+4 TTeeFunction=TTeeFunction
+4 TTeeGalleryForm=TTeeGalleryForm
+4 TTeeGradient=TTeeGradient
+4 TTeeInspector=TTeeInspector
+4 TTeeMouseEvent=TTeeMouseEvent
+4 TTeeMovingFunction=TTeeMovingFunction
+4 TTeeNavButton=TTeeNavButton
+4 TTeeOpenGL=TTeeOpenGL
+3 TTeePanelsList - TTeeToolTypes
+4 TTeePanelsList=TTeePanelsList
+4 TTeePDFFontList=TTeePDFFontList
+4 TTeePDFFontListEntry=TTeePDFFontListEntry
+4 TTeePDFImageList=TTeePDFImageList
+4 TTeePDFImageListEntry=TTeePDFImageListEntry
+4 TTeePDFPage=TTeePDFPage
+4 TTeePicture=TTeePicture
+4 TTeePolygon=TTeePolygon
+4 TTeePolygonList=TTeePolygonList
+4 TTeePreviewPanel=TTeePreviewPanel
+4 TTeeScrollBar=TTeeScrollBar
+4 TTeeSeriesDBSource=TTeeSeriesDBSource
+4 TTeeSeriesSource=TTeeSeriesSource
+4 TTeeSeriesSourceFile=TTeeSeriesSourceFile
+4 TTeeSeriesType=TTeeSeriesType
+4 TTeeSeriesTypes=TTeeSeriesTypes
+4 TTeeShadow=TTeeShadow
+4 TTeeShape=TTeeShape
+4 TTeeShapePosition=TTeeShapePosition
+4 TTeeToolTypes=TTeeToolTypes
+3 TTeeXMLSource - TTriSurfaceSeries
+4 TTeeXMLSource=TTeeXMLSource
+4 TTeeZoom=TTeeZoom
+4 TTeeZoomBrush=TTeeZoomBrush
+4 TTeeZoomPen=TTeeZoomPen
+4 TText3DTool=TText3DTool
+4 TTextShape=TTextShape
+4 TThemesList=TThemesList
+4 TTileFilter=TTileFilter
+4 TTowerSeries=TTowerSeries
+4 TTransposeSeriesTool=TTransposeSeriesTool
+4 TTrendFunction=TTrendFunction
+4 TTriSurfaceSeries=TTriSurfaceSeries
+3 TVarianceFunction - TZoomPanning
+4 TVarianceFunction=TVarianceFunction
+4 TVector3DSeries=TVector3DSeries
+4 TVideoPlayerTool=TVideoPlayerTool
+4 TVideoTool=TVideoTool
+4 TView3DOptions=TView3DOptions
+4 TVMLCanvas=TVMLCanvas
+4 TVMLExportFormat=TVMLExportFormat
+4 TVolumePipeSeries=TVolumePipeSeries
+4 TVolumeSeries=TVolumeSeries
+4 TWaterFallSeries=TWaterFallSeries
+4 TWebTheme=TWebTheme
+4 TWhitePen=TWhitePen
+4 TWindowsXPTheme=TWindowsXPTheme
+4 TWindRoseSeries=TWindRoseSeries
+4 TWorldSeries=TWorldSeries
+4 TXAMLCanvas=TXAMLCanvas
+4 TXAMLExportFormat=TXAMLExportFormat
+4 TZoomFilter=TZoomFilter
+4 TZoomPanning=TZoomPanning
+2 Alphabetical interfaces list
+3 IFormCreator=IFormCreator
+3 ITeeEventListener=ITeeEventListener
+2 Alphabetical types list
+3 ColorPalette - TBezierStyle
+4 ColorPalette=ColorPalette
+4 TAnnotationClick=TAnnotationClick
+4 TAnnotationPosition=TAnnotationPosition
+4 TAntiAlias=TAntiAlias
+4 TArrowHeadStyle=TArrowHeadStyle
+4 TAxisArrowClickEvent=TAxisArrowClickEvent
+4 TAxisArrowToolPosition=TAxisArrowToolPosition
+4 TAxisCalcPos=TAxisCalcPos
+4 TAxisCalcPosLabels=TAxisCalcPosLabels
+4 TAxisDrawGrids=TAxisDrawGrids
+4 TAxisDrawLabelEvent=TAxisDrawLabelEvent
+4 TAxisLabelAlign=TAxisLabelAlign
+4 TAxisLabelStyle=TAxisLabelStyle
+4 TAxisOnGetLabel=TAxisOnGetLabel
+4 TAxisOnGetNextLabel=TAxisOnGetNextLabel
+4 TBarStyle=TBarStyle
+4 TBezierStyle=TBezierStyle
+3 TCalculateEvent - TChangeOrderEvent
+4 TCalculateEvent=TCalculateEvent
+4 TCalendarChangeEvent=TCalendarChangeEvent
+4 TCandleColorStyle=TCandleColorStyle
+4 TCandleItem=TCandleItem
+4 TCandleStyle=TCandleStyle
+4 TCanvas3DPlane=TCanvas3DPlane
+4 TCanvasBackMode=TCanvasBackMode
+4 TCellsOrientation=TCellsOrientation
+4 TChangeOrderEvent=TChangeOrderEvent
+3 TChartAllowScrollEvent - TChartSurfaceGetY
+4 TChartAllowScrollEvent=TChartAllowScrollEvent
+4 TChartClick=TChartClick
+4 TChartClickAxis=TChartClickAxis
+4 TChartClickedPart=TChartClickedPart
+4 TChartClickedPartStyle=TChartClickedPartStyle
+4 TChartClickSeries=TChartClickSeries
+4 TChartClickTitle=TChartClickTitle
+4 TChartEditorOption=TChartEditorOption
+4 TChartEditorTab=TChartEditorTab
+4 TChartGridShow=TChartGridShow
+4 TChartListOrder=TChartListOrder
+4 TChartMouseEvent=TChartMouseEvent
+4 TChartObjectShapeStyle=TChartObjectShapeStyle
+4 TChartPreviewOption=TChartPreviewOption
+4 TChartSeriesEvent=TChartSeriesEvent
+4 TChartSeriesStyle=TChartSeriesStyle
+4 TChartShapeStyle=TChartShapeStyle
+4 TChartShapeXYStyle=TChartShapeXYStyle
+4 TChartSurfaceGetColor=TChartSurfaceGetColor
+4 TChartSurfaceGetY=TChartSurfaceGetY
+3 TChartToolEvent - TCustomSeriesStack
+4 TChartToolEvent=TChartToolEvent
+4 TCheckBoxesStyle=TCheckBoxesStyle
+4 TClockSeriesGetTimeEvent=TClockSeriesGetTimeEvent
+4 TClockSeriesStyle=TClockSeriesStyle
+4 TColorLineStyle=TColorLineStyle
+4 TColorLineToolOnDrag=TColorLineToolOnDrag
+4 TCommanderControls=TCommanderControls
+4 TCompressGetDate=TCompressGetDate
+4 TCompressionPeriod=TCompressionPeriod
+4 TCursorClicked=TCursorClicked
+4 TCursorToolChangeEvent=TCursorToolChangeEvent
+4 TCursorToolGetAxisRect=TCursorToolGetAxisRect
+4 TCursorToolStyle=TCursorToolStyle
+4 TCustomSeriesStack=TCustomSeriesStack
+3 TDateTimeStep - TErrorWidthUnits
+4 TDateTimeStep=TDateTimeStep
+4 TDblClickSeriesEvent=TDblClickSeriesEvent
+4 TDeleteChartEvent=TDeleteChartEvent
+4 TDeltaImageStyle=TDeltaImageStyle
+4 TDownSampleMethod=TDownSampleMethod
+4 TDragMarkEvent=TDragMarkEvent
+4 TDragPointStyle=TDragPointStyle
+4 TDragPointToolEvent=TDragPointToolEvent
+4 TDraw3DPaintEvent=TDraw3DPaintEvent
+4 TDrawLineHandle=TDrawLineHandle
+4 TDrawLineSelecting=TDrawLineSelecting
+4 TDrawLineStyle=TDrawLineStyle
+4 TDrawTagEvent=TDrawTagEvent
+4 TEditingCellEvent=TEditingCellEvent
+4 TeeFormatFlags=TeeFormatFlags
+4 TErrorSeriesStyle=TErrorSeriesStyle
+4 TErrorWidthUnits=TErrorWidthUnits
+3 TFaderStyle - TGroupFormula
+4 TFaderStyle=TFaderStyle
+4 TFloatPoint=TFloatPoint
+4 TFontData=TFontData
+4 TFunctionPeriodAlign=TFunctionPeriodAlign
+4 TFunctionPeriodStyle=TFunctionPeriodStyle
+4 TGanttDragEvent=TGanttDragEvent
+4 TGanttResizeEvent=TGanttResizeEvent
+4 TGanttToolBarPart=TGanttToolBarPart
+4 TGetBarStyleEvent=TGetBarStyleEvent
+4 TGetImageEvent=TGetImageEvent
+4 TGetInspectorItems=TGetInspectorItems
+4 TGetItemIndex=TGetItemIndex
+4 TGetItemProc=TGetItemProc
+4 TGLFontStyle=TGLFontStyle
+4 TGradientDirection=TGradientDirection
+4 TGradientRotate=TGradientRotate
+4 TGrayMethod=TGrayMethod
+4 TGridPalette=TGridPalette
+4 TGroupFormula=TGroupFormula
+3 THandStyle - TMultiPie
+4 THandStyle=THandStyle
+4 THorizAxis=THorizAxis
+4 TImageType=TImageType
+4 TInspectorItemStyle=TInspectorItemStyle
+4 TLegendAlignment=TLegendAlignment
+4 TLegendPaletteAxis=TLegendPaletteAxis
+4 TLegendStyle=TLegendStyle
+4 TLegendSymbolPosition=TLegendSymbolPosition
+4 TLegendSymbolSize=TLegendSymbolSize
+4 TLegendTextStyle=TLegendTextStyle
+4 TLevelPoint=TLevelPoint
+4 TLevelSegment=TLevelSegment
+4 TLightStyle=TLightStyle
+4 TMarksTipGetText=TMarksTipGetText
+4 TMarkToolMouseAction=TMarkToolMouseAction
+4 TMirrorDirection=TMirrorDirection
+4 TMultiArea=TMultiArea
+4 TMultiBar=TMultiBar
+4 TMultiPie=TMultiPie
+3 TNearestToolStyle - TOrgLineStyle
+4 TNearestToolStyle=TNearestToolStyle
+4 TNewChartEvent=TNewChartEvent
+4 TNotifyButtonClickedEvent=TNotifyButtonClickedEvent
+4 TNotifySeriesEvent=TNotifySeriesEvent
+4 TOnBeforeDrawLevelEvent=TOnBeforeDrawLevelEvent
+4 TOnChangeMarginsEvent=TOnChangeMarginsEvent
+4 TOnGetLegendPos=TOnGetLegendPos
+4 TOnGetLegendRect=TOnGetLegendRect
+4 TOnGetLegendText=TOnGetLegendText
+4 TOnGetLevelEvent=TOnGetLevelEvent
+4 TOnGetPaperRect=TOnGetPaperRect
+4 TOnGetPointerStyle=TOnGetPointerStyle
+4 TOnGetPolarLabel=TOnGetPolarLabel
+4 TOrgLineStyle=TOrgLineStyle
+3 TPanningMode - TScrollThumbStyle
+4 TPanningMode=TPanningMode
+4 TPenEndStyle=TPenEndStyle
+4 TPenLineMode=TPenLineMode
+4 TPicData=TPicData
+4 TPieAngle=TPieAngle
+4 TPieOtherStyle=TPieOtherStyle
+4 TPieToolStyle=TPieToolStyle
+4 TPoint3D=TPoint3D
+4 TPoint3DFloat=TPoint3DFloat
+4 TPointFloat2D=TPointFloat2D
+4 TPrintChartEvent=TPrintChartEvent
+4 TProcessRecordEvent=TProcessRecordEvent
+4 TRecInfo=TRecInfo
+4 TRGB=TRGB
+4 TRotateToolStyles=TRotateToolStyles
+4 TRSIStyle=TRSIStyle
+4 TScopeCursorStyle=TScopeCursorStyle
+4 TScrollBarAxis=TScrollBarAxis
+4 TScrollDirection=TScrollDirection
+4 TScrollThumbStyle=TScrollThumbStyle
+3 TSeriesAnimationLoop - TSize
+4 TSeriesAnimationLoop=TSeriesAnimationLoop
+4 TSeriesAnimationStep=TSeriesAnimationStep
+4 TSeriesClick=TSeriesClick
+4 TSeriesClickPointer3DEvent=TSeriesClickPointer3DEvent
+4 TSeriesClickPointerEvent=TSeriesClickPointerEvent
+4 TSeriesGroupActive=TSeriesGroupActive
+4 TSeriesMarksStyle=TSeriesMarksStyle
+4 TSeriesNotifyEvent=TSeriesNotifyEvent
+4 TSeriesOnAfterAdd=TSeriesOnAfterAdd
+4 TSeriesOnBeforeAdd=TSeriesOnBeforeAdd
+4 TSeriesOnClear=TSeriesOnClear
+4 TSeriesOnGetMarkText=TSeriesOnGetMarkText
+4 TSeriesPoint=TSeriesPoint
+4 TSeriesPointerStyle=TSeriesPointerStyle
+4 TSeriesRandomBounds=TSeriesRandomBounds
+4 TSeriesRecalcOptions=TSeriesRecalcOptions
+4 TSeriesTextGetValue=TSeriesTextGetValue
+4 TSetItemIndex=TSetItemIndex
+4 TSetPositionEvent=TSetPositionEvent
+4 TSize=TSize
+3 TSmoothStretchOption - TTagCloudOrder
+4 TSmoothStretchOption=TSmoothStretchOption
+4 TSnapStyle=TSnapStyle
+4 TSourceLoadMode=TSourceLoadMode
+4 TSymbolCalcHeight=TSymbolCalcHeight
+4 TSymbolDrawEvent=TSymbolDrawEvent
+4 TTagCloudOrder=TTagCloudOrder
+3 TTeeBackImageMode - TTeeZoomDirection
+4 TTeeBackImageMode=TTeeBackImageMode
+4 TTeeCanvasSurfaceStyle=TTeeCanvasSurfaceStyle
+4 TTeeCommanderOnSetLabel=TTeeCommanderOnSetLabel
+4 TTeeDBGroup=TTeeDBGroup
+4 TTeeEditedChartEvent=TTeeEditedChartEvent
+4 TTeeMouseEventKind=TTeeMouseEventKind
+4 TTeeNavigateBtn=TTeeNavigateBtn
+4 TTeeOnCreateEditor=TTeeOnCreateEditor
+4 TTeePaletteStyle=TTeePaletteStyle
+4 TTeePreviewPanelOrientation=TTeePreviewPanelOrientation
+4 TTeePrintEvent=TTeePrintEvent
+4 TTeeQuickMethod=TTeeQuickMethod
+4 TTeeScrollBarDrawStyle=TTeeScrollBarDrawStyle
+4 TTeeSortCompare=TTeeSortCompare
+4 TTeeSortSwap=TTeeSortSwap
+4 TTeeUnits=TTeeUnits
+4 TTeeVertAlign=TTeeVertAlign
+4 TTeeView3DChangedZoom=TTeeView3DChangedZoom
+4 TTeeView3DScrolled=TTeeView3DScrolled
+4 TTeeZoomDirection=TTeeZoomDirection
+3 TTextFormat - TWorldMap
+4 TTextFormat=TTextFormat
+4 TTowerStyle=TTowerStyle
+4 TTreatNullsStyle=TTreatNullsStyle
+4 TTrendStyle=TTrendStyle
+4 TTriangle=TTriangle
+4 TTypeFitting=TTypeFitting
+4 TValueEvent=TValueEvent
+4 TVertAxis=TVertAxis
+4 TVertex=TVertex
+4 TWheelMouseEvent=TWheelMouseEvent
+4 TWorldMap=TWorldMap
+2 Alphabetical procedures list
+3 AddChartThemes - AssignSeries
+4 AddChartThemes=AddChartThemes
+4 AddDefaultValueFormats=AddDefaultValueFormats
+4 AddFormTo=AddFormTo
+4 ApplyBright=ApplyBright
+4 ApplyChartTheme=ApplyChartTheme
+4 ApplyDark=ApplyDark
+4 AssignSeries=AssignSeries
+3 CalcFitting - ConvertTeeFileToText
+4 CalcFitting=CalcFitting
+4 ChangeAllSeriesGallery=ChangeAllSeriesGallery
+4 ChangeAllSeriesType=ChangeAllSeriesType
+4 ChangeSeriesType=ChangeSeriesType
+4 ChangeSeriesTypeGallery=ChangeSeriesTypeGallery
+4 ChartPreview=ChartPreview
+4 ChartThemeSelector=ChartThemeSelector
+4 ClipCanvas=ClipCanvas
+4 ClipEllipse=ClipEllipse
+4 ClipPolygon=ClipPolygon
+4 ClipRoundRectangle=ClipRoundRectangle
+4 CloneChartSeries=CloneChartSeries
+4 CloneChartTool=CloneChartTool
+4 ColorToGL=ColorToGL
+4 ColorToHLS=ColorToHLS
+4 ConvertTeeFileToBinary=ConvertTeeFileToBinary
+4 ConvertTeeFileToText=ConvertTeeFileToText
+3 CreateNewSeries - DrawBevel
+4 CreateNewSeries=CreateNewSeries
+4 CreateNewSeriesGallery=CreateNewSeriesGallery
+4 CreateNewTeeFunction=CreateNewTeeFunction
+4 CrossingLines=CrossingLines
+4 DateTimeDefaultFormat=DateTimeDefaultFormat
+4 DateToWeek=DateToWeek
+4 DateToWeekOld=DateToWeekOld
+4 DaysInMonth=DaysInMonth
+4 DownloadURL=DownloadURL
+4 DrawBevel=DrawBevel
+3 EditChart - EditSeriesPointer
+4 EditChart=EditChart
+4 EditChartAxis=EditChartAxis
+4 EditChartBrush=EditChartBrush
+4 EditChartLegend=EditChartLegend
+4 EditChartPen=EditChartPen
+4 EditChartTitle=EditChartTitle
+4 EditChartTool=EditChartTool
+4 EditChartWall=EditChartWall
+4 EditColor=EditColor
+4 EditColorDialog=EditColorDialog
+4 EditOneSeries=EditOneSeries
+4 EditSeries=EditSeries
+4 EditSeriesDialog=EditSeriesDialog
+4 EditSeriesMarks=EditSeriesMarks
+4 EditSeriesPointer=EditSeriesPointer
+3 EditTeeCustomShape - EnableControls
+4 EditTeeCustomShape=EditTeeCustomShape
+4 EditTeeFont=EditTeeFont
+4 EditTeeFontEx=EditTeeFontEx
+4 EditTeeGradient=EditTeeGradient
+4 EditTeeOpenGL=EditTeeOpenGL
+4 EditTeePicture=EditTeePicture
+4 EditTeeShadow=EditTeeShadow
+4 EnableControls=EnableControls
+3 FillDataSet - HtmlTextOut
+4 FillDataSet=FillDataSet
+4 FillSeriesItems=FillSeriesItems
+4 FillSeriesSources=FillSeriesSources
+4 GetChartGalleryFunction=GetChartGalleryFunction
+4 GetDefaultColor=GetDefaultColor
+4 GetGallerySeriesName=GetGallerySeriesName
+4 GetRegistryHelpPath=GetRegistryHelpPath
+4 GetTeeBrush=GetTeeBrush
+4 GetTeeChartHelpFile=GetTeeChartHelpFile
+4 GetVectorValue=GetVectorValue
+4 GotoURL=GotoURL
+4 GroupDownSample=GroupDownSample
+4 HasColors=HasColors
+4 HasLabels=HasLabels
+4 HasNoMandatoryValues=HasNoMandatoryValues
+4 Histogram=Histogram
+4 HLSToColor=HLSToColor
+4 HLSToRGB=HLSToRGB
+4 HtmlTextExtent=HtmlTextExtent
+4 HtmlTextOut=HtmlTextOut
+3 LoadBitmapFromResourceName - OrientRectangle
+4 LoadBitmapFromResourceName=LoadBitmapFromResourceName
+4 LoadChartFromFile=LoadChartFromFile
+4 LoadChartFromStream=LoadChartFromStream
+4 LoadChartFromURL=LoadChartFromURL
+4 LoadFromFileX=LoadFromFileX
+4 LoadMap=LoadMap
+4 LoadTeeFromFile=LoadTeeFromFile
+4 LoadTeeFromStream=LoadTeeFromStream
+4 OrientRectangle=OrientRectangle
+3 PaintSeriesLegend - PositionToCenter
+4 PaintSeriesLegend=PaintSeriesLegend
+4 Point3D=Point3D
+4 PointAtDistance=PointAtDistance
+4 PointInEllipse=PointInEllipse
+4 PointInHorizTriangle=PointInHorizTriangle
+4 PointInLine=PointInLine
+4 PointInLineTolerance=PointInLineTolerance
+4 PointInRect=PointInRect
+4 PointInTriangle=PointInTriangle
+4 PolyFitting=PolyFitting
+4 PolygonArea=PolygonArea
+4 PolygonBounds=PolygonBounds
+4 PolygonCentroid=PolygonCentroid
+4 PolygonInPolygon=PolygonInPolygon
+4 PositionToCenter=PositionToCenter
+3 RectangleInRectangle - RGBValue
+4 RectangleInRectangle=RectangleInRectangle
+4 RectCenter=RectCenter
+4 RectFromPolygon=RectFromPolygon
+4 RectFromTriangle=RectFromTriangle
+4 RectSize=RectSize
+4 RectToFourPoints=RectToFourPoints
+4 RegisterChartThemes=RegisterChartThemes
+4 RegisterTeeExportFormat=RegisterTeeExportFormat
+4 RegisterTeeSeries=RegisterTeeSeries
+4 RegisterTeeStandardSeries=RegisterTeeStandardSeries
+4 RegisterTeeTools=RegisterTeeTools
+4 ReplaceChar=ReplaceChar
+4 RGBToHLS=RGBToHLS
+4 RGBValue=RGBValue
+3 SaveChartDialog - SmoothStretch
+4 SaveChartDialog=SaveChartDialog
+4 SaveChartToFile=SaveChartToFile
+4 SaveChartToStream=SaveChartToStream
+4 SaveChartToXMLFile=SaveChartToXMLFile
+4 SaveChartToXMLStream=SaveChartToXMLStream
+4 SaveTeeToFile=SaveTeeToFile
+4 SaveTeeToStream=SaveTeeToStream
+4 SaveToFileX=SaveToFileX
+4 ScreenRatio=ScreenRatio
+4 SeriesEditorForm=SeriesEditorForm
+4 SeriesGuessContents=SeriesGuessContents
+4 SeriesTitleOrName=SeriesTitleOrName
+4 SetDefaultColorPalette=SetDefaultColorPalette
+4 SetVectorValue=SetVectorValue
+4 ShowControls=ShowControls
+4 ShowFiltersEditor=ShowFiltersEditor
+4 ShowMessageUser=ShowMessageUser
+4 ShowThemesEditor=ShowThemesEditor
+4 SmoothStretch=SmoothStretch
+3 SwapDouble - SwapInteger
+4 SwapDouble=SwapDouble
+4 SwapInteger=SwapInteger
+3 TeeAntiAlias - TeeGrayScale
+4 TeeAntiAlias=TeeAntiAlias
+4 TeeAskLanguage=TeeAskLanguage
+4 TeeCanTranslate=TeeCanTranslate
+4 TeeCreatePenSmallDots=TeeCreatePenSmallDots
+4 TeeCull=TeeCull
+4 TeeCursorToIdent=TeeCursorToIdent
+4 TeeDateTimeIncrement=TeeDateTimeIncrement
+4 TeeDBSummaryEditor=TeeDBSummaryEditor
+4 TeeDistance=TeeDistance
+4 TeeDrawBitmapEditor=TeeDrawBitmapEditor
+4 TeeDrawCheckBox=TeeDrawCheckBox
+4 TeeEditStrings=TeeEditStrings
+4 TeeEmailFile=TeeEmailFile
+4 TeeExport=TeeExport
+4 TeeFillCursors=TeeFillCursors
+4 TeeGetBitmapEditor=TeeGetBitmapEditor
+4 TeeGetJPEGImageParams=TeeGetJPEGImageParams
+4 TeeGetUniqueName=TeeGetUniqueName
+4 TeeGrayScale=TeeGrayScale
+3 TeeIdentToCursor - TeeRegisterFilters
+4 TeeIdentToCursor=TeeIdentToCursor
+4 TeeIsURL=TeeIsURL
+4 TeeLanguageRegistry=TeeLanguageRegistry
+4 TeePCXToStream=TeePCXToStream
+4 TeePoint=TeePoint
+4 TeePointerDrawLegend=TeePointerDrawLegend
+4 TeePreview=TeePreview
+4 TeePreviewCursor=TeePreviewCursor
+4 TeeReadBoolOption=TeeReadBoolOption
+4 TeeReadIntegerOption=TeeReadIntegerOption
+4 TeeReadStringOption=TeeReadStringOption
+4 TeeRect=TeeRect
+4 TeeRegisterFilters=TeeRegisterFilters
+3 TeeSaveBoolOption - TeeSelectFolder
+4 TeeSaveBoolOption=TeeSaveBoolOption
+4 TeeSaveIntegerOption=TeeSaveIntegerOption
+4 TeeSaveToBitmap=TeeSaveToBitmap
+4 TeeSaveToJPEG=TeeSaveToJPEG
+4 TeeSaveToJPEGFile=TeeSaveToJPEGFile
+4 TeeSaveToPDFFile=TeeSaveToPDFFile
+4 TeeSaveToPNG=TeeSaveToPNG
+4 TeeSaveToPSFile=TeeSaveToPSFile
+4 TeeSaveToSVGFile=TeeSaveToSVGFile
+4 TeeSaveToVMLFile=TeeSaveToVMLFile
+4 TeeSaveToXAMLFile=TeeSaveToXAMLFile
+4 TeeScaleForm=TeeScaleForm
+4 TeeSelectFolder=TeeSelectFolder
+3 TeeSetAfrikaans - TeeSetGerman
+4 TeeSetAfrikaans=TeeSetAfrikaans
+4 TeeSetArabic=TeeSetArabic
+4 TeeSetBrazil=TeeSetBrazil
+4 TeeSetBulgarian=TeeSetBulgarian
+4 TeeSetCatalan=TeeSetCatalan
+4 TeeSetChinese=TeeSetChinese
+4 TeeSetChineseSimp=TeeSetChineseSimp
+4 TeeSetCroatian=TeeSetCroatian
+4 TeeSetCursor=TeeSetCursor
+4 TeeSetCzech=TeeSetCzech
+4 TeeSetDanish=TeeSetDanish
+4 TeeSetDutch=TeeSetDutch
+4 TeeSetFarsi=TeeSetFarsi
+4 TeeSetFinnish=TeeSetFinnish
+4 TeeSetFrench=TeeSetFrench
+4 TeeSetGalician=TeeSetGalician
+4 TeeSetGerman=TeeSetGerman
+3 TeeSetHebrew - TeeSetRussian
+4 TeeSetHebrew=TeeSetHebrew
+4 TeeSetHellenic=TeeSetHellenic
+4 TeeSetHindi=TeeSetHindi
+4 TeeSetHungarian=TeeSetHungarian
+4 TeeSetIcelandic=TeeSetIcelandic
+4 TeeSetIndonesian=TeeSetIndonesian
+4 TeeSetItalian=TeeSetItalian
+4 TeeSetJapanese=TeeSetJapanese
+4 TeeSetKorean=TeeSetKorean
+4 TeeSetLatvian=TeeSetLatvian
+4 TeeSetLithuanian=TeeSetLithuanian
+4 TeeSetMalaysian=TeeSetMalaysian
+4 TeeSetNorwegian=TeeSetNorwegian
+4 TeeSetPolish=TeeSetPolish
+4 TeeSetPortuguese=TeeSetPortuguese
+4 TeeSetRomanian=TeeSetRomanian
+4 TeeSetRussian=TeeSetRussian
+3 TeeSetSerbian - TeeYesNoDelete
+4 TeeSetSerbian=TeeSetSerbian
+4 TeeSetSlovak=TeeSetSlovak
+4 TeeSetSlovene=TeeSetSlovene
+4 TeeSetSpanish=TeeSetSpanish
+4 TeeSetSwedish=TeeSetSwedish
+4 TeeSetTurkish=TeeSetTurkish
+4 TeeSetUkrainian=TeeSetUkrainian
+4 TeeSetUrdu=TeeSetUrdu
+4 TeeShowAboutBox=TeeShowAboutBox
+4 TeeSort=TeeSort
+4 TeeSources=TeeSources
+4 TeeStr=TeeStr
+4 TeeTranslateAControl=TeeTranslateAControl
+4 TeeTranslateControl=TeeTranslateControl
+4 TeeUnRegisterFilters=TeeUnRegisterFilters
+4 TeeURLErrorMessage=TeeURLErrorMessage
+4 TeeYesNo=TeeYesNo
+4 TeeYesNoDelete=TeeYesNoDelete
+3 UnClipCanvas - WithFileExtension
+4 UnClipCanvas=UnClipCanvas
+4 UnRegisterTeeTools=UnRegisterTeeTools
+4 WithFileExtension=WithFileExtension
+2 Classes and procedures by units
+3 ArrowCha
+4 Unit description=ArrowCha
+4 TArrowSeries=TArrowSeries
+3 Bar3D
+4 Unit description=Bar3D
+4 TBar3DSeries=TBar3DSeries
+3 BigCandl
+4 Unit description=BigCandl
+4 TBigCandleSeries=TBigCandleSeries
+3 BubbleCh
+4 Unit description=BubbleCh
+4 TBubbleSeries=TBubbleSeries
+3 CandleCh
+4 Unit description=CandleCh
+4 TADXFunction=TADXFunction
+4 TCandleSeries=TCandleSeries
+4 TDarvasSeries=TDarvasSeries
+4 TRSIFunction=TRSIFunction
+4 TVolumeSeries=TVolumeSeries
+4 Types
+5 TCandleColorStyle=TCandleColorStyle
+5 TCandleItem=TCandleItem
+5 TCandleStyle=TCandleStyle
+5 TRSIStyle=TRSIStyle
+3 Chart
+4 Unit description=Chart
+4 LegendException=LegendException
+4 TChart=TChart
+4 TChartBackWall=TChartBackWall
+4 TChartBottomWall=TChartBottomWall
+4 TChartFootTitle=TChartFootTitle
+4 TChartLeftWall=TChartLeftWall
+4 TChartLegend=TChartLegend
+4 TChartLegendGradient=TChartLegendGradient
+4 TChartRightWall=TChartRightWall
+4 TChartTheme=TChartTheme
+4 TChartTitle=TChartTitle
+4 TChartWall=TChartWall
+4 TChartWalls=TChartWalls
+4 TColorPalettes=TColorPalettes
+4 TCustomChart=TCustomChart
+4 TCustomChartLegend=TCustomChartLegend
+4 TCustomChartWall=TCustomChartWall
+4 TLegendItem=TLegendItem
+4 TLegendItems=TLegendItems
+4 TLegendSymbol=TLegendSymbol
+4 TLegendTitle=TLegendTitle
+4 TTeeCustomShapePosition=TTeeCustomShapePosition
+4 TTeeSeriesTypes=TTeeSeriesTypes
+4 TTeeToolTypes=TTeeToolTypes
+4 Procedures
+5 AssignSeries=AssignSeries
+5 ChangeAllSeriesType=ChangeAllSeriesType
+5 ChangeSeriesType=ChangeSeriesType
+5 CloneChartSeries=CloneChartSeries
+5 CloneChartTool=CloneChartTool
+5 CreateNewSeries=CreateNewSeries
+5 CreateNewTeeFunction=CreateNewTeeFunction
+5 GetGallerySeriesName=GetGallerySeriesName
+5 PaintSeriesLegend=PaintSeriesLegend
+5 RegisterTeeSeries=RegisterTeeSeries
+5 RegisterTeeTools=RegisterTeeTools
+5 UnRegisterTeeTools=UnRegisterTeeTools
+4 Types
+5 TChartAllowScrollEvent=TChartAllowScrollEvent
+5 TChartClick=TChartClick
+5 TChartClickAxis=TChartClickAxis
+5 TChartClickSeries=TChartClickSeries
+5 TChartClickTitle=TChartClickTitle
+5 TCheckBoxesStyle=TCheckBoxesStyle
+5 TLegendAlignment=TLegendAlignment
+5 TLegendStyle=TLegendStyle
+5 TLegendSymbolPosition=TLegendSymbolPosition
+5 TLegendSymbolSize=TLegendSymbolSize
+5 TOnGetLegendPos=TOnGetLegendPos
+5 TOnGetLegendRect=TOnGetLegendRect
+5 TOnGetLegendText=TOnGetLegendText
+5 TSymbolCalcHeight=TSymbolCalcHeight
+5 TSymbolDrawEvent=TSymbolDrawEvent
+4 Variables
+5 AnimatedZoomFactor=AnimatedZoomFactor
+5 ColorPalettes=ColorPalettes
+5 TeeAntiAliasCanvas=TeeAntiAliasCanvas
+5 TeePageNumToolClass=TeePageNumToolClass
+5 TeeScrollKeyShift=TeeScrollKeyShift
+5 TeeSeriesTypes=TeeSeriesTypes
+5 TeeToolTypes=TeeToolTypes
+5 TeeUseMouseWheel=TeeUseMouseWheel
+3 CurvFitt
+4 Unit description=CurvFitt
+4 TCorrelationFunction=TCorrelationFunction
+4 TCurveFittingFunction=TCurveFittingFunction
+4 TCustomFittingFunction=TCustomFittingFunction
+4 TCustomTrendFunction=TCustomTrendFunction
+4 TExpTrendFunction=TExpTrendFunction
+4 TTrendFunction=TTrendFunction
+4 Types
+5 TTrendStyle=TTrendStyle
+5 TTypeFitting=TTypeFitting
+3 DBChart
+4 Unit description=DBChart
+4 DBChartException=DBChartException
+4 TCustomDBChart=TCustomDBChart
+4 TDBChart=TDBChart
+4 TDBChartDataSource=TDBChartDataSource
+4 Procedures
+5 DateToWeek=DateToWeek
+5 DateToWeekOld=DateToWeekOld
+4 Types
+5 TProcessRecordEvent=TProcessRecordEvent
+5 TTeeDBGroup=TTeeDBGroup
+3 EditChar
+4 Unit description=EditChar
+4 Procedures
+5 EditChart=EditChart
+5 EditChartAxis=EditChartAxis
+5 EditChartLegend=EditChartLegend
+5 EditChartTitle=EditChartTitle
+5 EditChartTool=EditChartTool
+5 EditChartWall=EditChartWall
+5 EditSeries=EditSeries
+5 EditSeriesMarks=EditSeriesMarks
+3 ErrorBar
+4 Unit description=ErrorBar
+4 TBaseHighLowSeries=TBaseHighLowSeries
+4 TCustomErrorSeries=TCustomErrorSeries
+4 TErrorBarSeries=TErrorBarSeries
+4 TErrorSeries=TErrorSeries
+4 THighLowSeries=THighLowSeries
+4 Types
+5 TErrorSeriesStyle=TErrorSeriesStyle
+5 TErrorWidthUnits=TErrorWidthUnits
+3 GanttCh
+4 Unit description=GanttCh
+4 TGanttSeries=TGanttSeries
+3 GDIPAPI
+4 Unit description=GDIPAPI
+4 Types
+5 ColorPalette=ColorPalette
+3 GIFImage
+4 Unit description=GIFImage
+4 TGIFImage=TGIFImage
+3 ImageBar
+4 Unit description=ImageBar
+4 TImageBarSeries=TImageBarSeries
+4 Procedures
+5 LoadBitmapFromResourceName=LoadBitmapFromResourceName
+3 ImaPoint
+4 Unit description=ImaPoint
+4 TCustomImagePointSeries=TCustomImagePointSeries
+4 TDeltaPointSeries=TDeltaPointSeries
+4 TImagePointSeries=TImagePointSeries
+4 Types
+5 TDeltaImageStyle=TDeltaImageStyle
+5 TGetImageEvent=TGetImageEvent
+3 MyPoint
+4 Unit description=MyPoint
+4 TBarJoinSeries=TBarJoinSeries
+4 TMyPointSeries=TMyPointSeries
+3 OHLChart
+4 Unit description=OHLChart
+4 TOHLCSeries=TOHLCSeries
+3 PCX
+4 Unit description=PCX
+4 Procedures
+5 LoadFromFileX=LoadFromFileX
+5 SaveToFileX=SaveToFileX
+5 TeePCXToStream=TeePCXToStream
+3 QrTee
+4 Unit description=QrTee
+4 TQRChart=TQRChart
+4 TQRDBChart=TQRDBChart
+4 Types
+5 TPrintChartEvent=TPrintChartEvent
+5 TTeeQuickMethod=TTeeQuickMethod
+3 Series
+4 Unit description=Series
+4 TAreaSeries=TAreaSeries
+4 TBarSeries=TBarSeries
+4 TBarSeriesGradient=TBarSeriesGradient
+4 TCircledSeries=TCircledSeries
+4 TCustomBarSeries=TCustomBarSeries
+4 TCustomLineSeries=TCustomLineSeries
+4 TCustomSeries=TCustomSeries
+4 TFastLineSeries=TFastLineSeries
+4 THorizAreaSeries=THorizAreaSeries
+4 THorizBarSeries=THorizBarSeries
+4 THorizLineSeries=THorizLineSeries
+4 TLineSeries=TLineSeries
+4 TPieMarks=TPieMarks
+4 TPieOtherSlice=TPieOtherSlice
+4 TPieSeries=TPieSeries
+4 TPieShadow=TPieShadow
+4 TPointSeries=TPointSeries
+4 TSliceValueList=TSliceValueList
+4 Procedures
+5 RegisterTeeStandardSeries=RegisterTeeStandardSeries
+5 TeePointerDrawLegend=TeePointerDrawLegend
+4 Types
+5 TBarStyle=TBarStyle
+5 TCustomSeriesStack=TCustomSeriesStack
+5 TGetBarStyleEvent=TGetBarStyleEvent
+5 TMultiArea=TMultiArea
+5 TMultiBar=TMultiBar
+5 TMultiPie=TMultiPie
+5 TOnGetPointerStyle=TOnGetPointerStyle
+5 TPieAngle=TPieAngle
+5 TPieOtherStyle=TPieOtherStyle
+5 TSeriesClickPointerEvent=TSeriesClickPointerEvent
+5 TTreatNullsStyle=TTreatNullsStyle
+3 StatChar
+4 Unit description=StatChar
+4 TBollingerFunction=TBollingerFunction
+4 TCrossPointsFunction=TCrossPointsFunction
+4 TExpAverageFunction=TExpAverageFunction
+4 TExpMovAveFunction=TExpMovAveFunction
+4 THistogramSeries=THistogramSeries
+4 THorizHistogramSeries=THorizHistogramSeries
+4 TMACDFunction=TMACDFunction
+4 TMomentumDivFunction=TMomentumDivFunction
+4 TMomentumFunction=TMomentumFunction
+4 TMovingAverageFunction=TMovingAverageFunction
+4 TPerformanceFunction=TPerformanceFunction
+4 TPerimeterFunction=TPerimeterFunction
+4 TRMSFunction=TRMSFunction
+4 TStdDeviationFunction=TStdDeviationFunction
+4 TStochasticFunction=TStochasticFunction
+4 TVarianceFunction=TVarianceFunction
+3 TeCanvas
+4 Unit description=TeCanvas
+4 TBlurFilter=TBlurFilter
+4 TButtonColor=TButtonColor
+4 TCanvas3D=TCanvas3D
+4 TChartBrush=TChartBrush
+4 TChartHiddenPen=TChartHiddenPen
+4 TChartPen=TChartPen
+4 TComboFlat=TComboFlat
+4 TConvolveFilter=TConvolveFilter
+4 TCustomTeeGradient=TCustomTeeGradient
+4 TDarkGrayPen=TDarkGrayPen
+4 TDottedGrayPen=TDottedGrayPen
+4 TFilterItems=TFilterItems
+4 TFilterRegion=TFilterRegion
+4 TFloatXYZ=TFloatXYZ
+4 TSubGradient=TSubGradient
+4 TTeeBlend=TTeeBlend
+4 TTeeButton=TTeeButton
+4 TTeeCanvas=TTeeCanvas
+4 TTeeCanvas3D=TTeeCanvas3D
+4 TTeeFilter=TTeeFilter
+4 TTeeFont=TTeeFont
+4 TTeeFontGradient=TTeeFontGradient
+4 TTeeGradient=TTeeGradient
+4 TTeePicture=TTeePicture
+4 TTeeShadow=TTeeShadow
+4 TView3DOptions=TView3DOptions
+4 TWhitePen=TWhitePen
+4 IFormCreator=IFormCreator
+4 Procedures
+5 ApplyBright=ApplyBright
+5 ApplyDark=ApplyDark
+5 ClipCanvas=ClipCanvas
+5 ClipEllipse=ClipEllipse
+5 ClipPolygon=ClipPolygon
+5 ClipRoundRectangle=ClipRoundRectangle
+5 EditColor=EditColor
+5 EditColorDialog=EditColorDialog
+5 OrientRectangle=OrientRectangle
+5 Point3D=Point3D
+5 PointAtDistance=PointAtDistance
+5 PointInRect=PointInRect
+5 PolygonBounds=PolygonBounds
+5 PolygonInPolygon=PolygonInPolygon
+5 RectangleInRectangle=RectangleInRectangle
+5 RectCenter=RectCenter
+5 RectFromPolygon=RectFromPolygon
+5 RectFromTriangle=RectFromTriangle
+5 RectSize=RectSize
+5 RGBValue=RGBValue
+5 SmoothStretch=SmoothStretch
+5 SwapDouble=SwapDouble
+5 SwapInteger=SwapInteger
+5 TeeCreatePenSmallDots=TeeCreatePenSmallDots
+5 TeeCull=TeeCull
+5 TeeDistance=TeeDistance
+5 TeePoint=TeePoint
+5 TeeRect=TeeRect
+5 UnClipCanvas=UnClipCanvas
+4 Types
+5 TCanvas3DPlane=TCanvas3DPlane
+5 TCanvasBackMode=TCanvasBackMode
+5 TFloatPoint=TFloatPoint
+5 TGradientDirection=TGradientDirection
+5 TGradientRotate=TGradientRotate
+5 TPenEndStyle=TPenEndStyle
+5 TPoint3D=TPoint3D
+5 TPoint3DFloat=TPoint3DFloat
+5 TRGB=TRGB
+5 TSmoothStretchOption=TSmoothStretchOption
+5 TTeeCanvasSurfaceStyle=TTeeCanvasSurfaceStyle
+5 TTeeView3DChangedZoom=TTeeView3DChangedZoom
+5 TTeeView3DScrolled=TTeeView3DScrolled
+4 Variables
+5 GetDefaultFontName=GetDefaultFontName
+5 GetDefaultFontSize=GetDefaultFontSize
+5 IsWindowsNT=IsWindowsNT
+5 TeeCheckPenWidth=TeeCheckPenWidth
+5 TeeCustomEditColors=TeeCustomEditColors
+5 TeeDefaultConePercent=TeeDefaultConePercent
+5 TeeFontAntiAlias=TeeFontAntiAlias
+5 TeeGradientRotate=TeeGradientRotate
+5 TeeNumCylinderSides=TeeNumCylinderSides
+3 TeeAbout
+4 Unit description=TeeAbout
+4 Procedures
+5 TeeShowAboutBox=TeeShowAboutBox
+3 TeeAfrikaans
+4 Unit description=TeeAfrikaans
+4 Procedures
+5 TeeSetAfrikaans=TeeSetAfrikaans
+3 TeeAntiAlias
+4 Unit description=TeeAntiAlias
+4 TAntiAliasCanvas=TAntiAliasCanvas
+4 TAntiAliasTool=TAntiAliasTool
+4 Types
+5 TAntiAlias=TAntiAlias
+3 TeeArabic
+4 Unit description=TeeArabic
+4 Procedures
+5 TeeSetArabic=TeeSetArabic
+3 TeeBackImage
+4 Unit description=TeeBackImage
+4 Procedures
+5 EditTeePicture=EditTeePicture
+3 TeeBannerTool
+4 Unit description=TeeBannerTool
+4 TBannerTool=TBannerTool
+4 Types
+5 TScrollDirection=TScrollDirection
+3 TeeBaseFuncEdit
+4 Unit description=TeeBaseFuncEdit
+4 TBaseFunctionEditor=TBaseFunctionEditor
+3 TeeBezie
+4 Unit description=TeeBezie
+4 TBezierSeries=TBezierSeries
+4 Types
+5 TBezierStyle=TBezierStyle
+3 TeeBmpOptions
+4 Unit description=TeeBmpOptions
+4 TBMPExportFormat=TBMPExportFormat
+4 Procedures
+5 TeeSaveToBitmap=TeeSaveToBitmap
+3 TeeBoxPlot
+4 Unit description=TeeBoxPlot
+4 TBoxSeries=TBoxSeries
+4 TCustomBoxSeries=TCustomBoxSeries
+4 THorizBoxSeries=THorizBoxSeries
+3 TeeBrazil
+4 Unit description=TeeBrazil
+4 Procedures
+5 TeeSetBrazil=TeeSetBrazil
+4 Variables
+5 TeeBrazilLanguage=TeeBrazilLanguage
+3 TeeBrushDlg
+4 Unit description=TeeBrushDlg
+4 Procedures
+5 EditChartBrush=EditChartBrush
+5 EditTeeFont=EditTeeFont
+5 GetTeeBrush=GetTeeBrush
+3 TeeBulgarian
+4 Unit description=TeeBulgarian
+4 Procedures
+5 TeeSetBulgarian=TeeSetBulgarian
+3 TeeCalendar
+4 Unit description=TeeCalendar
+4 TCalendarCell=TCalendarCell
+4 TCalendarCellUpper=TCalendarCellUpper
+4 TCalendarSeries=TCalendarSeries
+4 Types
+5 TCalendarChangeEvent=TCalendarChangeEvent
+3 TeeCatalan
+4 Unit description=TeeCatalan
+4 Procedures
+5 TeeSetCatalan=TeeSetCatalan
+4 Variables
+5 TeeCatalanLanguage=TeeCatalanLanguage
+3 TeeCCIFunction
+4 Unit description=TeeCCIFunction
+4 TCCIFunction=TCCIFunction
+3 TeeChartActions
+4 Unit description=TeeChartActions
+4 TChartAction=TChartAction
+4 TChartAction3D=TChartAction3D
+4 TChartActionAxes=TChartActionAxes
+4 TChartActionCopy=TChartActionCopy
+4 TChartActionEdit=TChartActionEdit
+4 TChartActionGrid=TChartActionGrid
+4 TChartActionLegend=TChartActionLegend
+4 TChartActionPrint=TChartActionPrint
+4 TChartActionSave=TChartActionSave
+4 TCustomChartAction=TCustomChartAction
+4 TCustomSeriesAction=TCustomSeriesAction
+4 TSeriesAction=TSeriesAction
+4 TSeriesActionActive=TSeriesActionActive
+4 TSeriesActionEdit=TSeriesActionEdit
+4 TSeriesActionMarks=TSeriesActionMarks
+3 TeeChartBook
+4 Unit description=TeeChartBook
+4 TChartBook=TChartBook
+4 Types
+5 TDeleteChartEvent=TDeleteChartEvent
+5 TNewChartEvent=TNewChartEvent
+3 TeeChartGrid
+4 Unit description=TeeChartGrid
+4 TChartGrid=TChartGrid
+4 TChartGridNavigator=TChartGridNavigator
+4 TCustomChartGrid=TCustomChartGrid
+4 Types
+5 TChartGridShow=TChartGridShow
+5 TEditingCellEvent=TEditingCellEvent
+3 TeeChinese
+4 Unit description=TeeChinese
+4 Procedures
+5 TeeSetChinese=TeeSetChinese
+4 Variables
+5 TeeChineseLanguage=TeeChineseLanguage
+3 TeeChineseSimp
+4 Unit description=TeeChineseSimp
+4 Procedures
+5 TeeSetChineseSimp=TeeSetChineseSimp
+4 Variables
+5 TeeChineseSimpLanguage=TeeChineseSimpLanguage
+3 TeeCLVFunction
+4 Unit description=TeeCLVFunction
+4 TCLVFunction=TCLVFunction
+3 TeeComma
+4 Unit description=TeeComma
+4 TCustomTeeCommander=TCustomTeeCommander
+4 TTeeCommander=TTeeCommander
+4 Types
+5 TCommanderControls=TCommanderControls
+5 TTeeCommanderOnSetLabel=TTeeCommanderOnSetLabel
+5 TTeeEditedChartEvent=TTeeEditedChartEvent
+3 TeeCompressOHLC
+4 Unit description=TeeCompressOHLC
+4 TCompressFunction=TCompressFunction
+4 Types
+5 TCompressGetDate=TCompressGetDate
+5 TCompressionPeriod=TCompressionPeriod
+3 TeeConst
+4 Unit description=TeeConst
+4 Variables
+5 TeeLanguageCanUpper=TeeLanguageCanUpper
+5 TeeMsg_TeeExtension=TeeMsg_TeeExtension
+3 TeeCount
+4 Unit description=TeeCount
+4 TCountTeeFunction=TCountTeeFunction
+3 TeeCroatian
+4 Unit description=TeeCroatian
+4 Procedures
+5 TeeSetCroatian=TeeSetCroatian
+3 TeeCumu
+4 Unit description=TeeCumu
+4 TCumulative=TCumulative
+3 TeeCustomShapeEditor
+4 Unit description=TeeCustomShapeEditor
+4 Procedures
+5 EditTeeCustomShape=EditTeeCustomShape
+3 TeeCzech
+4 Unit description=TeeCzech
+4 Procedures
+5 TeeSetCzech=TeeSetCzech
+3 TeeDanish
+4 Unit description=TeeDanish
+4 Procedures
+5 TeeSetDanish=TeeSetDanish
+4 Variables
+5 TeeDanishLanguage=TeeDanishLanguage
+3 TeeData
+4 Unit description=TeeData
+4 TChartDataSet=TChartDataSet
+4 TSeriesDataSet=TSeriesDataSet
+4 TTeeDataSet=TTeeDataSet
+4 Types
+5 TRecInfo=TRecInfo
+5 TSeriesPoint=TSeriesPoint
+3 TeeDataTableTool
+4 Unit description=TeeDataTableTool
+4 TDataTableTool=TDataTableTool
+4 TTableLegend=TTableLegend
+3 TeeDBCrossTab
+4 Unit description=TeeDBCrossTab
+4 TDBCrossTabSource=TDBCrossTabSource
+4 Procedures
+5 FillDataSet=FillDataSet
+4 Types
+5 TGroupFormula=TGroupFormula
+3 TeeDBEdit
+4 Unit description=TeeDBEdit
+4 TTeeSeriesDBSource=TTeeSeriesDBSource
+3 TeeDBSourceEditor
+4 Unit description=TeeDBSourceEditor
+4 TSingleRecordSeriesSource=TSingleRecordSeriesSource
+3 TeeDBSumEdit
+4 Unit description=TeeDBSumEdit
+4 TDBSummarySource=TDBSummarySource
+4 Procedures
+5 TeeDBSummaryEditor=TeeDBSummaryEditor
+3 TeeDesignOptions
+4 Unit description=TeeDesignOptions
+4 TOptionsForm=TOptionsForm
+4 Variables
+5 TeeNewChartPalette=TeeNewChartPalette
+5 TeeNewChartTheme=TeeNewChartTheme
+3 TeeDonut
+4 Unit description=TeeDonut
+4 TDonutSeries=TDonutSeries
+3 TeeDownSampling
+4 Unit description=TeeDownSampling
+4 TDownSamplingFunction=TDownSamplingFunction
+4 Procedures
+5 GroupDownSample=GroupDownSample
+4 Types
+5 TDownSampleMethod=TDownSampleMethod
+5 TPointFloat2D=TPointFloat2D
+3 TeeDragPoint
+4 Unit description=TeeDragPoint
+4 TDragPointTool=TDragPointTool
+4 Types
+5 TDragPointStyle=TDragPointStyle
+5 TDragPointToolEvent=TDragPointToolEvent
+3 TeeDraw3D
+4 Unit description=TeeDraw3D
+4 TDraw3D=TDraw3D
+4 Types
+5 TDraw3DPaintEvent=TDraw3DPaintEvent
+3 TeeDutch
+4 Unit description=TeeDutch
+4 Procedures
+5 TeeSetDutch=TeeSetDutch
+4 Variables
+5 TeeDutchLanguage=TeeDutchLanguage
+3 TeeEdiFont
+4 Unit description=TeeEdiFont
+4 Procedures
+5 EditTeeFontEx=EditTeeFontEx
+3 TeeEdiGene
+4 Unit description=TeeEdiGene
+4 TChartPageNavigator=TChartPageNavigator
+4 Procedures
+5 ChartPreview=ChartPreview
+3 TeeEdiGrad
+4 Unit description=TeeEdiGrad
+4 TButtonGradient=TButtonGradient
+4 Procedures
+5 EditTeeGradient=EditTeeGradient
+3 TeeEdiSeri
+4 Unit description=TeeEdiSeri
+4 Procedures
+5 EditSeriesDialog=EditSeriesDialog
+5 SeriesEditorForm=SeriesEditorForm
+3 TeeEdit
+4 Unit description=TeeEdit
+4 TChartEditor=TChartEditor
+4 TChartEditorPanel=TChartEditorPanel
+4 TChartPreviewer=TChartPreviewer
+4 TCustomChartEditor=TCustomChartEditor
+4 Types
+5 TChartPreviewOption=TChartPreviewOption
+3 TeeEditCha
+4 Unit description=TeeEditCha
+4 TChartEditForm=TChartEditForm
+4 Procedures
+5 GetTeeChartHelpFile=GetTeeChartHelpFile
+4 Types
+5 TChartEditorOption=TChartEditorOption
+5 TChartEditorTab=TChartEditorTab
+5 TTeeOnCreateEditor=TTeeOnCreateEditor
+4 Variables
+5 TeeSeriesNamesRuntime=TeeSeriesNamesRuntime
+3 TeeEditPro
+4 Unit description=TeeEditPro
+4 TChartImage=TChartImage
+4 Procedures
+5 EditOneSeries=EditOneSeries
+5 SaveChartDialog=SaveChartDialog
+3 TeeEmfOptions
+4 Unit description=TeeEmfOptions
+4 TEMFExportFormat=TEMFExportFormat
+3 TeeExcelSource
+4 Unit description=TeeExcelSource
+4 TTeeExcelSource=TTeeExcelSource
+3 TeeExpForm
+4 Unit description=TeeExpForm
+4 TTeeDlgWizard=TTeeDlgWizard
+4 Procedures
+5 TeeSelectFolder=TeeSelectFolder
+3 TeeExport
+4 Unit description=TeeExport
+4 TTeeExportFormat=TTeeExportFormat
+4 TTeeExportFormats=TTeeExportFormats
+4 Procedures
+5 GetRegistryHelpPath=GetRegistryHelpPath
+5 LoadTeeFromFile=LoadTeeFromFile
+5 LoadTeeFromStream=LoadTeeFromStream
+5 RegisterTeeExportFormat=RegisterTeeExportFormat
+5 SaveTeeToFile=SaveTeeToFile
+5 SaveTeeToStream=SaveTeeToStream
+5 WithFileExtension=WithFileExtension
+4 Variables
+5 TeeExportFormats=TeeExportFormats
+3 TeeExtraLegendTool
+4 Unit description=TeeExtraLegendTool
+4 TExtraLegendTool=TExtraLegendTool
+3 TeeFaderTool
+4 Unit description=TeeFaderTool
+4 TFaderTool=TFaderTool
+4 Types
+5 TFaderStyle=TFaderStyle
+3 TeeFarsi
+4 Unit description=TeeFarsi
+4 Procedures
+5 TeeSetFarsi=TeeSetFarsi
+4 Variables
+5 TeeFarsiLanguage=TeeFarsiLanguage
+3 TeeFilters
+4 Unit description=TeeFilters
+4 TAmountFilter=TAmountFilter
+4 TBevelFilter=TBevelFilter
+4 TBrightnessFilter=TBrightnessFilter
+4 TColorFilter=TColorFilter
+4 TContrastFilter=TContrastFilter
+4 TCropFilter=TCropFilter
+4 TEmbossFilter=TEmbossFilter
+4 TFlipFilter=TFlipFilter
+4 TGammaCorrectionFilter=TGammaCorrectionFilter
+4 TGrayScaleFilter=TGrayScaleFilter
+4 THueLumSatFilter=THueLumSatFilter
+4 TImageFiltered=TImageFiltered
+4 TInvertFilter=TInvertFilter
+4 TMirrorFilter=TMirrorFilter
+4 TMosaicFilter=TMosaicFilter
+4 TResizeFilter=TResizeFilter
+4 TReverseFilter=TReverseFilter
+4 TRotateFilter=TRotateFilter
+4 TSharpenFilter=TSharpenFilter
+4 TSoftenFilter=TSoftenFilter
+4 TTileFilter=TTileFilter
+4 TZoomFilter=TZoomFilter
+4 Procedures
+5 ColorToHLS=ColorToHLS
+5 HLSToColor=HLSToColor
+5 HLSToRGB=HLSToRGB
+5 RGBToHLS=RGBToHLS
+5 TeeGrayScale=TeeGrayScale
+5 TeeRegisterFilters=TeeRegisterFilters
+5 TeeUnRegisterFilters=TeeUnRegisterFilters
+4 Types
+5 TGrayMethod=TGrayMethod
+5 TMirrorDirection=TMirrorDirection
+4 Variables
+5 FilterClasses=FilterClasses
+3 TeeFiltersEditor
+4 Unit description=TeeFiltersEditor
+4 TFormCreator=TFormCreator
+4 TFormItem=TFormItem
+4 TFormItems=TFormItems
+4 Procedures
+5 ShowFiltersEditor=ShowFiltersEditor
+3 TeeFinnish
+4 Unit description=TeeFinnish
+4 Procedures
+5 TeeSetFinnish=TeeSetFinnish
+3 TeeFormatting
+4 Unit description=TeeFormatting
+4 TFormatEditor=TFormatEditor
+3 TeeFrameTool
+4 Unit description=TeeFrameTool
+4 TFrameTool=TFrameTool
+3 TeeFrench
+4 Unit description=TeeFrench
+4 Procedures
+5 TeeSetFrench=TeeSetFrench
+4 Variables
+5 TeeFrenchLanguage=TeeFrenchLanguage
+3 TeeFuncEdit
+4 Unit description=TeeFuncEdit
+4 Procedures
+5 FillSeriesSources=FillSeriesSources
+3 TeeFunci
+4 Unit description=TeeFunci
+4 TAddTeeFunction=TAddTeeFunction
+4 TAverageTeeFunction=TAverageTeeFunction
+4 TCustomSortedFunction=TCustomSortedFunction
+4 TCustomTeeFunction=TCustomTeeFunction
+4 TDivideTeeFunction=TDivideTeeFunction
+4 THighTeeFunction=THighTeeFunction
+4 TLowTeeFunction=TLowTeeFunction
+4 TManySeriesTeeFunction=TManySeriesTeeFunction
+4 TMedianTeeFunction=TMedianTeeFunction
+4 TModeTeeFunction=TModeTeeFunction
+4 TMultiplyTeeFunction=TMultiplyTeeFunction
+4 TSubtractTeeFunction=TSubtractTeeFunction
+4 Types
+5 TCalculateEvent=TCalculateEvent
+3 TeeFunnel
+4 Unit description=TeeFunnel
+4 TFunnelSeries=TFunnelSeries
+3 TeeGalician
+4 Unit description=TeeGalician
+4 Procedures
+5 TeeSetGalician=TeeSetGalician
+4 Variables
+5 TeeGalicianLanguage=TeeGalicianLanguage
+3 TeeGalleryAlternate
+4 Unit description=TeeGalleryAlternate
+4 TTeeGalleryForm=TTeeGalleryForm
+3 TeeGalleryPanel
+4 Unit description=TeeGalleryPanel
+4 TChartGalleryPanel=TChartGalleryPanel
+4 TChartList=TChartList
+4 TGalleryChart=TGalleryChart
+4 Variables
+5 clTeeGallery=clTeeGallery
+5 TeeGalleryCheckMaximize=TeeGalleryCheckMaximize
+3 TeeGally
+4 Unit description=TeeGally
+4 Procedures
+5 ChangeAllSeriesGallery=ChangeAllSeriesGallery
+5 ChangeSeriesTypeGallery=ChangeSeriesTypeGallery
+5 CreateNewSeriesGallery=CreateNewSeriesGallery
+5 GetChartGalleryFunction=GetChartGalleryFunction
+3 TeeGanttTool
+4 Unit description=TeeGanttTool
+4 TGanttTool=TGanttTool
+4 Types
+5 TGanttDragEvent=TGanttDragEvent
+5 TGanttResizeEvent=TGanttResizeEvent
+5 TGanttToolBarPart=TGanttToolBarPart
+3 TeeGauges
+4 Unit description=TeeGauges
+4 TGaugeSeries=TGaugeSeries
+4 Types
+5 THandStyle=THandStyle
+3 TeeGDIPlus
+4 Unit description=TeeGDIPlus
+4 TGDIPlusCanvas=TGDIPlusCanvas
+3 TeeGerman
+4 Unit description=TeeGerman
+4 Procedures
+5 TeeSetGerman=TeeSetGerman
+4 Variables
+5 TeeGermanLanguage=TeeGermanLanguage
+3 TeeGIF
+4 Unit description=TeeGIF
+4 TGIFExportFormat=TGIFExportFormat
+3 TeeGLCanvas
+4 Unit description=TeeGLCanvas
+4 TGLCanvas=TGLCanvas
+4 TGLShape=TGLShape
+4 TGLTorus=TGLTorus
+4 Procedures
+5 ColorToGL=ColorToGL
+4 Types
+5 TGLFontStyle=TGLFontStyle
+4 Variables
+5 TeeColorPlanes=TeeColorPlanes
+5 TeeCylinderStacks=TeeCylinderStacks
+5 TeeLightLocal=TeeLightLocal
+5 TeeMaterialAmbient=TeeMaterialAmbient
+5 TeeMaterialDiffuse=TeeMaterialDiffuse
+5 TeeMaterialSpecular=TeeMaterialSpecular
+5 TeeOpenGLFontName=TeeOpenGLFontName
+5 TeePerspectiveQuality=TeePerspectiveQuality
+5 TeeSmoothQuality=TeeSmoothQuality
+5 TeeSphereSlices=TeeSphereSlices
+5 TeeSphereStacks=TeeSphereStacks
+5 TeeTextHeightFactor=TeeTextHeightFactor
+5 TeeTextWidthFactor=TeeTextWidthFactor
+5 TeeWrapTextures=TeeWrapTextures
+3 TeeGLEditor
+4 Unit description=TeeGLEditor
+4 Procedures
+5 EditTeeOpenGL=EditTeeOpenGL
+3 TeeHebrew
+4 Unit description=TeeHebrew
+4 Procedures
+5 TeeSetHebrew=TeeSetHebrew
+4 Variables
+5 TeeHebrewLanguage=TeeHebrewLanguage
+3 TeeHellenic
+4 Unit description=TeeHellenic
+4 Procedures
+5 TeeSetHellenic=TeeSetHellenic
+4 Variables
+5 TeeHellenicLanguage=TeeHellenicLanguage
+3 TeeHighLowLine
+4 Unit description=TeeHighLowLine
+4 THighLowLineSeries=THighLowLineSeries
+3 TeeHindi
+4 Unit description=TeeHindi
+4 Procedures
+5 TeeSetHindi=TeeSetHindi
+4 Variables
+5 TeeHindiLanguage=TeeHindiLanguage
+3 TeeHistogram
+4 Unit description=TeeHistogram
+4 THistogramFunction=THistogramFunction
+4 Procedures
+5 Histogram=Histogram
+3 TeeHtml
+4 Unit description=TeeHtml
+4 Procedures
+5 HtmlTextExtent=HtmlTextExtent
+5 HtmlTextOut=HtmlTextOut
+4 Types
+5 TSize=TSize
+3 TeeHungarian
+4 Unit description=TeeHungarian
+4 Procedures
+5 TeeSetHungarian=TeeSetHungarian
+4 Variables
+5 TeeHungarianLanguage=TeeHungarianLanguage
+3 TeeIcelandic
+4 Unit description=TeeIcelandic
+4 Procedures
+5 TeeSetIcelandic=TeeSetIcelandic
+4 Variables
+5 TeeIcelandicLanguage=TeeIcelandicLanguage
+3 TeeIndonesian
+4 Unit description=TeeIndonesian
+4 Procedures
+5 TeeSetIndonesian=TeeSetIndonesian
+3 TeeInspector
+4 Unit description=TeeInspector
+4 TInspectorHeader=TInspectorHeader
+4 TInspectorItem=TInspectorItem
+4 TInspectorItems=TInspectorItems
+4 TTeeInspector=TTeeInspector
+4 Types
+5 TGetInspectorItems=TGetInspectorItems
+5 TGetItemIndex=TGetItemIndex
+5 TGetItemProc=TGetItemProc
+5 TInspectorItemStyle=TInspectorItemStyle
+5 TSetItemIndex=TSetItemIndex
+3 TeeItalian
+4 Unit description=TeeItalian
+4 Procedures
+5 TeeSetItalian=TeeSetItalian
+4 Variables
+5 TeeItalianLanguage=TeeItalianLanguage
+3 TeeJapanese
+4 Unit description=TeeJapanese
+4 Procedures
+5 TeeSetJapanese=TeeSetJapanese
+3 TeeJPEG
+4 Unit description=TeeJPEG
+4 TJPEGExportFormat=TJPEGExportFormat
+4 Procedures
+5 TeeGetJPEGImageParams=TeeGetJPEGImageParams
+5 TeeSaveToJPEG=TeeSaveToJPEG
+5 TeeSaveToJPEGFile=TeeSaveToJPEGFile
+3 TeeKagiSeries
+4 Unit description=TeeKagiSeries
+4 TKagiSeries=TKagiSeries
+3 TeeKorean
+4 Unit description=TeeKorean
+4 Procedures
+5 TeeSetKorean=TeeSetKorean
+3 TeeLatvian
+4 Unit description=TeeLatvian
+4 Procedures
+5 TeeSetLatvian=TeeSetLatvian
+3 TeeLegendPalette
+4 Unit description=TeeLegendPalette
+4 TLegendPaletteTool=TLegendPaletteTool
+4 Types
+5 TLegendPaletteAxis=TLegendPaletteAxis
+3 TeeLegendScrollBar
+4 Unit description=TeeLegendScrollBar
+4 TLegendScrollBar=TLegendScrollBar
+4 TScrollBarThumb=TScrollBarThumb
+4 TTeeScrollBar=TTeeScrollBar
+4 Types
+5 TScrollThumbStyle=TScrollThumbStyle
+5 TSetPositionEvent=TSetPositionEvent
+5 TTeeScrollBarDrawStyle=TTeeScrollBarDrawStyle
+3 TeeLighting
+4 Unit description=TeeLighting
+4 TLightFilter=TLightFilter
+4 TLightTool=TLightTool
+4 Types
+5 TLightStyle=TLightStyle
+3 TeeLisB
+4 Unit description=TeeLisB
+4 TChartListBox=TChartListBox
+4 Types
+5 TChangeOrderEvent=TChangeOrderEvent
+5 TDblClickSeriesEvent=TDblClickSeriesEvent
+5 TNotifySeriesEvent=TNotifySeriesEvent
+3 TeeLithuanian
+4 Unit description=TeeLithuanian
+4 Procedures
+5 TeeSetLithuanian=TeeSetLithuanian
+3 TeeMagnifyTool
+4 Unit description=TeeMagnifyTool
+4 TMagnifyTool=TMagnifyTool
+3 TeeMalaysian
+4 Unit description=TeeMalaysian
+4 Procedures
+5 TeeSetMalaysian=TeeSetMalaysian
+3 TeeMapSeries
+4 Unit description=TeeMapSeries
+4 TMapSeries=TMapSeries
+4 TPolygonSeries=TPolygonSeries
+4 TTeePolygon=TTeePolygon
+4 TTeePolygonList=TTeePolygonList
+4 Procedures
+5 PolygonArea=PolygonArea
+5 PolygonCentroid=PolygonCentroid
+3 TeeMexican
+4 Unit description=TeeMexican
+4 Variables
+5 TeeMexicanLanguage=TeeMexicanLanguage
+3 TeeNavigator
+4 Unit description=TeeNavigator
+4 TCustomTeeNavigator=TCustomTeeNavigator
+4 TTeeNavButton=TTeeNavButton
+4 Types
+5 TNotifyButtonClickedEvent=TNotifyButtonClickedEvent
+5 TTeeNavigateBtn=TTeeNavigateBtn
+3 TeEngine
+4 Unit description=TeEngine
+4 AxisException=AxisException
+4 ChartException=ChartException
+4 TAxisGridPen=TAxisGridPen
+4 TAxisItem=TAxisItem
+4 TAxisItems=TAxisItems
+4 TCallout=TCallout
+4 TChartArrowPen=TChartArrowPen
+4 TChartAxes=TChartAxes
+4 TChartAxis=TChartAxis
+4 TChartAxisPen=TChartAxisPen
+4 TChartAxisTitle=TChartAxisTitle
+4 TChartChangePage=TChartChangePage
+4 TChartCustomAxes=TChartCustomAxes
+4 TChartDepthAxis=TChartDepthAxis
+4 TChartPage=TChartPage
+4 TChartSeries=TChartSeries
+4 TChartSeriesList=TChartSeriesList
+4 TChartTools=TChartTools
+4 TChartValueList=TChartValueList
+4 TChartValueLists=TChartValueLists
+4 TCustomAxisPanel=TCustomAxisPanel
+4 TCustomChartElement=TCustomChartElement
+4 TCustomChartSeries=TCustomChartSeries
+4 TCustomSeriesList=TCustomSeriesList
+4 TDataSourcesList=TDataSourcesList
+4 TLabelsList=TLabelsList
+4 TMarksCallout=TMarksCallout
+4 TMarksItem=TMarksItem
+4 TMarksItems=TMarksItems
+4 TSeriesGroup=TSeriesGroup
+4 TSeriesGroups=TSeriesGroups
+4 TSeriesMarkPosition=TSeriesMarkPosition
+4 TSeriesMarks=TSeriesMarks
+4 TSeriesMarksGradient=TSeriesMarksGradient
+4 TSeriesMarksPositions=TSeriesMarksPositions
+4 TSeriesMarksSymbol=TSeriesMarksSymbol
+4 TSeriesPointer=TSeriesPointer
+4 TTeeCustomTool=TTeeCustomTool
+4 TTeeCustomToolAxis=TTeeCustomToolAxis
+4 TTeeCustomToolSeries=TTeeCustomToolSeries
+4 TTeeFunction=TTeeFunction
+4 TTeeMovingFunction=TTeeMovingFunction
+4 TTeeSeriesSource=TTeeSeriesSource
+4 TTeeSeriesType=TTeeSeriesType
+4 Procedures
+5 FillSeriesItems=FillSeriesItems
+5 HasColors=HasColors
+5 HasLabels=HasLabels
+5 HasNoMandatoryValues=HasNoMandatoryValues
+5 SeriesGuessContents=SeriesGuessContents
+5 SeriesTitleOrName=SeriesTitleOrName
+5 ShowMessageUser=ShowMessageUser
+5 TeeDrawBitmapEditor=TeeDrawBitmapEditor
+5 TeeSources=TeeSources
+4 Types
+5 TArrowHeadStyle=TArrowHeadStyle
+5 TAxisCalcPos=TAxisCalcPos
+5 TAxisCalcPosLabels=TAxisCalcPosLabels
+5 TAxisDrawGrids=TAxisDrawGrids
+5 TAxisDrawLabelEvent=TAxisDrawLabelEvent
+5 TAxisLabelAlign=TAxisLabelAlign
+5 TAxisLabelStyle=TAxisLabelStyle
+5 TAxisOnGetLabel=TAxisOnGetLabel
+5 TAxisOnGetNextLabel=TAxisOnGetNextLabel
+5 TChartClickedPart=TChartClickedPart
+5 TChartClickedPartStyle=TChartClickedPartStyle
+5 TChartListOrder=TChartListOrder
+5 TChartMouseEvent=TChartMouseEvent
+5 TChartSeriesEvent=TChartSeriesEvent
+5 TChartSeriesStyle=TChartSeriesStyle
+5 TChartToolEvent=TChartToolEvent
+5 TeeFormatFlags=TeeFormatFlags
+5 TFunctionPeriodAlign=TFunctionPeriodAlign
+5 TFunctionPeriodStyle=TFunctionPeriodStyle
+5 THorizAxis=THorizAxis
+5 TLegendTextStyle=TLegendTextStyle
+5 TPenLineMode=TPenLineMode
+5 TSeriesClick=TSeriesClick
+5 TSeriesGroupActive=TSeriesGroupActive
+5 TSeriesMarksStyle=TSeriesMarksStyle
+5 TSeriesNotifyEvent=TSeriesNotifyEvent
+5 TSeriesOnAfterAdd=TSeriesOnAfterAdd
+5 TSeriesOnBeforeAdd=TSeriesOnBeforeAdd
+5 TSeriesOnClear=TSeriesOnClear
+5 TSeriesOnGetMarkText=TSeriesOnGetMarkText
+5 TSeriesPointerStyle=TSeriesPointerStyle
+5 TSeriesRandomBounds=TSeriesRandomBounds
+5 TSeriesRecalcOptions=TSeriesRecalcOptions
+5 TSourceLoadMode=TSourceLoadMode
+5 TValueEvent=TValueEvent
+5 TVertAxis=TVertAxis
+5 TWheelMouseEvent=TWheelMouseEvent
+4 Variables
+5 clTeeGallery1=clTeeGallery1
+5 clTeeGallery2=clTeeGallery2
+5 TeeAxisClickGap=TeeAxisClickGap
+5 TeeCheckMarkArrowColor=TeeCheckMarkArrowColor
+5 TeeDefaultCapacity=TeeDefaultCapacity
+5 TeeRandomAtRunTime=TeeRandomAtRunTime
+3 TeeNorwegian
+4 Unit description=TeeNorwegian
+4 Procedures
+5 TeeSetNorwegian=TeeSetNorwegian
+3 TeeOBVFunction
+4 Unit description=TeeOBVFunction
+4 TOBVFunction=TOBVFunction
+3 TeeOpenGL
+4 Unit description=TeeOpenGL
+4 TGLLight=TGLLight
+4 TGLLightSource=TGLLightSource
+4 TGLPosition=TGLPosition
+4 TTeeOpenGL=TTeeOpenGL
+3 TeeOrgSeries
+4 Unit description=TeeOrgSeries
+4 TOrgItem=TOrgItem
+4 TOrgItemCollection=TOrgItemCollection
+4 TOrgSeries=TOrgSeries
+4 TOrgShape=TOrgShape
+4 TSpacing=TSpacing
+4 Types
+5 TOrgLineStyle=TOrgLineStyle
+3 TeePageNumTool
+4 Unit description=TeePageNumTool
+4 TPageNumTool=TPageNumTool
+3 TeePCX
+4 Unit description=TeePCX
+4 TPCXExportFormat=TPCXExportFormat
+4 TPCXOptions=TPCXOptions
+3 TeePDFCanvas
+4 Unit description=TeePDFCanvas
+4 TPDFCanvas=TPDFCanvas
+4 TPDFChartObject=TPDFChartObject
+4 TPDFExportFormat=TPDFExportFormat
+4 TTeePDFFontList=TTeePDFFontList
+4 TTeePDFFontListEntry=TTeePDFFontListEntry
+4 TTeePDFImageList=TTeePDFImageList
+4 TTeePDFImageListEntry=TTeePDFImageListEntry
+4 TTeePDFPage=TTeePDFPage
+4 Procedures
+5 TeeSaveToPDFFile=TeeSaveToPDFFile
+4 Types
+5 TFontData=TFontData
+5 TImageType=TImageType
+3 TeePenDlg
+4 Unit description=TeePenDlg
+4 TButtonPen=TButtonPen
+4 Procedures
+5 AddDefaultValueFormats=AddDefaultValueFormats
+5 AddFormTo=AddFormTo
+5 EditChartPen=EditChartPen
+5 PositionToCenter=PositionToCenter
+5 ShowControls=ShowControls
+5 TeeCursorToIdent=TeeCursorToIdent
+5 TeeFillCursors=TeeFillCursors
+5 TeeIdentToCursor=TeeIdentToCursor
+5 TeePreviewCursor=TeePreviewCursor
+5 TeeScaleForm=TeeScaleForm
+5 TeeSetCursor=TeeSetCursor
+5 TeeYesNo=TeeYesNo
+5 TeeYesNoDelete=TeeYesNoDelete
+3 TeePieTool
+4 Unit description=TeePieTool
+4 TPieTool=TPieTool
+4 Types
+5 TPieToolStyle=TPieToolStyle
+3 TeePNG
+4 Unit description=TeePNG
+4 TPNGExportFormat=TPNGExportFormat
+4 Procedures
+5 TeeSaveToPNG=TeeSaveToPNG
+4 Types
+5 TPicData=TPicData
+3 TeePoEdi
+4 Unit description=TeePoEdi
+4 Procedures
+5 EditSeriesPointer=EditSeriesPointer
+3 TeePoin3
+4 Unit description=TeePoin3
+4 TBubble3DSeries=TBubble3DSeries
+4 TPoint3DSeries=TPoint3DSeries
+4 Types
+5 TSeriesClickPointer3DEvent=TSeriesClickPointer3DEvent
+3 TeePointFigure
+4 Unit description=TeePointFigure
+4 TPointFigureSeries=TPointFigureSeries
+3 TeePolar
+4 Unit description=TeePolar
+4 TCustomPolarSeries=TCustomPolarSeries
+4 TPolarBarSeries=TPolarBarSeries
+4 TPolarSeries=TPolarSeries
+4 TRadarSeries=TRadarSeries
+4 Types
+5 TOnGetPolarLabel=TOnGetPolarLabel
+4 Variables
+5 TeePolarDegreeSymbol=TeePolarDegreeSymbol
+3 TeePolarGrid
+4 Unit description=TeePolarGrid
+4 TGridColorPalette=TGridColorPalette
+4 TPolarGridSeries=TPolarGridSeries
+3 TeePolish
+4 Unit description=TeePolish
+4 Procedures
+5 TeeSetPolish=TeeSetPolish
+4 Variables
+5 TeePolishLanguage=TeePolishLanguage
+3 TeePoly
+4 Unit description=TeePoly
+4 Procedures
+5 CalcFitting=CalcFitting
+5 GetVectorValue=GetVectorValue
+5 PolyFitting=PolyFitting
+5 SetVectorValue=SetVectorValue
+3 TeePortuguese
+4 Unit description=TeePortuguese
+4 Procedures
+5 TeeSetPortuguese=TeeSetPortuguese
+4 Variables
+5 TeePortugueseLanguage=TeePortugueseLanguage
+3 TeePrevi
+4 Unit description=TeePrevi
+4 Procedures
+5 TeePreview=TeePreview
+3 TeePreviewPanel
+4 Unit description=TeePreviewPanel
+4 TPreviewChartPen=TPreviewChartPen
+4 TTeePanelsList=TTeePanelsList
+4 TTeePreviewPanel=TTeePreviewPanel
+4 Types
+5 TOnChangeMarginsEvent=TOnChangeMarginsEvent
+5 TOnGetPaperRect=TOnGetPaperRect
+5 TTeePreviewPanelOrientation=TTeePreviewPanelOrientation
+3 TeeProcs
+4 Unit description=TeeProcs
+4 TBackImage=TBackImage
+4 TChartGradient=TChartGradient
+4 TCustomPanelNoCaption=TCustomPanelNoCaption
+4 TCustomTeePanel=TCustomTeePanel
+4 TCustomTeePanelExtended=TCustomTeePanelExtended
+4 TTeeCustomShape=TTeeCustomShape
+4 TTeeCustomShapeBrushPen=TTeeCustomShapeBrushPen
+4 TTeeEvent=TTeeEvent
+4 TTeeExportData=TTeeExportData
+4 TTeeMouseEvent=TTeeMouseEvent
+4 TTeeShape=TTeeShape
+4 TTeeZoom=TTeeZoom
+4 TTeeZoomBrush=TTeeZoomBrush
+4 TTeeZoomPen=TTeeZoomPen
+4 TZoomPanning=TZoomPanning
+4 ITeeEventListener=ITeeEventListener
+4 Procedures
+5 CrossingLines=CrossingLines
+5 DateTimeDefaultFormat=DateTimeDefaultFormat
+5 DaysInMonth=DaysInMonth
+5 DrawBevel=DrawBevel
+5 EnableControls=EnableControls
+5 GetDefaultColor=GetDefaultColor
+5 PointInEllipse=PointInEllipse
+5 PointInHorizTriangle=PointInHorizTriangle
+5 PointInLine=PointInLine
+5 PointInLineTolerance=PointInLineTolerance
+5 PointInTriangle=PointInTriangle
+5 RectToFourPoints=RectToFourPoints
+5 ReplaceChar=ReplaceChar
+5 ScreenRatio=ScreenRatio
+5 SetDefaultColorPalette=SetDefaultColorPalette
+5 TeeAntiAlias=TeeAntiAlias
+5 TeeDateTimeIncrement=TeeDateTimeIncrement
+5 TeeDrawCheckBox=TeeDrawCheckBox
+5 TeeGetBitmapEditor=TeeGetBitmapEditor
+5 TeeGetUniqueName=TeeGetUniqueName
+5 TeeReadBoolOption=TeeReadBoolOption
+5 TeeReadIntegerOption=TeeReadIntegerOption
+5 TeeReadStringOption=TeeReadStringOption
+5 TeeSaveBoolOption=TeeSaveBoolOption
+5 TeeSaveIntegerOption=TeeSaveIntegerOption
+5 TeeSort=TeeSort
+5 TeeStr=TeeStr
+5 TeeTranslateControl=TeeTranslateControl
+4 Types
+5 TChartObjectShapeStyle=TChartObjectShapeStyle
+5 TDateTimeStep=TDateTimeStep
+5 TPanningMode=TPanningMode
+5 TTeeBackImageMode=TTeeBackImageMode
+5 TTeeMouseEventKind=TTeeMouseEventKind
+5 TTeePrintEvent=TTeePrintEvent
+5 TTeeSortCompare=TTeeSortCompare
+5 TTeeSortSwap=TTeeSortSwap
+5 TTeeUnits=TTeeUnits
+5 TTeeZoomDirection=TTeeZoomDirection
+5 TTextFormat=TTextFormat
+4 Variables
+5 ColorPalette=ColorPalette
+5 PrintTeePanel=PrintTeePanel
+5 TeeClipWhenMetafiling=TeeClipWhenMetafiling
+5 TeeClipWhenPrinting=TeeClipWhenPrinting
+5 TeeEraseBack=TeeEraseBack
+5 TeeFieldsSeparator=TeeFieldsSeparator
+3 TeePSCanvas
+4 Unit description=TeePSCanvas
+4 TEPSCanvas=TEPSCanvas
+4 TEPSExportFormat=TEPSExportFormat
+4 Procedures
+5 TeeSaveToPSFile=TeeSaveToPSFile
+3 TeePVOFunction
+4 Unit description=TeePVOFunction
+4 TPVOFunction=TPVOFunction
+3 TeePyramid
+4 Unit description=TeePyramid
+4 TPyramidSeries=TPyramidSeries
+3 TeeRenkoSeries
+4 Unit description=TeeRenkoSeries
+4 TRenkoSeries=TRenkoSeries
+3 TeeRomanian
+4 Unit description=TeeRomanian
+4 Procedures
+5 TeeSetRomanian=TeeSetRomanian
+3 TeeRose
+4 Unit description=TeeRose
+4 TClockSeries=TClockSeries
+4 TCustom2DPolarSeries=TCustom2DPolarSeries
+4 TWindRoseSeries=TWindRoseSeries
+4 Types
+5 TClockSeriesGetTimeEvent=TClockSeriesGetTimeEvent
+5 TClockSeriesStyle=TClockSeriesStyle
+3 TeeRussian
+4 Unit description=TeeRussian
+4 Procedures
+5 TeeSetRussian=TeeSetRussian
+4 Variables
+5 TeeRussianLanguage=TeeRussianLanguage
+3 TeeSAR
+4 Unit description=TeeSAR
+4 TSARFunction=TSARFunction
+3 TeeScroB
+4 Unit description=TeeScroB
+4 TChartScrollBar=TChartScrollBar
+4 Types
+5 TScrollBarAxis=TScrollBarAxis
+3 TeeSelectorTool
+4 Unit description=TeeSelectorTool
+4 TSelectorTool=TSelectorTool
+3 TeeSerbian
+4 Unit description=TeeSerbian
+4 Procedures
+5 TeeSetSerbian=TeeSetSerbian
+3 TeeSeriesBandTool
+4 Unit description=TeeSeriesBandTool
+4 TSeriesBandTool=TSeriesBandTool
+3 TeeSeriesRegion
+4 Unit description=TeeSeriesRegion
+4 TSeriesRegionTool=TSeriesRegionTool
+3 TeeSeriesStats
+4 Unit description=TeeSeriesStats
+4 TSeriesStatsTool=TSeriesStatsTool
+3 TeeSeriesTextEd
+4 Unit description=TeeSeriesTextEd
+4 TSeriesTextField=TSeriesTextField
+4 TSeriesTextFields=TSeriesTextFields
+4 TSeriesTextSource=TSeriesTextSource
+4 Types
+5 TSeriesTextGetValue=TSeriesTextGetValue
+3 TeeShadowEditor
+4 Unit description=TeeShadowEditor
+4 Procedures
+5 EditTeeShadow=EditTeeShadow
+3 TeeShape
+4 Unit description=TeeShape
+4 TChartShape=TChartShape
+4 Types
+5 TChartShapeStyle=TChartShapeStyle
+5 TChartShapeXYStyle=TChartShapeXYStyle
+5 TTeeVertAlign=TTeeVertAlign
+3 TeeSHP
+4 Unit description=TeeSHP
+4 Procedures
+5 LoadMap=LoadMap
+3 TeeSlovak
+4 Unit description=TeeSlovak
+4 Procedures
+5 TeeSetSlovak=TeeSetSlovak
+3 TeeSlovene
+4 Unit description=TeeSlovene
+4 Procedures
+5 TeeSetSlovene=TeeSetSlovene
+3 TeeSmith
+4 Unit description=TeeSmith
+4 TSmithSeries=TSmithSeries
+3 TeeSpanish
+4 Unit description=TeeSpanish
+4 Procedures
+5 TeeSetSpanish=TeeSetSpanish
+4 Variables
+5 TeeSpanishLanguage=TeeSpanishLanguage
+3 TeeSpline
+4 Unit description=TeeSpline
+4 TBSpline=TBSpline
+4 TSmoothingFunction=TSmoothingFunction
+4 Types
+5 TVertex=TVertex
+3 TeeStore
+4 Unit description=TeeStore
+4 TSeriesData=TSeriesData
+4 TSeriesDataHTML=TSeriesDataHTML
+4 TSeriesDataText=TSeriesDataText
+4 TSeriesDataXLS=TSeriesDataXLS
+4 TSeriesDataXML=TSeriesDataXML
+4 Procedures
+5 ConvertTeeFileToBinary=ConvertTeeFileToBinary
+5 ConvertTeeFileToText=ConvertTeeFileToText
+5 LoadChartFromFile=LoadChartFromFile
+5 LoadChartFromStream=LoadChartFromStream
+5 SaveChartToFile=SaveChartToFile
+5 SaveChartToStream=SaveChartToStream
+5 SaveChartToXMLFile=SaveChartToXMLFile
+5 SaveChartToXMLStream=SaveChartToXMLStream
+3 TeeStringsEditor
+4 Unit description=TeeStringsEditor
+4 Procedures
+5 TeeEditStrings=TeeEditStrings
+3 TeeSubChart
+4 Unit description=TeeSubChart
+4 TChartCollection=TChartCollection
+4 TSubChart=TSubChart
+4 TSubChartTool=TSubChartTool
+3 TeeSubsetEditor
+4 Unit description=TeeSubsetEditor
+4 TSubsetTeeFunction=TSubsetTeeFunction
+3 TeeSurfa
+4 Unit description=TeeSurfa
+4 TColorGridSeries=TColorGridSeries
+4 TContourLevel=TContourLevel
+4 TContourLevels=TContourLevels
+4 TContourMarks=TContourMarks
+4 TContourSeries=TContourSeries
+4 TCustom3DGridSeries=TCustom3DGridSeries
+4 TCustom3DPaletteSeries=TCustom3DPaletteSeries
+4 TCustom3DSeries=TCustom3DSeries
+4 TIsoSurfaceSeries=TIsoSurfaceSeries
+4 TSmoothPoints=TSmoothPoints
+4 TSurfaceSeries=TSurfaceSeries
+4 TSurfaceSides=TSurfaceSides
+4 TTowerSeries=TTowerSeries
+4 TVector3DSeries=TVector3DSeries
+4 TWaterFallSeries=TWaterFallSeries
+4 Types
+5 TCellsOrientation=TCellsOrientation
+5 TChartSurfaceGetColor=TChartSurfaceGetColor
+5 TChartSurfaceGetY=TChartSurfaceGetY
+5 TGridPalette=TGridPalette
+5 TLevelPoint=TLevelPoint
+5 TLevelSegment=TLevelSegment
+5 TOnBeforeDrawLevelEvent=TOnBeforeDrawLevelEvent
+5 TOnGetLevelEvent=TOnGetLevelEvent
+5 TTeePaletteStyle=TTeePaletteStyle
+5 TTowerStyle=TTowerStyle
+3 TeeSurfaceTool
+4 Unit description=TeeSurfaceTool
+4 TSurfaceNearestTool=TSurfaceNearestTool
+3 TeeSVGCanvas
+4 Unit description=TeeSVGCanvas
+4 TSVGCanvas=TSVGCanvas
+4 TSVGExportFormat=TSVGExportFormat
+4 Procedures
+5 TeeSaveToSVGFile=TeeSaveToSVGFile
+3 TeeSwedish
+4 Unit description=TeeSwedish
+4 Procedures
+5 TeeSetSwedish=TeeSetSwedish
+4 Variables
+5 TeeSwedishLanguage=TeeSwedishLanguage
+3 TeeTagCloud
+4 Unit description=TeeTagCloud
+4 TTagCloudSeries=TTagCloudSeries
+4 Types
+5 TDrawTagEvent=TDrawTagEvent
+5 TTagCloudOrder=TTagCloudOrder
+3 TeeText3D
+4 Unit description=TeeText3D
+4 TText3DTool=TText3DTool
+3 TeeThemeEditor
+4 Unit description=TeeThemeEditor
+4 TChartThemeSelector=TChartThemeSelector
+4 Procedures
+5 AddChartThemes=AddChartThemes
+5 ChartThemeSelector=ChartThemeSelector
+5 ShowThemesEditor=ShowThemesEditor
+3 TeeThemes
+4 Unit description=TeeThemes
+4 TBlueSkyTheme=TBlueSkyTheme
+4 TBusinessTheme=TBusinessTheme
+4 TClassicTheme=TClassicTheme
+4 TDefaultTheme=TDefaultTheme
+4 TExcelTheme=TExcelTheme
+4 TFactsTheme=TFactsTheme
+4 TRandomTheme=TRandomTheme
+4 TThemesList=TThemesList
+4 TWebTheme=TWebTheme
+4 TWindowsXPTheme=TWindowsXPTheme
+4 Procedures
+5 ApplyChartTheme=ApplyChartTheme
+5 RegisterChartThemes=RegisterChartThemes
+4 Variables
+5 ChartThemes=ChartThemes
+3 TeeTools
+4 Unit description=TeeTools
+4 TAnnotationCallout=TAnnotationCallout
+4 TAnnotationTool=TAnnotationTool
+4 TAxisArrowTool=TAxisArrowTool
+4 TAxisScrollTool=TAxisScrollTool
+4 TChartImageTool=TChartImageTool
+4 TClipSeriesTool=TClipSeriesTool
+4 TColorBandTool=TColorBandTool
+4 TColorLineTool=TColorLineTool
+4 TCursorTool=TCursorTool
+4 TDragMarksTool=TDragMarksTool
+4 TDrawLine=TDrawLine
+4 TDrawLines=TDrawLines
+4 TDrawLineTool=TDrawLineTool
+4 TFullScreenTool=TFullScreenTool
+4 TGridBandBrush=TGridBandBrush
+4 TGridBandTool=TGridBandTool
+4 TMarksTipTool=TMarksTipTool
+4 TNearestTool=TNearestTool
+4 TRectangleTool=TRectangleTool
+4 TRotateTool=TRotateTool
+4 TSeriesAnimationTool=TSeriesAnimationTool
+4 TTeeShapePosition=TTeeShapePosition
+4 TTextShape=TTextShape
+4 Types
+5 TAnnotationClick=TAnnotationClick
+5 TAnnotationPosition=TAnnotationPosition
+5 TAxisArrowClickEvent=TAxisArrowClickEvent
+5 TAxisArrowToolPosition=TAxisArrowToolPosition
+5 TColorLineStyle=TColorLineStyle
+5 TColorLineToolOnDrag=TColorLineToolOnDrag
+5 TCursorClicked=TCursorClicked
+5 TCursorToolChangeEvent=TCursorToolChangeEvent
+5 TCursorToolGetAxisRect=TCursorToolGetAxisRect
+5 TCursorToolStyle=TCursorToolStyle
+5 TDragMarkEvent=TDragMarkEvent
+5 TDrawLineHandle=TDrawLineHandle
+5 TDrawLineSelecting=TDrawLineSelecting
+5 TDrawLineStyle=TDrawLineStyle
+5 TMarksTipGetText=TMarksTipGetText
+5 TMarkToolMouseAction=TMarkToolMouseAction
+5 TNearestToolStyle=TNearestToolStyle
+5 TRotateToolStyles=TRotateToolStyles
+5 TScopeCursorStyle=TScopeCursorStyle
+5 TSeriesAnimationLoop=TSeriesAnimationLoop
+5 TSeriesAnimationStep=TSeriesAnimationStep
+5 TSnapStyle=TSnapStyle
+4 Variables
+5 TeeDrawLineClass=TeeDrawLineClass
+3 TeeTranslate
+4 Unit description=TeeTranslate
+4 TAskLanguage=TAskLanguage
+4 TLanguageStrings=TLanguageStrings
+4 Procedures
+5 TeeAskLanguage=TeeAskLanguage
+5 TeeCanTranslate=TeeCanTranslate
+5 TeeLanguageRegistry=TeeLanguageRegistry
+5 TeeTranslateAControl=TeeTranslateAControl
+3 TeeTransposeSeries
+4 Unit description=TeeTransposeSeries
+4 TTransposeSeriesTool=TTransposeSeriesTool
+3 TeeTransposeTool
+4 Unit description=TeeTransposeTool
+4 TGridTransposeTool=TGridTransposeTool
+3 TeeTriSurface
+4 Unit description=TeeTriSurface
+4 ETriSurfaceException=ETriSurfaceException
+4 TCustomTriSurfaceSeries=TCustomTriSurfaceSeries
+4 TTriSurfaceSeries=TTriSurfaceSeries
+4 Types
+5 TTriangle=TTriangle
+3 TeeTurkish
+4 Unit description=TeeTurkish
+4 Procedures
+5 TeeSetTurkish=TeeSetTurkish
+3 TeeUkrainian
+4 Unit description=TeeUkrainian
+4 Procedures
+5 TeeSetUkrainian=TeeSetUkrainian
+3 TeeUrdu
+4 Unit description=TeeUrdu
+4 Procedures
+5 TeeSetUrdu=TeeSetUrdu
+3 TeeURL
+4 Unit description=TeeURL
+4 TChartWebSource=TChartWebSource
+4 TCustomChartLink=TCustomChartLink
+4 TImportChart=TImportChart
+4 TTeeSeriesSourceFile=TTeeSeriesSourceFile
+4 Procedures
+5 DownloadURL=DownloadURL
+5 LoadChartFromURL=LoadChartFromURL
+5 TeeIsURL=TeeIsURL
+5 TeeURLErrorMessage=TeeURLErrorMessage
+4 Variables
+5 TeeWinInetDLL=TeeWinInetDLL
+3 TeeVideo
+4 Unit description=TeeVideo
+4 TVideoTool=TVideoTool
+3 TeeVideoPlayer
+4 Unit description=TeeVideoPlayer
+4 TVideoPlayerTool=TVideoPlayerTool
+3 TeeVMLCanvas
+4 Unit description=TeeVMLCanvas
+4 TVMLCanvas=TVMLCanvas
+4 TVMLExportFormat=TVMLExportFormat
+4 Procedures
+5 TeeSaveToVMLFile=TeeSaveToVMLFile
+3 TeeVolumePipe
+4 Unit description=TeeVolumePipe
+4 TVolumePipeSeries=TVolumePipeSeries
+3 TeeWorldSeries
+4 Unit description=TeeWorldSeries
+4 TWorldSeries=TWorldSeries
+4 Types
+5 TWorldMap=TWorldMap
+3 TeeXAMLCanvas
+4 Unit description=TeeXAMLCanvas
+4 TXAMLCanvas=TXAMLCanvas
+4 TXAMLExportFormat=TXAMLExportFormat
+4 Procedures
+5 TeeSaveToXAMLFile=TeeSaveToXAMLFile
+3 TeeXML
+4 Unit description=TeeXML
+4 TTeeXMLSource=TTeeXMLSource
+3 TeExport
+4 Unit description=TeExport
+4 Procedures
+5 TeeEmailFile=TeeEmailFile
+5 TeeExport=TeeExport

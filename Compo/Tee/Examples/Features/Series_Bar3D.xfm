@@ -1,0 +1,78 @@
+inherited Bar3DForm: TBar3DForm
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'The Bar 3D series is an extension of Bar series, providing an ex' +
+        'tra'
+      '"Y" coordinate for each bar point.')
+  end
+  inherited Chart1: TChart
+    Top = 90
+    Height = 247
+    Title.Text.Strings = (
+      'Bar 3D series')
+    object Series1: TBar3DSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      BarStyle = bsRectGradient
+      BarWidthPercent = 90
+      Gradient.Direction = gdTopBottom
+      Gradient.StartColor = 8454143
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      OffsetValues.DateTime = False
+      OffsetValues.Name = 'Offset'
+      OffsetValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    object Label1: TLabel
+      Left = 13
+      Top = 13
+      Width = 26
+      Height = 13
+      Caption = '&Style:'
+      FocusControl = ComboBox1
+    end
+    object ComboBox1: TComboBox
+      Left = 48
+      Top = 10
+      Width = 113
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 0
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Rectangle'
+        'Pyramid'
+        'Invert. Pyramid'
+        'Cylinder'
+        'Ellipse'
+        'Arrow'
+        'Rect. Gradient'
+        'Cone')
+    end
+    object Button1: TButton
+      Left = 184
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

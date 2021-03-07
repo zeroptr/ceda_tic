@@ -1,0 +1,84 @@
+inherited MomentumForm: TMomentumForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'The Momentum function calculates the difference between each'
+      'point in the data source and the "n" previous point value.')
+  end
+  inherited Chart1: TChart
+    Top = 85
+    Height = 252
+    Title.Text.Strings = (
+      'Momentum function example')
+    View3D = False
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Title = 'Source'
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Momentum'
+      Pointer.InflateMargins = True
+      Pointer.Style = psDiamond
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TMomentumFunction
+        Period = 10
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    Height = 36
+    object Label1: TLabel
+      Left = 16
+      Top = 11
+      Width = 33
+      Height = 13
+      Caption = '&Period:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 56
+      Top = 8
+      Width = 49
+      Height = 21
+      TabOrder = 0
+      Text = '10'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 105
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 1
+      Position = 10
+      TabOrder = 1
+      Wrap = False
+    end
+  end
+end

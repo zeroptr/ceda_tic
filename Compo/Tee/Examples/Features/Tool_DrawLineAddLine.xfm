@@ -1,0 +1,130 @@
+inherited DrawLineAddLineToolForm: TDrawLineAddLineToolForm
+  Left = 360
+  Top = 200
+  Width = 536
+  Height = 428
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 528
+  end
+  inherited Memo1: TMemo
+    Width = 528
+    Lines.Strings = (
+      
+        'DrawLines may be added by code using the DrawLineTool.AddLine me' +
+        'thod.'
+      ''
+      
+        'Use Axis units (not pixels) to define the X and Y locations of t' +
+        'he start and end of the Lines.'
+      ''
+      'eg.'
+      'Tool.Lines.AddLine(1,50,4,100);')
+  end
+  inherited Chart1: TChart
+    Width = 528
+    Height = 245
+    Legend.Shadow.Transparency = 79
+    Legend.Transparency = 51
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Visible = False
+    View3D = False
+    ColorPaletteIndex = 9
+    object Series1: TBar3DSeries
+      BarPen.Color = clSilver
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      OffsetValues.Name = 'Offset'
+      OffsetValues.Order = loNone
+      Data = {
+        00060000000000000000B88A405555555555D574400000000000207440000000
+        0000407F4000000000006075400000000000406F400000000000008840000000
+        0000407F400000000000B07A400000000000407F400000000000A88B40000000
+        0000006940}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 528
+    object Label1: TLabel
+      Left = 20
+      Top = 14
+      Width = 19
+      Height = 13
+      Caption = 'X0 :'
+    end
+    object Label2: TLabel
+      Left = 76
+      Top = 14
+      Width = 19
+      Height = 13
+      Caption = 'Y0 :'
+    end
+    object Label3: TLabel
+      Left = 134
+      Top = 14
+      Width = 19
+      Height = 13
+      Caption = 'X1 :'
+    end
+    object Label4: TLabel
+      Left = 188
+      Top = 14
+      Width = 19
+      Height = 13
+      Caption = 'Y1 :'
+    end
+    object bAdd: TButton
+      Left = 253
+      Top = 9
+      Width = 73
+      Height = 24
+      Caption = '&Add Line'
+      TabOrder = 0
+      OnClick = bAddClick
+    end
+    object tbX0: TEdit
+      Left = 42
+      Top = 11
+      Width = 27
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+    end
+    object tbY0: TEdit
+      Left = 99
+      Top = 11
+      Width = 27
+      Height = 21
+      TabOrder = 2
+      Text = '0'
+    end
+    object tbX1: TEdit
+      Left = 155
+      Top = 11
+      Width = 27
+      Height = 21
+      TabOrder = 3
+      Text = '0'
+    end
+    object tbY1: TEdit
+      Left = 211
+      Top = 11
+      Width = 27
+      Height = 21
+      TabOrder = 4
+      Text = '0'
+    end
+  end
+end

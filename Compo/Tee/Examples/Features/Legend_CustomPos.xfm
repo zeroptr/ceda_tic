@@ -1,0 +1,48 @@
+inherited LegendCustomPos: TLegendCustomPos
+  OnCreate = FormCreate
+  OnResize = FormResize
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Chart Legend can be custom-positioned to any xy pixel positi' +
+        'on.'
+      ''
+      'Example: Chart1.Legend.CustomPosition := True;'
+      '               Chart1.Legend.Left := 123;'
+      '')
+  end
+  inherited Chart1: TChart
+    Legend.CustomPosition = True
+    Legend.Left = 36
+    Legend.Top = 20
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    View3DOptions.Zoom = 42
+    View3DOptions.ZoomText = False
+    object Series1: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Circled = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    inherited CheckBox1: TCheckBox
+      OnClick = CheckBox1Click
+    end
+    inherited TrackBar1: TTrackBar
+      OnChange = TrackBar1Change
+    end
+    inherited TrackBar2: TTrackBar
+      OnChange = TrackBar2Change
+    end
+  end
+end

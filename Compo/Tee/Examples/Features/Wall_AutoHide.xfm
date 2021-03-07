@@ -1,0 +1,93 @@
+inherited WallAutoHide: TWallAutoHide
+  Left = 111
+  Top = 141
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Wall AutoHide property, when True, automatically hides '
+      
+        'walls when they cover the chart from the front user point of vie' +
+        'w.'
+      ''
+      'Chart1.Walls.Right.Visible := True ;'
+      'Chart1.Walls.Right.AutoHide := True ;')
+  end
+  inherited Chart1: TChart
+    BackWall.AutoHide = True
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Color = 16764159
+    BottomWall.Size = 10
+    Gradient.EndColor = 14540754
+    Gradient.MidColor = 16059031
+    Gradient.StartColor = 753908
+    Gradient.Visible = True
+    LeftWall.AutoHide = True
+    LeftWall.Size = 10
+    Legend.Visible = False
+    RightWall.AutoHide = True
+    RightWall.Color = 16777088
+    RightWall.Size = 10
+    RightWall.Visible = True
+    AxisVisible = False
+    Chart3DPercent = 100
+    View3DOptions.Elevation = 357
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 100
+    View3DOptions.Rotation = 0
+    View3DOptions.Zoom = 74
+    object Series1: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = 12615680
+      LinePen.Color = 12615680
+      LinePen.Width = 4
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000000000000078854000000000009886400000000000088A40000000
+        0000D88D400000000000708E40000000000048904000000000003C9140000000
+        00003891400000000000D8914000000000002091400000000000E88E40000000
+        0000208D4000000000001090400000000000A08F400000000000608D40000000
+        0000008A4000000000000888400000000000E884400000000000888440000000
+        0000E0824000000000002883400000000000D885400000000000588440000000
+        0000D083400000000000F08340}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 120
+      Top = 14
+      Width = 35
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Rotate:'
+      FocusControl = ScrollBar1
+    end
+    object ScrollBar1: TScrollBar
+      Left = 160
+      Top = 14
+      Width = 265
+      Height = 16
+      Max = 360
+
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Auto Hide Walls'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

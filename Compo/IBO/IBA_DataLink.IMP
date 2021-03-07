@@ -1,0 +1,1051 @@
+// IBA_DataLink.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  09-apr-2002                                                                 }
+{     Fixed the Append code that inverted the calling order of the events      }
+{     OnStateChanged and AfterInsert (of datasource and datasets)              }
+{                                                                              }
+{  Wassim Haddad                                                               }
+{  10-Aug-2001                                                                 }
+{                                                                              }
+{  if Dataset's CalculateAllFields property is set, then an OnCalculateField   }
+{  event (with AField=nil) is fired on each DataLink SysUpdateData. This       }
+{  effectively makes the calculated fields act more dynamically.               }
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_DataLink.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+{$IFDEF IBO4_BETA}
+  FIsCtrlLink := false;
+{$ENDIF}
+  FIsGridLink := false;
+  FSearchAlways := false;
+  FSearchBuffer := '';
+  FSearchSaved := '';
+  FSearchLast := '';
+  FAdvSearchDisplay := '';
+  FAdvSearchDisplaySaved := '';
+  FAdvSearchDisplayLast := '';
+  FAdvSearchWhere := '';
+  FAdvSearchWhereSaved := '';
+  FAdvSearchWhereLast := '';
+  FAdvSearchData := '';
+  FAdvSearchDataSaved := '';
+  FAdvSearchDataLast := '';
+  FInternalSearchUpdate := 0;
+  FSearchUpdateRequired := false;
+end;
+
+destructor TIB_DataLink.Destroy;
+begin
+  UnlockSessionCursor;
+  DataSource := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_DataLink.Loaded;
+begin
+  inherited Loaded;
+  DoReceiveFocus( IB_Session.FocusedDataSource );
+end;
+
+{$IFDEF IBO4_BETA}
+function TIB_DataLink.GetBufferHasBof: boolean;
+var
+  tmpDataset: TIB_Dataset;
+begin
+  tmpDataset := Dataset;
+  if Assigned( tmpDataset ) then
+    Result := tmpDataset.BufferHasBof
+  else
+    Result := false;
+end;
+{$ENDIF}
+
+function TIB_DataLink.GetBufferHasEof: boolean;
+var
+  tmpDataset: TIB_Dataset;
+begin
+  tmpDataset := Dataset;
+  if Assigned( tmpDataset ) then
+    Result := tmpDataset.BufferHasEof
+  else
+    Result := false;
+end;
+
+function TIB_DataLink.GetBufferActive: boolean;
+var
+  tmpDataset: TIB_Dataset;
+begin
+  tmpDataset := Dataset;
+  if Assigned( tmpDataset ) then
+    Result := tmpDataset.BufferActive
+  else
+    Result := false;
+end;
+
+function TIB_DataLink.GetDataChanging: boolean;
+begin
+  Result := FChangingLevel > 0;
+end;
+
+procedure TIB_DataLink.CheckBrowseMode;
+begin
+// Abstract.
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataLink.ActiveChanged;
+begin
+// Abstract.
+end;
+
+procedure TIB_DataLink.DatasetChanged;
+begin
+  RecordChanged( nil );
+end;
+
+function TIB_DataLink.Edit: boolean;
+begin
+  if Assigned( DataSource ) then
+    Result := DataSource.Edit
+  else
+    Result := false;
+end;
+
+procedure TIB_DataLink.Insert;
+begin
+  if Assigned( DataSource ) then
+    DataSource.Insert;
+end;
+
+procedure TIB_DataLink.Append;
+begin
+  if Prepared and Dataset.CanInsert then
+  begin
+    try
+      Dataset.DisableControls;
+      if Dataset.NeedToPost then
+        Dataset.Post;
+      if not Dataset.Unidirectional and ( Dataset is TIB_BDataset ) then
+        TIB_BDataset(Dataset).GotoEof;
+    finally
+      Dataset.EnableControls;
+    end;
+    Insert;
+  end;
+end;
+
+function TIB_DataLink.Modify: boolean;
+begin
+  Inc( FChangingLevel );
+  try
+    if not ReadOnly and Assigned( DataSource ) then
+      Result := DataSource.Modify
+    else
+      Result := false;
+  finally
+    Dec( FChangingLevel );
+  end;
+end;
+
+procedure TIB_DataLink.SetSearchAlways( AValue: boolean );
+begin
+  if SearchAlways <> AValue then
+  begin
+    FSearchAlways := AValue;
+    if State <> dssSearch then
+    begin
+      SysStateChanged;
+      SysDataChange( nil );
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_DataLink.GetKeySource: TIB_DataSource;
+begin
+  if Assigned( Dataset ) then
+    Result := Dataset.KeySource
+  else
+    Result := nil;
+end;
+
+function TIB_DataLink.GetMasterSource: TIB_DataSource;
+begin
+  if Assigned( Dataset ) then
+    Result := Dataset.MasterSource
+  else
+    Result := nil;
+end;
+
+function TIB_DataLink.GetEditing: boolean;
+begin
+  Result := FEditing and
+            not ReadOnly and
+            Assigned( DataSource ) and DataSource.Modifying;
+end;
+
+procedure TIB_DataLink.SetEditing( AValue: boolean );
+begin
+  if FEditing <> AValue then
+  begin
+    FEditing := AValue;
+    SysEditingChanged;
+  end;
+end;
+
+procedure TIB_DataLink.SetFocus;
+begin
+  if Assigned( DataSource ) then
+    DataSource.SetFocus;
+end;
+
+procedure TIB_DataLink.UpdateData;
+begin
+  if Assigned( DataSource ) then
+    SysUpdateData( nil );
+end;
+
+procedure TIB_DataLink.UpdateRecord;
+begin
+// This caused problems in the IB_Grid
+// when arrowing down and implicitely posting.
+//  FUpdating := True;
+//  try
+    UpdateData;
+//  finally
+//    FUpdating := False;
+//  end;
+end;
+
+procedure TIB_DataLink.Reset;
+begin
+  if Assigned( DataSource ) then
+    SysDataChange( nil );
+end;
+
+procedure TIB_DataLink.EditingChanged;
+begin
+// Abstract.
+end;
+
+procedure TIB_DataLink.LayoutChanged;
+begin
+  DataSetChanged;
+end;
+
+procedure TIB_DataLink.RecordChanged( Field: TIB_Column );
+begin
+// Abstract.
+end;
+
+procedure TIB_DataLink.DataChange;
+begin
+  SysDataChange( nil );
+end;
+
+procedure TIB_DataLink.FocusControl( AField: TIB_ColumnRef );
+begin
+// Abstract.
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_DataLink.GetSearchEntryName: string;
+begin
+  Result := '';
+end;
+
+function TIB_DataLink.GetField: TIB_Column;
+begin
+  Result := nil;
+end;
+
+function TIB_DataLink.GetSearchBuffer: string;
+begin
+  Result := FSearchBuffer;
+end;
+
+procedure TIB_DataLink.SetSearchBuffer( const AValue: string );
+begin
+  if SearchBuffer <> AValue then
+  begin
+    FSearchBuffer := AValue;
+    if FInternalSearchUpdate = 0 then
+    begin
+      if Assigned( Dataset ) then
+        Dataset.InvalidateSQL;
+      if State = dssSearch then
+        SysDataChange( GetField );
+      FSearchUpdateRequired := false;
+    end
+    else
+      FSearchUpdateRequired := true;
+  end;
+end;
+
+procedure TIB_DataLink.SetAdvSearchDisplay( const AValue: string );
+begin
+  if FAdvSearchDisplay <> AValue then
+  begin
+    FAdvSearchDisplay := AValue;
+    if FInternalSearchUpdate = 0 then
+    begin
+      if State = dssSearch then
+        SysDataChange( GetField );
+      FSearchUpdateRequired := false;
+    end
+    else
+      FSearchUpdateRequired := true;
+  end;
+end;
+
+function TIB_DataLink.GetAdvSearchDisplay: string;
+begin
+  Result := FAdvSearchDisplay;
+  if Result = '' then
+    Result := SearchBuffer;
+end;
+
+procedure TIB_DataLink.SetAdvSearchWhere( const AValue: string );
+begin
+  if FAdvSearchWhere <> AValue then
+  begin
+    FAdvSearchWhere := AValue;
+    if FInternalSearchUpdate = 0 then
+    begin
+      if Assigned( Dataset ) then
+        Dataset.InvalidateSQL;
+      FSearchUpdateRequired := false;
+    end
+    else
+      FSearchUpdateRequired := true;
+  end;
+end;
+
+function TIB_DataLink.GetAdvSearchWhere: string;
+begin
+  Result := FAdvSearchWhere;
+end;
+
+procedure TIB_DataLink.SetAdvSearchData( const AValue: string );
+begin
+  if FAdvSearchData <> AValue then
+    FAdvSearchData := AValue;
+end;
+
+function TIB_DataLink.GetAdvSearchData: string;
+begin
+  Result := FAdvSearchData;
+end;
+
+procedure TIB_DataLink.ClearSearchCriteria( WithUpdate: boolean );
+
+  procedure SearchUpdate;
+  begin
+    if FSearchUpdateRequired then
+      if Assigned( Dataset ) then
+      begin
+        Dataset.InvalidateSQL;
+        if Dataset.State = dssSearch then
+          SysDataChange( GetField );
+      end;
+  end;
+
+begin
+  Inc( FInternalSearchUpdate );
+  try
+    SearchBuffer := '';
+    SetAdvSearchDisplay( '' );
+    AdvSearchWhere := '';
+    AdvSearchData := '';
+    if WithUpdate then
+      SearchUpdate;
+  finally
+    Dec( FInternalSearchUpdate );
+  end;
+end;
+
+function TIB_DataLink.GetBof: boolean;
+begin
+  if Assigned( Dataset ) then
+    Result := Dataset.Bof
+  else
+    Result := true;
+end;
+
+function TIB_DataLink.GetEof: boolean;
+begin
+  if Assigned( Dataset ) then
+    Result := Dataset.Eof
+  else
+    Result := true;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataLink.SetBoundToBuffer( AValue: boolean );
+begin
+  if BoundToBuffer <> AValue then
+  begin
+    FBoundToBuffer := AValue;
+    SysBindingChanged;
+  end;
+end;
+
+procedure TIB_DataLink.SetDataSource( AValue: TIB_DataSource );
+var
+  LastVal: longint;
+begin
+  if DataSource <> AValue then
+  begin
+    ProcessStatementEvent( setBeforeAssignment, longint(AValue) );
+    if Assigned( DataSource ) then
+      DataSource.RemoveDataLink( Self );
+    LastVal := longint( FDataSource );
+    FDataSource := AValue;
+    if Assigned( DataSource ) then
+      DataSource.AddDataLink( Self );
+    ProcessStatementEvent( setAfterAssignment, LastVal );
+  end;
+end;
+
+function TIB_DataLink.GetDataset;
+begin
+  if Assigned( DataSource ) then
+    Result := DataSource.Dataset
+  else
+    Result := nil;
+end;
+
+procedure TIB_DataLink.SetIgnoreColorScheme( AValue: boolean );
+begin
+  if IgnoreColorScheme <> AValue then
+  begin
+    FIgnoreColorScheme := AValue;
+    SysStateChanged;
+  end;
+end;
+
+function TIB_DataLink.GetPrepared: boolean;
+begin
+  Result := Assigned( DataSource ) and DataSource.Prepared;
+end;
+
+function TIB_DataLink.GetActive: boolean;
+begin
+  Result := Assigned( DataSource ) and DataSource.Active;
+end;
+
+function TIB_DataLink.GetState: TIB_DatasetState;
+begin
+  if Assigned( Dataset ) then
+    Result := Dataset.State
+  else
+    Result := dssInactive;
+  if BoundToBuffer and Active then
+    Result := dssBrowse;
+end;
+
+function TIB_DataLink.GetCanModify: boolean;
+begin
+  if not Self.ReadOnly and Assigned( DataSet ) then
+  begin
+    with DataSource do
+      Result := ( CanModify ) and
+                (( AutoEdit and ( Dataset.Fields.RowState <> rsNone )) or
+                 ( AutoInsert and Prepared ) or
+                 ( State in [ dssEdit, dssInsert, dssSearch ] ));
+    if Result then
+    begin
+      if State = dssSearch then
+        Result := not PreventSearching
+      else
+      if ( Dataset.Fields.RowState <> rsNone ) and
+         ( State <> dssInsert ) then
+        Result := not PreventEditing
+      else
+        Result := not PreventInserting;
+    end;
+  end
+  else
+    Result := false;
+end;
+
+function TIB_DataLink.GetNeedToPost: boolean;
+begin
+  Result := Assigned( DataSource ) and DataSource.NeedToPost;
+end;
+
+function TIB_DataLink.GetRowState: TIB_RowState;
+begin
+  if Assigned( Dataset ) then
+  begin
+    if BoundToBuffer then
+      Result := Dataset.BufferFields.RowState
+    else
+      Result := Dataset.Fields.RowState;
+  end
+  else
+    Result := rsNone;
+end;
+
+{                                                                              }
+
+function TIB_DataLink.GetReadOnly: boolean;
+begin
+  Result := false;
+  if not Result then
+    if Assigned( Dataset ) then
+      if State <> dssSearch then
+        Result := DataSource.ReadOnly;
+  if not Result then
+    case State of
+      dssEdit:   Result := PreventEditing;
+      dssInsert: Result := PreventInserting;
+      dssSearch: Result := PreventSearching;
+    end;
+end;
+
+function TIB_DataLink.GetPreventDeleting: boolean;
+begin
+  Result := not Assigned( Dataset ) or Dataset.PreventDeleting;
+end;
+
+function TIB_DataLink.GetPreventEditing: boolean;
+begin
+  Result := not Assigned( Dataset ) or Dataset.PreventEditing;
+end;
+
+function TIB_DataLink.GetPreventInserting: boolean;
+begin
+  Result := not Assigned( Dataset ) or Dataset.PreventInserting;
+end;
+
+function TIB_DataLink.GetPreventSearching: boolean;
+begin
+  Result := not Assigned( Dataset ) or Dataset.PreventSearching;
+end;
+
+function TIB_DataLink.GetDisabled: boolean;
+begin
+  Result := Assigned( DataSet ) and
+            ( not Dataset.Unidirectional and
+             ( DataSource.ControlsDisabledLevel > 0 ));
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_DataLink.GetColorScheme: boolean;
+begin
+  Result := not IgnoreColorScheme and
+            Assigned( Dataset ) and
+            Dataset.ColorScheme and
+            ( Dataset.Unidirectional or
+            ((( Dataset.ControlsDisabledLevel > 0 ) and Dataset.IsPosting ) or
+            ( Dataset.ControlsDisabledLevel = 0 )) and
+            ( DataSource.ControlsDisabledLevel = 0 ));
+end;
+
+function TIB_DataLink.GetColor: TColor;
+begin
+  if BoundToBuffer then
+    Result := GetActiveColor
+  else
+  if SearchAlways then
+    Result := GetSearchingColor
+  else
+  case State of
+    dssPrepared,
+    dssBrowse:   Result := GetActiveColor;
+    dssEdit:     Result := GetEditingColor;
+    dssInsert:   Result := GetInsertingColor;
+    dssDelete:   Result := GetDeletingColor;
+    dssSearch:   Result := GetSearchingColor;
+    else         Result := GetInvalidColor;
+  end;
+  IB_Session.DoGetDataLinkColor( Self, Result );
+end;
+
+function TIB_DataLink.GetActiveColor: TColor;
+begin
+  if RowState = rsNone then
+    Result := IB_Session.PreparedColor
+  else
+  if ReadOnly then
+    Result := IB_Session.ReadOnlyColor
+  else
+    Result := IB_Session.BrowsingColor;
+end;
+
+function TIB_DataLink.GetEditingColor: TColor;
+begin
+  if ReadOnly then
+    Result := IB_Session.ReadOnlyColor
+  else
+    Result := IB_Session.EditingColor;
+end;
+
+function TIB_DataLink.GetInsertingColor: TColor;
+begin
+  if ReadOnly then
+    Result := IB_Session.ReadOnlyColor
+  else
+    Result := IB_Session.InsertingColor;
+end;
+
+function TIB_DataLink.GetDeletingColor: TColor;
+begin
+  Result := IB_Session.DeletingColor;
+end;
+
+function TIB_DataLink.GetSearchingColor: TColor;
+begin
+  if {( SearchAlways and not PreventSearching ) or} not ReadOnly then
+    Result := IB_Session.SearchingColor
+  else
+    Result := IB_Session.ReadOnlyColor;
+end;
+
+function TIB_DataLink.GetInvalidColor: TColor;
+begin
+  Result := IB_Session.InvalidColor;
+end;
+
+function TIB_DataLink.GetActiveRecord: longint;
+begin
+  if Assigned( Dataset ) then begin
+    Result := Dataset.RowNum;
+  end else begin
+    Result := 0;
+  end;
+end;
+
+procedure TIB_DataLink.SetActiveRecord( AValue: longint );
+begin
+  if Assigned( Dataset ) then begin
+    Dataset.RowNum := AValue;
+  end;
+end;
+
+function TIB_DataLink.GetBufferRecord: longint;
+begin
+  if Assigned( Dataset ) then begin
+    Result := Dataset.BufferRowNum;
+  end else begin
+    Result := 0;
+  end;
+end;
+
+procedure TIB_DataLink.SetBufferRecord( AValue: longint );
+begin
+  if Assigned( Dataset ) then begin
+    Dataset.BufferRowNum := AValue;
+  end;
+end;
+
+function TIB_DataLink.GetRecordCount: longint;
+begin
+  if Assigned( Dataset ) then begin
+    Result := Dataset.RecordCount;
+  end else begin
+    Result := -1;
+  end;
+end;
+
+function TIB_DataLink.GetBufferRowCount: longint;
+begin
+  if Assigned( Dataset ) then begin
+    Result := Dataset.BufferRowCount;
+  end else begin
+    Result := 0;
+  end;
+end;
+
+procedure TIB_DataLink.SetBufferCount( AValue: longint );
+begin
+// Ignore this since it does not apply in IB Objects.
+// You always see all of the records in the buffer!
+end;
+
+function TIB_DataLink.GetBufferCount: longint;
+begin
+  if Assigned( Dataset ) then begin
+    Result := Dataset.BufferRowCount;
+  end else begin
+    Result := -1;
+  end;
+end;
+
+procedure TIB_DataLink.SysPrepareSQL;
+begin
+  DoPrepareSQL;
+  if AdvSearchWhere <> '' then begin
+    Dataset.SQLWhereItems.Add( AdvSearchWhere );
+  end;
+end;
+
+procedure TIB_DataLink.DoPrepareSQL;
+begin
+  if Assigned( OnPrepareSQL ) then begin
+    OnPrepareSQL( Self, DataSource );
+// This code causes problems after doing a ReadSearch() with a bookmark
+// string from a KeyLinks relationship.
+//  end else if SearchBuffer <> '' then begin
+//    Dataset.AddSQLWhereClause( SearchBuffer );
+  end;
+end;
+
+procedure TIB_DataLink.SysPreparedChanged;
+begin
+  if Assigned( OnPreparedChanged ) then begin
+    OnPreparedChanged( Self, DataSource );
+  end;
+  if not Prepared then begin
+    UnlockSessionCursor;
+  end;
+end;
+
+procedure TIB_DataLink.SysBeforeExecute;
+begin
+  if Assigned( BeforeExecute ) then begin
+    BeforeExecute( Self, DataSource );
+  end;
+end;
+
+procedure TIB_DataLink.SysAfterExecute;
+begin
+  if Assigned( AfterExecute ) then begin
+    AfterExecute( Self, DataSource );
+  end;
+end;
+
+procedure TIB_DataLink.SysActiveChange;
+begin
+  ActiveChanged;
+  if Assigned( OnActiveChange ) then begin
+    OnActiveChange( Self, DataSource );
+  end;
+end;
+
+procedure TIB_DataLink.SysLayoutChanged;
+begin
+  if Assigned( OnLayoutChanged ) then begin
+    OnLayoutChanged( Self, DataSource );
+  end;
+end;
+
+procedure TIB_DataLink.SysEditingChanged;
+begin
+  EditingChanged;
+  if Assigned( OnEditingChanged ) then begin
+    OnEditingChanged( Self, DataSource );
+  end;
+end;
+
+procedure TIB_DataLink.SysStateChanged;
+begin
+  SetEditing(( NeedToPost or ( State = dssSearch )) and not ReadOnly );
+  if Assigned( OnStateChanged ) then begin
+    OnStateChanged( Self, DataSource );
+  end;
+end;
+
+procedure TIB_DataLink.SysDataChange( AField: TIB_Column );
+begin
+  if not FUpdating and ( FChangingLevel = 0 ) and not Disabled then
+  begin
+    Inc( FChangingLevel );
+    try
+      DoDataChange( AField );
+    finally
+      Dec( FChangingLevel );
+    end;
+  end;
+end;
+
+procedure TIB_DataLink.SysUpdateData( AField: TIB_Column );
+begin
+  if not FUpdating then begin
+    FUpdating := true;
+    try
+      DoUpdateData( AField );
+      if Assigned( DataSet ) and DataSet.CalculateAllFields then
+        DataSet.DoCalculateField( DataSet.Fields, nil );
+    finally
+      FUpdating := false;
+    end;
+  end;
+end;
+
+procedure TIB_DataLink.SysBindingChanged;
+begin
+  SysStateChanged;
+  SysDataChange( nil );
+end;
+
+procedure TIB_DataLink.SysAssignField;
+begin
+// place holder
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataLink.DoBeforeAssignment;
+begin
+  if Assigned( BeforeAssignment ) then
+    BeforeAssignment( Self, DataSource );
+  SearchBuffer := '';
+end;
+
+procedure TIB_DataLink.DoAfterAssignment;
+begin
+  ActiveChanged;
+  DatasetChanged;
+  if Assigned( AfterAssignment ) then AfterAssignment( Self, DataSource );
+  if not Prepared then UnlockSessionCursor;
+end;
+
+procedure TIB_DataLink.DoDataChange( AField: TIB_Column );
+begin
+  if Assigned( OnDataChange ) then OnDataChange( Self, Datasource, AField );
+end;
+
+procedure TIB_DataLink.DoUpdateData( AField: TIB_Column );
+begin
+  if Assigned( OnUpdateData ) then OnUpdateData( Self, Datasource, AField );
+end;
+
+procedure TIB_DataLink.DoReceiveFocus( DS: TIB_DataSource );
+begin
+  if ReceiveFocus then
+    if Assigned( OnReceiveFocus ) then
+      OnReceiveFocus( Self, DS )
+    else
+      DataSource := DS;
+end;
+
+procedure TIB_DataLink.SetReceiveFocus( AValue: boolean );
+begin
+  if ReceiveFocus <> AValue then
+  begin
+    FReceiveFocus := AValue;
+    DoReceiveFocus( IB_Session.FocusedDataSource );
+  end;
+end;
+
+procedure TIB_DataLink.ProcessStatementEvent( AEvent: TIB_StatementEventType;
+                                              Info: longint );
+  procedure SearchUpdate;
+  begin
+    if FSearchUpdateRequired then
+    begin
+      if Assigned( Dataset ) then
+        Dataset.InvalidateSQL;
+      if State = dssSearch then
+        SysDataChange( nil );
+    end;
+  end;
+
+  procedure SaveCriteria;
+  begin
+    FSearchSaved := SearchBuffer;
+    FAdvSearchDisplaySaved := AdvSearchDisplay;
+    FAdvSearchWhereSaved := AdvSearchWhere;
+    FAdvSearchDataSaved := AdvSearchData;
+  end;
+
+  procedure RecallCriteria;
+  begin
+    Inc(FInternalSearchUpdate);
+    try
+      SearchBuffer := FSearchSaved;
+      SetAdvSearchDisplay( FAdvSearchDisplaySaved );
+      AdvSearchWhere := FAdvSearchWhereSaved;
+      AdvSearchData := FAdvSearchDataSaved;
+      SearchUpdate;
+    finally
+      Dec(FInternalSearchUpdate);
+    end;
+  end;
+
+  procedure SaveLastCriteria;
+  begin
+    FSearchLast := SearchBuffer;
+    FAdvSearchDisplayLast := AdvSearchDisplay;
+    FAdvSearchWhereLast := AdvSearchWhere;
+    FAdvSearchDataLast := AdvSearchData;
+  end;
+
+  procedure RecallLastCriteria;
+  begin
+    Inc(FInternalSearchUpdate);
+    try
+      SearchBuffer := FSearchLast;
+      SetAdvSearchDisplay( FAdvSearchDisplayLast );
+      AdvSearchWhere := FAdvSearchWhereLast;
+      AdvSearchData := FAdvSearchDataLast;
+      SearchUpdate;
+    finally
+      Dec(FInternalSearchUpdate);
+    end;
+  end;
+
+  procedure WriteCriteria;
+  var
+    EName: string;
+  begin
+    EName := GetSearchEntryName;
+    if ( EName <> '' ) and Assigned( Dataset.SearchCriteria ) then
+    begin
+      with Dataset.SearchCriteria do begin
+        if SearchBuffer <> '' then
+          Values[ EName ] := SearchBuffer;
+        if AdvSearchWhere <> '' then
+          Values[ EName + '.Where' ] := AdvSearchWhere;
+        if AdvSearchData <> '' then
+          Values[ EName + '.Data' ] := AdvSearchData;
+        // Direct look at display buffer value!!!
+        if FAdvSearchDisplay <> '' then begin
+          Values[ EName + '.Display' ] := AdvSearchDisplay;
+        end;
+      end;
+    end;
+  end;
+
+  procedure ReadCriteria;
+  var
+    EName: string;
+  begin
+    Inc(FInternalSearchUpdate);
+    try
+      EName := GetSearchEntryName;
+      if ( EName <> '' ) and Assigned( Dataset.SearchCriteria ) then
+      begin
+        with Dataset.SearchCriteria do begin
+          EName := GetSearchEntryName;
+          SearchBuffer := Values[ EName ];
+          SetAdvSearchDisplay( Values[ EName + '.Display' ] );
+          AdvSearchWhere := Values[ EName + '.Where' ];
+          AdvSearchData := Values[ EName + '.Data' ];
+        end;
+      end;
+      SearchUpdate;
+    finally
+      Dec(FInternalSearchUpdate);
+    end;
+  end;
+
+begin
+  case AEvent of
+    setBeforeAssignment: DoBeforeAssignment;
+    setAfterAssignment: DoAfterAssignment;
+    setPreparedChanged: SysPreparedChanged;
+    setBeforeExecute: SysBeforeExecute;
+    setAfterExecute: SysAfterExecute;
+    setActiveChange: SysActiveChange;
+    setLayoutChanged: SysLayoutChanged;
+    setCheckBrowseMode: CheckBrowseMode;
+    setFieldsUpdateData: SysUpdateData( TIB_Column( Info ));
+    setFieldsDataChange: SysDataChange( TIB_Column( Info ));
+    setFieldsRefsChanged: SysAssignField;
+    setFocusControl: FocusControl( TIB_ColumnRef( Info ));
+    setUpdateSearchCriteria:
+    begin
+      if State = dssSearch then
+      begin
+        SysUpdateData( nil );
+      end;
+      case TIB_SearchingEventType( Info ) of
+        setClearCriteria: ClearSearchCriteria( true );
+        setSaveCriteria: SaveCriteria;
+        setRecallCriteria: RecallCriteria;
+        setSaveLastCriteria: SaveLastCriteria;
+        setRecallLastCriteria: RecallLastCriteria;
+        setWriteCriteria: WriteCriteria;
+        setReadCriteria: ReadCriteria;
+      end;
+    end;
+    setOrderingChanged:
+    begin
+      if Assigned( OnOrderingChanged ) then
+        OnOrderingChanged( Self, DataSource );
+    end;
+    setOrderingLinkChanged:
+    begin
+      if Assigned( OnOrderingLinkChanged ) then
+        OnOrderingLinkChanged( Self, DataSource );
+    end;
+    setSearchingLinkChanged:
+    begin
+      if Assigned( OnSearchingLinkChanged ) then
+        OnSearchingLinkChanged( Self, DataSource );
+    end;
+  end;
+  if FIsGridLink then
+    ProcessGridEvent( AEvent, Info );;
+end;
+
+procedure TIB_DataLink.ProcessGridEvent( AEvent: TIB_StatementEventType;
+                                   Info: longint );
+begin
+// do nothing here for grid links only
+end;
+
+procedure TIB_DataLink.LockSessionCursor;
+begin
+  if not SessionCursorIsLocked and Assigned( IB_Session ) then
+  begin
+    IB_Session.BeginLockCursor;
+    IB_Session.BeginBusy( true );
+    FSessionCursorIsLocked := true;
+  end;
+end;
+
+procedure TIB_DataLink.UnlockSessionCursor;
+begin
+  if SessionCursorIsLocked and Assigned( IB_Session ) then
+  begin
+    IB_Session.EndBusy;
+    IB_Session.EndLockCursor;
+    FSessionCursorIsLocked := false;
+  end;
+end;
+

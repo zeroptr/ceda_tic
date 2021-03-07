@@ -1,0 +1,107 @@
+object VolumePipeSeriesEditor: TVolumePipeSeriesEditor
+  Left = 297
+  Top = 306
+  AutoScroll = False
+  BorderIcons = [biSystemMenu]
+  ClientHeight = 136
+  ClientWidth = 284
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 152
+    Top = 51
+    Width = 67
+    Height = 13
+    Alignment = taRightJustify
+    Caption = 'Cone percent:'
+  end
+  object Label2: TLabel
+    Left = 71
+    Top = 110
+    Width = 88
+    Height = 13
+    Alignment = taRightJustify
+    Caption = 'Gradient &Direction:'
+    FocusControl = CBDirection
+  end
+  object ButtonPen1: TButtonPen
+    Left = 9
+    Top = 8
+    HelpContext = 1660
+    Caption = '&Border...'
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 9
+    Top = 40
+    Width = 75
+    Height = 25
+    HelpContext = 1490
+    Caption = '&Pattern...'
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+  object ButtonPen2: TButtonPen
+    Left = 97
+    Top = 8
+    HelpContext = 1660
+    Caption = '&Lines...'
+    TabOrder = 2
+  end
+  object CheckBox1: TCheckBox
+    Left = 9
+    Top = 73
+    Width = 139
+    Height = 22
+    Caption = '&Brush Back Clear'
+    TabOrder = 3
+    OnClick = CheckBox1Click
+  end
+  object UpDown1: TUpDown
+    Left = 260
+    Top = 48
+    Width = 15
+    Height = 21
+    HelpContext = 1090
+    Associate = Edit2
+    Increment = 5
+    Position = 30
+    TabOrder = 4
+  end
+  object Edit2: TEdit
+    Left = 221
+    Top = 48
+    Width = 39
+    Height = 21
+    HelpContext = 1090
+    TabOrder = 5
+    Text = '30'
+    OnChange = Edit2Change
+  end
+  object CheckGradient: TCheckBox
+    Left = 210
+    Top = 80
+    Width = 96
+    Height = 17
+    Caption = '&Gradient'
+    TabOrder = 6
+    OnClick = CheckGradientClick
+  end
+  object CBDirection: TComboFlat
+    Left = 162
+    Top = 106
+    Width = 113
+    HelpContext = 184
+    DropDownCount = 10
+    TabOrder = 7
+    OnChange = CBDirectionChange
+    Items.Strings = (
+      'Top Bottom'
+      'Left Right')
+  end
+end

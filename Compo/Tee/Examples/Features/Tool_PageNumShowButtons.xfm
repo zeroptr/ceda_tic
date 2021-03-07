@@ -1,0 +1,76 @@
+inherited ToolPageNumShowButtons: TToolPageNumShowButtons
+  Left = 235
+  Top = 260
+  Width = 527
+  Height = 441
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 519
+  end
+  inherited Memo1: TMemo
+    Width = 519
+    Lines.Strings = (
+      'The PageNum Tool now includes Arrow Buttons.')
+  end
+  inherited Chart1: TChart
+    Width = 519
+    Height = 258
+    Border.Color = clNavy
+    Border.Width = 6
+    Border.Visible = True
+    BorderRound = 10
+    Gradient.EndColor = clGray
+    Gradient.Visible = True
+    Legend.Frame.SmallDots = True
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = clYellow
+    Legend.Gradient.StartColor = clWhite
+    Legend.Shadow.Visible = False
+    Pages.MaxPointsPerPage = 5
+    BevelOuter = bvNone
+    ColorPaletteIndex = 2
+    object Series1: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        0014000000000000000080514000000000002067400000000000C05740000000
+        0000C04C40000000000000294000000000000014400000000000003940000000
+        00003061400000000000406F4000000000007072400000000000987740000000
+        00008873400000000000106D400000000000C072400000000000706740000000
+        000000644000000000003061400000000000404F400000000000E05F40000000
+        0000C05740}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 519
+    object bEdit: TBitBtn
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = bEditClick
+    end
+    object cbButtons: TCheckBox
+      Left = 109
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Show buttons'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbButtonsClick
+    end
+  end
+end

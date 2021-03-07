@@ -1,0 +1,434 @@
+
+{                                                                              }
+{ TIB_Row                                                                      }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: System defined event type for a row buffer.}
+TIB_RowEvent = procedure( ARow: TIB_Row ) of object;
+{: System defined event type for a row buffer or column object.}
+TIB_RowChangedEvent = procedure( ARow: TIB_Row;
+                                 AField: TIB_Column ) of object;
+{: Structure used to store blob node mappings for the row.}
+PIB_BlobFieldMap = ^TIB_BlobFieldMap;
+TIB_BlobFieldMap = record
+  BlobIndex: array [0..0] of integer;
+end;
+{: This object is used to maintain the row buffer and the TIB_Columns array
+associated with the buffer.
+<br><br>
+It is implemented by a these properties at the TIB_Statement level:
+<br><br>
+Params - Gives access to the input parameters defined in the SQL statement.
+Fields - Gives access to the output fields defined in the SQL statement.
+<br><br>
+It is accessed additionally with these properties at the TIB_BDataset level:
+<br><br>
+BufferFields - A way to access data from a buffered dataset without having to
+move the current record pointer.
+<br><br>
+KeyFields - An exclusive TIB_Dataset property to give a TIB_Row reference so
+that key lookup methods can be called in order to seek a record in the dataset.
+<br><br>
+Because the Params property can change each time search criteria are applied, be
+careful not to depend on the numerical reference of a parameter's TIB_Column
+object.
+<br><br>
+Re-use of an input parameter name for subsequent input parameters and having
+each one bound to the same parameter object is allowed, provided the input
+parameters are all of the same type.
+<br><br>
+If a SELECT list has sub-selects in the output column lists that use input
+parameters, InterBase parses them in a different order than expected.  However,
+unlike the BDE, IB Objects anticipates this and correctly lines up the
+parameters.
+<br><br>
+Much of the interface for this object is accessed from the TIB_Statement
+class itself via methods such as FieldByName() or ParamByName().}
+TIB_Row = class(TObject)
+private
+{ Property Storage fields }
+  lastColumnIndex : Integer;
+  FStatement: TIB_Statement;
+  FArrayCount: word;
+  FArrayList: TList;
+  FBlobCount: word;
+  FBlobList: TList;
+  FCalcCount: word;
+  FCalcList: TList;
+  FColumnCount: word;
+  FSysColumnCount: word;
+  FColumnList: TList;
+  FPSQLDA: PXSQLDA;
+  FRowType: TIB_RowType;
+  FRowState: TIB_RowState;
+  FCursorName: string;
+  FUpdatedColumns: TList;
+  FUpdatedWholeRow: boolean;
+  FUpdatingCounter: word;
+  FIsKeyFields: boolean;
+  FIsKeyFieldsWhole: boolean;
+  FIsBufferFields: boolean;
+  FCalculatingFields: boolean;
+  FIsRowNumChanged: boolean;
+  FIsUpdatedRowNumChanged: boolean;
+  FRowNode: PIB_Node;
+  FSysBlobHead: PIB_BlobNode;
+  FBDENamesValid: boolean;
+{ Record buffer storage Columns }
+  FBufferLength: word;
+  FRowBuffer: pointer;
+  FOldBuffer: pointer;
+  FBlobNodeList: pointer;
+  FBlobFieldMap: PIB_BlobFieldMap;
+  FTempBlobIDCount: integer;
+{ Info property storage Columns }
+  FRelationList: TStringList;
+{ Event storage Columns }
+  FBeforeModify: TIB_RowChangedEvent;
+  FAfterModify: TIB_RowChangedEvent;
+  FOnRowStateChanged: TIB_RowEvent;
+  function GetUpdatedColumnCount: word;
+  function GetUpdatedWholeRow: boolean;
+protected
+{ Property Access Methods }
+  function GetColumns( Index: word ): TIB_Column;
+  function GetRelationCount: word;
+  function GetRelationName( Index: word ): string;
+  procedure SetRowState( AValue: TIB_RowState );
+  function GetRowData: string;
+  procedure SetRowData( const AValue: string );
+  function GetOldRowData: string;
+  procedure SetOldRowData( const AValue: string );
+  function GetPBlobHead: PPIB_BlobNode;
+{ Utility Methods }
+  procedure AfterPostBuffers( Posted: boolean );
+  procedure AllocateBlobNodes;
+  procedure AllocateVARList;
+  procedure PostBlobBuffers;
+  procedure CancelBlobBuffers;
+  procedure ClearBlobNodes( ClearCache: boolean );
+  procedure CreateVARList;
+  procedure DefaultColumnCreation( const NewIndex: smallint;
+                                   const PSQLVAR: PXSQLVAR;
+                                   var NewIB_Column: TIB_Column );
+  procedure FreeVARList;
+  procedure NameParams;
+  procedure PrepDuplicateParamList;
+  procedure NameVARListForBDE;
+  procedure TrimBlobNodeCache;
+  procedure LoadFromNode( Notify, LoadBlobs: boolean );
+  procedure LoadBlobsFromNode;
+  procedure StoreBlobsToNode;
+  procedure TrimBlobsFromList;
+{ System Methods }
+  procedure SysClearBuffers;
+  procedure SysRowStateChanged;
+  procedure SysBeforeColumnModify( IB_Field: TIB_Column );
+  procedure SysAfterColumnModify( IB_Field: TIB_Column );
+  procedure SysBeforeModify( IB_Field: TIB_Column );
+  procedure SysAfterModify( IB_Field: TIB_Column );
+{ Event Dispatch Methods }
+  procedure DoBeforeModify( IB_Field: TIB_Column );
+  procedure DoAfterModify( IB_Field: TIB_Column );
+{ System Methods }
+  procedure SysUpdate( NewColumnCount: word );
+  procedure SysApplyUpdates( SingleEventOnly: boolean );
+public
+  FStrictModifyOnlyLevel: integer;
+  constructor Create( AStatement: TIB_Statement;
+                      DescType: TIB_RowType );
+  destructor Destroy; override;
+
+{ Utility Methods }
+
+{: Method to cause the calculated fields to be recalculated.}
+  procedure CalculateFields;
+{: Sets the buffers to null and blank.}
+  procedure ClearBuffers( NewRowState: TIB_RowState );
+{: Throws away any changes made to the buffers.  For an update, it restores the
+original values to the columns;  for an insert, it clears them out.}
+  procedure CancelBuffers;
+{: This method is called after each fetch.
+<br><br>
+Its responsibility is to populate the OldXXX buffer and to refresh BLOB and
+ARRAY columns.}
+  procedure RefreshBuffers( NewRecord, ClearBlobs, NeedCalc: boolean );
+{: This method binds the columns' SQLDATA pointers properly within the
+record buffer.}
+  procedure UpdateBufferPointers;
+{: This method makes the duplicate column buffer pointers match after there
+has been an alteration to the SQLData pointer.}
+  procedure SetDuplicateBufferPointers;
+{: }
+  function GetColumnValue( const ColumnName: string ): Variant;
+{: }
+  procedure SetColumnValue( const ColumnName: string;
+                            const AValue: Variant );
+{: }
+  function GetColumnOldValue( const ColumnName: string ): Variant;
+{: }
+  procedure GetColumnList( AList: TList; const ColumnNames: string );
+{: This method makes those columns that are not nullable to be not null.
+
+It also cleans the unused memory on variable length strings to #0. }
+  procedure CleanBuffers( ResetNullInd: boolean );
+{: This method starts a suspension of data change notifications, caused by
+altering the values of the associated TIB_Column objects for the row, which
+will last until all of the intended processing to the data of the buffer is
+complete.
+<br><br>
+This should be used in the context of a "try...finally" block, with the
+EndUpdate() method being called regardless of an exception.
+<br><br>
+Here is some sample code which demonstrates how to use this:
+<br>
+<br>// Given a query, an array of names and an array of values; this routine
+<br>// will set all the parameters that match the names. It will use the values
+<br>// to decide what kind of parameter it is.
+<br>
+<br>procedure Dol_Set_Query_Parameters
+<br>(
+<br>query : TIB_Query;
+<br>const input_paramNames : array of string;
+<br>const input_ParamValues : array of const
+<br>);
+<br>type
+<br>  ParamCount_t = Integer;
+<br>var
+<br>  param_i : ParamCount_t;
+<br>  pName : string;
+<br>  pValue : TVarRec;
+<br>  fieldParam : TIB_Column;
+<br>begin
+<br>  with query do begin
+<br>    Prepared := true;
+<br>    Params.BeginUpdate;
+<br>    try
+<br>      for param_i := 0 to High(input_paramNames) do begin
+<br>        pName := input_paramNames[param_i];
+<br>        pValue := input_ParamValues[param_i];
+<br>        fieldParam := ParamByName(pname);
+<br>        with pValue do begin
+<br>          case VType of
+<br>            vtInteger : fieldParam.AsInteger := VInteger;
+<br>            vtBoolean : fieldParam.AsBoolean := VBoolean;
+<br>            vtChar : fieldParam.AsString := VChar;
+<br>            vtExtended : begin
+<br>            case fieldParam.SQLType of
+<br>              Sql_Date : fieldParam.AsDateTime := VExtended^;
+<br>              Sql_Float,
+<br>              Sql_DFloat : fieldParam.AsFloat := VExtended^;
+<br>              Sql_Double : FieldParam.AsDouble := VExtended^;
+<br>            end;
+<br>          end;
+<br>          vtString : fieldParam.AsString := VString^;
+<br>          vtPChar : fieldParam.AsString := VPChar;
+<br>          vtAnsiString : fieldParam.AsString := string(VAnsiString);
+<br>          vtCurrency : fieldParam.AsCurrency := VCurrency^;
+<br>          else
+<br>          end;
+<br>        end;
+<br>      end;
+<br>    finally
+<br>    // Make it so that there is only a single change notification even when
+<br>    // multiple parameters are modified.
+<br>    // If RefreshOnParamChange is true then the dataset will be refreshed
+<br>    // here if it was Active to start with.
+<br>      Params.EndUpdate( true );
+<br>    end;
+<br>  end;
+<br>end;}
+  procedure BeginUpdate;
+{: This method causes dispatch of any waiting data change notifications that
+were delayed by calling BeginUpdate for the purpose of letting all of the
+intended processing to the data of the buffer be completed.
+
+<br><br>
+The SingleEventOnly parameter is used to consolidate multiple column change
+notifications into a single general change notification event. If only a
+single column was changed, this parameter will not make any difference.
+<br><br>
+If no columns were actually changed, no events will be dispatched.}
+  procedure EndUpdate( SingleEventOnly: boolean );
+
+{ Column access methods }
+
+{: This is used to get the node that stores the extended blob information
+and data.}
+  function GetBlobNode( SQLNo: integer ): PIB_BlobNode;
+
+{: Quiet way to get a reference to a column object. If a match is not found,
+nil is assigned to the AIB_Field parameter instead of raising an exception.
+<br><br>
+It also returns True or False, indicating whether a matching column was found.}
+  function GetByName(     AFieldName: string;
+                      var AIB_Field: TIB_Column ): boolean;
+{: Quiet way to get a reference to a column object. If a matching number is not
+found, nil is assigned to the AColumn parameter instead of raising an exception.
+<br><br>
+AFieldName is the full or column name only of the column. Case-insensitive.
+<br><br>
+ASQLNo is the actual numerical order in the SQL statement.
+<br><br>
+It also returns True or False, indicating whether a matching number was found.}
+  function GetBySQLNo(     ASQLNo: smallint;
+                       var AColumn: TIB_Column ): boolean;
+{: Function that returns a column object for the AFieldName specified.}
+  function ByName( const AFieldName: string ): TIB_Column;
+{: Function that returns a column object for the ASQLNo specified.}
+  function BySQLNo( ASQLNo: smallint ): TIB_Column;
+{: Function that returns a column object for the AFieldName specified.
+<br><br>
+This has been included for VCL compatibility.}
+  function ParamByName( const AFieldName: string ): TIB_Column;
+
+{ Properties }
+
+{: List of array columns.}
+  property ArrayList: TList read FArrayList;
+{: List of blob columns.}
+  property BlobList: TList read FBlobList;
+{: Reference to the head of the Blob Cache for the column.}
+  property PBlobHead: PPIB_BlobNode read GetPBlobHead;
+{: List of calculated columns.}
+  property CalcList: TList read FCalcList;
+{ System Properties }
+  property CursorName: string read FCursorName;
+{: When a RefreshBuffer() call is made it has a parameter called NewRecord.
+When a new record is selected a DataChange notification is generated. It is
+useful to know whether a DataChange is due to a new record or just the same
+record getting altered in some way.}
+  property IsRowNumChanged: boolean read FIsRowNumChanged;
+{: Reference to the statement that this Row belongs to.}
+  property Statement: TIB_Statement read FStatement;
+{: Indicates whether the row buffer is input type or an output type.}
+  property RowType: TIB_RowType read FRowType;
+{: Current state of the row buffer.}
+  property RowState: TIB_RowState read FRowState;
+{: This is a pointer to the IB API XSQLDA structure used to define the row
+buffer.}
+  property PSQLDA: PXSQLDA read FPSQLDA;
+{: Number of columns that are array columns.}
+  property ArrayCount: word read FArrayCount;
+{: Number of columns that are blob columns.}
+  property BlobCount: word read FBlobCount;
+{: Number of columns that are defined by the CalculatedFields property.}
+  property CalcCount: word read FCalcCount;
+{: This property returns the number of columns that belong to this row.}
+  property ColumnCount: word read FColumnCount;
+{: This gives an array reference to the TIB_Column objects.}
+  property Columns[ Index: word ]: TIB_Column read GetColumns; default;
+{: This gives the number of bytes for the row buffer.}
+  property BufferLength: word read FBufferLength;
+{: Pointer reference to the OldBuffer's memory.}
+  property OldBuffer: pointer read FOldBuffer write FOldBuffer;
+{: Pointer reference to the RowBuffer's memory.}
+  property RowBuffer: pointer read FRowBuffer write FRowBuffer;
+{: String buffer containing the data for the row.}
+  property RowData: string read GetRowData write SetRowData;
+{: Reference to the node in the buffer if used in a buffered dataset.}
+  property RowNode: PIB_Node read FRowNode;
+{: String buffer containing the data for the original row before anything was
+modified.}
+  property OldRowData: string read GetOldRowData write SetOldRowData;
+{: Number of relations involved in the row. It is usually only one unless
+the dataset is a JOIN across two or more tables.}
+  property RelationCount: word read GetRelationCount;
+{: Access to the names of the relations involved in the row buffer.}
+  property RelationNames[ Index: word ]: string read GetRelationName;
+{: System property.}
+  property UpdatedColumnCount: word read GetUpdatedColumnCount;
+{: This is a raw TList containing object references to TIB_Column instances
+which were changed. This is useful for a OnDataChange event when nil is passed
+in the Field because more than one column was changed. By referencing this
+property it is possible to determine which all fields were changed. If the
+count is 0 then this is a generic record change notification meaning the whole
+record has changed.}
+  property UpdatedColumns: TList read FUpdatedColumns;
+{: System property. In an OnDataChange event notification you can determine if
+during the time event notifications are cached whether or not there was an
+event indicating that the whole row of data had changed.}
+  property UpdatedWholeRow: boolean read GetUpdatedWholeRow;
+{: This property returns or accepts a variant representation of the column
+passed to it.}
+  property Values[const ColumnName: string]: variant
+      read GetColumnValue
+     write SetColumnValue;
+{: This property gives a variant representation of the old value of the column
+passed to it.}
+  property OldValues[const ColumnName: string]: variant
+      read GetColumnOldValue;
+{: This property is for VCL emulation.
+<br><br>
+It property returns or accepts a variant representation of the column
+passed to it.}
+  property ParamValues[const ColumnName: string]: variant
+      read GetColumnValue
+     write SetColumnValue;
+{: This is a system maintained property. Do not change its value.}
+  property IsKeyFields: boolean read FIsKeyFields write FIsKeyFields;
+{: System property.}
+  property IsKeyFieldsWhole: boolean read FIsKeyFieldsWhole
+                                     write FIsKeyFieldsWhole;
+{: This is a system maintained property. Do not change its value.}
+  property IsBufferFields: boolean read FIsBufferFields write FIsBufferFields;
+
+{ Events }
+
+{: This event is triggered before a change is about to be applied to the
+row buffer.
+<br><br>
+This is public for internal reasons only. Please do not set this unless you
+know what you are doing.}
+  property BeforeModify: TIB_RowChangedEvent read FBeforeModify
+                                             write FBeforeModify;
+{: This event is fired just after a change was applied to the row buffer.
+<br><br>
+This is public for internal reasons only. Please do not set this unless you
+know what you are doing.}
+  property AfterModify: TIB_RowChangedEvent read FAfterModify
+                                            write FAfterModify;
+{: Upon a change of state on this row buffer, this event is triggered.
+<br><br>
+This is public for internal reasons only . Please do not set this unless you
+know what you are doing.}
+  property OnRowStateChanged: TIB_RowEvent read FOnRowStateChanged
+                                           write FOnRowStateChanged;
+end;
+
+// IBA_Row.IMP

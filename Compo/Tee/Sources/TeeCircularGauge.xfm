@@ -1,0 +1,206 @@
+inherited CircularGaugeEditor: TCircularGaugeEditor
+  Left = 468
+  Top = 362
+  ClientHeight = 279
+  ClientWidth = 367
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited PageControl1: TPageControl
+    Width = 367
+    Height = 279
+    inherited TabSheet1: TTabSheet
+      object Label11: TLabel [4]
+        Left = 56
+        Top = 205
+        Width = 57
+        Height = 13
+        Caption = '&Total Angle:'
+        FocusControl = ETotalAngle
+      end
+      object Label12: TLabel [5]
+        Left = 203
+        Top = 79
+        Width = 72
+        Height = 13
+        Caption = '&Hand distance:'
+        FocusControl = Edit1
+      end
+      object Label13: TLabel [6]
+        Left = 203
+        Top = 127
+        Width = 60
+        Height = 13
+        Caption = 'Hand &Offset:'
+        FocusControl = Edit3
+      end
+      object Label14: TLabel [7]
+        Left = 143
+        Top = 205
+        Width = 43
+        Height = 13
+        Caption = 'Rotation:'
+        FocusControl = Edit4
+      end
+      inherited BValueArea: TButton
+        Visible = False
+      end
+      inherited BMaxIndicator: TButton
+        Visible = False
+      end
+      inherited BLinearHand: TButton
+        TabOrder = 16
+      end
+      object BHand: TButton
+        Left = 56
+        Top = 80
+        Width = 97
+        Height = 25
+        Caption = '&Hand...'
+        TabOrder = 5
+        OnClick = BHandClick
+      end
+      object CBLabelsInside: TCheckBox
+        Left = 56
+        Top = 165
+        Width = 129
+        Height = 17
+        Caption = 'Labels &Inside'
+        TabOrder = 6
+        OnClick = CBLabelsInsideClick
+      end
+      object CBRotateLabels: TCheckBox
+        Left = 56
+        Top = 184
+        Width = 129
+        Height = 17
+        Caption = '&Rotate Labels'
+        TabOrder = 7
+        OnClick = CBRotateLabelsClick
+      end
+      object BCenter: TButton
+        Left = 56
+        Top = 112
+        Width = 97
+        Height = 25
+        Caption = '&Center...'
+        TabOrder = 8
+        OnClick = BCenterClick
+      end
+      object Button3: TButton
+        Left = 208
+        Top = 200
+        Width = 105
+        Height = 25
+        Caption = '&End Point...'
+        TabOrder = 9
+        OnClick = Button3Click
+      end
+      object ETotalAngle: TEdit
+        Left = 56
+        Top = 221
+        Width = 41
+        Height = 21
+        TabOrder = 10
+        Text = '0'
+        OnChange = ETotalAngleChange
+      end
+      object UDTotalAngle: TUpDown
+        Left = 97
+        Top = 221
+        Width = 15
+        Height = 21
+        Associate = ETotalAngle
+        Max = 360
+        TabOrder = 11
+        Thousands = False
+        Wrap = True
+      end
+      object Edit1: TEdit
+        Left = 203
+        Top = 95
+        Width = 41
+        Height = 21
+        TabOrder = 12
+        Text = '0'
+        OnChange = Edit1Change
+      end
+      object UDHandDist: TUpDown
+        Left = 244
+        Top = 95
+        Width = 15
+        Height = 21
+        Associate = Edit1
+        Max = 10000
+        TabOrder = 13
+        Thousands = False
+      end
+      object Edit3: TEdit
+        Left = 203
+        Top = 143
+        Width = 41
+        Height = 21
+        TabOrder = 14
+        Text = '0'
+        OnChange = Edit3Change
+      end
+      object UDHandOff: TUpDown
+        Left = 244
+        Top = 143
+        Width = 15
+        Height = 21
+        Associate = Edit3
+        Max = 10000
+        TabOrder = 15
+        Thousands = False
+      end
+      object CBCircled: TCheckBox
+        Left = 208
+        Top = 176
+        Width = 97
+        Height = 17
+        Caption = 'Circled'
+        TabOrder = 17
+        OnClick = CBCircledClick
+      end
+      object Edit4: TEdit
+        Left = 143
+        Top = 221
+        Width = 41
+        Height = 21
+        TabOrder = 18
+        Text = '0'
+        OnChange = Edit4Change
+      end
+      object UDRotAngle: TUpDown
+        Left = 184
+        Top = 221
+        Width = 15
+        Height = 21
+        Associate = Edit4
+        Max = 360
+        TabOrder = 19
+        Thousands = False
+        Wrap = True
+      end
+    end
+    inherited TabSheet3: TTabSheet
+      inherited PageControl2: TPageControl
+        Width = 359
+        Height = 251
+      end
+    end
+    inherited TabAxis: TTabSheet
+      inherited PageControl3: TPageControl
+        Width = 359
+        Height = 251
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 276
+    Top = 56
+  end
+end

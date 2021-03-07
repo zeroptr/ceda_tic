@@ -1,0 +1,14 @@
+:BASE fts.hlp
+:TITLE CPS Full Text Search Utility
+1 Introduction
+2 FTS - Full Text Search=Welcometopic@fts.hlp
+1 Setting Up
+2 Starting to Load the Search Base=Overview@fts.hlp
+2 Defining Search Indexes=DefiningSearchIndexes@fts.hlp
+2 Creating and Activating the Indexes=CreatingandActivatingtheIndexe@fts.hlp
+1 Using FTS
+2 Opening up the Search Base=Newtopic@fts.hlp
+2 Adding Thesaurus Entries=AddingThesaurusEntries@fts.hlp
+2 Synchronization=Synchronization@fts.hlp
+1 The Search Base Metadata
+2 Inspecting the New Metadata=InspectingtheNewMetadata@fts.hlp

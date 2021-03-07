@@ -1,0 +1,54 @@
+inherited SurfaceSides: TSurfaceSides
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Surface series can now display "sides", using the SideBrush prop' +
+        'erty.'
+      ''
+      'Example: Series1.SideBrush.Style:=bsDiagCross;'
+      '               Series1.SideBrush.Color:=clBlue;')
+  end
+  inherited Chart1: TChart
+    object Series1: TSurfaceSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      SideBrush.Color = clBlue
+      SideBrush.Style = bsDiagCross
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Sides visible'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 120
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Pattern...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

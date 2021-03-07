@@ -1,0 +1,29 @@
+select sefer.masraf_merk,sefer.satis_urun_har_id,urunhar.urun_kod from sefer
+left outer join urunhar on (urunhar.urunhar_id=sefer.satis_urun_har_id)
+left outer join netsis_aktarma on (sefer.masraf_merk=netsis_aktarma.masraf_merkezi)
+where sefer.masraf_merk<>''
+and sefer.sefer_satis_fat_kesildi=1
+and urunhar.urun_kod=netsis_aktarma.yeni_urun_kod
+
+
+select sefer.masraf_merk,sefer.satis_urun_har_id,urunhar.urun_kod from sefer
+left outer join urunhar on (urunhar.urunhar_id=sefer.satis_urun_har_id)
+left outer join netsis_aktarma on (sefer.masraf_merk=netsis_aktarma.masraf_merkezi)
+where sefer.masraf_merk<>''
+and sefer.sefer_satis_fat_kesildi=1
+and urunhar.urun_kod<>netsis_aktarma.yeni_urun_kod
+
+
+select * from  urunhar
+where
+not (urunhar_id in (select urunhar_id from fatura_d where urunhar.urunhar_id=fatura_d.urunhar_id));
+
+
+select * from  fatura_d
+where
+not (urunhar_id in (select urunhar_id from urunhar where urunhar.urunhar_id=fatura_d.urunhar_id));
+
+
+select cari_kod,borc,alacak from cari order by cari_kod
+
+select borc,alacak from urun order by urun_kod

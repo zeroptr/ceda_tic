@@ -1,0 +1,55 @@
+package IBO40TRT_D3;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'IB Objects Tools Runtime'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl30,
+  vclx30,
+  IBO40CRT_D3;
+
+contains
+  IB_SyncCursor,
+  IB_DataScan,
+  IB_Events,
+  IB_Export,
+  IB_Monitor,
+  IB_Process,
+  IB_Profiler,
+  IB_Script,
+  IB_DataPump,
+  IB_DDL_Utility,
+  IB_DDL_Entity,
+  IB_DDL_EntityList,
+  IB_DDL_EntWithParams,
+  IB_DDL_Formatter,
+  IB_DDL_ParamList,
+  IB_DDL_Controller,
+  IB_CodeFormatter,
+  IB_Metadata,
+  IB_Import;
+
+end.

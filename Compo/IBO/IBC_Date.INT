@@ -1,0 +1,215 @@
+
+{                                                                              }
+{ TIB_Date                                                                     }
+{                                                                              }
+
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{  Guido Klaperich <guido.klapperich@t-online.de>                              }
+{  03-May-2002                                                                 }
+{     Added three new properties TopPanelColor, TopPanelFontColor and          }
+{     ArrowColor                                                               }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  05-may-2002                                                                 }
+{     Fixed exit validation not working when control is unbound                }
+{     Added property to enable/disable date autofill                           }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  18-apr-2002                                                                 }
+{     Added Value property particularly useful when control is unbound         }
+{  17-apr-2002                                                                 }
+{     Improved auto filling that now works also when the control contents is   }
+{     selected, and generates a 2 year digit instead of 4 to avoid century     }
+{     typing.                                                                  }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  27-feb-2002                                                                 }
+{     added special keys facilities: spacebar for current date; if you start   }
+{     typing and control is empty, current date is automatically entered so    }
+{     you have good chanches to have the desired date with few keystrokes      }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  19-feb-2002                                                                 }
+{     if unbound and a date is entered, the droppdown calendar now takes you on}
+{     the corresponding day (like does when bound)                             }
+{                                                                              }
+{******************************************************************************}
+
+{: This control is used for manipulating columns that store date only values.}
+TIB_CustomDate = class;
+
+TIB_CustomDateStrikeEvent = procedure(     Sender: TIB_CustomDate;
+                                           CheckThisDate: TDateTime;
+                                       var CrossColor : TColor ) of object;
+TIB_CustomDate = class(TIB_CustomEdit)
+private
+  FAutoFill: boolean;
+  FDatePick: TDatePick;
+  procedure CMExit(var Message: TCMExit); message CM_EXIT;
+  function GetNormalCellLineColor: TColor;
+  function GetSelectedCellColor: TColor;
+  function GetSelectedCellFontColor: TColor;
+  function GetNormalCellColor: TColor;
+  function GetDifMonthFontColor: TColor;
+  function GetNormalCellFontColor: TColor;
+  function GetTodayCellColor: TColor;
+  function GetDayOfWeekStrLen: integer;
+  procedure SetNormalCellLineColor( AValue: TColor );
+  procedure SetSelectedCellColor( AValue: TColor );
+  procedure SetSelectedCellFontColor( AValue: TColor );
+  procedure SetNormalCellColor( AValue: TColor );
+  procedure SetDifMonthFontColor( AValue: TColor );
+  procedure SetNormalCellFontColor( AValue: TColor );
+  procedure SetTodayCellColor( AValue: TColor );
+  procedure SetDayOfWeekStrLen( AValue: integer );
+  procedure DatePickChange( Sender: TDatePick; Value: TDatePickResult );
+  procedure DatePickStrike(     Sender: TDatePick;
+                                CheckThisDate : TDateTime;
+                            var CrossColor : TColor );
+  function GetFirstWeek: TDatePickFirstWeek;
+  function GetOptions: TDatePickOptions;
+  function GetStartDay: TDatePickStartDay;
+  procedure SetFirstWeek( const Value: TDatePickFirstWeek );
+  procedure SetOptions( const Value: TDatePickOptions );
+  procedure SetStartDay( const Value: TDatePickStartDay );
+  function GetValue : TDate;
+  procedure SetValue( AValue : TDate );
+  procedure SetTopPanelColor( AValue: TColor ); //GK 2002-05-03
+  function GetTopPanelColor: TColor; //GK 2002-05-03
+  procedure SetTopPanelFontColor( AValue: TColor ); //GK 2002-05-03
+  function GetTopPanelFontColor: TColor; //GK 2002-05-03
+  procedure SetArrowColor( AValue: TColor ); //GK 2002-05-03
+  function GetArrowColor: TColor; //GK 2002-05-03
+protected
+  FOnStrike: TIB_CustomDateStrikeEvent;
+  procedure KeyPress(var Key: Char); override;
+  procedure WndProc(var Message: TMessage); override;
+  procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+  procedure WMKeyDown(var Message: TWMKeyDown); message WM_KEYDOWN;
+  function EditCanModify: Boolean; override;
+  function GetTodayButtonCaption: string; virtual;
+  function GetClearButtonCaption: string; virtual;
+  procedure SetTodayButtonCaption( AValue : string ); virtual;
+  procedure SetClearButtonCaption( AValue : string ); virtual;
+  procedure CreateWnd; override;
+  procedure DoEditButtonClick; override;
+  procedure UpdateMask( UnboundMask: string ); override;
+  function  GetIncCellHeight: Integer; virtual;
+  function  GetIncCellWidth: Integer; virtual;
+  procedure SetIncCellHeight( AValue: Integer ); virtual;
+  procedure SetIncCellWidth( AValue: Integer ); virtual;
+  function  GetDrawYearArrow: boolean;
+  procedure SetDrawYearArrow( AValue: boolean );
+  procedure DoStrike(     CheckThisDate : TDateTime;
+                      var CrossColor : TColor ); dynamic;
+
+public
+{$IFDEF IBO_VCL40_OR_GREATER}
+  procedure ValidateEdit; override;
+{$ENDIF}
+  constructor Create( AOwner: TComponent ); override;
+  property AlwaysShowButton default true;
+  property ButtonStyle default ebsDropDown;
+  property FirstWeek: TDatePickFirstWeek read GetFirstWeek
+                                         write SetFirstWeek
+                                         default fwFirstJanuary;
+  property Options: TDatePickOptions read GetOptions
+                                     write SetOptions
+                                     default [doClearButton,
+                                              doTodayButton,
+                                              doShowOverlap];
+  property StartDay: TDatePickStartDay read GetStartDay
+                                       write SetStartDay
+                                       default sdMon;
+  property TodayButtonCaption: string read GetTodayButtonCaption
+                                      write SetTodayButtonCaption;
+  property ClearButtonCaption: string read GetClearButtonCaption
+                                      write SetClearButtonCaption;
+  property Width default 100;
+  property IncCellHeight: Integer read GetIncCellHeight
+                                  write SetIncCellHeight;
+  property IncCellWidth: Integer read GetIncCellWidth
+                                 write SetIncCellWidth;
+  property DrawYearArrow: boolean read GetDrawYearArrow
+                                  write SetDrawYearArrow;
+
+  property NormalCellLineColor: TColor read GetNormalCellLineColor
+                                       write SetNormalCellLineColor
+                                       default clDkGray;
+                                       //clBlue MM 2002_02_28
+  property SelectedCellColor: TColor read GetSelectedCellColor
+                                     write SetSelectedCellColor
+                                     default clSilver;
+                                     //clNavy MM 2002_02_28
+  property SelectedCellFontColor: TColor read GetSelectedCellFontColor
+                                         write SetSelectedCellFontColor
+                                         default clWhite;
+  property NormalCellColor: TColor read GetNormalCellColor
+                                   write SetNormalCellColor
+                                   default clWhite;
+  property DifMonthFontColor: TColor read GetDifMonthFontColor
+                                     write SetDifMonthFontColor
+                                     default clDkGray;
+  property NormalCellFontColor: TColor read GetNormalCellFontColor
+                                       write SetNormalCellFontColor
+                                       default clBlack;
+                                       //clNavy MM 2002_02_28
+  property TodayCellColor: TColor read GetTodayCellColor
+                                  write SetTodayCellColor
+                                  default clMaroon;
+                                  //clRed  MM 2002_02_28
+
+  property DayOfWeekStrLen: integer read GetDayOfWeekStrLen
+                                    write SetDayOfWeekStrLen
+                                    default 1;
+{: Retrieves or sets the value in unbound mode as Date type. Text property instead returns
+the contents as a formatted string. If the control is empty, returns TDate(0) }
+  property Value : TDate read GetValue write SetValue;
+  property TopPanelColor: TColor read GetTopPanelColor
+                                 write SetTopPanelColor
+                                 default clSilver; //GK 2002-05-03
+  property TopPanelFontColor: TColor read GetTopPanelFontColor
+                                     write SetTopPanelFontColor
+                                     default clBlack; //GK 2002-05-03
+  property ArrowColor: TColor read GetArrowColor
+                              write SetArrowColor
+                              default clBlack; //GK 2002-05-03
+{: gives you current date as soon as you start typing numbers in an empty or selected
+control, probably saving you to type some part of the date (especially if the date
+format is dd/mm/yy }
+  property AutoFill: boolean read FAutoFill write FAutoFill default False;
+end;
+
+{: Published version of the custom date control.}
+TIB_Date = class(TIB_CustomDate)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomEdit.PBL}
+{$UNDEF IB_AutoLabel}
+published
+  property AutoFill;
+  property ClearButtonCaption;
+  property FirstWeek;
+  property Options;
+  property StartDay;
+  property TodayButtonCaption;
+  property IncCellHeight;
+  property IncCellWidth;
+  property DrawYearArrow;
+  property NormalCellLineColor;
+  property SelectedCellColor;
+  property SelectedCellFontColor;
+  property NormalCellColor;
+  property DifMonthFontColor;
+  property NormalCellFontColor;
+  property TodayCellColor;
+  property DayOfWeekStrLen;
+  property OnStrike: TIB_CustomDateStrikeEvent read FOnStrike write FOnStrike;
+  property TopPanelColor; //GK 2002-05-03
+  property TopPanelFontColor; //GK 2002-05-03
+  property ArrowColor; //GK 2002-05-03
+end;
+
+// IBC_Date.IMP

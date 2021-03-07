@@ -1,0 +1,159 @@
+inherited SeriesRegionToolForm: TSeriesRegionToolForm
+  Left = 265
+  Top = 249
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 642
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 642
+  end
+  inherited Memo1: TMemo
+    Width = 642
+    Lines.Strings = (
+      
+        'The SeriesRegionTool can be used to identify the area between a ' +
+        'data Series and a defined value level.')
+  end
+  inherited Chart1: TChart
+    Width = 642
+    Height = 289
+    Legend.LegendStyle = lsSeries
+    View3D = False
+    TabOrder = 2
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      LinePen.Color = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000000000000000394000000000009060400000000000306B40000000
+        00002067400000000000F06E4000000000000074400000000000A87140000000
+        0000D071400000000000506E400000000000B875400000000000506E40000000
+        0000787440000000000040754000000000005079400000000000A07E40000000
+        0000C87E40000000000000794000000000005480400000000000088140000000
+        0000BC814000000000002C854000000000006088400000000000B88540000000
+        000008864000000000005C8740}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 642
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 97
+      Top = 14
+      Width = 32
+      Height = 13
+      Caption = '&Lower:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 200
+      Top = 14
+      Width = 32
+      Height = 13
+      Caption = 'U&pper:'
+      FocusControl = Edit2
+    end
+    object cbDrawBehind: TCheckBox
+      Left = 457
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Draw Behind'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbDrawBehindClick
+    end
+    object cbUseOrigin: TCheckBox
+      Left = 310
+      Top = 13
+      Width = 81
+      Height = 17
+      Caption = '&Use origin'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbUseOriginClick
+    end
+    object Edit1: TEdit
+      Left = 132
+      Top = 11
+      Width = 41
+      Height = 21
+      TabOrder = 2
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 173
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Max = 24
+      TabOrder = 3
+      Thousands = False
+    end
+    object Edit2: TEdit
+      Left = 239
+      Top = 11
+      Width = 41
+      Height = 21
+      TabOrder = 4
+      Text = '24'
+      OnChange = Edit2Change
+    end
+    object UpDown2: TUpDown
+      Left = 280
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Max = 24
+      Position = 24
+      TabOrder = 5
+      Thousands = False
+    end
+    object Edit3: TEdit
+      Left = 383
+      Top = 11
+      Width = 41
+      Height = 21
+      TabOrder = 6
+      Text = '250'
+      OnChange = Edit3Change
+    end
+    object UpDown3: TUpDown
+      Left = 424
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit3
+      Max = 20000
+      Position = 250
+      TabOrder = 7
+      Thousands = False
+    end
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 8
+      OnClick = Button1Click
+    end
+  end
+end

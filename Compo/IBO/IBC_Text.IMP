@@ -1,0 +1,206 @@
+// IBC_Text.INT
+
+{------------------------------------------------------------------------------}
+{  Marco Menardi <mmenaz@lycosmail.com                                         }
+{  10/25/2001                                                                  }
+{     Now if in design time and dataset active, if the field is empty or null  }
+{     it shows '<EMPTY>' as a placeholder for the component                    }
+{            Copyright (C) 2001 Marco Menardi                                  }
+{                                                                              }
+{******************************************************************************}
+
+{$I IB_Control.IMP}
+
+constructor TIB_CustomText.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csReplicatable];
+  inherited AutoSize := false;
+  inherited ShowAccelChar := false;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnStateChanged := StateChanged;
+end;
+
+destructor TIB_CustomText.Destroy;
+begin
+  DataSource := nil;
+  DataLink.OnDataChange := nil;
+  DataLink.OnStateChanged := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomText.SysStateChanged;
+begin
+// Abstract;
+end;
+
+procedure TIB_CustomText.SysDataChange;
+begin
+  with DataLink do begin
+    if Alignment <> FieldAlignment then begin
+      Alignment := FieldAlignment;
+    end;
+    Caption := FieldText
+  end;
+end;
+
+function TIB_CustomText.GetLabelText: string;
+begin
+  if csPaintCopy in ControlState then begin
+    if Assigned( DataLink.Field ) then begin
+      Result := DataLink.Field.DisplayText
+    end else begin
+      Result := '';
+    end;
+  end else begin
+    Result := Caption;
+    if ( Result = '' ) and ( csDesigning in ComponentState ) then
+    begin
+      if (not DataLink.Prepared) then
+        Result := Name
+      else
+        Result := '<EMPTY>'; // don't know if empty or null, just a placeholder
+    end;
+  end;
+  if Assigned(FOnGetDisplayText) then
+     OnGetDisplayText(self,Result);
+end;
+
+constructor TIB_Text.Create(AOwner: TComponent);
+begin
+  inherited;
+  FBorderStyle := bsNone;
+  FBevelInner := bvNone;
+  FBevelOuter := bvNone;
+  FBevelWidth := 1;
+  FBorderWidth := 1;
+end;
+
+procedure TIB_Text.SetBevelInner(Value: TPanelBevel);
+begin
+  FBevelInner := Value;
+//  Realign;
+  Invalidate;
+end;
+
+procedure TIB_Text.SetBevelOuter(Value: TPanelBevel);
+begin
+  FBevelOuter := Value;
+//  Realign;
+  Invalidate;
+end;
+
+procedure TIB_Text.SetBevelWidth(Value: TBevelWidth);
+begin
+  FBevelWidth := Value;
+//  Realign;
+  Invalidate;
+end;
+
+procedure TIB_Text.SetBorderWidth(Value: TBorderWidth);
+begin
+  FBorderWidth := Value;
+//  Realign;
+  Invalidate;
+end;
+
+procedure TIB_Text.SetBorderStyle(Value: TBorderStyle);
+begin
+  if FBorderStyle <> Value then
+  begin
+    FBorderStyle := Value;
+    Invalidate; // in TPanel is RecreateWnd; but this is not a TWinControl
+  end;
+end;
+
+procedure TIB_Text.Paint;
+const
+  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
+var
+  Rect: TRect;
+{$IFDEF IBO_VCL40_OR_GREATER}
+  CalcRect: TRect;
+  DrawStyle: Longint;
+{$ENDIF}
+  TopColor, BottomColor: TColor;
+  OffsetX, OffsetY : integer;
+  HasBorders: boolean;
+  procedure AdjustColors(Bevel: TPanelBevel);
+  begin
+    TopColor := clBtnHighlight;
+    if Bevel = bvLowered then TopColor := clBtnShadow;
+    BottomColor := clBtnShadow;
+    if Bevel = bvLowered then BottomColor := clBtnHighlight;
+  end;
+begin
+  with Canvas do
+  begin
+    if not Transparent then
+    begin
+      Brush.Color := Color; // Background Color
+      Brush.Style := bsSolid;
+      FillRect(ClientRect);
+    end;
+    Brush.Style := bsClear;
+
+    Rect := ClientRect;
+
+    HasBorders := (BevelOuter <> bvNone) or (BevelInner <> bvNone) or (BorderStyle <> bsNone);
+
+    // draw borders
+    // (I've problems with Autosize=True: how can I leave space for borders? There is ClippingRegion...
+    if HasBorders then
+    begin
+      if BorderStyle <> bsNone then //
+        Frame3D(Canvas, Rect, clWindowFrame, clBtnHighlight, 2);
+      if BevelOuter <> bvNone then
+      begin
+        AdjustColors(BevelOuter);
+        Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
+      end;
+      Frame3D(Canvas, Rect, Color, Color, BorderWidth);
+      if BevelInner <> bvNone then
+      begin
+        AdjustColors(BevelInner);
+        Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
+      end;
+    end;
+
+    Rect := ClientRect;
+
+    // calculates rectangle dimensions for text considering active borders
+    // N.B. since Canvas does clipping, how can I manage autosize=True and borders?
+    OffsetX := 0;
+    OffsetY := 0;
+    if HasBorders then
+    begin
+      if BorderWidth <> 0 then
+        Inc(OffsetX, BorderWidth + 3);
+      if BevelOuter <> bvNone then Inc(OffsetX, BevelWidth);
+      if BevelInner <> bvNone then Inc(OffsetX, BevelWidth);
+    end;
+    if Alignment = taCenter then
+      OffsetX := 0
+    else if Alignment = taRightJustify then
+      OffsetX := -OffsetX;
+    OffsetRect(Rect, OffsetX, OffsetY);
+{$IFDEF IBO_VCL40_OR_GREATER}
+    { DoDrawText takes care of BiDi alignments }
+    DrawStyle := DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[Alignment];
+    { Calculate vertical layout }
+    if Layout <> tlTop then
+    begin
+      CalcRect := Rect;
+      DoDrawText(CalcRect, DrawStyle or DT_CALCRECT);
+      if Layout = tlBottom then OffsetRect(Rect, 0, Height - CalcRect.Bottom)
+      else OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
+    end;
+    DoDrawText(Rect, DrawStyle);
+{$ELSE}
+    raise Exception.Create( 'Unsupported' );
+{$ENDIF}
+  end;
+end;
+

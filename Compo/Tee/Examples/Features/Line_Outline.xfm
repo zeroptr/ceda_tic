@@ -1,0 +1,52 @@
+inherited LineOutline: TLineOutline
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Line series new Outline property is a Pen used to display the sa' +
+        'me '
+      'line at the background with a bigger size.'
+      ''
+      'Series1.Outline.Color := clYellow ;')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Line Series with outline')
+    View3D = False
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      LinePen.Width = 2
+      OutLine.Color = clYellow
+      OutLine.Visible = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object ButtonPen1: TButtonPen
+      Left = 16
+      Top = 8
+      Caption = '&Line...'
+      TabOrder = 0
+    end
+    object ButtonPen2: TButtonPen
+      Left = 104
+      Top = 8
+      Caption = '&Outline...'
+      TabOrder = 1
+    end
+  end
+end

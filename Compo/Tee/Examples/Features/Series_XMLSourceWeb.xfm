@@ -1,0 +1,41 @@
+inherited XMLSourceWeb: TXMLSourceWeb
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The XML Series source component can also be used'
+      'to retrieve xml data from the web and automatically create'
+      'the series included on it.')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'XML Data from Web')
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 8
+      Top = 12
+      Width = 25
+      Height = 13
+      Caption = '&URL:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 40
+      Top = 8
+      Width = 233
+      Height = 21
+      TabOrder = 0
+      Text = 'http://www.steema.com/SampleData.xml'
+    end
+    object Button1: TButton
+      Left = 280
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Load !'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

@@ -1,0 +1,43 @@
+inherited ChartGridAllowInsertSeries: TChartGridAllowInsertSeries
+  Width = 779
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 771
+  end
+  inherited Memo1: TMemo
+    Width = 771
+    Lines.Strings = (
+      
+        'When True, ChartGrid1.AllowInsertSeries allows new Series to be ' +
+        'added to the ChartGrid and Chart by right arrow keying from any ' +
+        'row of the ChartGrid.'
+      'Example:'
+      '  ChartGrid1.AllowInsertSeries:=True;')
+  end
+  inherited Chart1: TChart
+    Left = 209
+    Width = 562
+    Chart3DPercent = 65
+  end
+  inherited Panel1: TPanel
+    Width = 771
+    inherited cbAllowAppend: TCheckBox
+      Visible = False
+    end
+    object cbAllowInsertSeries: TCheckBox
+      Left = 15
+      Top = 13
+      Width = 153
+      Height = 17
+      Caption = '&Allow insert Series'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbAllowInsertSeriesClick
+    end
+  end
+  inherited ChartGrid1: TChartGrid
+    Width = 209
+  end
+end

@@ -1,0 +1,38 @@
+inherited TitleCustomPos: TTitleCustomPos
+  Caption = 'TitleCustomPos'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Titles and Footers can now be custom-positioned.'
+      ''
+      'Example: Chart1.Title.CustomPosition := True;'
+      '               Chart1.Title.Left := 123;')
+  end
+  inherited Chart1: TChart
+    Title.CustomPosition = True
+    Title.Font.Style = [fsBold]
+    Title.Font.Shadow.HorizSize = 4
+    Title.Font.Shadow.VertSize = 2
+    Title.Left = 123
+    Title.ShadowColor = 8421440
+    Title.ShapeStyle = fosRoundRectangle
+    Title.Text.Strings = (
+      'This is the Title')
+    Title.Top = 9
+    Title.Transparent = False
+  end
+  inherited Panel1: TPanel
+    inherited CheckBox1: TCheckBox
+      OnClick = CheckBox1Click
+    end
+    inherited TrackBar1: TTrackBar
+      Position = 123
+      OnChange = TrackBar1Change
+    end
+    inherited TrackBar2: TTrackBar
+      OnChange = TrackBar2Change
+    end
+  end
+end

@@ -1,0 +1,145 @@
+inherited SeriesShowInEditor: TSeriesShowInEditor
+  Width = 550
+  Height = 427
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 534
+  end
+  inherited Memo1: TMemo
+    Width = 534
+    Lines.Strings = (
+      
+        'ShowInEditor and ShowInLegend propperties are boolean properties' +
+        ' which allow the user to decide if '
+      'specific Series must be visible in the editor or legend.'
+      ''
+      'Example :'
+      '  BarSeries.ShowInEditor := false;'
+      '  LineSeries.ShowInLegend := false;')
+  end
+  inherited Chart1: TChart
+    Width = 534
+    Height = 235
+    Chart3DPercent = 15
+    ColorPaletteIndex = 7
+    object Series1: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        0006000000000000000060584000000000004060400000000000804B40000000
+        00000024400000000000404A400000000000803B40}
+    end
+    object Series2: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0119000000000000000000000066666666662E5640ABAAAAAAAAAACA3F000000
+        0000B85440ABAAAAAAAAAADA3F0000000000505440000000000000E43F666666
+        66667E5040ABAAAAAAAAAAEA3F9999999999795440ABAAAAAAAAAAF03F333333
+        33339B5240000000000000F43F66666666667E5040555555555555F73F000000
+        0000505440AAAAAAAAAAAAFA3F66666666664E5140FFFFFFFFFFFFFD3F666666
+        6666865240AAAAAAAAAAAA0040CCCCCCCCCC3455405555555555550240666666
+        6666C6554000000000000004403333333333DB5540ABAAAAAAAAAA0540666666
+        66668E544056555555555507409999999999D952400100000000000940666666
+        6666965640ACAAAAAAAAAA0A40CCCCCCCCCC2C53405755555555550C40CCCCCC
+        CCCC3455400200000000000E40CCCCCCCCCC8C5140ADAAAAAAAAAA0F40999999
+        9999D15040ACAAAAAAAAAA104066666666662654400100000000801140CCCCCC
+        CCCC54504056555555555512406566666666E64D40ABAAAAAAAA2A1340323333
+        333313474000000000000014406566666666D64940}
+    end
+    object Series3: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        011900000000000000000000000000000000A85040ABAAAAAAAAAACA3F333333
+        3333F34B40ABAAAAAAAAAADA3F3333333333634E40000000000000E43F999999
+        9999894840ABAAAAAAAAAAEA3F6666666666264440ABAAAAAAAAAAF03F999999
+        9999B94740000000000000F43F3333333333B34840555555555555F73F666666
+        6666E64D40AAAAAAAAAAAAFA3F3333333333134740FFFFFFFFFFFFFD3F000000
+        0000404D40AAAAAAAAAAAA004000000000006048405555555555550240333333
+        3333C34C4000000000000004403333333333F34B40ABAAAAAAAAAA0540999999
+        9999C94B4056555555555507406666666666F644400100000000000940000000
+        0000D04A40ACAAAAAAAAAA0A400000000000B042405755555555550C409A9999
+        9999A943400200000000000E40CDCCCCCCCCAC4940ADAAAAAAAAAA0F40676666
+        6666B64E40ACAAAAAAAAAA10403433333333FB50400100000000801140353333
+        3333234B4056555555555512406866666666B64E40ABAAAAAAAA2A1340353333
+        3333934D4000000000000014403433333333635140}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 534
+    object Label1: TLabel
+      Left = 18
+      Top = 15
+      Width = 32
+      Height = 13
+      Caption = '&Series:'
+      FocusControl = cbSeries
+    end
+    object cbSeries: TComboFlat
+      Left = 57
+      Top = 10
+      Width = 105
+      TabOrder = 0
+      OnChange = cbSeriesChange
+    end
+    object cbShowInEditor: TCheckBox
+      Left = 177
+      Top = 5
+      Width = 97
+      Height = 17
+      Caption = 'Show in &Editor'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbShowInEditorClick
+    end
+    object cbShowInLegend: TCheckBox
+      Left = 177
+      Top = 20
+      Width = 97
+      Height = 17
+      Caption = 'Show in &Legend'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = cbShowInLegendClick
+    end
+    object bEditor: TButton
+      Left = 293
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Editor'
+      TabOrder = 3
+      OnClick = bEditorClick
+    end
+  end
+end

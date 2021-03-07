@@ -1,0 +1,45 @@
+:Base IBO40.hlp>Main
+:Title InterBase Objects v.4
+1 Welcome to InterBase Objects
+2 Introduction=Introduction@IBO40.hlp
+2 What is IBO?=WhatisIBO@IBO40.hlp
+2 Subscriptions=Subscriptions@IBO40.hlp
+2 Registration=Registration@IBO40.hlp
+2 Copyright & Disclaimer=Copyright@IBO40.hlp
+2 Author=Author@IBO40.hlp
+1 Installing IBO 4
+2 Before you start=Beforeyoustart@IBO40.hlp
+2 Directories setup=Directoriessetup@IBO40.hlp
+2 Order of IBO packages=OrderofIBOpackages@IBO40.hlp
+2 Evaluation kits=Evaluationkits@IBO40.hlp
+2 Installing from the BPG file=InstallingfromtheBPGfile@IBO40.hlp
+2 Delphi 3=Delphi3@IBO40.hlp
+2 C++Builder notes=CBuildernotes@IBO40.hlp
+2 Non-English IDEs=Non-EnglishIDEs@IBO40.hlp
+2 Some known problems=Someknownproblems@IBO40.hlp
+2 Service Application Framework=ServiceApplicationFramework@IBO40.hlp
+2 Delphi Versions/Editions Packages=DelphiVersions/EditionsPackage@IBO40.hlp
+2 Add-ons=Add-ons@IBO40.hlp
+2 Installing this Help file=Installingthishelpfile@IBO40.hlp
+1 BDE to IBO Conversion Guide
+2 Why Convert to IBO=WhyConverttoIBO@IBO40.hlp
+2 What IBO Doesn't Support=WhatdoesntIBOsupport@IBO40.hlp
+2 Converting to IBO Classes=ConvertingtoIBOclasses@IBO40.hlp
+2 Post Conversion Requirements=PostConversionRequirements@IBO40.hlp
+2 Post Conversion Suggestions=PostConversionSuggestions@IBO40.hlp
+2 CSDemos Sample Conversion=CSDemosConversion@IBO40.hlp
+2 Mastapp Sample Conversion=MastAppConversion@IBO40.hlp
+1 Technical Information Sheets
+2 About Technical Information sheets=AboutTechnicalInformationsheet@IBO40.hlp
+2 TI sheet catalog=TIsheetcatalog@IBO40.hlp
+1 Tutorials and Samples
+2 Building the Tutorials and Samples=BuildingtheTutorials@IBO40.hlp
+1 Components
+2 Units=IDH_Library_IBO40_Units
+2 Classes=IDH_Library_IBO40_Classes
+2 Components=IDH_Library_IBO40_Components
+2 Interfaces=IDH_Library_IBO40_Interfaces
+2 Other Types=IDH_Library_IBO40_OtherTypes
+2 Routines=IDH_Library_IBO40_Routines
+2 Global Variables=IDH_Library_IBO40_Variables
+2 Constants not in IB_Constants.pas=IDH_Library_IBO40_Constants

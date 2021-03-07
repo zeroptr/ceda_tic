@@ -1,0 +1,158 @@
+			bool Zincir=false;
+			OleDbDataReader myReader=null;
+			OleDbDataReader myReaderFat=null;
+			int[] a = gridView1.GetSelectedRows();
+			try
+			{
+				Sirket = Kernel.yeniSirket(NetOpenX.TVTTipi.vtMSSQL,modSabit.glb_DBNAME, "netsis", "", modSabit.glb_AktarimUserName, modSabit.glb_AktarimPassword, modSabit.glb_Sube_ID );
+				for (int i = 0 ;i<gridView1.SelectedRowsCount;i++ )
+				{
+					DataRow row = gridView1.GetDataRow(a[i]);
+
+					//DataRow row = gridView1.GetDataRow(gridView1.FocusedRowHandle);
+					string CariKodu="";
+					string FaturaNo = row["FATIRS_NO"].ToString();
+					string TempFaturaNo=GET_SERINO() + "00000000000000" ;
+					FaturaNo =  TempFaturaNo.Substring(0,15-FaturaNo.Length) + FaturaNo;
+					if (row["SATIS_TIP"].ToString()=="ZINCIR")
+					{
+						CariKodu = 	row["LINK_KOD"].ToString();
+						Zincir = true;
+					}
+					else
+					{
+						CariKodu = row["CARI_KODU"].ToString();
+						Zincir = false;
+					}
+
+					string PLASIYER_KOD = row["PERSONEL_KOD"].ToString();
+					int Depo_Kodu = GET_DEPOKODU(Convert.ToInt32(row["PLS_KOD"]));
+					OleDbCommand  cmdFat = new OleDbCommand ();
+					cmdFat.Connection = modSabit.glb_SoftNetdbConn;
+					if (row["FATURALI"].ToString()=="1")
+					{
+					}
+					else
+					{
+						if (row["TUR"].ToString()=="IRSALIYE")
+						{
+							Fatura = Kernel.yeniFatura(Sirket,NetOpenX.TFaturaTip.ftSIrs);
+						}
+						else if (row["TUR"].ToString()=="FATURA")
+						{
+							Fatura = Kernel.yeniFatura(Sirket,NetOpenX.TFaturaTip.ftSFat);
+
+						}
+						else
+						{
+							return;
+						}
+
+
+						cmdFat.CommandText = "Select SUBE_KODU,FTIRSIP,FATIRS_NO,CARI_KODU,TARIH,TIPI,BRUTTUTAR,SAT_ISKT,GEN_ISK1T,GEN_ISK1O, KDV,ODEMETARIHI , KDV_DAHILMI, FATKALEM_ADEDI,GENELTOPLAM,PLA_KODU,DOVIZTIP,DOVIZTUT, C_YEDEK6,D_YEDEK10,FIYATTARIHI,ONAYTIPI,ISLETME_KODU From TBL_SOFTNET_FATUIRS "
+							+ " where FATIRS_NO='" + row["FATIRS_NO"].ToString()  + "' and SUBE_KODU=" + modSabit.glb_Sube_ID.ToString();
+						myReaderFat = cmdFat.ExecuteReader();
+						if (myReaderFat.Read())
+						{
+							FatUst = Fatura.Ust() ;
+							FatUst.Sube_Kodu = Convert.ToInt32(myReaderFat["SUBE_KODU"]) ;
+							FatUst.FATIRS_NO = FaturaNo;
+							if (Convert.ToInt32(myReaderFat["TIPI"])==1)
+							{
+								FatUst.TIPI =   TFaturaTipi.ft_Kapali;
+							}
+							if (Convert.ToInt32(myReaderFat["TIPI"])==2)
+							{
+
+								FatUst.TIPI =   TFaturaTipi.ft_Acik;
+							}
+							FatUst.CariKod = CariKodu;// myReaderFat["CARI_KODU"].ToString();
+							FatUst.Aciklama = row["CARI_ISIM"].ToString();
+							//FatUst.EKACK1 = row["CARI_ISIM"].ToString();
+
+							if (row["TUR"].ToString()=="FATURA")
+							{
+								if (Convert.ToDouble(myReaderFat["GEN_ISK1O"])==0)
+								{
+									FatUst.GEN_ISK1O = 0.00000000000000000000000001;
+								}
+								else
+								{
+									FatUst.GEN_ISK1O = Convert.ToDouble(myReaderFat["GEN_ISK1O"]);
+								}
+							}
+							else
+							{
+								FatUst.GEN_ISK1O = Convert.ToDouble(myReaderFat["GEN_ISK1O"]);
+							}
+							FatUst.SAT_ISKT = Convert.ToDouble(myReaderFat["SAT_ISKT"]);
+							//FatUst.GEN_ISK1T = Convert.ToDouble(myReaderFat["GEN_ISK1T"]);
+
+							FatUst.Tarih = Convert.ToDateTime(myReaderFat["TARIH"]);
+							FatUst.SIPARIS_TEST = Convert.ToDateTime(myReaderFat["TARIH"]);
+							FatUst.BRUTTUTAR =  Convert.ToDouble(myReaderFat["BRUTTUTAR"]);
+
+
+							FatUst.KDV = Convert.ToDouble(myReaderFat["KDV"]);
+							int VADEGUN=GET_VADEGUNU(CariKodu) ;
+							FatUst.ODEMEGUNU =VADEGUN ;
+							FatUst.ODEMETARIHI = Convert.ToDateTime(myReaderFat["TARIH"]).AddDays(VADEGUN) ;
+							if (myReaderFat["KDV_DAHILMI"].ToString()  == "E")
+							{
+								FatUst.KDV_DAHILMI = true;
+							}
+							else
+							{
+								FatUst.KDV_DAHILMI = false;
+							}
+
+							FatUst.GENELTOPLAM = Convert.ToDouble( myReaderFat["GENELTOPLAM"]);
+							FatUst.PLA_KODU = PLASIYER_KOD ; // myReaderFat["PLA_KODU"].ToString() ;
+							FatUst.DOVIZTIP =Convert.ToInt32 ( myReaderFat["DOVIZTIP"]);
+							FatUst.DovizTut = Convert.ToDouble(myReaderFat["DOVIZTUT"]);
+							FatUst.FIYATTARIHI = Convert.ToDateTime(myReaderFat["FIYATTARIHI"]);
+							FatUst.OnayTipi = myReaderFat["ONAYTIPI"].ToString() ;
+							FatUst.ENTEGRE_TRH = Convert.ToDateTime(myReaderFat["TARIH"]);
+							myReaderFat.Close();
+							OleDbCommand  cmd = new OleDbCommand ();
+							cmd.Connection = modSabit.glb_SoftNetdbConn;
+
+							cmd.CommandText = "Select STOK_KODU,FISNO,STHAR_GCMIK,STHAR_GCKOD,STHAR_TARIH,STHAR_NF,STHAR_BF,STHAR_KDV,DEPO_KODU,STHAR_ACIKLAMA,STHAR_SATISK,STHAR_FTIRSIP,STHAR_HTUR,STHAR_BGTIP,STHAR_CARIKOD,PLASIYER_KODU,SIRA,VADE_TARIHI,SUBE_KODU,D_YEDEK10,FIYATTARIHI,KG,OLCUBR From TBL_SOFTNET_STHAR where FISNO='" + row["FATIRS_NO"].ToString()  + "' and SUBE_KODU=" + modSabit.glb_Sube_ID.ToString() + " AND STHAR_CARIKOD='" + row["CARI_KODU"].ToString() + "'";
+							myReader = cmd.ExecuteReader();
+							while (myReader.Read())
+							{
+								FatKalem = Fatura.kalemYeni(myReader["STOK_KODU"].ToString());
+								FatKalem.STra_GCMIK =Convert.ToDouble(myReader["KG"]);
+								FatKalem.STra_TAR = Convert.ToDateTime(myReader["STHAR_TARIH"]);
+								FatKalem.Stra_FiiliTar = Convert.ToDateTime(myReader["STHAR_TARIH"]);
+								//FatKalem.Olcubr =1; //Convert.ToInt32(myReader["OLCUBR"]) ;
+								
+								FatKalem.Olcubr =Convert.ToInt32(myReader["OLCUBR"])+1 ;
+								FatKalem.Fiat_birimi = 1;
+								//FatKalem.STra_NF = Convert.ToDouble(myReader["STHAR_NF"]);;
+								FatKalem.STra_BF = GET_FIYAT(myReader["STOK_KODU"].ToString(),Zincir,Convert.ToDouble(myReader["STHAR_BF"])); //Convert.ToDouble(myReader["STHAR_BF"]);
+								FatKalem.STra_KDV = Convert.ToDouble(myReader["STHAR_KDV"]);
+								FatKalem.DEPO_KODU = Depo_Kodu ; //Convert.ToInt32(myReader["DEPO_KODU"]) ;
+								FatKalem.STra_ACIK = myReader["STHAR_ACIKLAMA"].ToString() ;
+								FatKalem.STra_SatIsk = Convert.ToDouble(myReader["STHAR_SATISK"]);
+								FatKalem.STra_FTIRSIP = myReader["STHAR_FTIRSIP"].ToString() ;
+								FatKalem.STra_HTUR = myReader["STHAR_HTUR"].ToString() ;
+								FatKalem.STra_BGTIP = myReader["STHAR_BGTIP"].ToString() ;
+								FatKalem.STra_CARI_KOD = myReader["STHAR_CARIKOD"].ToString() ;
+								FatKalem.Plasiyer_Kodu = PLASIYER_KOD ; // myReader["PLASIYER_KODU"].ToString() ;
+								FatKalem.Sira = Convert.ToInt32(myReader["SIRA"]);
+								FatKalem.Stra_SubeKodu = Convert.ToInt32(myReader["SUBE_KODU"]);
+								FatKalem.Stra_FiyatTar = Convert.ToDateTime(myReader["FIYATTARIHI"]);
+								FatKalem.Stra_FiiliTar = Convert.ToDateTime(myReader["D_YEDEK10"]);
+							}
+							Fatura.kayitYeni();
+							myReaderFat.Close();
+							myReader.Close();  
+							GONDERILDI(Convert.ToInt32(row["SERI_NO"]));
+						}
+						else 
+						{
+						}
+					}
+				}
+				MessageBox.Show("Veri Gönderme Ýþlemi Tamamlandý..!");  

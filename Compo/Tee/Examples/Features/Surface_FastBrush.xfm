@@ -1,0 +1,110 @@
+inherited SurfaceFastBrush: TSurfaceFastBrush
+  Left = 288
+  Top = 188
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 81
+  end
+  inherited Memo1: TMemo
+    Height = 81
+    Lines.Strings = (
+      
+        'The Surface series "FastBrush" property, when True, increments d' +
+        'rawing '
+      
+        'surfaces speed by 40% or more on most systems, depending on the ' +
+        'number'
+      'of surface cells, video card, chart size, etc.'
+      ''
+      
+        'Series1.FastBrush := True ;    // Note: Doest not apply to Windo' +
+        'ws 95,98,Me.')
+  end
+  inherited Chart1: TChart
+    Top = 124
+    Height = 213
+    BottomWall.Transparent = True
+    LeftWall.Visible = False
+    Legend.Visible = False
+    Title.Visible = False
+    AxisVisible = False
+    Chart3DPercent = 100
+    ClipPoints = False
+    View3DOptions.Elevation = 358
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 200
+    View3DOptions.Rotation = 324
+    View3DOptions.Zoom = 51
+    Color = clWhite
+    object Series1: TSurfaceSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      EndColor = 16744703
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      StartColor = clLime
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 83
+    object LabelTime: TLabel
+      Left = 208
+      Top = 13
+      Width = 49
+      Height = 13
+      Caption = 'LabelTime'
+    end
+    object CheckBox1: TCheckBox
+      Left = 11
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = 'Use &FastBrush'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 112
+      Top = 8
+      Width = 89
+      Height = 25
+      Caption = '&Test speed !'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 384
+      Top = 11
+      Width = 77
+      Height = 17
+      Caption = 'Show &Axes'
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 314
+      Top = 11
+      Width = 62
+      Height = 17
+      Caption = 'Buffered'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox3Click
+    end
+  end
+end

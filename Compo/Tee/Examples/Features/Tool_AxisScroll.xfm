@@ -1,0 +1,62 @@
+inherited AxisScrollToolDemo: TAxisScrollToolDemo
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Axis Scroll tool enables mouse dragging of axis to scroll them.'
+      ''
+      
+        'A tool can be associated to a single axis or to all visible char' +
+        't axes.'
+      ''
+      'ChartTool1.Axis := Chart1.Axes.Left ;')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Click and drag an axis to scroll it.')
+    View3D = False
+    object Series1: TFastLineSeries
+      HorizAxis = aBothHorizAxis
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      VertAxis = aBothVertAxis
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      Data = {
+        0019000000000000000020684000000000004069400000000000C06B40000000
+        0000405F40000000000000494000000000000031400000000000405240000000
+        00006068400000000000806B400000000000206E400000000000507340000000
+        000010724000000000009075400000000000C07A400000000000F07A40000000
+        0000F077400000000000C075400000000000A074400000000000307340000000
+        00009079400000000000A07B4000000000002880400000000000408140000000
+        0000407C400000000000807F40}
+    end
+    object ChartTool1: TAxisScrollTool
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 13
+      Width = 121
+      Height = 17
+      Caption = '&Enable axis scroll'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 216
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Inverted scroll'
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+  end
+end

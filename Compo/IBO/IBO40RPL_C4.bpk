@@ -1,0 +1,203 @@
+# ---------------------------------------------------------------------------
+!if !$d(BCB)
+BCB = $(MAKEDIR)\..
+!endif
+
+# ---------------------------------------------------------------------------
+# IDE SECTION
+# ---------------------------------------------------------------------------
+# The following section of the project makefile is managed by the BCB IDE.
+# It is recommended to use the IDE to change any of the values in this
+# section.
+# ---------------------------------------------------------------------------
+
+VERSION = BCB.04.04
+# ---------------------------------------------------------------------------
+PROJECT = $(BCB)\Projects\Bpl\IBO40RPL_C4.bpl
+OBJFILES = "..\..\..\program files\borland\cbuilder4\projects\lib\IB_RPL_Sync.obj" \
+  "..\..\..\program files\borland\cbuilder4\projects\lib\IB_RPL_Meta.obj" \
+  "..\..\..\program files\borland\cbuilder4\projects\lib\IB_RPL_Reg.obj" \
+  "..\..\..\program files\borland\cbuilder4\projects\lib\IB_RPL_Scripts.obj" \
+  "..\..\..\program files\borland\cbuilder4\projects\lib\IB_RPL_Base.obj" "..\..\..\program files\borland\cbuilder4\projects\lib\IBO40RPL_C4.obj"
+RESFILES = IBO40_C4.res IB_RPL_Reg.dcr
+DEFFILE =
+RESDEPEN = $(RESFILES) IB_RPL_Scripts.dfm
+LIBFILES =
+LIBRARIES =
+SPARELIBS = vcl40.lib
+PACKAGES = IBO40CRT_C4.bpi IBO40TRT_C4.bpi IBO40VRT_C4.bpi vcl40.bpi vclx40.bpi
+# ---------------------------------------------------------------------------
+PATHCPP = .;
+PATHASM = .;
+PATHPAS = .;
+PATHRC = .;
+DEBUGLIBPATH = $(BCB)\lib\debug
+RELEASELIBPATH = $(BCB)\lib\release
+SYSDEFINES = NO_STRICT;_RTLDLL;USEPACKAGES
+USERDEFINES =
+# ---------------------------------------------------------------------------
+CFLAG1 = -I$(BCB)\include;$(BCB)\include\vcl -Od -w -Ve -Tkh30000 -r- -a8 -k -y -v -vi- \
+  -D$(SYSDEFINES);$(USERDEFINES) -c -b- -w-par -w-inl -Vx -tWM
+CFLAG2 =
+CFLAG3 =
+PFLAGS = -U$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\projects\bpl;$(BCB)\projects\lib;$(RELEASELIBPATH) \
+  -I$(BCB)\include;$(BCB)\include\vcl -N2$(BCB)\projects\lib -N0$(BCB)\projects\lib -$YD -$W -$O- -v -M -JPHNE
+RFLAGS = -i$(BCB)\include;$(BCB)\include\vcl
+AFLAGS = /i$(BCB)\include /i$(BCB)\include\vcl /mx /w2 /zd /d_RTLDLL /dUSEPACKAGES
+LFLAGS = -L$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\projects\bpl;$(BCB)\projects\lib;$(RELEASELIBPATH) \
+  -l$(BCB)\projects\lib \
+  -D"IB Objects Replication Components" \
+  -aa -Tpp -x -Gn -Gl -Gi -v
+IFLAGS =
+# ---------------------------------------------------------------------------
+ALLOBJ = c0pkg32.obj Memmgr.Lib $(PACKAGES) sysinit.obj $(OBJFILES)
+ALLRES = $(RESFILES)
+ALLLIB = $(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib
+# ---------------------------------------------------------------------------
+!ifdef IDEOPTIONS
+
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=4
+MinorVer=2
+Release=6
+Build=12
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=2057
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=CPS - Computer Programming Solutions
+FileDescription=
+FileVersion=4.2.6.12
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=InterBase Objects 4
+ProductVersion=4.2.6.12
+Comments=www.ibobjects.com
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\projects\bpl;$(BCB)\projects\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_RTLDLL;USEPACKAGES
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=$(BCB)\projects\lib
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=$(BCB)\projects\bpl
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=$(BCB)\projects\lib
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+InMemoryExe=0
+ShowInfoMsgs=0
+
+!endif
+
+# ---------------------------------------------------------------------------
+# MAKE SECTION
+# ---------------------------------------------------------------------------
+# This section of the project file is not used by the BCB IDE.  It is for
+# the benefit of building from the command-line using the MAKE utility.
+# ---------------------------------------------------------------------------
+
+.autodepend
+# ---------------------------------------------------------------------------
+!if !$d(BCC32)
+BCC32 = bcc32
+!endif
+
+!if !$d(DCC32)
+DCC32 = dcc32
+!endif
+
+!if !$d(TASM32)
+TASM32 = tasm32
+!endif
+
+!if !$d(LINKER)
+LINKER = ilink32
+!endif
+
+!if !$d(BRCC32)
+BRCC32 = brcc32
+!endif
+# ---------------------------------------------------------------------------
+!if $d(PATHCPP)
+.PATH.CPP = $(PATHCPP)
+.PATH.C   = $(PATHCPP)
+!endif
+
+!if $d(PATHPAS)
+.PATH.PAS = $(PATHPAS)
+!endif
+
+!if $d(PATHASM)
+.PATH.ASM = $(PATHASM)
+!endif
+
+!if $d(PATHRC)
+.PATH.RC  = $(PATHRC)
+!endif
+# ---------------------------------------------------------------------------
+$(PROJECT): $(OBJFILES) $(RESDEPEN) $(DEFFILE)
+    $(BCB)\BIN\$(LINKER) @&&!
+    $(LFLAGS) +
+    $(ALLOBJ), +
+    $(PROJECT),, +
+    $(ALLLIB), +
+    $(DEFFILE), +
+    $(ALLRES)
+!
+# ---------------------------------------------------------------------------
+.pas.hpp:
+    $(BCB)\BIN\$(DCC32) $(PFLAGS) {$< }
+
+.pas.obj:
+    $(BCB)\BIN\$(DCC32) $(PFLAGS) {$< }
+
+.cpp.obj:
+    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(CFLAG2) $(CFLAG3) -n$(@D) {$< }
+
+.c.obj:
+    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(CFLAG2) $(CFLAG3) -n$(@D) {$< }
+
+.asm.obj:
+    $(BCB)\BIN\$(TASM32) $(AFLAGS) $<, $@
+
+.rc.res:
+    $(BCB)\BIN\$(BRCC32) $(RFLAGS) -fo$@ $<
+# ---------------------------------------------------------------------------

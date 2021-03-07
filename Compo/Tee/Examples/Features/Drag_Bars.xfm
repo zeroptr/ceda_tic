@@ -1,0 +1,187 @@
+object DragBarForm: TDragBarForm
+  Left = 267
+  Top = 146
+  Width = 496
+  Height = 413
+  ActiveControl = Chart1
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  Position = poDefault
+  Scaled = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Chart1: TChart
+    Left = 0
+    Top = 33
+    Width = 488
+    Height = 292
+    AllowPanning = pmNone
+    BackWall.Brush.Color = clWhite
+    BackWall.Color = clBlack
+    BackWall.Transparent = False
+    BottomWall.Color = 8454143
+    BottomWall.Size = 8
+    Foot.Font.Height = -13
+    Foot.Text.Strings = (
+      'Red Line is a Trend Function.')
+    LeftWall.Color = 16777088
+    LeftWall.Size = 8
+    Legend.Alignment = laBottom
+    Legend.Font.Height = -13
+    Legend.Font.Style = [fsBold]
+    Legend.Visible = False
+    MarginBottom = 5
+    MarginTop = 5
+    Title.AdjustFrame = False
+    Title.Brush.Color = 8454016
+    Title.Color = clSilver
+    Title.Font.Color = clBlack
+    Title.Font.Height = -24
+    Title.Font.OutLine.Color = clGreen
+    Title.Font.OutLine.Visible = True
+    Title.Font.Shadow.Color = clAqua
+    Title.Font.Shadow.HorizSize = 2
+    Title.Font.Shadow.VertSize = 2
+    Title.Frame.Color = clGray
+    Title.Frame.Width = 3
+    Title.ShadowSize = 1
+    Title.ShapeStyle = fosRoundRectangle
+    Title.Text.Strings = (
+      'Drag the Pyramids...')
+    BottomAxis.GridCentered = True
+    BottomAxis.LabelsFont.Color = clNavy
+    BottomAxis.LabelsFont.Height = -16
+    BottomAxis.LabelsFont.Style = [fsBold, fsItalic]
+    Chart3DPercent = 25
+    LeftAxis.LabelsFont.Color = clPurple
+    LeftAxis.LabelsFont.Height = -16
+    LeftAxis.LabelsFont.Style = [fsBold]
+    View3DOptions.OrthoAngle = 25
+    View3DOptions.Perspective = 55
+    View3DOptions.VertOffset = 4
+    Zoom.Allow = False
+    Align = alClient
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    BorderWidth = 5
+    Color = clSilver
+    TabOrder = 0
+    OnMouseDown = Chart1MouseDown
+    OnMouseMove = Chart1MouseMove
+    OnMouseUp = Chart1MouseUp
+    object Series2: TBarSeries
+      Cursor = crHandPoint
+      Marks.ArrowLength = 20
+      Marks.Font.Shadow.HorizSize = 2
+      Marks.Font.Shadow.VertSize = 2
+      Marks.Visible = False
+      SeriesColor = 16711808
+      BarStyle = bsPyramid
+      BarWidthPercent = 80
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series1: TLineSeries
+      Marks.Arrow.Color = 4227072
+      Marks.Arrow.Width = 4
+      Marks.ArrowLength = 31
+      Marks.BackColor = clSilver
+      Marks.Brush.Color = clGray
+      Marks.Brush.Image.Data = {
+        07544269746D61707E000000424D7E000000000000003E000000280000001000
+        0000100000000100010000000000400000000000000000000000020000000200
+        000000000000FFFFFF007DF70000BAEB0000D75D0000EFBE00007DF70000BAEB
+        0000D75D0000EFBE00007DF70000BAEB0000D75D0000EFBE00007DF70000BAEB
+        0000D75D0000EFBE0000}
+      Marks.Color = clSilver
+      Marks.Font.Color = 8454143
+      Marks.Font.Height = -19
+      Marks.Font.Shadow.Color = clBlack
+      Marks.Font.Shadow.HorizSize = 2
+      Marks.Font.Shadow.VertSize = 2
+      Marks.Frame.Color = clBlue
+      Marks.Frame.Width = 2
+      Marks.ShadowColor = clSilver
+      Marks.ShapeStyle = fosRoundRectangle
+      Marks.Style = smsPercent
+      Marks.Visible = True
+      DataSource = Series2
+      PercentFormat = '##0.00 %'
+      SeriesColor = 8388863
+      LinePen.Color = clWhite
+      LinePen.Style = psDot
+      LinePen.Width = 2
+      Pointer.Draw3D = False
+      Pointer.HorizSize = 6
+      Pointer.InflateMargins = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TTrendFunction
+      end
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 0
+    Width = 488
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 325
+    Width = 488
+    Height = 61
+    Align = alBottom
+    TabOrder = 2
+    object RadioGroup1: TRadioGroup
+      Left = 6
+      Top = 4
+      Width = 307
+      Height = 50
+      Caption = '&Bar Style:'
+      Columns = 4
+      ItemIndex = 1
+      Items.Strings = (
+        'Bar'
+        'Pyramid'
+        'Inv. Pyram'
+        'Cylinder'
+        'Ellipse'
+        'Arrow'
+        'Gradient'
+        'Cone')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 332
+      Top = 24
+      Width = 61
+      Height = 17
+      Caption = '&Colors'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

@@ -1,0 +1,70 @@
+inherited ExponentialTrendForm: TExponentialTrendForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'The Exponential Trend function is similar to Trend, except'
+      'the calculation fits values using their exponential (e) weights.'
+      'Compare it to the normal Trend clicking the legend green series.')
+  end
+  inherited Chart1: TChart
+    Top = 90
+    Height = 247
+    Legend.CheckBoxes = True
+    Title.Visible = False
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clBlue
+      Title = 'Exp. Trend'
+      LinePen.Color = clBlue
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TExpTrendFunction
+      end
+    end
+    object Series3: TLineSeries
+      Active = False
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Trend'
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction2: TTrendFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    Visible = False
+  end
+end

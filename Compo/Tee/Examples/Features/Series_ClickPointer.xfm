@@ -1,0 +1,139 @@
+inherited SeriesClickPointer: TSeriesClickPointer
+  Left = 351
+  Top = 242
+  Height = 550
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Point series have an OnClickPointer event that is called wheneve' +
+        'r the mouse'
+      'XY position is inside a series pointer shape.'
+      ''
+      'Note: You can also use the Series1.Clicked(x,y) function.')
+  end
+  inherited Chart1: TChart
+    Height = 367
+    BackWall.Gradient.Balance = 20
+    BackWall.Gradient.Direction = gdLeftRight
+    BackWall.Gradient.EndColor = 8388672
+    BackWall.Gradient.Visible = True
+    BackWall.Pen.Visible = False
+    BackWall.Transparent = False
+    Gradient.Balance = 60
+    Gradient.Direction = gdRightLeft
+    Gradient.EndColor = 7667770
+    Gradient.Visible = True
+    Legend.Alignment = laBottom
+    Legend.ColorWidth = 80
+    Legend.FontSeriesColor = True
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Pen.Visible = False
+    Legend.Symbol.Width = 80
+    Legend.TopPos = 0
+    Legend.Transparent = True
+    Title.Font.Color = clWhite
+    Title.Text.Strings = (
+      'ClickPointer Event')
+    BottomAxis.Axis.Visible = False
+    BottomAxis.MaximumOffset = 8
+    BottomAxis.MinimumOffset = 5
+    Frame.Visible = False
+    LeftAxis.Axis.Visible = False
+    LeftAxis.MaximumOffset = 5
+    LeftAxis.MinimumOffset = 5
+    View3D = False
+    ColorPaletteIndex = 9
+    object Series1: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 1710847
+      Title = 'Red'
+      ClickableLine = False
+      Pointer.HorizSize = 8
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 8
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      OnClickPointer = Series1ClickPointer
+      Data = {
+        01080000000000000000000000999B60BF7A247D40D9B66DDBB66D0B405CD876
+        08966F7D40D9B66DDBB66D1B40E678487C11637D4023499224499224406BBB1A
+        EEA6287D40D9B66DDBB66D2B407FFCBDD59D0F7D4048922449922431404E6D78
+        03D7FC7C4023499224499234402F70D61714BA7C40FEFFFFFFFFFF374077EFBE
+        D2C4CA7C40}
+    end
+    object Series2: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 8454143
+      Title = 'Yellow'
+      ClickableLine = False
+      Pointer.HorizSize = 8
+      Pointer.InflateMargins = True
+      Pointer.Style = psTriangle
+      Pointer.VertSize = 8
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      OnClickPointer = Series1ClickPointer
+      Data = {
+        0108000000000000000000000027F73B1409657B40DAB66DDBB66D0B40117008
+        550A787B40DAB66DDBB66D1B405C5A0D89F75A7A4024499224499224405C5A0D
+        89F75A7A40DAB66DDBB66D2B405EF92CCFABEC7A404892244992243140F8AA95
+        09A3677A402349922449923440E561A1D60C9E7B40FEFFFFFFFFFF3740835149
+        9D6C3C7C40}
+    end
+    object Series3: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 8454016
+      Title = 'Green'
+      ClickableLine = False
+      Pointer.HorizSize = 8
+      Pointer.InflateMargins = True
+      Pointer.Style = psDiamond
+      Pointer.VertSize = 8
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      OnClickPointer = Series1ClickPointer
+      Data = {
+        01080000000000000000000000F001CE97D0567C40D9B66DDBB66D0B401F56D8
+        1162307C40D9B66DDBB66D1B40A37798E1F3957C402349922449922440A67D2B
+        2135937C40D9B66DDBB66D2B406D1768E8DFC17C404892244992243140EA2C02
+        39EF2C7D4023499224499234406136760A7C9D7D40FEFFFFFFFFFF37407C660E
+        0786877D40}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 19
+      Top = 14
+      Width = 131
+      Height = 13
+      Caption = 'Click over the Points...'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+  end
+end

@@ -1,0 +1,78 @@
+inherited DragMarksToolDraggedForm: TDragMarksToolDraggedForm
+  Left = 337
+  Top = 220
+  Height = 439
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The MarksTool now includes drag events. '
+      ''
+      
+        'The example below shows the index and poition of the dragged Mar' +
+        'k.')
+  end
+  inherited Chart1: TChart
+    Height = 256
+    BackWall.Color = 14211288
+    BackWall.Transparent = False
+    Legend.Color = 14671839
+    Legend.Shadow.Color = clGray
+    Title.Font.Color = clBlack
+    Title.Text.Strings = (
+      'Drag the Marks...')
+    BottomAxis.Axis.Width = 1
+    LeftAxis.Axis.Width = 1
+    View3D = False
+    ColorPaletteIndex = 4
+    object Series1: TBubbleSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Color = clGray
+      Marks.Frame.Visible = False
+      Marks.Shadow.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = True
+      ClickableLine = False
+      Pointer.HorizSize = 19
+      Pointer.InflateMargins = False
+      Pointer.Pen.Color = clSilver
+      Pointer.Style = psCircle
+      Pointer.VertSize = 19
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+      Data = {
+        00080000000000000000C05C4055555555551560400000000000A08640555555
+        5555D564400000000000C08A4055555555551560400000000000D88140ABAAAA
+        AAAA2A5B400000000000E06D405555555555D564400000000000804940555555
+        5555B563400000000000C08D40ABAAAAAAAAAA5E400000000000004140ABAAAA
+        AAAAEA5D40}
+    end
+    object ChartTool1: TDragMarksTool
+      OnDraggedMark = ChartTool1DraggedMark
+      OnDraggingMark = ChartTool1DraggingMark
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 26
+      Top = 15
+      Width = 58
+      Height = 13
+      Caption = 'Mark index :'
+    end
+    object Label2: TLabel
+      Left = 167
+      Top = 15
+      Width = 97
+      Height = 13
+      Caption = 'Dragging Mark Pos :'
+    end
+  end
+end

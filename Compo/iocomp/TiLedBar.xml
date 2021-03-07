@@ -1,0 +1,232 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Simple Vertical [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>0</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<CurrentMax>0</CurrentMax>
+<CurrentMin>0</CurrentMin>
+<MinMaxFixed>0</MinMaxFixed>
+<PositionMax>100</PositionMax>
+<PositionMin>0</PositionMin>
+<SectionColor1>65280</SectionColor1>
+<SectionColor2>65535</SectionColor2>
+<SectionColor3>255</SectionColor3>
+<SectionCount>1</SectionCount>
+<SectionEnd1>50</SectionEnd1>
+<SectionEnd2>75</SectionEnd2>
+<SegmentDirection>0</SegmentDirection>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>0</SegmentStyle>
+<ShowOffSegments>1</ShowOffSegments>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Simple Horizontal</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>0</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<CurrentMax>0</CurrentMax>
+<CurrentMin>0</CurrentMin>
+<MinMaxFixed>0</MinMaxFixed>
+<PositionMax>100</PositionMax>
+<PositionMin>0</PositionMin>
+<SectionColor1>65280</SectionColor1>
+<SectionColor2>65535</SectionColor2>
+<SectionColor3>255</SectionColor3>
+<SectionCount>1</SectionCount>
+<SectionEnd1>50</SectionEnd1>
+<SectionEnd2>75</SectionEnd2>
+<SegmentDirection>2</SegmentDirection>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>0</SegmentStyle>
+<ShowOffSegments>1</ShowOffSegments>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Lime/Yellow/Red [Default]</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<SectionColor1>65280</SectionColor1>
+<SectionColor2>65535</SectionColor2>
+<SectionColor3>255</SectionColor3>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>GrayScale</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<SectionColor1>16777215</SectionColor1>
+<SectionColor2>12632256</SectionColor2>
+<SectionColor3>8421504</SectionColor3>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Scale Scheme</Name>
+<Scheme>
+<Name>Up 1-Color Section [Default]</Name>
+<Properties>
+<SectionCount>1</SectionCount>
+<SegmentDirection>0</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Up 2-Color Sections</Name>
+<Properties>
+<SectionCount>2</SectionCount>
+<SegmentDirection>0</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Up 3-Color Sections</Name>
+<Properties>
+<SectionCount>3</SectionCount>
+<SegmentDirection>0</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Down 1-Color Section</Name>
+<Properties>
+<SectionCount>1</SectionCount>
+<SegmentDirection>1</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Down 2-Color Sections</Name>
+<Properties>
+<SectionCount>2</SectionCount>
+<SegmentDirection>1</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Down 3-Color Sections</Name>
+<Properties>
+<SectionCount>3</SectionCount>
+<SegmentDirection>1</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Right 1-Color Section</Name>
+<Properties>
+<SectionCount>1</SectionCount>
+<SegmentDirection>2</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Right 2-Color Sections</Name>
+<Properties>
+<SectionCount>2</SectionCount>
+<SegmentDirection>2</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Right 3-Color Sections</Name>
+<Properties>
+<SectionCount>3</SectionCount>
+<SegmentDirection>2</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Left 1-Color Section</Name>
+<Properties>
+<SectionCount>1</SectionCount>
+<SegmentDirection>3</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Left 2-Color Sections</Name>
+<Properties>
+<SectionCount>2</SectionCount>
+<SegmentDirection>3</SegmentDirection>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Left 3-Color Sections</Name>
+<Properties>
+<SectionCount>3</SectionCount>
+<SegmentDirection>3</SegmentDirection>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Segment Scheme</Name>
+<Scheme>
+<Name>Rectangles [Default]</Name>
+<Properties>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>0</SegmentStyle>
+<ShowOffSegments>1</ShowOffSegments>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Rectangles No Off Segments</Name>
+<Properties>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>0</SegmentStyle>
+<ShowOffSegments>0</ShowOffSegments>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Circles</Name>
+<Properties>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>1</SegmentStyle>
+<ShowOffSegments>1</ShowOffSegments>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Circles No Off Segments</Name>
+<Properties>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>1</SegmentStyle>
+<ShowOffSegments>0</ShowOffSegments>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Triangles</Name>
+<Properties>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>2</SegmentStyle>
+<ShowOffSegments>1</ShowOffSegments>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Triangles No Off Segments</Name>
+<Properties>
+<SegmentMargin>2</SegmentMargin>
+<SegmentSize>5</SegmentSize>
+<SegmentSpacing>2</SegmentSpacing>
+<SegmentStyle>2</SegmentStyle>
+<ShowOffSegments>0</ShowOffSegments>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

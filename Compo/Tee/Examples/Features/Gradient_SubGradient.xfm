@@ -1,0 +1,79 @@
+inherited GradientSubGradient: TGradientSubGradient
+  Caption = 'GradientSubGradient'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 154
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'You can overlay a Gradient on top of a Gradient. Try changing th' +
+        'e gradient colours here and modifying transparency to see either' +
+        ' gradient taking '
+      'effect on the other.')
+  end
+  inherited Chart1: TChart
+    inherited Series1: TFastLineSeries
+      SeriesColor = clPurple
+      LinePen.Color = clPurple
+      Data = {
+        0019000000000000000058764000000000000074400000000000787440000000
+        00002879400000000000C0724000000000003076400000000000207740000000
+        00008071400000000000D0714000000000005069400000000000306B40000000
+        00009065400000000000A06E4000000000003873400000000000887340000000
+        0000A87140000000000018704000000000009075400000000000587B40000000
+        0000D878400000000000887D400000000000E075400000000000807B40000000
+        0000C879400000000000908040}
+    end
+    inherited Series2: TFastLineSeries
+      SeriesColor = 16744576
+      LinePen.Color = 16744576
+      Data = {
+        001900000067666666E67F7E40CDCCCCCC4C277C4033333333B3467E40666666
+        66667380400000000000908040CDCCCCCCCC397F4033333333B3F37F40999999
+        9919B97E403333333373A58040CCCCCCCCCCC87F4000000000406C8040333333
+        33F35D80406666666666387E4099999999190C7D409999999919B97E40333333
+        33B3997C409999999999E27D403333333333FF7D4033333333B3647F40999999
+        9999C47C40CCCCCCCCCC327A4066666666E67879400000000000307840CDCCCC
+        CCCCBA75400000000080777840}
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 113
+    object Label2: TLabel [1]
+      Left = 243
+      Top = 13
+      Width = 71
+      Height = 13
+      Caption = '&Transparency :'
+    end
+    object Label3: TLabel [2]
+      Left = 452
+      Top = 13
+      Width = 12
+      Height = 13
+      Caption = '50'
+    end
+    inherited bGradient: TButtonGradient
+      Width = 103
+    end
+    object bSubGradient: TButtonGradient
+      Left = 127
+      Top = 8
+      Width = 105
+      Caption = '&SubGradient'
+      TabOrder = 3
+    end
+    object sbTransparency: TScrollBar
+      Left = 322
+      Top = 11
+      Width = 121
+      Height = 17
+
+      Position = 50
+      TabOrder = 4
+      OnChange = sbTransparencyChange
+    end
+  end
+end

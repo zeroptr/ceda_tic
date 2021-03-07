@@ -1,0 +1,126 @@
+inherited PyramidForm: TPyramidForm
+  Width = 436
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 98
+    Width = 428
+  end
+  inherited Memo1: TMemo
+    Width = 428
+    Height = 57
+    Lines.Strings = (
+      
+        'The Pyramid series draws points stacked in a vertical pyramid sh' +
+        'ape.'
+      'Border, pattern, size and colors can be customized.'
+      
+        'It allows null (missing) points and can be also displayed invert' +
+        'ed.')
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Width = 428
+    Height = 237
+    object Series1: TPyramidSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    Width = 428
+    object Label1: TLabel
+      Left = 158
+      Top = 12
+      Width = 37
+      Height = 13
+      Caption = '&Size %: '
+      FocusControl = Edit1
+    end
+    object CheckBox1: TCheckBox
+      Left = 252
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = 'With null points...'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 8
+      Top = 11
+      Width = 76
+      Height = 17
+      Caption = '&Color Each'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object Edit1: TEdit
+      Left = 195
+      Top = 8
+      Width = 33
+      Height = 21
+      TabOrder = 2
+      Text = '50'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 228
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Increment = 5
+      Position = 50
+      TabOrder = 3
+    end
+    object Button1: TButton
+      Left = 352
+      Top = 8
+      Width = 65
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 4
+      OnClick = Button1Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 88
+      Top = 11
+      Width = 65
+      Height = 17
+      Caption = '&Inverted'
+      TabOrder = 5
+      OnClick = CheckBox3Click
+    end
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    AmbientLight = 8
+    Light.Color = clGray
+    Light.Visible = True
+    Light.Position.X = -100.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Light1.Color = clGray
+    Light1.Visible = False
+    Light1.Position.X = -100.000000000000000000
+    Light1.Position.Y = -100.000000000000000000
+    Light1.Position.Z = -100.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Shininess = 0.500000000000000000
+    TeePanel = Chart1
+    Left = 304
+    Top = 148
+  end
+end

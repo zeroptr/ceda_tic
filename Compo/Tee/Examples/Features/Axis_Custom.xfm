@@ -1,0 +1,126 @@
+inherited AxisCustom: TAxisCustom
+  Caption = 'AxisCustom'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      
+        'Chart Custom Axes can now be created and modified at design-time' +
+        #39'.'
+      'This chart shows several custom-axes created at design-time and'
+      'persisted into the Form file (DFM).')
+  end
+  inherited Chart1: TChart
+    Top = 97
+    Height = 240
+    BottomAxis.Grid.Visible = False
+    BottomAxis.LabelsFont.Color = clGreen
+    BottomAxis.EndPosition = 50
+    CustomAxes = <
+      item
+        Horizontal = False
+        OtherSide = False
+        LabelsFont.Color = clGreen
+        StartPosition = 50
+      end
+      item
+        Horizontal = True
+        OtherSide = False
+        LabelsFont.Color = clRed
+        PositionPercent = 50
+      end
+      item
+        Grid.Visible = False
+        Horizontal = True
+        OtherSide = False
+        LabelsFont.Color = clYellow
+        StartPosition = 55
+      end
+      item
+        Grid.Visible = False
+        Horizontal = False
+        OtherSide = True
+        LabelsFont.Color = clYellow
+        StartPosition = 50
+      end>
+    LeftAxis.LabelsFont.Color = clRed
+    LeftAxis.EndPosition = 50
+    View3D = False
+    object Series1: TLineSeries
+      HorizAxis = aCustomHorizAxis
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomHorizAxis = 1
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      VertAxis = aCustomVertAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomVertAxis = 0
+    end
+    object Series3: TLineSeries
+      HorizAxis = aCustomHorizAxis
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clYellow
+      VertAxis = aCustomVertAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomHorizAxis = 2
+      CustomVertAxis = 3
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    Height = 40
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 120
+      Height = 17
+      Caption = '&Show custom axes'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 144
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

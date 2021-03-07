@@ -1,0 +1,103 @@
+inherited MarksStyles: TMarksStyles
+  Left = 310
+  Top = 292
+  Width = 618
+  Height = 507
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 610
+  end
+  inherited Memo1: TMemo
+    Width = 610
+    Lines.Strings = (
+      'Additional Marks styles :'
+      ''
+      
+        'Series1.Marks.Style :=  smsSeriesTitle;    // <-- Series1 , Seri' +
+        'es2, etc'
+      ''
+      'Series1.Marks.Style :=  smsPointIndex;    // <-- 1..2..3...  etc'
+      ''
+      
+        'Series1.Marks.Style :=  smsPercentRelative;    // 100%..90%..120' +
+        '%...   (% relative to previous point)'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 610
+    Height = 324
+    Gradient.Balance = 41
+    Gradient.EndColor = clWhite
+    Gradient.MidColor = 10473471
+    Gradient.Visible = True
+    LeftWall.Visible = False
+    Legend.Shadow.Color = clGray
+    Legend.Shadow.HorizSize = 1
+    Legend.Shadow.VertSize = 1
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Pen.SmallDots = True
+    Legend.Symbol.Shadow.HorizSize = 1
+    Legend.Symbol.Shadow.VertSize = 1
+    Legend.Symbol.Shadow.Visible = False
+    Legend.Transparency = 60
+    Title.Visible = False
+    View3DOptions.Elevation = 317
+    View3DOptions.HorizOffset = 4
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 103
+    View3DOptions.Rotation = 340
+    View3DOptions.VertOffset = 24
+    ColorPaletteIndex = 2
+    object Series1: TBarSeries
+      BarPen.Visible = False
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      BarStyle = bsCilinder
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000B0684000000000008056400000000000007440000000
+        0000C061400000000000A06A400000000000C06040}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 610
+    object Label1: TLabel
+      Left = 13
+      Top = 15
+      Width = 59
+      Height = 13
+      Caption = '&Marks style :'
+      FocusControl = cbStyle
+    end
+    object cbStyle: TComboFlat
+      Left = 76
+      Top = 11
+      Width = 145
+      DropDownCount = 20
+      TabOrder = 0
+      OnChange = cbStyleChange
+      Items.Strings = (
+        'Value'
+        'Percent'
+        'Label'
+        'Label and Percent'
+        'Label and Value'
+        'Legend'
+        'Percent Total'
+        'Label and Percent Total'
+        'X value'
+        'X and Y values'
+        'Series Title'
+        'Point Index'
+        'Percent Relative')
+    end
+  end
+end

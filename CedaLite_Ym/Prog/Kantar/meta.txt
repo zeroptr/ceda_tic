@@ -1,0 +1,66 @@
+
+
+CREATE TABLE PLAKA (
+    PLAKA_NO   D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    CARI_KOD   D_KOD NOT NULL /* D_KOD = VARCHAR(15) */,
+    ACIKLAMA   D_ACK30 /* D_ACK30 = VARCHAR(30) */,
+    PLAKA_SID  D_IDFIELD NOT NULL /* D_IDFIELD = INTEGER DEFAULT 0 NOT NULL */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE PLAKA ADD CONSTRAINT PK_PLAKA PRIMARY KEY (PLAKA_NO, CARI_KOD);
+
+
+
+CREATE TABLE KANTAR (
+    KANTAR_SID       D_SID NOT NULL /* D_SID = SMALLINT NOT NULL */,
+    KANTAR_NO        D_INTEGER NOT NULL /* D_INTEGER = INTEGER */,
+    GIRIS_TARIHI     D_TARTIP /* D_TARTIP = DATE */,
+    GIRIS_SAATI      D_SAATTIP /* D_SAATTIP = TIME */,
+    MAKBUZ_NO        D_KOD /* D_KOD = VARCHAR(15) */,
+    URUN_KOD         D_KOD /* D_KOD = VARCHAR(15) */,
+    CARI_KOD         D_KOD /* D_KOD = VARCHAR(15) */,
+    ACIKLAMA         D_ACK50 /* D_ACK50 = VARCHAR(50) */,
+    GELDIGI_YER      D_ACK50 /* D_ACK50 = VARCHAR(50) */,
+    GELDIGI_YER_KOD  D_KOD /* D_KOD = VARCHAR(15) */,
+    GITTIGI_YER      D_ACK50 /* D_ACK50 = VARCHAR(50) */,
+    GITTIGI_YER_KOD  D_KOD /* D_KOD = VARCHAR(15) */,
+    CIKIS_TARIHI     D_TARTIP /* D_TARTIP = DATE */,
+    CIKIS_SAATI      D_SAATTIP /* D_SAATTIP = TIME */,
+    ARAC_KILO        D_FLOAT /* D_FLOAT = FLOAT */,
+    GIRIS_KILO       D_FLOAT /* D_FLOAT = FLOAT */,
+    CIKIS_KILO       D_FLOAT /* D_FLOAT = FLOAT */,
+    FARK_KILO        D_FLOAT /* D_FLOAT = FLOAT */,
+    UCRETI           D_FLOAT /* D_FLOAT = FLOAT */,
+    TIPI             D_CHR1 /* D_CHR1 = CHAR(1) */,
+    PLAKA_NO         D_KOD /* D_KOD = VARCHAR(15) */,
+    KASA_KOD         D_KOD /* D_KOD = VARCHAR(15) */,
+    MASRAF_MERK   D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD1          D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD2          D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD3          D_KOD /* D_KOD = VARCHAR(15) */,
+    KOD4          D_KOD /* D_KOD = VARCHAR(15) */,
+    PERSONEL_KOD  D_KOD /* D_KOD = VARCHAR(15) */,
+    PROJE_KOD     D_KOD /* D_KOD = VARCHAR(15) */
+);
+
+
+
+
+/******************************************************************************/
+/****                             Primary Keys                             ****/
+/******************************************************************************/
+
+ALTER TABLE KANTAR ADD CONSTRAINT PK_KANTAR PRIMARY KEY (KANTAR_SID, KANTAR_NO);
+
+
+
+
+
+CREATE GENERATOR GEN_KANTAR_NO;

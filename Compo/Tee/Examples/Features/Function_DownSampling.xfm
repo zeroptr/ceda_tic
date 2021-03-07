@@ -1,0 +1,237 @@
+inherited DownSampling: TDownSampling
+  Width = 504
+  Height = 378
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 123
+    Width = 496
+  end
+  inherited Memo1: TMemo
+    Width = 496
+    Height = 123
+    Lines.Strings = (
+      
+        'New TDownSampling function reduces the number of points in serie' +
+        's'
+      'by using several different methods:'
+      ''
+      'dsDouglas : Douglas-Peuckler reduction'
+      'dsAverage : Replace group of points with group average values'
+      'dsMax     : Replace group of points with group maximum values'
+      'dsMin     : Replace group of points with group minimum values'
+      
+        'dsMinMax  : Replace group of points with group minimum AND maxim' +
+        'um values'
+      '')
+  end
+  inherited Chart1: TChart
+    Top = 190
+    Width = 496
+    Height = 161
+    BackWall.Color = clWhite
+    BackWall.Transparent = False
+    Border.Visible = True
+    LeftWall.Color = clWhite
+    Legend.Alignment = laBottom
+    Legend.Font.Height = -12
+    Legend.Font.Name = 'Lucida Console'
+    Legend.Shadow.Color = clGray
+    RightWall.Color = clWhite
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    Title.Font.Name = 'Lucida Console'
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'TeeChart down sampling ')
+    BottomAxis.Grid.Color = 12895428
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.Grid.Visible = False
+    BottomAxis.LabelsFont.Name = 'Lucida Console'
+    BottomAxis.MinorTickLength = -3
+    BottomAxis.MinorTicks.Color = clBlack
+    BottomAxis.TickInnerLength = 6
+    BottomAxis.TickLength = 0
+    BottomAxis.TicksInner.Color = clBlack
+    DepthAxis.Grid.Color = 12895428
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Name = 'Lucida Console'
+    DepthAxis.MinorTickLength = -3
+    DepthAxis.MinorTicks.Color = clBlack
+    DepthAxis.TickInnerLength = 6
+    DepthAxis.TickLength = 0
+    DepthAxis.TicksInner.Color = clBlack
+    DepthTopAxis.Grid.Color = 12895428
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Name = 'Lucida Console'
+    DepthTopAxis.MinorTickLength = -3
+    DepthTopAxis.MinorTicks.Color = clBlack
+    DepthTopAxis.TickInnerLength = 6
+    DepthTopAxis.TickLength = 0
+    DepthTopAxis.TicksInner.Color = clBlack
+    LeftAxis.Grid.Color = 12895428
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Name = 'Lucida Console'
+    LeftAxis.MinorTickLength = -3
+    LeftAxis.MinorTicks.Color = clBlack
+    LeftAxis.TickInnerLength = 6
+    LeftAxis.TickLength = 0
+    LeftAxis.TicksInner.Color = clBlack
+    RightAxis.Grid.Color = 12895428
+    RightAxis.Grid.Style = psSolid
+    RightAxis.LabelsFont.Name = 'Lucida Console'
+    RightAxis.MinorTickLength = -3
+    RightAxis.MinorTicks.Color = clBlack
+    RightAxis.TickInnerLength = 6
+    RightAxis.TickLength = 0
+    RightAxis.TicksInner.Color = clBlack
+    TopAxis.Grid.Color = 12895428
+    TopAxis.Grid.Style = psSolid
+    TopAxis.Grid.Visible = False
+    TopAxis.LabelsFont.Name = 'Lucida Console'
+    TopAxis.MinorTickLength = -3
+    TopAxis.MinorTicks.Color = clBlack
+    TopAxis.TickInnerLength = 6
+    TopAxis.TickLength = 0
+    TopAxis.TicksInner.Color = clBlack
+    View3D = False
+    BevelOuter = bvNone
+    Color = 12895428
+    ColorPaletteIndex = 6
+    object Series1: TPointSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Font.Name = 'Lucida Console'
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Title = 'Data'
+      ClickableLine = False
+      Pointer.Brush.Color = clRed
+      Pointer.HorizSize = 1
+      Pointer.InflateMargins = False
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 1
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Font.Name = 'Lucida Console'
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Title = 'Reduced data'
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 125
+    Width = 496
+    Height = 65
+    object Label1: TLabel
+      Left = 8
+      Top = 12
+      Width = 60
+      Height = 13
+      Caption = '&Data points: '
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 8
+      Top = 36
+      Width = 54
+      Height = 13
+      Caption = '&Tolerance: '
+      FocusControl = Edit2
+    end
+    object Label3: TLabel
+      Left = 173
+      Top = 11
+      Width = 90
+      Height = 13
+      Caption = 'Reduction &method:'
+      FocusControl = ComboBox1
+    end
+    object Label4: TLabel
+      Left = 269
+      Top = 38
+      Width = 128
+      Height = 13
+      Caption = 'Number of reduced points: '
+    end
+    object Edit1: TEdit
+      Left = 72
+      Top = 8
+      Width = 65
+      Height = 21
+      TabOrder = 0
+      Text = '200'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 137
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 10
+      Max = 15000
+      Position = 200
+      TabOrder = 1
+      Thousands = False
+    end
+    object Edit2: TEdit
+      Left = 72
+      Top = 32
+      Width = 65
+      Height = 21
+      TabOrder = 2
+      Text = '4'
+      OnChange = Edit2Change
+    end
+    object UpDown2: TUpDown
+      Left = 137
+      Top = 32
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Min = 1
+      Max = 300
+      Position = 4
+      TabOrder = 3
+      Thousands = False
+    end
+    object ComboBox1: TComboFlat
+      Left = 269
+      Top = 8
+      Width = 145
+      TabOrder = 4
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Douglas'
+        'Max'
+        'Min'
+        'Min-Max'
+        'Average')
+    end
+    object Button1: TButton
+      Left = 173
+      Top = 32
+      Width = 84
+      Height = 25
+      Caption = '&Recalculate'
+      TabOrder = 5
+      OnClick = Button1Click
+    end
+  end
+end

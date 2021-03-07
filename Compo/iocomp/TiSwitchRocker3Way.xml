@@ -1,0 +1,98 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Normal Margin [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderMargin>2</BorderMargin>
+<Increment>1</Increment>
+<RepeatInitialDelay>500</RepeatInitialDelay>
+<RepeatInterval>50</RepeatInterval>
+<ShowFocusRect>1</ShowFocusRect>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Thin Margin</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderMargin>1</BorderMargin>
+<Increment>1</Increment>
+<RepeatInitialDelay>500</RepeatInitialDelay>
+<RepeatInterval>50</RepeatInterval>
+<ShowFocusRect>1</ShowFocusRect>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>User Interface Scheme</Name>
+<Scheme>
+<Name>AutoRepeat (50ms) [Default]</Name>
+<Properties>
+<Increment>1</Increment>
+<RepeatInitialDelay>500</RepeatInitialDelay>
+<RepeatInterval>50</RepeatInterval>
+<ShowFocusRect>1</ShowFocusRect>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>AutoRepeat High Speed (0ms)</Name>
+<Properties>
+<Increment>1</Increment>
+<RepeatInitialDelay>500</RepeatInitialDelay>
+<RepeatInterval>0</RepeatInterval>
+<ShowFocusRect>1</ShowFocusRect>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>AutoRepeat Slow Speed (100ms)</Name>
+<Properties>
+<Increment>1</Increment>
+<RepeatInitialDelay>500</RepeatInitialDelay>
+<RepeatInterval>100</RepeatInterval>
+<ShowFocusRect>1</ShowFocusRect>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>AutoRepeat Very Slow (250ms)</Name>
+<Properties>
+<Increment>1</Increment>
+<RepeatInitialDelay>500</RepeatInitialDelay>
+<RepeatInterval>250</RepeatInterval>
+<ShowFocusRect>1</ShowFocusRect>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>No Initial Delay</Name>
+<Properties>
+<Increment>1</Increment>
+<RepeatInitialDelay>50</RepeatInitialDelay>
+<RepeatInterval>50</RepeatInterval>
+<ShowFocusRect>1</ShowFocusRect>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>TouchScreen</Name>
+<Properties>
+<Increment>1</Increment>
+<RepeatInitialDelay>500</RepeatInitialDelay>
+<RepeatInterval>50</RepeatInterval>
+<ShowFocusRect>0</ShowFocusRect>
+<UseArrowKeys>1</UseArrowKeys>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

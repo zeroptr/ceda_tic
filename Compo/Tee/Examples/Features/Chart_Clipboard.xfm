@@ -1,0 +1,87 @@
+inherited ChartClipboard: TChartClipboard
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Charts can be copied to Clipboard with a single method:'
+      'Chart1.CopyToClipboardBitmap;'
+      'Also as Metafile format: Chart1.CopyToClipboardMetafile;'
+      ''
+      'Click the button, then for example open Word and paste !')
+  end
+  inherited Chart1: TChart
+    BackWall.Gradient.EndColor = 8454143
+    BackWall.Gradient.MidColor = clGray
+    BackWall.Gradient.Visible = True
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Size = 10
+    Gradient.MidColor = 33023
+    Gradient.StartColor = 16777088
+    Gradient.Visible = True
+    LeftWall.Size = 10
+    Legend.Gradient.StartColor = 8454016
+    Legend.Gradient.Visible = True
+    MarginRight = 5
+    RightWall.Size = 10
+    RightWall.Visible = True
+    Title.Font.Color = clNavy
+    Title.Font.Height = -16
+    Title.Font.Style = [fsBold]
+    Title.Gradient.Direction = gdLeftRight
+    Title.Gradient.EndColor = clGray
+    Title.Gradient.Visible = True
+    Title.ShapeStyle = fosRoundRectangle
+    Title.Text.Strings = (
+      'This is a Chart !')
+    View3DOptions.Elevation = 360
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 72
+    View3DOptions.Rotation = 360
+    View3DOptions.Zoom = 88
+    object Series1: TPointSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clYellow
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 121
+      Height = 25
+      Caption = '&Copy to Clipboard !'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

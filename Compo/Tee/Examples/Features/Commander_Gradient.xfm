@@ -1,0 +1,71 @@
+inherited CommanderGradient: TCommanderGradient
+  Left = 422
+  Top = 250
+  Height = 436
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Set the Gradient of the Commander background.'
+      'Example:'
+      '  with TeeCommander1.Gradient do'
+      '  begin'
+      '    StartColor := clwhite;'
+      '    EndColor := clGrayText;'
+      '    MidColor := RGB(255,255,128);'
+      '    Visible:= true;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Top = 186
+    Height = 223
+    Gradient.EndColor = clWhite
+    Gradient.StartColor = 8454143
+    Gradient.Visible = True
+    Title.Visible = False
+    Chart3DPercent = 85
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    BevelOuter = bvNone
+    ColorPaletteIndex = 10
+    object Series1: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        04080000000000000000F8814004436172730000000000907E400650686F6E65
+        730000000000308240065461626C65730000000000F07340084D6F6E69746F72
+        730000000000D08B40054C616D70730000000000988E40094B6579626F617264
+        730000000000788C400542696B65730000000000988B4006436861697273}
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 148
+    Height = 38
+    object ButtonGradient1: TButtonGradient
+      Left = 8
+      Top = 7
+      Width = 193
+      Caption = 'TeeCommander &Gradient...'
+      TabOrder = 0
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 115
+    Width = 711
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    BevelOuter = bvNone
+    ParentShowHint = False
+    TabOrder = 3
+  end
+end

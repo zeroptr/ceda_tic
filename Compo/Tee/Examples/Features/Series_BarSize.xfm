@@ -1,0 +1,118 @@
+inherited BarSizeSeriesForm: TBarSizeSeriesForm
+  Width = 450
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 82
+    Width = 442
+  end
+  inherited Memo1: TMemo
+    Width = 442
+    Height = 41
+    Lines.Strings = (
+      'An example of a new Bar series that can display individual '
+      'bars with different sizes (widths).')
+  end
+  inherited Chart1: TChart
+    Top = 84
+    Width = 442
+    Height = 253
+    Title.Text.Strings = (
+      'Bar Size Series example.')
+    OnClickSeries = Chart1ClickSeries
+    View3D = False
+    object ChartTool1: TAnnotationTool
+      Callout.Brush.Color = clBlack
+      Callout.Arrow.Visible = False
+      Shape.CustomPosition = True
+      Shape.Gradient.Direction = gdLeftRight
+      Shape.Gradient.EndColor = clSilver
+      Shape.Gradient.Visible = True
+      Shape.Left = 6
+      Shape.Shadow.Color = clGray
+      Shape.Shadow.HorizSize = 1
+      Shape.Shadow.VertSize = 1
+      Shape.Top = 8
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 41
+    Width = 442
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 19
+      Height = 13
+      Caption = '&Bar:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 88
+      Top = 16
+      Width = 40
+      Height = 13
+      Caption = '&Position:'
+      FocusControl = ScrollBar1
+    end
+    object Label3: TLabel
+      Left = 272
+      Top = 16
+      Width = 23
+      Height = 13
+      Caption = '&Size:'
+      FocusControl = ScrollBar2
+    end
+    object Label4: TLabel
+      Left = 240
+      Top = 16
+      Width = 6
+      Height = 13
+      Caption = '0'
+    end
+    object Label5: TLabel
+      Left = 401
+      Top = 16
+      Width = 6
+      Height = 13
+      Caption = '1'
+    end
+    object Edit1: TEdit
+      Left = 32
+      Top = 12
+      Width = 33
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 65
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      TabOrder = 1
+    end
+    object ScrollBar1: TScrollBar
+      Left = 134
+      Top = 14
+      Width = 99
+      Height = 16
+
+      TabOrder = 2
+      OnChange = ScrollBar1Change
+    end
+    object ScrollBar2: TScrollBar
+      Left = 302
+      Top = 15
+      Width = 91
+      Height = 16
+      Max = 300
+
+      Position = 100
+      TabOrder = 3
+      OnChange = ScrollBar2Change
+    end
+  end
+end

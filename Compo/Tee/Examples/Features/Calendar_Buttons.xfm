@@ -1,0 +1,141 @@
+inherited CalendarButtons: TCalendarButtons
+  Left = 234
+  Top = 196
+  Width = 535
+  Height = 389
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Width = 527
+    Height = 65
+    Lines.Strings = (
+      'Calendars now can optionally display 2 buttons to navigate'
+      'to previous and next month.'
+      'Clicking the month name shows a popup menu to choose the month.'
+      'Transparency is also supported now.')
+  end
+  inherited Chart1: TChart
+    Top = 103
+    Width = 527
+    Height = 259
+    Gradient.EndColor = clGray
+    Gradient.MidColor = clSilver
+    Gradient.StartColor = clNavy
+    Gradient.Visible = True
+    MarginTop = 5
+    Title.Visible = False
+    object Series1: TCalendarSeries
+      Pen.Style = psDot
+      Pen.Width = 3
+      ShowInLegend = False
+      Date = 37090
+      Days.Color = 8454143
+      Days.ShadowSize = 0
+      Days.Transparent = False
+      Days.Pen.Visible = False
+      Days.Visible = True
+      Months.Font.Color = clNavy
+      Months.Font.Height = -16
+      Months.Font.Style = [fsBold, fsItalic]
+      Months.Transparent = True
+      Months.Visible = True
+      Months.Format = 'mmmm, yyyy'
+      Sunday.Color = clRed
+      Sunday.Font.Color = clWhite
+      Sunday.ShadowSize = 0
+      Sunday.Transparent = False
+      Sunday.Visible = True
+      Today.Color = clBlue
+      Today.Font.Color = clNavy
+      Today.Font.Height = -19
+      Today.Font.Style = [fsBold]
+      Today.Font.Shadow.HorizSize = 1
+      Today.Font.Shadow.VertSize = 1
+      Today.Gradient.StartColor = clBlue
+      Today.Gradient.Visible = True
+      Today.ShadowSize = 0
+      Today.ShapeStyle = fosRoundRectangle
+      Today.Transparent = False
+      Today.Visible = True
+      Trailing.Font.Color = clGray
+      Trailing.Transparent = True
+      Trailing.Visible = True
+      WeekDays.Gradient.Direction = gdLeftRight
+      WeekDays.Gradient.EndColor = clSilver
+      WeekDays.Gradient.MidColor = clWhite
+      WeekDays.Gradient.StartColor = clGray
+      WeekDays.Gradient.Visible = True
+      WeekDays.ShapeStyle = fosRoundRectangle
+      WeekDays.Transparent = False
+      WeekDays.Pen.Visible = False
+      WeekDays.Visible = True
+      WeekDays.Format = 'ddd'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    Width = 527
+    Height = 38
+    object Label1: TLabel
+      Left = 104
+      Top = 12
+      Width = 26
+      Height = 13
+      Caption = '&Align:'
+      FocusControl = ComboBox1
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 11
+      Width = 89
+      Height = 17
+      Caption = 'Show &Buttons'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object ComboBox1: TComboBox
+      Left = 136
+      Top = 8
+      Width = 65
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Left'
+        'Right'
+        'Centered')
+    end
+    object Button1: TButton
+      Left = 208
+      Top = 8
+      Width = 57
+      Height = 25
+      Caption = '&Popup !'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 272
+      Top = 8
+      Width = 57
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 3
+      OnClick = Button2Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 338
+      Top = 11
+      Width = 87
+      Height = 17
+      Caption = '&Transparency'
+      TabOrder = 4
+      OnClick = CheckBox2Click
+    end
+  end
+end

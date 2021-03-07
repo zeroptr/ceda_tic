@@ -1,0 +1,206 @@
+inherited MagnifyToolForm: TMagnifyToolForm
+  Left = 217
+  Top = 192
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      'Move the Magnifying glass over the Chart to pick out the detail.')
+  end
+  inherited Chart1: TChart
+    Top = 124
+    Width = 525
+    Height = 321
+    BackWall.Gradient.EndColor = 10485760
+    BackWall.Gradient.MidColor = 16744576
+    BackWall.Gradient.Visible = True
+    BackWall.Pen.Visible = False
+    BackWall.Transparent = False
+    BottomWall.Pen.Visible = False
+    BottomWall.Size = 2
+    LeftWall.Pen.Visible = False
+    LeftWall.Size = 2
+    Legend.Color = clInfoBk
+    Legend.Frame.Color = clGray
+    Legend.Frame.Visible = False
+    Legend.Gradient.Visible = True
+    Legend.LegendStyle = lsValues
+    Legend.Shadow.Color = 13421772
+    MarginTop = 10
+    Title.Alignment = taLeftJustify
+    Title.Color = clInfoBk
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    Title.Frame.Color = clGray
+    Title.Shadow.HorizSize = 0
+    Title.Shadow.VertSize = 0
+    Title.Transparent = False
+    Title.Visible = False
+    BottomAxis.Axis.Color = 4210752
+    BottomAxis.Grid.Color = 13421772
+    BottomAxis.Grid.Visible = False
+    Chart3DPercent = 20
+    Frame.Visible = False
+    LeftAxis.Axis.Color = 4210752
+    LeftAxis.Grid.Visible = False
+    Color = clWhite
+    TabOrder = 2
+    ColorPaletteIndex = 6
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Color = clGray
+      Marks.Shadow.Color = 13421772
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Visible = False
+      ShowInLegend = False
+      LinePen.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010C00000000000000000000008DEBDF75F6C8764072D145175D740140DC813A
+        4539CC764072D145175D74114006D8476780D476402BBAE8A28B2E1A40EBE74D
+        A543D8764072D145175D74214010289B523FD37640CE45175D74D125401B1538
+        F9B7CA76402ABAE8A28B2E2A40605B3FDD3BCF7640862EBAE8A28B2E403468E8
+        FF3ACE764071D145175D743140202BF86D03D876409F8B2EBAE8A233406FC152
+        3D46DB7640CD45175D74D135409264562F88DD7640FBFFFFFFFFFF3740409468
+        E9D1E87640}
+    end
+    object Series2: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Color = clGray
+      Marks.Shadow.Color = 13421772
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Visible = False
+      SeriesColor = 8388863
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010C00000000000000000000008247A45871D6764071D145175D740140C83AD9
+        5C3FD0764071D145175D7411409857D50B94D576402ABAE8A28B2E1A402B058B
+        0721D3764071D145175D74214078BF0BFFDFD67640CD45175D74D125400F3063
+        E5D2D0764029BAE8A28B2E2A405CEAE3DC91D47640852EBAE8A28B2E407E8402
+        6E0BDA764071D145175D7431408FD19136C8DC76409F8B2EBAE8A233405364A0
+        07C6DB7640CD45175D74D135405466F58B8BE27640FBFFFFFFFFFF37408FD191
+        36C8DC7640}
+    end
+    object Series3: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Color = clGray
+      Marks.Shadow.Color = 13421772
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Visible = False
+      ShowInLegend = False
+      LinePen.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010C00000000000000000000008C2584E31DD0764072D145175D740140DAE7D7
+        DB64E6764072D145175D741140AB3B375439DC76402BBAE8A28B2E1A40CA7D3A
+        3F5EC8764072D145175D742140000B7A8F96C17640CE45175D74D12540A39C10
+        C33ABD76402ABAE8A28B2E2A40CA7D3A3F5EC87640862EBAE8A28B2E409CA549
+        3D29DE764071D145175D74314095C4AA741CEF76409F8B2EBAE8A23340A45A98
+        8B2CED7640CD45175D74D13540308BCA9CB8EB7640FBFFFFFFFFFF3740576CF4
+        18DCF67640}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    Height = 49
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 341
+      Top = 8
+      Width = 43
+      Height = 13
+      Caption = 'Percent :'
+    end
+    object Label2: TLabel
+      Left = 313
+      Top = 30
+      Width = 71
+      Height = 13
+      Caption = 'Transparency :'
+    end
+    object cbFollowMouse: TCheckBox
+      Left = 10
+      Top = 17
+      Width = 97
+      Height = 17
+      Caption = '&Follow mouse'
+      TabOrder = 0
+      OnClick = cbFollowMouseClick
+    end
+    object cbSmooth: TCheckBox
+      Left = 131
+      Top = 17
+      Width = 70
+      Height = 17
+      Caption = '&Smooth'
+      TabOrder = 1
+      OnClick = cbSmoothClick
+    end
+    object cbCircled: TCheckBox
+      Left = 231
+      Top = 17
+      Width = 64
+      Height = 17
+      Caption = 'Circled'
+      TabOrder = 2
+      OnClick = cbCircledClick
+    end
+    object ScrollBar1: TScrollBar
+      Left = 395
+      Top = 6
+      Width = 121
+      Height = 16
+      Min = 1
+
+      Position = 50
+      TabOrder = 3
+      OnChange = ScrollBar1Change
+    end
+    object ScrollBar2: TScrollBar
+      Left = 395
+      Top = 28
+      Width = 121
+      Height = 16
+
+      TabOrder = 4
+      OnChange = ScrollBar2Change
+    end
+  end
+end

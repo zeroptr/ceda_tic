@@ -1,0 +1,111 @@
+object Release503Misc: TRelease503Misc
+  Left = 192
+  Top = 107
+  Width = 628
+  Height = 572
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 620
+    Height = 545
+    Align = alClient
+    Lines.Strings = (
+      'TeeChart Pro Release 5.03'
+      'Miscellaneous New Features'
+      '=========================='
+      ''
+      '-C++ Builder support'
+      ' This release fully supports C++ Builder 6.'
+      ''
+      '-New translations to languages:'
+      ' TeeGalician, TeeSlovene, TeeNorwegian, TeeTurkish, TeePolish,'
+      ' TeeJapanese, TeeHungarian, TeeArabic, TeeHebrew, TeeUkrainian,'
+      ' TeeKorean and TeeIndonesian.'
+      ''
+      '-Support for:'
+      ' IntraWeb (c) www.atozedsoftware.com'
+      ' ExpressWeb Framework (c) www.devexpress.com'
+      ''
+      '-Big Speed optimization in Contour Series.'
+      ''
+      '-Series DataSource editor dialog.'
+      ' Now includes a ChartGrid component to allow'
+      ' manually edit a single series data.'
+      ' '
+      '-Design-time manually data stored.'
+      ' Series now store into the DFM their data if it'
+      ' has been manually entered using the Chart editor.'
+      ''
+      '-TeeDrawCheckBox procedure has been moved from Chart.pas unit'
+      ' to TeeProcs.pas unit.'
+      ''
+      '-Improved Pie Series "Clicked" function in 3D.'
+      ''
+      
+        '-Change in RSI Function calculation when using Close prices only' +
+        '.'
+      ''
+      '-Speed optimization in TeeBlend (transparency object).'
+      ''
+      
+        '-TCustomChartNavigator class has been renamed to TCustomTeeNavig' +
+        'ator '
+      ' due to allow share it with TeeTree.'
+      '  '
+      '-ChartPreview procedure has been moved from TeePrevi.pas '
+      
+        ' unit to TeeEdiGene.pas unit (because TeePrevi is shared with Te' +
+        'eTree).'
+      ''
+      '-New unit: TeeExport.pas: '
+      ' All common code in TeExport.pas ("TeE") has been moved to this '
+      ' new TeeExport unit ("Tee").'
+      ' The reason is now TeeExport is shared with TeeTree,'
+      ' while "TeExport" contains TeeChart-only related code.'
+      ''
+      '-TeeImageConstants.pas unit has been removed.'
+      ' Its contents are now included in TeeProCo.pas unit.'
+      ''
+      
+        '-CustomSeries ClickedPointer function now calls OnGetPointerStyl' +
+        'e'
+      
+        ' event (when used). This gives the opportunity to return "psNoth' +
+        'ing" as'
+      
+        ' pointer style, so the Series will not change the cursor and wil' +
+        'l not'
+      ' trigger the OnClick event for non-visible pointers.'
+      ''
+      '-New FastLine Realtime demo and FastPen property.'
+      ''
+      '-New Gradient style: "Radial" (elliptical)'
+      ''
+      '-New ColorLine tool properties: Draw3D and DrawBehind'
+      ''
+      '-New Transparency property in all Chart Walls.'
+      ''
+      
+        '-Bollinger function, Deviation property is now "double" (was Int' +
+        'eger).'
+      ''
+      '-Other minor changes and optimizations all around.'
+      ''
+      ''
+      ''
+      ' '
+      ' ')
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+end

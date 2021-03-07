@@ -1,0 +1,128 @@
+inherited CLVFuncDemo: TCLVFuncDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 65
+  end
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      
+        '"Accumulation / Distribution Line" function ( CLV ) is a financi' +
+        'al indicator.'
+      'The formula is:  ( scroll down to see all )'
+      ''
+      '( Close - Low ) - ( High - Close )'
+      '-------------------------------------------------   x Volume '
+      '             ( High - Low )'
+      ''
+      
+        'Results can be optionally acumulated and / or multiplied by a Vo' +
+        'lume series,')
+  end
+  inherited Chart1: TChart
+    Top = 101
+    Height = 236
+    Title.Visible = False
+    CustomAxes = <
+      item
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 40.000000000000000000
+        EndPosition = 60.000000000000000000
+      end
+      item
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 64.000000000000000000
+      end>
+    LeftAxis.EndPosition = 36.000000000000000000
+    View3D = False
+    object Series1: TCandleSeries
+      CloseValues.Name = 'Tancament'
+      DateValues.Name = 'Data'
+      DateValues.Order = loAscending
+      HighValues.Name = 'Alt'
+      LowValues.Name = 'Baix'
+      OpenValues.Name = 'Obertura'
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Title = 'Candle'
+    end
+    object Series2: TVolumeSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      Title = 'Volume'
+      VertAxis = aCustomVertAxis
+      LinePen.Color = clGreen
+      VolumeValues.Name = 'Y'
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      CustomVertAxis = 0
+    end
+    object Series3: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clYellow
+      Title = 'CLV function'
+      VertAxis = aCustomVertAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.ValueSource = 'Tancament'
+      CustomVertAxis = 1
+      object TeeFunction1: TCLVFunction
+        Period = 1.000000000000000000
+      end
+    end
+    object ChartTool1: TColorLineTool
+      AllowDrag = False
+      Style = clMinimum
+      AxisID = 2
+    end
+    object ChartTool2: TColorLineTool
+      Style = clMinimum
+      AxisID = 5
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 67
+    Height = 34
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Acumulate'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 120
+      Top = 11
+      Width = 129
+      Height = 17
+      Caption = '&Multiply by Volume'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+  end
+end

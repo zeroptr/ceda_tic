@@ -1,0 +1,57 @@
+inherited RightWallForm: TRightWallForm
+  Left = 334
+  Top = 285
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 59
+    Lines.Strings = (
+      'The Right chart wall is a new addition to TeeChart version 5.'
+      'It has the same properties of the other walls.'
+      'Note: Not intended for charts with big 3D perspective.')
+  end
+  inherited Chart1: TChart
+    Top = 91
+    Height = 246
+    BackWall.Color = 16765695
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Size = 10
+    LeftWall.Size = 10
+    RightWall.Size = 4
+    RightWall.Visible = True
+    Chart3DPercent = 100
+    View3DOptions.Elevation = 360
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 35
+    View3DOptions.Rotation = 360
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 59
+    Height = 32
+    object CheckBox1: TCheckBox
+      Left = 24
+      Top = 8
+      Width = 121
+      Height = 17
+      Caption = '&Show Right wall'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

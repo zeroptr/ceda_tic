@@ -1,0 +1,77 @@
+inherited LightToolForm: TLightToolForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 57
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      'The TLight tool enables "2D lighting" visual effect to charts.'
+      ''
+      'Includes several properties to control light and interactivity.')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    BackWall.Color = clWhite
+    BackWall.Transparency = 50
+    BackWall.Transparent = False
+    LeftWall.Color = 16744703
+    LeftWall.Transparency = 50
+    Legend.Visible = False
+    MarginBottom = 5
+    MarginTop = 0
+    RightWall.Transparency = 50
+    RightWall.Visible = True
+    Title.Visible = False
+    Chart3DPercent = 100
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 96
+    View3DOptions.Zoom = 61
+    TabOrder = 0
+    object Series1: TTowerSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      TowerStyle = tsPyramid
+      PaletteStyle = psStrong
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+    object ChartTool2: TLightTool
+      FollowMouse = True
+      Style = lsSpotLight
+      Top = 109
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 59
+    object Label1: TLabel
+      Left = 168
+      Top = 16
+      Width = 92
+      Height = 13
+      Caption = 'Drag chart to rotate'
+    end
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 129
+      Height = 25
+      Caption = '&Light tool properties...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

@@ -1,0 +1,105 @@
+inherited Series3DRangePalette: TSeries3DRangePalette
+  Width = 479
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Width = 471
+    Height = 44
+    Lines.Strings = (
+      
+        'All 3D series (like Surface, ColorGrid, WaterFall, TriSurface, C' +
+        'ontour, etc) can'
+      
+        'now use the Range of colors to create a color Palette, with "Pal' +
+        'ette Steps".')
+  end
+  inherited Chart1: TChart
+    Top = 85
+    Width = 471
+    Height = 252
+    Title.Visible = False
+    View3D = False
+    object Series1: TColorGridSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      MidColor = 8421440
+      Pen.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 44
+    Width = 471
+    object Label1: TLabel
+      Left = 257
+      Top = 14
+      Width = 30
+      Height = 13
+      Caption = 'S&teps:'
+      FocusControl = Edit1
+    end
+    object ButtonColor1: TButtonColor
+      Left = 8
+      Top = 8
+      Caption = '&Start...'
+      TabOrder = 0
+      OnClick = ButtonColor1Click
+    end
+    object ButtonColor2: TButtonColor
+      Left = 168
+      Top = 8
+      Caption = '&End...'
+      TabOrder = 1
+      OnClick = ButtonColor1Click
+    end
+    object Edit1: TEdit
+      Left = 294
+      Top = 10
+      Width = 34
+      Height = 21
+      TabOrder = 2
+      Text = '1'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 328
+      Top = 10
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 1
+      Max = 250
+      Position = 1
+      TabOrder = 3
+      Wrap = False
+    end
+    object CheckBox1: TCheckBox
+      Left = 353
+      Top = 12
+      Width = 73
+      Height = 17
+      Caption = '&No Steps'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = CheckBox1Click
+    end
+    object ButtonColor3: TButtonColor
+      Left = 88
+      Top = 8
+      Caption = '&Mid...'
+      TabOrder = 5
+      OnClick = ButtonColor1Click
+    end
+  end
+end

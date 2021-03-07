@@ -1,0 +1,57 @@
+inherited SeriesAddRemoveEvents: TSeriesAddRemoveEvents
+  Left = 301
+  Top = 247
+  Width = 512
+  Height = 389
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 504
+  end
+  inherited Memo1: TMemo
+    Width = 504
+    Lines.Strings = (
+      
+        'You can trigger an event when adding or removing a Series. See t' +
+        'he Chart colours change here when '
+      'doing either via the Editor.'
+      'Example:'
+      
+        'procedure TSeriesAddRemoveEvents.Chart1AddSeries(Sender: TCustom' +
+        'ChartSeries);'
+      'var Color : TColor;'
+      'begin'
+      ' // ... do something'
+      'end;')
+  end
+  inherited Chart1: TChart
+    Top = 148
+    Width = 504
+    Height = 214
+    Gradient.EndColor = clWhite
+    Gradient.StartColor = clGrayText
+    Gradient.Visible = True
+    Title.Text.Strings = (
+      'Add and Remove Series events,'
+      'try it through the Editor')
+    OnAddSeries = Chart1AddSeries
+    OnRemoveSeries = Chart1RemoveSeries
+  end
+  inherited Panel1: TPanel
+    Width = 504
+    Height = 33
+    object TeeCommander1: TTeeCommander
+      Left = 1
+      Top = 1
+      Width = 502
+      Height = 32
+      Gradient.Balance = 100
+      Gradient.EndColor = clGrayText
+      Gradient.Visible = True
+      Align = alTop
+      BevelOuter = bvNone
+      ParentShowHint = False
+      TabOrder = 0
+    end
+  end
+end

@@ -1,0 +1,60 @@
+inherited LegendVertSpa: TLegendVertSpa
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Legend can now display items with custom vertical spacing.'
+      'Values can be positive (more space) or negative (less space).'
+      ''
+      'Example: Chart1.Legend.VertSpacing := 6;')
+  end
+  inherited Chart1: TChart
+    object Series1: TBar3DSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = 4227327
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      OffsetValues.DateTime = False
+      OffsetValues.Name = 'Offset'
+      OffsetValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 24
+      Top = 11
+      Width = 78
+      Height = 13
+      Caption = '&Vertical spacing:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 120
+      Top = 8
+      Width = 41
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 161
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = -30
+      Max = 30
+      Position = 0
+      TabOrder = 1
+      Wrap = False
+    end
+  end
+end

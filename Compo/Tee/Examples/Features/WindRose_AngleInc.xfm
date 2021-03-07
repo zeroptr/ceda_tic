@@ -1,0 +1,96 @@
+inherited WindAngleInc: TWindAngleInc
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 97
+  end
+  inherited Memo1: TMemo
+    Height = 56
+    Lines.Strings = (
+      
+        'WindRose series can now display labels in 15,30,45 or 90 degree ' +
+        'increments.'
+      ''
+      'Example: Series1.AngleIncrement:= 15;')
+  end
+  inherited Chart1: TChart
+    Top = 99
+    Height = 238
+    Legend.ColorWidth = 35
+    Legend.Font.Color = clRed
+    Legend.Font.Height = -15
+    Legend.Font.Style = [fsBold]
+    Legend.Gradient.StartColor = clGray
+    Legend.Gradient.Visible = True
+    Legend.Symbol.Width = 35
+    Title.Text.Strings = (
+      '')
+    Title.Visible = False
+    BottomAxis.Increment = 10.000000000000000000
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TWindRoseSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clLime
+      Circled = True
+      AngleIncrement = 10.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      CircleBackColor = 8454143
+      CircleLabelsFont.Color = clBlue
+      CircleLabelsFont.Style = [fsBold, fsItalic]
+      CirclePen.Color = 33023
+      CirclePen.Width = 2
+      Pen.Color = clLime
+      Pen.Width = 2
+      Pointer.Brush.Color = clBlue
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Pen.Color = clWhite
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = True
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 56
+    object Label1: TLabel
+      Left = 24
+      Top = 16
+      Width = 80
+      Height = 13
+      Caption = '&Angle Increment:'
+      FocusControl = ComboBox1
+    end
+    object Label2: TLabel
+      Left = 272
+      Top = 16
+      Width = 41
+      Height = 13
+      Caption = 'degrees.'
+    end
+    object ComboBox1: TComboBox
+      Left = 116
+      Top = 13
+      Width = 145
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 0
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        '15'
+        '30'
+        '45'
+        '90')
+    end
+  end
+end

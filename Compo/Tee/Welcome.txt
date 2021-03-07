@@ -1,0 +1,19 @@
+=================================================
+  Welcome to TeeChart Pro Full Source Code !
+=================================================
+
+INSTALL.TXT contains installation information.
+
+LICENSE.TXT contains License and Disclaimer issues.
+
+RELEASE.TXT contains technical information.
+
+Keep visiting our web site and the private sections 
+for upgrades, new announcements, examples, 
+technical information and 
+Frequently Asked Questions.
+
+Thank You Very Much for TeeCharting !
+Steema Software.
+http://www.steema.com
+-------------------------------------------------

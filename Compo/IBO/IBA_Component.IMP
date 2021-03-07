@@ -1,0 +1,442 @@
+// IBA_Component.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_Component.CreateForSession( AOwner: TComponent;
+                                            ASession: TIB_Session );
+begin
+  Create( AOwner );
+  SetSession( ASession );
+end;
+
+constructor TIB_Component.Create( AOwner: TComponent );
+  procedure OwnerIsProcess( const AComp: TComponent );
+  begin
+    if AComp is TIB_Component then
+    begin
+      if TIB_Component(AComp).FHasNilAncestry then FHasNilAncestry := true;
+      if TIB_Component(AComp).FChildOfProcess or
+         TIB_Component(AComp).FIsProcess then FChildOfProcess := true;
+    end;
+    if ( not FHasNilAncestry or not FChildOfProcess ) and
+      Assigned( AComp.Owner ) then OwnerIsProcess( AComp.Owner );
+  end;
+begin
+  FIsProcess := false;
+  FHasNilAncestry := not Assigned( AOwner );
+  FChildOfProcess := false;
+  if Assigned( AOwner ) then OwnerIsProcess( AOwner );
+  inherited Create( AOwner );
+  ReserveSessionHookRef;
+end;
+
+destructor TIB_Component.Destroy;
+begin
+  FOnSessionTimer := nil;
+  SetSession( nil );
+  inherited Destroy;
+  ReleaseSessionHookRef;
+end;
+
+procedure TIB_Component.Notification( AComponent: TComponent;
+                                      Operation: TOperation);
+begin
+  inherited Notification( AComponent, Operation );
+  if ( Operation = opRemove ) and ( AComponent = FIB_Session ) then
+    SetSession( nil );
+end;
+
+function TIB_Component.GetSession: TIB_Session;
+begin
+  if not Assigned( FIB_Session ) then
+    CheckSession( true );
+  Result := FIB_Session;
+end;
+
+procedure TIB_Component.SetOnSessionTimer( AValue: TIB_SessionTimerEvent );
+begin
+  FOnSessionTimer := AValue;
+  IB_Session.ResetTimerNotification( Self ); 
+end;
+
+function TIB_Component.NeedTimerNotifications: boolean;
+begin
+  Result := Assigned( FOnSessionTimer );
+end;
+
+procedure TIB_Component.ProcessPassiveTasks( var IsDone,
+                                                 IsWaiting,
+                                                 Terminate: boolean );
+begin
+  if Assigned( OnSessionTimer ) then
+    OnSessionTimer( Self, IsDone, IsWaiting, Terminate );
+end;
+
+procedure TIB_Component.DoWakeUp( Sender: TObject );
+begin
+  if Assigned( IB_Session ) then
+    IB_Session.DoWakeUp( Sender );
+end;
+
+function TIB_Component.CheckSession( AllowDefault: boolean ): boolean;
+var
+  tmpSession: TIB_Session;
+begin
+  if not Assigned( FIB_Session ) and not FCheckingSession then
+    try
+      FCheckingSession := true;
+      tmpSession := nil;
+      FindSession( tmpSession, AllowDefault );
+      if Assigned( tmpSession ) then
+        SetSession( tmpSession )
+      else
+      if AllowDefault then
+{$IFDEF ALLOW_DEFAULT_SESSION}
+        SetSession( TIB_Session.DefaultSession );
+{$ELSE}
+        raise Exception.Create( 'Default Session Capability Disabled' );
+{$ENDIF}
+    finally
+      FCheckingSession := false;
+    end;
+  Result := Assigned( FIB_Session );
+end;
+
+procedure TIB_Component.FindSession( var ASession: TIB_Session;
+                                         AllowDefault: boolean );
+  procedure GrabSession( const ACmp: TComponent );
+  begin
+    if ACmp is TIB_Session then
+      ASession := TIB_Session( ACmp )
+    else
+    if ( ACmp <> Self ) and
+       ( ACmp is TIB_Component ) then
+    begin
+      TIB_Component( ACmp ).CheckSession( AllowDefault );
+      ASession := TIB_Component( ACmp ).FIB_Session;
+    end;
+  end;
+var
+  ii: integer;
+  tmpComponent: TComponent;
+begin
+  tmpComponent := Self;
+  while not Assigned( ASession ) and Assigned( tmpComponent.Owner ) do
+  begin
+    GrabSession( tmpComponent.Owner );
+    if not Assigned( ASession ) then
+      for ii := 0 to tmpComponent.Owner.ComponentCount - 1 do
+        if tmpComponent.Owner.Components[ ii ] <> tmpComponent then
+        begin
+          GrabSession( tmpComponent.Owner.Components[ ii ] );
+          if Assigned( ASession ) then
+            Break;
+        end;
+    tmpComponent := tmpComponent.Owner;
+  end;
+end;
+
+procedure TIB_Component.SetSession( ASession: TIB_Session );
+var
+  tmpBusyLevel: integer;
+begin
+  if FIB_Session <> ASession then
+  begin
+    tmpBusyLevel := BusyLevel;
+    if Assigned( FIB_Session ) then
+    begin
+      while BusyLevel > 0 do EndBusy;
+      if not FHasNilAncestry then
+        FIB_Session.Session_Components.Remove( Self );
+      if InterlockedDecrement( FIB_Session.cntComponents ) = 0 then
+        if FIB_Session.FIsDefaultSession then
+{$IFDEF ALLOW_DEFAULT_SESSION}
+          FreeDefaultSession( FIB_Session );
+{$ELSE}
+          raise Exception.Create( 'Default Session Capability Disabled' );
+{$ENDIF}
+    end;
+    FIB_Session := ASession;
+    if Assigned( FIB_Session ) then
+    begin
+      FIB_Session.FreeNotification( Self );
+      InterlockedIncrement( FIB_Session.cntComponents );
+      if not FHasNilAncestry then
+        FIB_Session.Session_Components.Add( Self );
+      if not FIB_Session.FIsDefaultSession then
+        FIB_Session.FreeNotification( Self );
+      while BusyLevel < tmpBusyLevel do BeginBusy( true );
+    end;
+  end;
+end;
+
+procedure TIB_Connection.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          if FocusedConnection = Self then
+            FocusedConnection := nil;
+          if DefaultConnection = Self then
+            DefaultConnection := nil;
+          Session_Connections.Remove( Self );
+        end;
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          Session_Connections.Add( Self );
+          if DefaultConnection = nil then
+            DefaultConnection := Self;
+        end;
+  end;
+end;
+
+procedure TIB_ConnectionLink.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        FIB_Session.Session_ConnectionLinks.Remove( Self );
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          Session_ConnectionLinks.Add( Self );
+          if not ( csReading in ComponentState ) then
+            DoReceiveFocus( IB_Session.FocusedConnection );
+        end;
+  end;
+end;
+
+procedure TIB_Transaction.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          if FocusedTransaction = Self then
+            FocusedTransaction := nil;
+          Session_Transactions.Remove( Self );
+        end;
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        FIB_Session.Session_Transactions.Add( Self );
+  end;
+end;
+
+procedure TIB_TransactionLink.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        FIB_Session.Session_TransactionLinks.Remove( Self );
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          Session_TransactionLinks.Add( Self );
+          if not ( csReading in ComponentState ) then
+            DoReceiveFocus( FIB_Session.FocusedTransaction );
+        end;
+  end;
+end;
+
+procedure TIB_Statement.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        FIB_Session.Session_Statements.Remove( Self );
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        FIB_Session.Session_Statements.Add( Self );
+  end;
+end;
+
+procedure TIB_Dataset.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          if FocusedDataset = Self then
+            FocusedDataset := nil;
+          Session_Datasets.Remove( Self );
+        end;
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        FIB_Session.Session_Datasets.Add( Self );
+  end;
+end;
+
+procedure TIB_DataSource.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          if FocusedDataSource = Self then
+            FocusedDataSource := nil;
+          Session_DataSources.Remove( Self );
+        end;
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+        FIB_Session.Session_DataSources.Add( Self );
+  end;
+end;
+
+procedure TIB_DataLink.SetSession( ASession: TIB_Session );
+begin
+  if FIB_Session <> ASession then
+  begin
+    if Assigned( FIB_Session ) then
+      if not FHasNilAncestry then
+      begin
+        UnlockSessionCursor;
+        with FIB_Session do
+        begin
+          if Session_DataLinks <> nil then
+          begin
+            Session_DataLinks.Remove( Self );
+            if Session_DataLinks.Count = 0 then
+            begin
+              Session_DataLinks.Free;
+              Session_DataLinks := nil;
+            end;
+          end;
+        end;
+      end;
+    inherited SetSession( ASession );
+    if Assigned( FIB_Session ) then
+    begin
+      if not FHasNilAncestry then
+        with FIB_Session do
+        begin
+          if Session_DataLinks = nil then
+            Session_DataLinks := TList.Create;
+          Session_DataLinks.Add( Self );
+          if not ( csReading in ComponentState ) then
+            Self.DoReceiveFocus( FocusedDataSource );
+        end;
+    end;
+  end;
+end;
+
+function TIB_Component.IsSessionStored: boolean;
+begin
+  Result := Assigned( FIB_Session ) and not FIB_Session.FIsDefaultSession;  
+end;
+
+procedure TIB_Component.BeginBusy( Yield: boolean );
+begin
+  if Assigned( FIB_Session ) or Assigned( IB_Session ) then
+  begin
+    if not FHasNilAncestry then
+      FIB_Session.BeginBusy( Yield );
+    Inc( FBusyLevel );
+  end
+  else
+    raise EIB_Error.Create( E_Session_Undefined );
+end;
+
+procedure TIB_Component.EndBusy;
+begin
+  if Assigned( IB_Session ) then
+  begin
+    if not FHasNilAncestry then
+      FIB_Session.EndBusy;
+    if FBusyLevel > 0 then
+      Dec( FBusyLevel );
+  end;
+end;
+
+function TIB_Component.GetVersion: string;
+begin
+  Result := IB_Version_Major + '.' +
+            IB_Version_Minor + '.' +
+            IB_Version_Build +
+            IB_VERSION_SUB_RELEASE;
+end;
+
+procedure TIB_Component.SetVersion( const AValue: string );
+begin
+end;
+
+procedure TIB_Component.SetOnError( AValue: TIB_ErrorEvent );
+begin
+  FOnError := AValue;
+end;
+
+procedure TIB_Component.DoHandleError(       Sender: TObject;
+                                       const errcode: isc_long;
+                                             ErrorMessage,
+                                             ErrorCodes: TStringList;
+                                       const SQLCODE: isc_long;
+                                             SQLMessage,
+                                             SQL: TStringList;
+                                         var RaiseException: boolean);
+begin
+  if Assigned( OnError ) then
+    FOnError( Self,
+              errcode,
+              ErrorMessage,
+              ErrorCodes,
+              SQLCODE,
+              SQLMessage,
+              SQL,
+              RaiseException );
+end;
+

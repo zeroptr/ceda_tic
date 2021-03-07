@@ -1,0 +1,156 @@
+inherited MarksTipHideForm: TMarksTipHideForm
+  Left = 454
+  Top = 218
+  Height = 416
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Hide delay sets the amount of time that the Mark should be v' +
+        'isible after showing over an element.'
+      ''
+      
+        'It counts in milliseconds, so Tool1.HideDelay=4000; will show th' +
+        'e Mark for 4 seconds.')
+  end
+  inherited Chart1: TChart
+    Height = 233
+    BackWall.Dark3D = False
+    BackWall.Pen.Color = clGray
+    BackWall.Transparent = False
+    Border.Visible = True
+    BottomWall.Color = clGray
+    BottomWall.Dark3D = False
+    BottomWall.Pen.Color = clGray
+    LeftWall.Color = clSilver
+    LeftWall.Dark3D = False
+    LeftWall.Pen.Color = clGray
+    Legend.Font.Height = -13
+    Legend.Shadow.HorizSize = 0
+    Legend.Shadow.VertSize = 0
+    MarginTop = 10
+    RightWall.Dark3D = False
+    RightWall.Pen.Color = clGray
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = clBlack
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.Grid.Visible = False
+    BottomAxis.GridCentered = True
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.MinorTicks.Visible = False
+    BottomAxis.Ticks.Color = clBlack
+    BottomAxis.TicksInner.Visible = False
+    DepthAxis.Axis.Width = 1
+    DepthAxis.Grid.Color = clBlack
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Height = -13
+    DepthAxis.MinorTicks.Visible = False
+    DepthAxis.Ticks.Color = clBlack
+    DepthAxis.TicksInner.Visible = False
+    DepthTopAxis.Axis.Width = 1
+    DepthTopAxis.Grid.Color = clBlack
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Height = -13
+    DepthTopAxis.MinorTicks.Visible = False
+    DepthTopAxis.Ticks.Color = clBlack
+    DepthTopAxis.TicksInner.Visible = False
+    Frame.Color = clGray
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clBlack
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Height = -13
+    LeftAxis.MinorTicks.Visible = False
+    LeftAxis.Ticks.Color = clBlack
+    LeftAxis.TicksInner.Visible = False
+    RightAxis.Axis.Width = 1
+    RightAxis.Grid.Color = clBlack
+    RightAxis.Grid.Style = psSolid
+    RightAxis.LabelsFont.Height = -13
+    RightAxis.MinorTicks.Visible = False
+    RightAxis.Ticks.Color = clBlack
+    RightAxis.TicksInner.Visible = False
+    TopAxis.Axis.Width = 1
+    TopAxis.Grid.Color = clBlack
+    TopAxis.Grid.Style = psSolid
+    TopAxis.Grid.Visible = False
+    TopAxis.LabelsFont.Height = -13
+    TopAxis.MinorTicks.Visible = False
+    TopAxis.Ticks.Color = clBlack
+    TopAxis.TicksInner.Visible = False
+    BevelOuter = bvNone
+    Color = clWhite
+    ColorPaletteIndex = 1
+    object Series1: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Transparent = True
+      Marks.Visible = False
+      BarStyle = bsRectGradient
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbStacked
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000B06D4000000000004060400000000000406F40000000
+        000068704000000000006875400000000000587B40}
+    end
+    object Series2: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Transparent = True
+      Marks.Visible = False
+      BarStyle = bsRectGradient
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbStacked
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        000600000000000000001771400000000080E473400000000000BD7540000000
+        00002676400000000000BB724000000000002F7240}
+    end
+    object ChartTool1: TMarksTipTool
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 16
+      Top = 14
+      Width = 56
+      Height = 13
+      Caption = '&Hide delay :'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 82
+      Top = 11
+      Width = 39
+      Height = 21
+      TabOrder = 0
+      Text = '2500'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 121
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Max = 10000
+      Increment = 100
+      Position = 2500
+      TabOrder = 1
+    end
+  end
+end

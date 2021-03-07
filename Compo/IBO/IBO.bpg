@@ -1,0 +1,84 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = IB_SQL.exe IB_FTS.exe IB_RPL.exe Actions.exe Arrays.exe \
+  BlobInserts.exe Blr.exe BrowseItems.exe Company.exe Contact.exe Csdemos.exe \
+  CtrlGrid.exe Events.exe KeyLinks.exe LookupCombo.exe MasterLinks.exe Mdiapp.exe \
+  PriceList.exe SearchingLinks.exe Survey.exe TestScan.exe Threads.exe
+#------------------------------------------------------------------------------
+
+IB_SQL.exe: IB_SQL.dpr
+  $(DCC)
+
+Arrays.exe: Samples\Arrays\Arrays.dpr
+  $(DCC)
+
+BlobInserts.exe: Samples\BlobInserts\BlobInserts.dpr
+  $(DCC)
+
+Blr.exe: Samples\BLR\Blr.dpr
+  $(DCC)
+
+BrowseItems.exe: Samples\BrowseItems\BrowseItems.dpr
+  $(DCC)
+
+Company.exe: Samples\Company\Company.dpr
+  $(DCC)
+
+Contact.exe: Samples\Contact\Contact.dpr
+  $(DCC)
+
+Csdemos.exe: Samples\CSDemo\Csdemos.dpr
+  $(DCC)
+
+Events.exe: Samples\Events\Events.dpr
+  $(DCC)
+
+KeyLinks.exe: Samples\KeyLinks\KeyLinks.dpr
+  $(DCC)
+
+LookupCombo.exe: Samples\LookupCombo\LookupCombo.dpr
+  $(DCC)
+
+MasterLinks.exe: Samples\MasterLinks\MasterLinks.dpr
+  $(DCC)
+
+Mdiapp.exe: Samples\MDIApp\Mdiapp.dpr
+  $(DCC)
+
+PriceList.exe: Samples\PriceList\PriceList.dpr
+  $(DCC)
+
+SearchingLinks.exe: Samples\SearchingLinks\SearchingLinks.dpr
+  $(DCC)
+
+TestScan.exe: Samples\TestScan\TestScan.dpr
+  $(DCC)
+
+Threads.exe: Samples\Threads\Threads.dpr
+  $(DCC)
+
+Actions.exe: Samples\ActionDemo\Actions.dpr
+  $(DCC)
+
+IB_FTS.exe: IB_FTS.dpr
+  $(DCC)
+
+Survey.exe: Samples\Survey\Survey.dpr
+  $(DCC)
+
+IB_RPL.exe: IB_RPL.dpr
+  $(DCC)
+
+CtrlGrid.exe: Samples\CtrlGrid\CtrlGrid.dpr
+  $(DCC)
+
+

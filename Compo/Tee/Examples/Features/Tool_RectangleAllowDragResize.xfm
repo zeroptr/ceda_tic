@@ -1,0 +1,110 @@
+inherited ToolRectangleAllowDragResize: TToolRectangleAllowDragResize
+  Left = 345
+  Top = 219
+  Width = 581
+  Height = 486
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 573
+  end
+  inherited Memo1: TMemo
+    Width = 573
+    Lines.Strings = (
+      'The RectangleTool'#39's Rectangle may now be redimensioned.'
+      'Eg.'
+      '  Tool := TRectangleTool.Create(self); // Create tool'
+      '  Chart1.Tools.Add(Tool); // Add to Chart'
+      '  Tool.AllowDrag:=True;')
+  end
+  inherited Chart1: TChart
+    Width = 573
+    Height = 303
+    BorderRound = 17
+    Legend.Alignment = laBottom
+    Legend.ColorWidth = 100
+    Legend.LegendStyle = lsValues
+    Legend.Shadow.Color = clSilver
+    Legend.Symbol.Squared = True
+    Legend.Symbol.Width = 100
+    Legend.TopPos = 0
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Visible = False
+    View3D = False
+    BevelInner = bvLowered
+    BevelWidth = 8
+    Color = clWhite
+    ColorPaletteIndex = 1
+    object Series1: TBubbleSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.Gradient.Balance = 63
+      Pointer.Gradient.Direction = gdRadial
+      Pointer.Gradient.EndColor = 16764108
+      Pointer.Gradient.SubGradient.Direction = gdRadial
+      Pointer.Gradient.SubGradient.EndColor = clGray
+      Pointer.Gradient.SubGradient.Transparency = 41
+      Pointer.Gradient.SubGradient.Visible = True
+      Pointer.Gradient.Visible = True
+      Pointer.HorizSize = 18
+      Pointer.InflateMargins = True
+      Pointer.Style = psCircle
+      Pointer.VertSize = 18
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+      Data = {
+        000800000000000000006061405555555555D564400000000000C08640ABAAAA
+        AAAAEA5D400000000000088C40ABAAAAAAAA2A5D400000000000A88D40ABAAAA
+        AAAA2A5D400000000000A081405555555555D564400000000000206F40555555
+        555515604000000000007085405555555555B563400000000000688040ABAAAA
+        AAAAAA5C40}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 573
+    object cbDrag: TCheckBox
+      Left = 103
+      Top = 13
+      Width = 92
+      Height = 17
+      Caption = '&Allow drag'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbDragClick
+    end
+    object cbResize: TCheckBox
+      Left = 199
+      Top = 13
+      Width = 102
+      Height = 17
+      Caption = 'Allow &resize'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbResizeClick
+    end
+    object bEdit: TButton
+      Left = 12
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = bEditClick
+    end
+  end
+end

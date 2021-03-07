@@ -1,0 +1,100 @@
+:Base iocompActiveX.hlp
+:Title Iocomp ActiveX Help
+1 Help Overview=Help_Overview>Main
+1 Iocomp Components
+2 Components by Category
+3 LED Indicator Components=LED_Indicator_Components
+3 Knob and Slider Components=Knob_and_Slider_Components
+3 Switch Components=Switch_Components
+3 Gauge Components=Gauge_Components
+3 Percent-Based Components=Percent_Based_Components
+3 Miscellaneous Components=Miscellaneous_Components
+3 Compass Components=Compass_Components
+3 Tank and Valve Components=Tank_and_Valve_Components
+3 Plot and Charting Components=Plot_Components
+3 Specialized Components
+4 Object Canvas Component=Object_Canvas_Component
+4 Spectrum Display Component=Spectrum_Display_Component
+4 OPC Manager Component=iOPCManagerX
+2 Components by Class Name
+3 iAnalogDisplayX=iAnalogDisplayX
+3 iAnalogOutputX=iAnalogOutputX
+3 iAngularGaugeX=iAngularGaugeX
+3 iAngularLogGaugeX=iAngularLogGaugeX
+3 iCompassX=iCompassX
+3 iDualCompassX=iDualCompassX
+3 iEditX=iEditX
+3 iGradientX=iGradientX
+3 iIntegerOutputX=iIntegerOutputX
+3 iImageDisplayX=iImageDisplayX
+3 iKeyBoardX=iKeyBoardX
+3 iKnobX=iKnobX
+3 iLabelX=iLabelX
+3 iLCDMatrixX=iLCDMatrixX
+3 iLedArrowX=iLedArrowX
+3 iLedBarX=iLedBarX
+3 iLedDiamondX=iLedDiamondX
+3 iLedMatrixX=iLedMatrixX
+3 iLedRectangleX=iLedRectangleX
+3 iLedRoundX=iLedRoundX
+3 iLedSpiralX=iLedSpiralX
+3 iLogGaugeX=iLogGaugeX
+3 iLinearGaugeX=iLinearGaugeX
+3 iModeComboBoxX=iModeComboBoxX>Main
+3 iMotorX=iMotorX
+3 iObjectCanvasX=iObjectCanvasX
+3 iOdometerX=iOdometerX
+3 iOPCManagerX=iOPCManagerX
+3 iPanelX=iPanelX
+3 iPercentBarX=iPercentBarX
+3 iPhonePadX=iPhonePadX
+3 iPieChartX=iPieChartX
+3 iPipeX=iPipeX
+3 iPipeJointX=iPipeJointX
+3 iPlotX=iPlotX>Main
+3 iRotationDisplayX=iRotationDisplayX
+3 iSevenSegmentAnalogX=iSevenSegmentAnalogX
+3 iSevenSegmentBinaryX=iSevenSegmentBinaryX
+3 iSevenSegmentCharacterX=iSevenSegmentCharacterX
+3 iSevenSegmentClockX=iSevenSegmentClockX
+3 iSevenSegmentClockSMPTEX=iSevenSegmentClockSMPTEX
+3 iSevenSegmentHexadecimalX=iSevenSegmentHexadecimalX
+3 iSevenSegmentIntegerX=iSevenSegmentIntegerX
+3 iScopeX=iScopeX
+3 iSliderX=iSliderX
+3 iSlidingCompassX=iSlidingCompassX
+3 iSlidingScaleX=iSlidingScaleX
+3 iSpectrumDisplayX=iSpectrumDisplayX
+3 iSwitchLedX=iSwitchLedX
+3 iSwitchLeverX=iSwitchLeverX
+3 iSwitchPanelX=iSwitchPanelX>Main
+3 iSwitchQuadX=iSwitchQuadX
+3 iSwitchRocker3WayX=iSwitchRocker3WayX
+3 iSwitchRockerX=iSwitchRockerX
+3 iSwitchRotaryX=iSwitchRotaryX
+3 iSwitchSliderX=iSwitchSliderX
+3 iSwitchToggleX=iSwitchToggleX
+3 iTankX=iTankX>Main
+3 iThermometerX=iThermometerX
+3 iThreadTimersX=iThreadTimersX
+3 iTimersX=iTimersX
+3 iValveX=iValveX>Main
+3 iXYPlotX=iXYPlotX>Main
+2 Components by Product
+3 Instrumentation Pack Components=Instrumentation_Pack_Components
+3 Professional Pack Components=Professional_Pack_Components
+3 Plot Pack Components=Plot_Pack_Components
+3 OPC Common Components=iOPCManagerX
+1 Advanced Topics
+2 OPC (OLE for Process Control)
+3 OPC Overview=OPC_Overview
+3 OPC Distribution=OPC_Distribution
+3 OPC Supported Components=OPC_Supported_Components
+2 Memory Usage
+3 Plot Pack Component Memory Usage=Plot_Pack_Component_Memory_Usage
+3 Resource Memory vs. RAM Memory=Resource_Memory_vs_RAM_Memory
+2 Reference
+3 DateTime Format Specifiers=DateTime_Format_Specifiers
+3 Color Constants=Color_Constants
+3 Keyboard Virtual Key Codes=Keyboard_Virtual_Key_Codes
+3 Working with Variants and Variant Arrays=Working_with_Variants_and_Variant_Arrays>Main

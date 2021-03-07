@@ -1,0 +1,47 @@
+[OST File Replace]
+SourceDir=C:\Program Files\Borland\Delphi5\Demos\Db\Mastapp
+DestDir=IBOMastapp
+FileTypes=*.*
+FileSelection=0
+CaseInsensitive=1
+WholeWordsOnly=1
+CopyUnchangedFiles=1
+FindOnly=0
+[Description]
+ItemCount=2
+Item0=DESCRIPTION: This makes it so that you can convert the entire Mastapp sample application to
+Item1=IBO.
+[Replace]
+ItemCount=15
+Item0=TDatabase
+Item1=TTable
+Item2=TQuery
+Item3=TStoredProc
+Item4=TFloatField
+Item5=TBCDField
+Item6=TDBDataset
+Item7=TBDEDataset
+Item8=DBTables
+Item9=if not Session.IsAlias(
+Item10=SetDatabaseAlias('DBDEMOS');
+Item11=SetDatabaseAlias('MASTSQL');
+Item12=Session.GetAliasParams(
+Item13=Connected = true
+Item14=Active = true
+[ReplaceWith]
+ItemCount=15
+Item0=TIBODatabase
+Item1=TIBOTable
+Item2=TIBOQuery
+Item3=TIBOStoredProc
+Item4=TIBOFloatField
+Item5=TIBOBCDField
+Item6=TIBODataset
+Item7=TIBODataset
+Item8=IBODataset
+Item9={  if not Session.IsAlias(
+Item10=SetDatabaseAlias('DBDEMOS');}
+Item11=SetDatabaseAlias('MASTSQL');}
+Item12=//  Session.GetAliasParams(
+Item13=Connected = false
+Item14=Active = false

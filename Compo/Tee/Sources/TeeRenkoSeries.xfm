@@ -1,0 +1,91 @@
+object RenkoSeriesEditor: TRenkoSeriesEditor
+  Left = 397
+  Top = 312
+  AutoScroll = False
+  ClientHeight = 212
+  ClientWidth = 218
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 112
+    Top = 32
+    Width = 42
+    Height = 13
+    Caption = '&Box size:'
+    FocusControl = EBoxSize
+  end
+  object Label2: TLabel
+    Left = 8
+    Top = 152
+    Width = 68
+    Height = 13
+    Caption = '&Transparency:'
+    FocusControl = ETransp
+  end
+  object CBDraw3D: TCheckBox
+    Left = 8
+    Top = 8
+    Width = 97
+    Height = 17
+    Caption = 'Draw &3D'
+    TabOrder = 0
+    OnClick = CBDraw3DClick
+  end
+  object BUp: TButtonColor
+    Left = 8
+    Top = 40
+    Caption = '&Up...'
+    TabOrder = 1
+  end
+  object BDown: TButtonColor
+    Left = 8
+    Top = 72
+    Caption = '&Down...'
+    TabOrder = 2
+  end
+  object BPen: TButtonPen
+    Left = 8
+    Top = 112
+    Caption = 'B&order...'
+    TabOrder = 3
+  end
+  object BBrush: TButton
+    Left = 96
+    Top = 112
+    Width = 75
+    Height = 25
+    Caption = 'Bru&sh...'
+    TabOrder = 4
+    OnClick = BBrushClick
+  end
+  object EBoxSize: TEdit
+    Left = 112
+    Top = 48
+    Width = 73
+    Height = 21
+    TabOrder = 5
+    Text = '1'
+    OnChange = EBoxSizeChange
+  end
+  object ETransp: TEdit
+    Left = 8
+    Top = 168
+    Width = 41
+    Height = 21
+    TabOrder = 6
+    Text = '0'
+    OnChange = ETranspChange
+  end
+  object UDTransp: TUpDown
+    Left = 49
+    Top = 168
+    Width = 15
+    Height = 21
+    Associate = ETransp
+    TabOrder = 7
+  end
+end

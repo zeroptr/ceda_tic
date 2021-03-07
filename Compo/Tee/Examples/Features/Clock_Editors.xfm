@@ -1,0 +1,82 @@
+inherited ClockEdi: TClockEdi
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 33
+    Lines.Strings = (
+      'Clock and Line-Point series have now customized editor dialogs.')
+  end
+  inherited Chart1: TChart
+    Top = 74
+    Width = 224
+    Height = 263
+    Title.Text.Strings = (
+      'Clock Series')
+    AxisVisible = False
+    BottomAxis.Increment = 30
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TClockSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      ShowInLegend = False
+      Brush.Color = clWhite
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 33
+    object Button1: TButton
+      Left = 24
+      Top = 8
+      Width = 97
+      Height = 25
+      Caption = 'Edit &Clock...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 256
+      Top = 8
+      Width = 97
+      Height = 25
+      Caption = 'Edit &LinePoint...'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+  object Chart2: TChart
+    Left = 224
+    Top = 74
+    Width = 255
+    Height = 263
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Line-Point Series')
+    Align = alRight
+    TabOrder = 3
+    object Series2: TMyPointSeries
+      Marks.ArrowLength = 0
+      Marks.Visible = False
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.Draw3D = False
+      Pointer.HorizSize = 7
+      Pointer.InflateMargins = True
+      Pointer.Style = psDiamond
+      Pointer.VertSize = 7
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      LinesPen.Color = clLime
+    end
+  end
+end

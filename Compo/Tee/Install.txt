@@ -1,0 +1,160 @@
+===========================
+TeeChart Pro v8 VCL / CLX
+100% Full Source Code
+
+Steema Software
+
+http://www.steema.com
+info@steema.com
+---------------------------
+
+Thank You for Registering TeeChart Pro Source code.
+
+The source code can be modified or expanded
+for your own compiled applications. You can not
+resell or redistribute in any way this source code
+as it is or modified.
+
+See the License.txt document for complete licensing
+and disclaimer issues.
+
+
+Recompiling Packages:
+----------------------
+
+Kylix:
+------
+
+Please follow the installation guidelines found
+at Kylix.txt file.
+
+Borland Developer Studio 2006, 
+Delphi 2005.NET and Delphi 8 for .NET:
+--------------------------------------
+
+Open the Steema.TeeChart.VCL project group:
+
+Steema.TeeChart.VCL.bdsgroup
+
+and build all projects.
+
+.NET Destination of runtime packages:
+-------------------------------------
+
+You might optionally want to install TeeChart
+for VCL.Net assemblies (packages) into 
+.NET Framework "GAC" (Global Assembly Cache):
+
+gacutil /i Steema.TeeChart.VCL.dll
+gacutil /i Steema.TeeChart.VCL.Languages.dll
+gacutil /i Steema.TeeChart.VCL.Design.dll
+
+.NET Installation:
+------------------
+
+Under Delphi .NET, go to Component->Installed .NET Components
+and browse and select the Steema.TeeChart.VCL.Design.dll
+assembly (design-time package for VCL Forms applications).
+
+
+Delphi / C++ Builder:
+---------------------
+
+In Delphi and C++ Builder you can recompile the
+TeeChart Pro packages opening the
+appropiate Project Group File (*.bpg)
+
+BDS 2006:    Tee8D10.bpg
+Delphi 2005: Tee8D9.bpg
+Delphi 7:    Tee8D7.bpg
+Delphi 6:    Tee8D6.bpg
+Delphi 5:    Tee8D5.bpg
+Delphi 4:    Tee8D4.bpg
+
+C++ Builder 6: Tee8BCB6.bpg
+C++ Builder 5: Tee8BCB5.bpg
+C++ Builder 4: Tee8BCB4.bpg
+
+Double-click the first package ( ie: Tee89 ) and select
+"Project -> Build All packages" to recompile all packages.
+
+Please remove old package files and close all projects 
+before recompiling.
+
+Destination of runtime packages:
+--------------------------------
+
+\Windows\System (\WinNT\System32) :
+
+Teexx.bpl
+TeeDBxx.bpl
+TeeUIxx.bpl
+TeeGLxx.bpl
+TeeQRxx.bpl
+TeeProxx.bpl
+TeeImagexx.bpl
+TeeLanguagexx.bpl
+
+
+Installation of packages:
+--------------------------
+
+Under Delphi / C++ Builder IDE, select
+Component->Install Packages.
+
+Make sure older TeeChart packages are
+removed from the package list.
+
+Select and Add the following design-time
+packages:
+
+For BDS 2006 and Delphi 2005:    
+
+DclTeeProxx.bpl
+
+For all other Delphi and C++Builder versions:
+
+DCLTeexx.bpl
+DCLTQRxx.bpl
+DCLTeeProxx.bpl
+DCLTGLxx.bpl
+
+and:
+
+\Windows\System\TeeImagexx.bpl
+
+
+Installation errors:
+---------------------
+
+Problems when installing packages in Delphi
+/ C++ Builder arise when old or duplicate 
+*.bpl (*.dpl) files are still located in the 
+system path (\Windows\System or \WinNT\System32).
+
+Other causes are:
+
+-Improper modification of source code.
+-Old or duplicate *.DCP or *.DCU or *.OBJ files.
+
+
+Modifications:
+--------------
+
+If you modify TeeChart Pro source code or fix a bug,
+you can email us this info so we can apply the same 
+changes for next coming upgrades if they can benefit to 
+other programmers.
+
+Support:
+--------
+
+Please direct your questions to our Support Central Web Site:
+
+http://support.steema.com
+
+-------------------------------------------------------------
+
+Thanks for TeeCharting !
+Steema Software
+www.steema.com

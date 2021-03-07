@@ -1,0 +1,54 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = Tee8C5 TeeUI8C5 TeeDB8C5 DclTee8C5 TeePro8C5 TeeLanguage8C5 \
+  DclTeePro8C5 TeeGL8C5 DclTGL8C5 TeeQR8C5 DclTQR8C5 TeeImage8C5
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Tee8C5: Tee8C5.bpk
+  $(MAKE)
+
+TeeUI8C5: TeeUI8C5.bpk
+  $(MAKE)
+
+TeeDB8C5: TeeDB8C5.bpk
+  $(MAKE)
+
+DclTee8C5: DclTee8C5.bpk
+  $(MAKE)
+
+TeePro8C5: TeePro8C5.bpk
+  $(MAKE)
+
+TeeLanguage8C5: TeeLanguage8C5.bpk
+  $(MAKE)
+
+DclTeePro8C5: DclTeePro8C5.bpk
+  $(MAKE)
+
+TeeGL8C5: TeeGL8C5.bpk
+  $(MAKE)
+
+TeeQR8C5: TeeQR8C5.bpk
+  $(MAKE)
+
+DclTGL8C5: DclTGL8C5.bpk
+  $(MAKE)
+
+DclTQR8C5: DclTQR8C5.bpk
+  $(MAKE)
+
+TeeImage8C5: TeeImage8C5.bpk
+  $(MAKE)
+
+

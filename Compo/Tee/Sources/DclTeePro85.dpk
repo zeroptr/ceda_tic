@@ -1,0 +1,45 @@
+package DclTeePro85;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{ DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{ LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $42900000}
+{$DESCRIPTION 'TeeChart Pro 8 Components'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50,
+  dsnide50,
+  TeePro85,
+  DclTee85,
+  Tee85,
+  TeeLanguage85,
+  TeeWorld85;
+
+contains
+  TeeChartPro in 'TeeChartPro.pas',
+  TeeDesignOptions in 'TeeDesignOptions.pas',
+  TeeSeriesDesign in 'TeeSeriesDesign.pas' {SeriesEditor},
+  TeeToolsGalleryDemos in 'TeeToolsGalleryDemos.pas';
+
+end.
+

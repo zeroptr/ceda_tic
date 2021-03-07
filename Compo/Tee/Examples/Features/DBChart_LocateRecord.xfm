@@ -1,0 +1,90 @@
+inherited DBChartRecordLocate: TDBChartRecordLocate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter [1]
+    Left = 169
+    Top = 116
+    Height = 239
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'With simple code, DBChart series can store the record associated' +
+        ' to'
+      
+        'each Series point.  You can, for example, use it to locate a rec' +
+        'ord when'
+      'a series point is clicked.'
+      ''
+      
+        'Example: Click a bar to locate the associated record in the tabl' +
+        'e.')
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Open table'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+  inherited DBChart1: TDBChart
+    Left = 172
+    Width = 302
+    OnClickSeries = DBChart1ClickSeries
+    Legend.Visible = False
+    object Series1: TBarSeries
+      Cursor = crHandPoint
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      DataSource = Table1
+      XLabelsSource = 'NAME'
+      OnAfterAdd = Series1AfterAdd
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      YValues.ValueSource = 'SIZE'
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 116
+    Width = 169
+    Height = 239
+    Align = alLeft
+    DataSource = DataSource1
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    TabOrder = 3
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = []
+  end
+  object Table1: TTable
+    DatabaseName = 'DBDEMOS'
+    TableName = 'animals.dbf'
+    Left = 24
+    Top = 144
+    object Table1NAME: TStringField
+      FieldName = 'NAME'
+      Size = 10
+    end
+    object Table1SIZE: TSmallintField
+      FieldName = 'SIZE'
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = Table1
+    OnDataChange = DataSource1DataChange
+    Left = 96
+    Top = 144
+  end
+end

@@ -1,0 +1,84 @@
+inherited ColorGridRealtime: TColorGridRealtime
+  Left = 175
+  Top = 162
+  Width = 491
+  Height = 376
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 483
+  end
+  inherited Memo1: TMemo
+    Width = 483
+    Lines.Strings = (
+      'ColorGrid series can be used for real-time charting. '
+      
+        'Some advanced properties provide the fastest speed when adding p' +
+        'oints to '
+      'ColorGrid series in real-time.')
+  end
+  inherited Chart1: TChart
+    Width = 483
+    Height = 233
+    Title.Visible = False
+    View3D = False
+    object ColorGrid: TColorGridSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 0
+      Marks.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 483
+    object Label1: TLabel
+      Left = 318
+      Top = 8
+      Width = 23
+      Height = 13
+      Caption = 'Size:'
+    end
+    object CheckBox5: TCheckBox
+      Left = 222
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Smooth'
+      TabOrder = 0
+      OnClick = CheckBox5Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Animation'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CheckBox6: TCheckBox
+      Left = 102
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Reuse GridIndex'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox6Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 10
+    OnTimer = Timer1Timer
+    Left = 192
+    Top = 152
+  end
+end

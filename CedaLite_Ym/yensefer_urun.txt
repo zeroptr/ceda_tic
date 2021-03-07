@@ -1,0 +1,30 @@
+select SEFER_ID,cast ('SEFER SATIS_URUN_HAR_ID urunhar da urunhar_id alanýnda yok' as varchar(50))  from SEFER
+where
+(SEFER_SATIS_FAT_KESILDI=1 or SATIS_URUN_HAR_ID<>0)
+and
+SATIS_URUN_HAR_ID not IN (select urunhar_id from urunhar where urunhar_id=sefer.SATIS_URUN_HAR_ID)
+
+union all
+
+select SEFER_ID,cast ('SEFER BEK_FAT_URUN_HAR_ID urunhar da urunhar_id alanýnda yok' as varchar(50))  from SEFER
+where
+(BEKLEME_FATURASI_KESILDI=1 or BEK_FAT_URUN_HAR_ID<>0) 
+and
+BEK_FAT_URUN_HAR_ID not IN (select urunhar_id from urunhar where urunhar_id=sefer.BEK_FAT_URUN_HAR_ID)
+
+union all
+
+
+select SEFER_ID,cast ('SEFER ALIS_URUN_HAR_ID urunhar da urunhar_id alanýnda yok' as varchar(50))  from SEFER
+where
+(SEFER_ALIS_FAT_ALINDI=1 or ALIS_URUN_HAR_ID<>0) 
+and
+ALIS_URUN_HAR_ID not IN (select urunhar_id from urunhar where urunhar_id=sefer.ALIS_URUN_HAR_ID)
+
+union all
+
+select MAZOT_FIS_ID,cast ('MAZOT_FISI ALIS_URUN_HAR_ID urunhar da urunhar_id alanýnda yok' as varchar(50)) from MAZOT_FISI
+where
+(ALIS_FATURASI_ALINDI=1 or ALIS_URUN_HAR_ID<>0) 
+and
+ALIS_URUN_HAR_ID not IN (select urunhar_id from urunhar where urunhar_id=mazot_fisi.ALIS_URUN_HAR_ID)

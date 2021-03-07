@@ -1,0 +1,161 @@
+inherited LineTreatNulls: TLineTreatNulls
+  Width = 671
+  Height = 555
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 663
+  end
+  inherited Memo1: TMemo
+    Width = 663
+    Lines.Strings = (
+      
+        'Line and Horiz. Line series can display "null" values in three d' +
+        'ifferent ways:'
+      ''
+      
+        'Series1.TreatNulls := tnDontPaint;  // <--- consider null points' +
+        ' "empty"'
+      ''
+      
+        'Series1.TreatNulls := tnSkip;  // <--- jump lines to next non-nu' +
+        'll point'
+      ''
+      
+        'Series1.TreatNulls := tnIgnore;  // <--- consider null points as' +
+        ' "zero" or any other "Y" value.')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 157
+    Width = 663
+    Height = 371
+    BackWall.Gradient.EndColor = 11118482
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Border.Color = 14645801
+    Border.Width = 7
+    BottomWall.Gradient.EndColor = 16580349
+    BottomWall.Gradient.StartColor = 3114493
+    BottomWall.Gradient.Visible = True
+    Gradient.Direction = gdDiagonalDown
+    Gradient.EndColor = 11645361
+    Gradient.Visible = True
+    LeftWall.Gradient.EndColor = 2413052
+    LeftWall.Gradient.StartColor = 900220
+    LeftWall.Gradient.Visible = True
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = clYellow
+    Legend.Gradient.StartColor = clWhite
+    Legend.Gradient.Visible = True
+    Legend.Shadow.Transparency = 50
+    Legend.Visible = False
+    MarginBottom = 38
+    MarginLeft = 38
+    MarginRight = 38
+    MarginTop = 38
+    MarginUnits = muPixels
+    Title.Text.Strings = (
+      'Line series with NULL values, different display modes.')
+    Chart3DPercent = 20
+    Shadow.Color = clBlack
+    Shadow.HorizSize = 10
+    Shadow.VertSize = 10
+    BevelOuter = bvNone
+    TabOrder = 0
+    ColorPaletteIndex = 9
+    object Series1: TLineSeries
+      ColorEachLine = False
+      Gradient.StartColor = 16711808
+      Gradient.Visible = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      SeriesColor = 16711808
+      Shadow.HorizSize = 8
+      Shadow.VertSize = 6
+      Shadow.Visible = False
+      Pointer.Brush.Color = 16711808
+      Pointer.Brush.BackColor = clWhite
+      Pointer.Gradient.Direction = gdFromTopLeft
+      Pointer.Gradient.EndColor = 16711808
+      Pointer.Gradient.Visible = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        001900000000000000003061400000000000C067400000000000C06040000000
+        00006063400000000000206D4000000000008056400000000000405640000000
+        00002066400000000000C05B4000000000008063400000000000A05440000000
+        0000A054400000000000E05A400000000000E06C400000000000206240000000
+        00006870400000000000F8714000000000002077400000000000E87240000000
+        00008076400000000000F8714000000000007879400000000000087B40000000
+        00000480400000000000308140}
+    end
+    object ChartTool1: TFrameTool
+      Brush.Color = clWhite
+      Brush.BackColor = clWhite
+      Paspartou = 25
+      Size = 13
+      Style = 5
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 663
+    Height = 42
+    object Label1: TLabel
+      Left = 112
+      Top = 15
+      Width = 54
+      Height = 13
+      Caption = '&Treat Nulls:'
+      FocusControl = ComboFlat1
+    end
+    object LValue: TLabel
+      Left = 328
+      Top = 15
+      Width = 30
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Value:'
+      Enabled = False
+      FocusControl = Edit1
+    end
+    object cbHoriz: TCheckBox
+      Left = 14
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = 'Horiz.Line'
+      TabOrder = 0
+      OnClick = cbHorizClick
+    end
+    object ComboFlat1: TComboFlat
+      Left = 176
+      Top = 12
+      Width = 107
+      TabOrder = 1
+      OnChange = ComboFlat1Change
+      Items.Strings = (
+        'DontPaint'
+        'Skip'
+        'AsValue')
+    end
+    object Edit1: TEdit
+      Left = 366
+      Top = 12
+      Width = 121
+      Height = 21
+      Enabled = False
+      TabOrder = 2
+      Text = '0'
+      OnChange = Edit1Change
+    end
+  end
+end

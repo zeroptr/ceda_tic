@@ -1,0 +1,749 @@
+drop PROCEDURE CARI_YAS_HAR;
+
+drop PROCEDURE CARI_LISTE_HAR;
+
+
+SET TERM !!;
+
+CREATE PROCEDURE CARI_LISTE_HAR (
+    devir_kullan integer,
+    cari_kod varchar(15),
+    dov_kod varchar(15),
+    ilk_tar varchar(15),
+    son_tar varchar(15),
+    sefer_mazot_cikar integer,
+    devir_ekle integer,
+    sid smallint)
+returns (
+    prm_cari_sid smallint,
+    prm_cari_kod varchar(15),
+    prm_tarih date,
+    prm_belge_tur integer,
+    prm_fis_no integer,
+    prm_aciklama varchar(100),
+    prm_tip char(1),
+    prm_borc numeric(15,4),
+    prm_alacak numeric(15,4),
+    prm_cari_borc_bakiye numeric(15,4),
+    prm_cari_alacak_bakiye numeric(15,4),
+    prm_cari_dev_borc_bakiye numeric(15,4),
+    prm_cari_dev_alacak_bakiye numeric(15,4))
+as
+declare variable borc_bakiye numeric(15,4);
+declare variable alacak_bakiye numeric(15,4);
+declare variable tutar numeric(15,4);
+declare variable yab_tutar numeric(15,4);
+declare variable borc numeric(15,4);
+declare variable alacak numeric(15,4);
+declare variable cari_dev_borc numeric(15,4);
+declare variable cari_dev_alacak numeric(15,4);
+declare variable sql_str varchar(10000);
+declare variable sql_stra varchar(10000);
+declare variable giris_kontrol integer;
+declare variable giris_kontrol1 integer;
+declare variable es_aciklama varchar(100);
+declare variable ilk_cari_kod varchar(15);
+declare variable es_prm_fis_no integer;
+declare variable es_prm_tarih date;
+declare variable es_prm_belge_tur integer;
+begin
+    BORC_BAKIYE=0;
+    ALACAK_BAKIYE=0;
+    giris_kontrol=0;
+    giris_kontrol1=0;
+
+    cari_dev_borc=0;
+    cari_dev_alacak=0;
+    prm_cari_dev_borc_bakiye=0;
+    prm_cari_dev_alacak_bakiye=0;
+    prm_cari_borc_bakiye=0;
+    prm_cari_alacak_bakiye=0;
+    
+    PRM_BORC=0;
+    PRM_ALACAK=0;
+
+
+    SQL_STRa=
+    'SELECT
+    CARI_SID,
+    CARI_KOD
+    FROM CARI
+    ORDER BY CARI.CARI_KOD';
+
+    FOR execute statement SQL_STRA
+    INTO :PRM_CARI_SID, :PRM_CARI_KOD
+    DO
+    BEGIN
+
+
+        if (:dov_kod is null) then
+        BEGIN
+    
+            SQL_STR='';
+    
+            if (sefer_mazot_cikar=1) then
+            SQL_STR=
+            'SELECT
+            TARIH,
+            BELGE_TUR,
+            BELGE_ID,
+            ACIKLAMA,
+            TIP,
+            TUTAR_VPB
+            FROM CARIHAR
+            where (tarih between '''||:ilk_tar||''' and '''||:son_tar||''') AND CARI_KOD='''||:PRM_CARI_KOD||''' and BELGE_TUR<>41 and BELGE_TUR<>42
+            ORDER BY CARIHAR.TARIH';
+    
+
+            if (sefer_mazot_cikar=0) then
+            SQL_STR=
+            'SELECT
+            TARIH,
+            BELGE_TUR,
+            BELGE_ID,
+            ACIKLAMA,
+            TIP,
+            TUTAR_VPB
+            FROM CARIHAR
+            where (tarih between '''||:ilk_tar||''' and '''||:son_tar|| ''' AND CARI_KOD='''||:PRM_CARI_KOD||
+            ''') ORDER BY CARIHAR.TARIH ';
+    
+    
+             if (ilk_cari_kod<>prm_cari_kod) then
+             begin
+             giris_kontrol=0;
+             giris_kontrol1=0;
+             BORC_BAKIYE=0;
+             ALACAK_BAKIYE=0;
+             end
+
+             cari_dev_borc=0;
+             cari_dev_alacak=0;
+             prm_cari_dev_borc_bakiye=0;
+             prm_cari_dev_alacak_bakiye=0;
+             prm_cari_borc_bakiye=0;
+             prm_cari_alacak_bakiye=0;
+    
+             PRM_BORC=0;
+             PRM_ALACAK=0;
+             BORC_BAKIYE=0;
+             ALACAK_BAKIYE=0;
+
+
+             if (giris_kontrol=0) then
+             if (devir_ekle=1) then
+             begin
+
+
+
+             SELECT
+             CARI.DEVREDEN_ALACAK,
+             CARI.DEVREDEN_BORC
+             FROM CARI
+             where CARI_KOD=:prm_cari_kod
+             INTO :cari_dev_alacak,:cari_dev_borc;
+
+
+             prm_cari_dev_borc_bakiye=:cari_dev_borc;
+             prm_cari_dev_alacak_bakiye=:cari_dev_alacak;
+
+
+                 PRM_ACIKLAMA='DEVÝR';
+                 PRM_BORC=prm_cari_dev_borc_bakiye;
+                 PRM_ALACAK=prm_cari_dev_alacak_bakiye;
+    
+                 if (prm_cari_dev_borc_bakiye>prm_cari_dev_alacak_bakiye) then
+                 begin
+                     PRM_CARI_BORC_BAKIYE=prm_cari_dev_borc_bakiye-prm_cari_dev_alacak_bakiye;
+                 end
+                 else
+                 PRM_CARI_BORC_BAKIYE=0;
+        
+                 if (prm_cari_dev_alacak_bakiye>prm_cari_dev_borc_bakiye) then
+                 begin
+                     PRM_CARI_ALACAK_BAKIYE=prm_cari_dev_alacak_bakiye-prm_cari_dev_borc_bakiye;
+                 end
+                 else
+                 PRM_CARI_ALACAK_BAKIYE=0;
+    
+                 giris_kontrol=1;
+                 ilk_cari_kod=prm_cari_kod;
+                 es_PRM_FIS_NO=PRM_FIS_NO;
+                 PRM_FIS_NO=0;
+                 es_PRM_TARIH=PRM_TARIH;
+                 PRM_TARIH=cast('01.01.2007' as date);
+                 es_PRM_BELGE_TUR=PRM_BELGE_TUR;
+                 PRM_BELGE_TUR=0;
+                 if ((cari_dev_alacak<>0) or (cari_dev_borc<>0)) then
+                 SUSPEND;
+             end
+
+    
+            FOR execute statement SQL_STR
+            INTO :PRM_TARIH, :PRM_BELGE_TUR, :PRM_FIS_NO, :PRM_ACIKLAMA, :PRM_TIP, :TUTAR
+            DO
+            BEGIN
+                 if (PRM_TIP='B') then
+                 BEGIN
+                        BORC=TUTAR;
+                        ALACAK=0;
+                 END
+                 ELSE
+                 BEGIN
+                        BORC=0;
+                        ALACAK=TUTAR;
+                 END
+        
+                 IF (DEVIR_KULLAN=1) THEN
+                 BEGIN
+                      if (giris_kontrol1=0) then
+                      begin
+                      BORC_BAKIYE=BORC_BAKIYE+BORC+cari_dev_borc;
+                      ALACAK_BAKIYE=ALACAK_BAKIYE+ALACAK+cari_dev_alacak;
+                      giris_kontrol1=1;
+                      end
+                      else
+                      begin
+                      BORC_BAKIYE=BORC_BAKIYE+BORC;
+                      ALACAK_BAKIYE=ALACAK_BAKIYE+ALACAK;
+                      end
+                 END
+                 ELSE
+                 BEGIN
+                      BORC_BAKIYE=BORC_BAKIYE+BORC;
+                      ALACAK_BAKIYE=ALACAK_BAKIYE+ALACAK;
+                 END
+                
+                 if (BORC_BAKIYE>ALACAK_BAKIYE) then
+                 BEGIN
+                      PRM_CARI_BORC_BAKIYE=BORC_BAKIYE-ALACAK_BAKIYE;
+                 END
+                 ELSE
+                 BEGIN
+                      PRM_CARI_BORC_BAKIYE=0;
+                 END
+                
+                 if (ALACAK_BAKIYE>BORC_BAKIYE) then
+                 BEGIN
+                      PRM_CARI_ALACAK_BAKIYE=ALACAK_BAKIYE-BORC_BAKIYE;
+                 END
+                 ELSE
+                 BEGIN
+                      PRM_CARI_ALACAK_BAKIYE=0;
+                 END
+        
+                 PRM_BORC=BORC;
+                 PRM_ALACAK=ALACAK;
+        
+                 SUSPEND;
+            END
+        END
+        ELSE
+        BEGIN
+    
+            if (sefer_mazot_cikar=1) then
+            SQL_STR=
+            'SELECT
+            CARIHAR.TARIH,
+            CARIHAR.BELGE_TUR,
+            CARIHAR.BELGE_ID,
+            CARIHAR.ACIKLAMA,
+            CARIHAR.TIP,
+            CARIHAR.TUTAR_VPB,
+            CARIHAR_DOV.TUTAR
+            FROM CARIHAR
+            left outer join carihar_dov on (carihar.CARIHAR_ID=carihar_dov.CARIHAR_ID and carihar.CARIHAR_SID=carihar_dov.CARIHAR_SID)
+            where (CARIHAR.tarih between  '''||:ilk_tar||''' and '''||:son_tar||''') AND CARI_KOD='''||:PRM_CARI_KOD||''' AND carihar_dov.dovkod='''||:DOV_KOD||+'''
+            and CARIHAR.BELGE_TUR<>41  and CARIHAR.BELGE_TUR<>42
+            ORDER BY CARIHAR.TARIH';
+
+            if (sefer_mazot_cikar=0) then
+            SQL_STR=
+            'SELECT
+            CARIHAR.TARIH,
+            CARIHAR.BELGE_TUR,
+            CARIHAR.BELGE_ID,
+            CARIHAR.ACIKLAMA,
+            CARIHAR.TIP,
+            CARIHAR.TUTAR_VPB,
+            CARIHAR_DOV.TUTAR
+            FROM CARIHAR
+            left outer join carihar_dov on (carihar.CARIHAR_ID=carihar_dov.CARIHAR_ID and carihar.CARIHAR_SID=carihar_dov.CARIHAR_SID)
+            where (CARIHAR.tarih between  '''||:ilk_tar||''' and '''||:son_tar||''') AND CARI_KOD='''||:PRM_CARI_KOD||''' AND carihar_dov.dovkod='''||:DOV_KOD||+'''
+            ORDER BY CARIHAR.TARIH';
+
+
+             SELECT
+             DEVREDEN_ALACAK,
+             DEVREDEN_BORC
+             FROM CARI_DOV
+             where CARI_KOD=:prm_cari_kod AND DOVKOD=:DOV_KOD
+             INTO :cari_dev_alacak,:cari_dev_borc;
+
+
+             prm_cari_dev_borc_bakiye=cari_dev_borc;
+             prm_cari_dev_alacak_bakiye=cari_dev_alacak;
+
+
+             if (ilk_cari_kod<>prm_cari_kod) then
+             begin
+             giris_kontrol=0;
+             giris_kontrol1=0;
+             BORC_BAKIYE=0;
+             ALACAK_BAKIYE=0;
+             end
+
+             cari_dev_borc=0;
+             cari_dev_alacak=0;
+             prm_cari_dev_borc_bakiye=0;
+             prm_cari_dev_alacak_bakiye=0;
+             prm_cari_borc_bakiye=0;
+             prm_cari_alacak_bakiye=0;
+    
+             PRM_BORC=0;
+             PRM_ALACAK=0;
+             BORC_BAKIYE=0;
+             ALACAK_BAKIYE=0;
+
+
+             if (giris_kontrol=0) then
+             if (devir_ekle=1) then
+             begin
+                 es_aciklama=PRM_ACIKLAMA;
+                 PRM_ACIKLAMA='DEVÝR';
+                 PRM_BORC=prm_cari_dev_borc_bakiye;
+                 PRM_ALACAK=prm_cari_dev_alacak_bakiye;
+    
+                 if (prm_cari_dev_borc_bakiye>prm_cari_dev_alacak_bakiye) then
+                 begin
+                     PRM_CARI_BORC_BAKIYE=prm_cari_dev_borc_bakiye-prm_cari_dev_alacak_bakiye;
+                 end
+                 else
+                 PRM_CARI_BORC_BAKIYE=0;
+        
+                 if (prm_cari_dev_alacak_bakiye>prm_cari_dev_borc_bakiye) then
+                 begin
+                     PRM_CARI_ALACAK_BAKIYE=prm_cari_dev_alacak_bakiye-prm_cari_dev_borc_bakiye;
+                 end
+                 else
+                 PRM_CARI_ALACAK_BAKIYE=0;
+    
+                 giris_kontrol=1;
+                 ilk_cari_kod=prm_cari_kod;
+                 es_PRM_FIS_NO=PRM_FIS_NO;
+                 PRM_FIS_NO=0;
+                 es_PRM_TARIH=PRM_TARIH;
+                 PRM_TARIH=cast('01.01.2007' as date);
+                 es_PRM_BELGE_TUR=PRM_BELGE_TUR;
+                 PRM_BELGE_TUR=0;
+
+                 if ((cari_dev_alacak<>0) and (cari_dev_borc<>0)) then
+                 SUSPEND;
+             end
+    
+    
+            FOR execute statement SQL_STR
+            INTO :PRM_TARIH,:PRM_BELGE_TUR,:PRM_FIS_NO,:PRM_ACIKLAMA,:PRM_TIP,TUTAR,:YAB_TUTAR
+            DO
+            BEGIN
+                 if (PRM_TIP='B') then
+                 BEGIN
+                       BORC=YAB_TUTAR;
+                       ALACAK=0;
+                 END
+                 ELSE
+                 BEGIN
+                       BORC=YAB_TUTAR;
+                       ALACAK=0;
+                 END
+                 IF (DEVIR_KULLAN=1) THEN
+                 BEGIN
+                      if (giris_kontrol1=0) then
+                      begin
+                      BORC_BAKIYE=BORC_BAKIYE+BORC+cari_dev_borc;
+                      ALACAK_BAKIYE=ALACAK_BAKIYE+ALACAK+cari_dev_alacak;
+                      giris_kontrol1=1;
+                      end
+                      else
+                      begin
+                      BORC_BAKIYE=BORC_BAKIYE+BORC;
+                      ALACAK_BAKIYE=ALACAK_BAKIYE+ALACAK;
+                      end
+                 END
+                 ELSE
+                 BEGIN
+                      BORC_BAKIYE=BORC_BAKIYE+BORC;
+                      ALACAK_BAKIYE=ALACAK_BAKIYE+ALACAK;
+                 END
+                
+                 if (BORC_BAKIYE>ALACAK_BAKIYE) then
+                 BEGIN
+                      PRM_CARI_BORC_BAKIYE=BORC_BAKIYE-ALACAK_BAKIYE;
+                 END
+                 ELSE
+                 BEGIN
+                      PRM_CARI_BORC_BAKIYE=0;
+                 END
+                
+                 if (ALACAK_BAKIYE>BORC_BAKIYE) then
+                 BEGIN
+                      PRM_CARI_ALACAK_BAKIYE=ALACAK_BAKIYE-BORC_BAKIYE;
+                 END
+                 ELSE
+                 BEGIN
+                      PRM_CARI_ALACAK_BAKIYE=0;
+                 END
+        
+                 PRM_BORC=BORC;
+                 PRM_ALACAK=ALACAK;
+        
+                 SUSPEND;
+        
+            END
+    
+        END
+    END
+
+end!!
+
+
+
+CREATE PROCEDURE CARI_YAS_HAR (
+    devir integer,
+    prm_cari_kod1 varchar(15),
+    dovkod varchar(15),
+    tar1 varchar(15),
+    tar2 varchar(15),
+    tarx1 varchar(15),
+    tarx2 varchar(15),
+    sefer_mazot integer,
+    sid smallint)
+returns (
+    prm_cari_sid smallint,
+    prm_cari_kod varchar(15),
+    prm_tarih date,
+    prm_belge_tur integer,
+    prm_fis_no integer,
+    prm_aciklama varchar(100),
+    prm_tip char(1),
+    prm_borc numeric(15,4),
+    prm_alacak numeric(15,4),
+    prm_cari_borc_bakiye numeric(15,4),
+    prm_cari_alacak_bakiye numeric(15,4),
+    prm_cari_dev_borc_bakiye numeric(15,4),
+    prm_cari_dev_alacak_bakiye numeric(15,4))
+as
+declare variable ilk_cari_kod varchar(15);
+declare variable xprm_cari_borc_bakiye numeric(15,4);
+declare variable xprm_cari_alacak_bakiye numeric(15,4);
+
+begin
+    ilk_cari_kod='';
+    for
+    select
+    prm_cari_kod,
+    cast('01.01.2000' as date) prm_tarih,
+    cast(0 as integer) prm_belge_tur,
+    cast(0 as integer) prm_fis_no,
+    cast('Önceki Tarihten Hesaplanan ' as varchar(100)) prm_aciklama,
+    cast('X' as char(1)) prm_tip,
+    Sum(prm_borc) prm_borc,
+    Sum(prm_alacak) prm_alacak,
+    Sum(prm_cari_borc_bakiye) prm_cari_borc_bakiye,
+    Sum(prm_cari_alacak_bakiye) prm_cari_alacak_bakiye,
+    Sum(prm_cari_dev_borc_bakiye) prm_cari_dev_borc_bakiye,
+    Sum(prm_cari_dev_alacak_bakiye) prm_cari_dev_alacak_bakiye
+    from cari_liste_har(0,:prm_cari_kod1,:dovkod,:tarx1,:tarx2,:sefer_mazot,0,null)
+    group by prm_cari_kod
+    union
+    select
+    prm_cari_kod,
+    prm_tarih,
+    prm_belge_tur,
+    prm_fis_no,
+    prm_aciklama,
+    prm_tip,
+    prm_borc,
+    prm_alacak,
+    prm_cari_borc_bakiye,
+    prm_cari_alacak_bakiye,
+    prm_cari_dev_borc_bakiye,
+    prm_cari_dev_alacak_bakiye
+    from cari_liste_har(:devir,:prm_cari_kod1,:dovkod,:tar1,:tar2,:sefer_mazot,:devir,null)
+    into
+    :prm_cari_kod,
+    :prm_tarih,
+    :prm_belge_tur,
+    :prm_fis_no,
+    :prm_aciklama,
+    :prm_tip,
+    :prm_borc,
+    :prm_alacak,
+    :prm_cari_borc_bakiye,
+    :prm_cari_alacak_bakiye,
+    :prm_cari_dev_borc_bakiye,
+    :prm_cari_dev_alacak_bakiye
+    do
+   begin
+
+    if (prm_cari_kod<>ilk_cari_kod) then
+    begin
+        xprm_cari_borc_bakiye=0;
+        xprm_cari_alacak_bakiye=0;
+    end
+
+
+     /* if (prm_tip='X') then
+      begin
+     */
+        if (prm_borc>prm_alacak) then
+        begin
+          xprm_cari_borc_bakiye=xprm_cari_borc_bakiye+(prm_borc-prm_alacak);
+        end
+
+        if (prm_alacak>prm_borc) then
+        begin
+          xprm_cari_alacak_bakiye=xprm_cari_alacak_bakiye+(prm_alacak-prm_borc);
+        end
+
+        if (prm_cari_borc_bakiye>prm_cari_alacak_bakiye) then
+        begin
+          xprm_cari_borc_bakiye=xprm_cari_borc_bakiye-xprm_cari_alacak_bakiye;
+          xprm_cari_alacak_bakiye=0;
+        end
+        if (xprm_cari_alacak_bakiye>xprm_cari_borc_bakiye) then
+        begin
+          xprm_cari_alacak_bakiye=xprm_cari_alacak_bakiye-xprm_cari_borc_bakiye;
+          xprm_cari_borc_bakiye=0;
+        end
+
+     /* end*/
+
+        prm_cari_borc_bakiye=xprm_cari_borc_bakiye;
+        prm_cari_alacak_bakiye=xprm_cari_alacak_bakiye;
+
+      ilk_cari_kod=prm_cari_kod;
+
+      suspend;
+   end
+end!!
+
+
+
+
+
+
+
+
+
+
+CREATE PROCEDURE CARI_AY_LISTE
+(
+PRM_YIL INTEGER,
+PRM_AY INTEGER,
+PRM_DOVKOD VARCHAR(5),
+PRM_DEVIR INTEGER,
+PRM_SEFER_MAZOT INTEGER,
+PRM_BAS_TAR DATE,
+PRM_BIT_TAR DATE
+)
+RETURNS
+(
+CARI_KOD VARCHAR(15),
+CARI_AD VARCHAR(50),
+AY INTEGER,
+BORC NUMERIC(15,4),
+ALACAK NUMERIC(15,4),
+BAKIYE NUMERIC(15,4),
+TIP VARCHAR(10)
+)
+as
+declare variable BRC NUMERIC(15,4);
+declare variable ALC NUMERIC(15,4);
+declare variable ADOV VARCHAR(5);
+begin
+    SELECT DOVKOD FROM DOVKART WHERE VPB=1 INTO :ADOV;
+
+    for
+    SELECT CARI_AY.CARI_KOD,CARI.CARI_AD,CARI_AY.AY,CARI_AY.BORC,CARI_AY.ALACAK FROM CARI_AY
+    LEFT OUTER JOIN CARI ON(CARI.CARI_KOD=CARI_AY.CARI_KOD)
+    WHERE CARI_AY.AY = :PRM_AY AND CARI_AY.DOVKOD = :PRM_DOVKOD AND CARI_AY.YIL=:PRM_YIL
+    ORDER BY CARI_AY.CARI_KOD
+    INTO :CARI_KOD,:CARI_AD, :AY, :BORC, :ALACAK
+    DO
+    BEGIN
+    BRC=0;
+    ALC=0;
+    BAKIYE=0;
+    TIP='';
+
+      if (PRM_DEVIR=1) then
+      begin
+           if (PRM_DOVKOD=ADOV) then
+           begin
+           SELECT CARI.DEVREDEN_BORC,CARI.DEVREDEN_ALACAK FROM CARI
+           where CARI_KOD=:CARI_KOD
+           INTO :BRC,:ALC;
+           if (NOT BRC IS NULL) then
+           BORC=BORC+BRC;
+           if (NOT ALC IS NULL) then
+           ALACAK=ALACAK+ALC;
+           end
+    
+           if (PRM_DOVKOD<>ADOV) then
+           begin
+               SELECT CARI_dov.DEVREDEN_BORC,CARI_dov.DEVREDEN_ALACAK FROM CARI
+               left outer join cari_dov on (cari_dov.cari_kod=cari.cari_kod)
+               where cari_dov.dovkod=:PRM_DOVKOD and CARI.CARI_KOD=:CARI_KOD
+               INTO :BRC,:ALC;
+               if (NOT BRC IS NULL) then
+               BORC=BORC+BRC;
+               if (NOT ALC IS NULL) then
+               ALACAK=ALACAK+ALC;
+           end
+      end
+
+      if (PRM_SEFER_MAZOT=1) then
+      begin
+       if (PRM_DOVKOD=ADOV) then
+       begin
+               select SUM((CASE
+               WHEN TIP='B' THEN  TUTAR_VPB
+               ELSE 0
+               END)) BORC
+               ,SUM((CASE
+               WHEN TIP='A' THEN  TUTAR_VPB
+               ELSE 0
+               END)) ALACAK
+               from carihar
+               WHERE (belge_tur=41 or belge_tur=42) and CARI_KOD=:CARI_KOD
+               and (carihar.tarih between :prm_bas_tar and :prm_bit_tar)
+               INTO :BRC,:ALC;
+               if (NOT BRC IS NULL) then
+               BORC=BORC+BRC;
+               if (NOT ALC IS NULL) then
+               ALACAK=ALACAK+ALC;
+
+       end
+       if (PRM_DOVKOD=ADOV) then
+       begin
+               select
+               SUM((CASE
+               WHEN CARIHAR.TIP='B' THEN  CARIHAR_DOV.TUTAR
+               ELSE 0
+               END)) BORC
+               ,SUM((CASE
+               WHEN CARIHAR.TIP='A' THEN  CARIHAR_DOV.TUTAR
+               ELSE 0
+               END)) ALACAK
+               from CARIHAR
+               LEFT OUTER JOIN CARIHAR_DOV ON (CARIHAR.CARIHAR_ID=CARIHAR_DOV.CARIHAR_ID AND CARIHAR.CARIHAR_SID=CARIHAR_DOV.CARIHAR_SID)
+               WHERE (CARIHAR.belge_tur=41 or CARIHAR.belge_tur=42) and CARIHAR_DOV.dovkod=:prm_dovkod
+               and (carihar.tarih between :prm_bas_tar and :prm_bit_tar)
+               and CARI_KOD=:CARI_KOD
+               INTO :BRC,:ALC;
+
+               if (NOT BRC IS NULL) then
+               BORC=BORC+BRC;
+               if (NOT ALC IS NULL) then
+               ALACAK=ALACAK+ALC;
+
+       end
+      end
+
+      if (BORC>ALACAK) then
+      BEGIN
+        BAKIYE=BORC-ALACAK;
+        TIP='BORC';
+      END
+
+      if (ALACAK>BORC) then
+      BEGIN
+        BAKIYE=ALACAK-BORC;
+        TIP='ALACAK';
+      END
+
+      suspend;
+    END
+
+end
+
+
+CREATE VIEW URUNHAR_VIEW(
+    URUN_KOD,
+    URUN_AD,
+    TARIH,
+    URUNHAR_ID,
+    BELGE_TUR,
+    BELGE_ID,
+    TIP,
+    MIKTAR,
+    OLCUBIRIM,
+    BIRIM_FIY,
+    BIRIM_FIY_VPB,
+    DOVKOD,
+    TUTAR,
+    TUTAR_VPB,
+    DEPO_KOD,
+    CARI_KOD,
+    CARI_AD)
+AS
+SELECT
+URUNHAR.urun_kod,
+(SELECT URUN.URUN_AD FROM URUN WHERE URUN.URUN_KOD = URUNHAR.URUN_KOD) AS URUN_AD,
+URUNHAR.tarih,
+URUNHAR.URUNHAR_ID,
+URUNHAR.belge_tur,
+URUNHAR.belge_id,
+URUNHAR.tip, 
+URUNHAR.miktar,
+URUNHAR.olcubirim,
+URUNHAR.birim_fiy,
+URUNHAR.birim_fiy_vpb,
+URUNHAR.dovkod,
+URUNHAR.tutar,
+URUNHAR.tutar_vpb,
+URUNHAR.depo_kod
+,(case when (FATURA_ID>0)
+then
+(Select Cari_Kod from FAT_IRS WHERE FAT_IRS.FAT_IRS_SEP=1 AND FAT_IRS.FAT_IRS_ID=URUNHAR.FATURA_ID AND FAT_IRS.FAT_IRS_SID=URUNHAR.FATURA_SID)
+end) as Cari_Kod
+,(case when (FATURA_ID>0)
+then
+(Select Cari_Ad from CARI WHERE CARI.CARI_KOD=(Select Cari_Kod from FAT_IRS WHERE FAT_IRS.FAT_IRS_SEP=1 AND FAT_IRS.FAT_IRS_ID=URUNHAR.FATURA_ID AND FAT_IRS.FAT_IRS_SID=URUNHAR.FATURA_SID))
+end) as Cari_Ad
+
+FROM URUNHAR WHERE URUNHAR_ID<>0 and FATURA_ID>0
+
+union
+
+SELECT
+URUNHAR.urun_kod,
+(SELECT URUN.URUN_AD FROM URUN WHERE URUN.URUN_KOD = URUNHAR.URUN_KOD) AS URUN_AD,
+URUNHAR.tarih,
+URUNHAR.URUNHAR_ID,
+URUNHAR.belge_tur,
+URUNHAR.belge_id,
+URUNHAR.tip, 
+URUNHAR.miktar,
+URUNHAR.olcubirim,
+URUNHAR.birim_fiy,
+URUNHAR.birim_fiy_vpb,
+URUNHAR.dovkod,
+URUNHAR.tutar,
+URUNHAR.tutar_vpb,
+URUNHAR.depo_kod
+,(case when (IRSALIYE_ID>0)
+then
+(Select Cari_Kod from FAT_IRS WHERE FAT_IRS.FAT_IRS_SEP=2 AND FAT_IRS.FAT_IRS_ID=URUNHAR.IRSALIYE_ID AND FAT_IRS.FAT_IRS_SID=URUNHAR.IRSALIYE_SID)
+end) as Cari_Kod
+
+,(case when (IRSALIYE_ID>0)
+then
+(Select Cari_Ad from CARI WHERE CARI.CARI_KOD=(Select Cari_Kod from FAT_IRS WHERE FAT_IRS.FAT_IRS_SEP=2 AND FAT_IRS.FAT_IRS_ID=URUNHAR.IRSALIYE_ID AND FAT_IRS.FAT_IRS_SID=URUNHAR.IRSALIYE_SID))
+end) as Cari_Ad
+
+
+FROM URUNHAR WHERE URUNHAR_ID<>0
+and IRSALIYE_ID>0
+;

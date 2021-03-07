@@ -1,0 +1,55 @@
+inherited BarTickLines: TBarTickLines
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Bar and Horizontal Bar series can display "tick" lines across ea' +
+        'ch bar.'
+      
+        'Each line is drawn at each axis grid line position using the Tic' +
+        'kLines pen.'
+      ''
+      '  Series1.TickLines.Visible := True')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'Bar Series with lines at each grid tick position.')
+    Chart3DPercent = 10
+    LeftAxis.Grid.Style = psSolid
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = True
+      SeriesColor = clAqua
+      Gradient.Direction = gdTopBottom
+      TickLines.Color = clBlue
+      TickLines.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+  end
+  inherited Panel1: TPanel
+    object ButtonPen1: TButtonPen
+      Left = 8
+      Top = 8
+      Width = 113
+      Caption = '&Tick lines...'
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      Left = 152
+      Top = 12
+      Width = 121
+      Height = 17
+      Caption = '&Show tick lines'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

@@ -1,0 +1,114 @@
+inherited FilterColorRGB: TFilterColorRGB
+  Width = 582
+  Height = 496
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 566
+  end
+  inherited Memo1: TMemo
+    Width = 566
+    Lines.Strings = (
+      
+        'This filter allows to adjust the Red, Green and Blue colors of t' +
+        'he selected area.'
+      ''
+      'Example :'
+      '  with ColorFilter do'
+      '  begin'
+      '    Red := 100;'
+      '    Green := 100;'
+      '    Blue := 100;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 566
+    Height = 304
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    ColorPaletteIndex = 10
+    object Series1: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        04080000000000000000A88340044361727300000000006088400650686F6E65
+        730000000000888140065461626C65730000000000608240084D6F6E69746F72
+        730000000000288340054C616D70730000000000608B40094B6579626F617264
+        7300000000002880400542696B6573000000000040884006436861697273}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 566
+    object Label1: TLabel
+      Left = 12
+      Top = 15
+      Width = 23
+      Height = 13
+      Caption = '&Red:'
+    end
+    object Label2: TLabel
+      Left = 159
+      Top = 15
+      Width = 32
+      Height = 13
+      Caption = '&Green:'
+    end
+    object Label3: TLabel
+      Left = 315
+      Top = 15
+      Width = 24
+      Height = 13
+      Caption = '&Blue:'
+    end
+    object sbRed: TScrollBar
+      Left = 44
+      Top = 13
+      Width = 105
+      Height = 17
+      Max = 255
+
+      Position = 100
+      TabOrder = 0
+      OnChange = sbRedChange
+    end
+    object sbGreen: TScrollBar
+      Left = 197
+      Top = 13
+      Width = 105
+      Height = 17
+      Max = 255
+
+      Position = 100
+      TabOrder = 1
+      OnChange = sbGreenChange
+    end
+    object sbBlue: TScrollBar
+      Left = 347
+      Top = 13
+      Width = 105
+      Height = 17
+      Max = 255
+
+      Position = 100
+      TabOrder = 2
+      OnChange = sbBlueChange
+    end
+    object bFilters: TButton
+      Left = 473
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Filters...'
+      TabOrder = 3
+      OnClick = bFiltersClick
+    end
+  end
+end

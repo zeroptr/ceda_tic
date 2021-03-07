@@ -1,0 +1,48 @@
+[General]
+Author=CPS - Computer Programming Solutions
+
+[Directories]
+DirCount=1
+Dir1Name=IBO4
+Dir1Path=IBO4
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40CRT.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40DDT.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40TRT.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40VRT.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40XDT.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40XRT.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40WEB.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+
+[C:\Program Files\Borland\Delphi6\Projects\Bpl\IBO40FRT.bpl]
+PackageDir=0
+RequiredExeDir=-1
+RequiredLibDir=-1
+

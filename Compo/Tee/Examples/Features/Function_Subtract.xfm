@@ -1,0 +1,81 @@
+inherited SubtractForm: TSubtractForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 41
+    Lines.Strings = (
+      'The Subtract function uses more than one series as data source.'
+      
+        'It calculates for each point the difference between the last and' +
+        ' first series.')
+  end
+  inherited Chart1: TChart
+    Top = 82
+    Height = 255
+    Title.Text.Strings = (
+      'Subtract function')
+    Chart3DPercent = 10
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.BackColor = clBlack
+      Marks.Color = clBlack
+      Marks.Font.Color = clRed
+      Marks.Visible = True
+      SeriesColor = clRed
+      Title = 'Source1'
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series3: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.BackColor = clBlack
+      Marks.Color = clBlack
+      Marks.Font.Color = clRed
+      Marks.Visible = True
+      SeriesColor = clBlue
+      Title = 'Source2'
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.ShadowSize = 0
+      Marks.ShapeStyle = fosRoundRectangle
+      Marks.Visible = True
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Subtract'
+      VertAxis = aRightAxis
+      Pointer.Brush.Color = 33023
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      DataSources = (
+        'Series1'
+        'Series3')
+      object TeeFunction1: TSubtractTeeFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 41
+    Visible = False
+  end
+end

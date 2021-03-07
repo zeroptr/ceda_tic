@@ -1,0 +1,41 @@
+inherited SurfaceFloatOther: TSurfaceFloatOther
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 82
+  end
+  inherited Memo1: TMemo
+    Height = 41
+    Lines.Strings = (
+      'Another example of using Surface series with XYZ floating point'
+      'numbers (double).')
+  end
+  inherited Chart1: TChart
+    Top = 84
+    Height = 253
+    Title.Visible = False
+    object Series1: TSurfaceSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 41
+    Visible = False
+  end
+end

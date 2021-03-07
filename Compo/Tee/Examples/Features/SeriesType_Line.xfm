@@ -1,0 +1,177 @@
+inherited LineSeriesForm: TLineSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 106
+  end
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      
+        'Line series displays points drawing one line from each point to ' +
+        'the next.'
+      ''
+      
+        'Options include 2D and 3D, "stairs" mode, null points, pointers,' +
+        ' border, filling pattern,'
+      'height 3D, stacking, overlaping, clicking, dark 3D and marks.')
+  end
+  inherited Chart1: TChart
+    Top = 108
+    Height = 222
+    BackWall.Color = clWhite
+    Border.Visible = True
+    LeftWall.Color = clWhite
+    Legend.Font.Height = -12
+    Legend.Font.Name = 'Lucida Console'
+    Legend.Shadow.Color = clGray
+    RightWall.Color = clWhite
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    Title.Font.Name = 'Lucida Console'
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'Lines with some null points')
+    BottomAxis.Grid.Color = 12895428
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.Grid.Visible = False
+    BottomAxis.LabelsFont.Name = 'Lucida Console'
+    BottomAxis.MinorTickLength = -3
+    BottomAxis.MinorTicks.Color = clBlack
+    BottomAxis.TickInnerLength = 6
+    BottomAxis.TickLength = 0
+    BottomAxis.TicksInner.Color = clBlack
+    DepthAxis.Grid.Color = 12895428
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Name = 'Lucida Console'
+    DepthAxis.MinorTickLength = -3
+    DepthAxis.MinorTicks.Color = clBlack
+    DepthAxis.TickInnerLength = 6
+    DepthAxis.TickLength = 0
+    DepthAxis.TicksInner.Color = clBlack
+    DepthTopAxis.Grid.Color = 12895428
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Name = 'Lucida Console'
+    DepthTopAxis.MinorTickLength = -3
+    DepthTopAxis.MinorTicks.Color = clBlack
+    DepthTopAxis.TickInnerLength = 6
+    DepthTopAxis.TickLength = 0
+    DepthTopAxis.TicksInner.Color = clBlack
+    LeftAxis.Grid.Color = 12895428
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Name = 'Lucida Console'
+    LeftAxis.MinorTickLength = -3
+    LeftAxis.MinorTicks.Color = clBlack
+    LeftAxis.TickInnerLength = 6
+    LeftAxis.TickLength = 0
+    LeftAxis.TicksInner.Color = clBlack
+    RightAxis.Grid.Color = 12895428
+    RightAxis.Grid.Style = psSolid
+    RightAxis.LabelsFont.Name = 'Lucida Console'
+    RightAxis.MinorTickLength = -3
+    RightAxis.MinorTicks.Color = clBlack
+    RightAxis.TickInnerLength = 6
+    RightAxis.TickLength = 0
+    RightAxis.TicksInner.Color = clBlack
+    TopAxis.Grid.Color = 12895428
+    TopAxis.Grid.Style = psSolid
+    TopAxis.Grid.Visible = False
+    TopAxis.LabelsFont.Name = 'Lucida Console'
+    TopAxis.MinorTickLength = -3
+    TopAxis.MinorTicks.Color = clBlack
+    TopAxis.TickInnerLength = 6
+    TopAxis.TickLength = 0
+    TopAxis.TicksInner.Color = clBlack
+    BevelOuter = bvNone
+    Color = 12895428
+    ColorPaletteIndex = 6
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Font.Name = 'Lucida Console'
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Font.Name = 'Lucida Console'
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 57
+      Height = 17
+      Caption = '&Stairs'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 78
+      Top = 12
+      Width = 59
+      Height = 17
+      Caption = '&Marks'
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 144
+      Top = 12
+      Width = 65
+      Height = 17
+      Caption = '&Pointers'
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+    object CheckBox4: TCheckBox
+      Left = 216
+      Top = 12
+      Width = 73
+      Height = 17
+      Caption = 'S&tacked'
+      TabOrder = 3
+      OnClick = CheckBox4Click
+    end
+    object Button1: TButton
+      Left = 368
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 4
+      OnClick = Button1Click
+    end
+    object CheckBox5: TCheckBox
+      Left = 296
+      Top = 12
+      Width = 49
+      Height = 17
+      Caption = '&3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+      OnClick = CheckBox5Click
+    end
+  end
+end

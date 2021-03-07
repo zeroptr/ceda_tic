@@ -1,0 +1,676 @@
+// IBA_Session.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{$IFDEF ALLOW_ALT_SESSION}
+function GetAlternateSession: TIB_Session;
+begin
+// This allows a session outside of the threads environment be used as a
+// default session. This is useful to make DLL files loaded merge into the
+// main session of the EXE's instance. This way, everything will behave as
+// if it were truly all a part of the same EXE.
+  if hAlternateSession > 0 then
+    Result := TIB_Session( TlsGetValue( hAlternateSession ))
+  else
+    Result := nil;
+end;
+
+class procedure TIB_Session.SetAlternateSession( ASession: TIB_Session );
+begin
+// Set an alternate component session to be used as the DefaultSession.
+  if hAlternateSession > 0 then
+    TlsSetValue( hAlternateSession, ASession );
+end;
+{$ENDIF}
+
+{$IFDEF ALLOW_DEFAULT_SESSION}
+function GetDefaultSession: TIB_Session;
+begin
+// This makes it so that for each individual thread there is a unique
+// session instance used for the default session.
+  if ( hDefaultSession > 0 ) then
+    Result := TIB_Session( TlsGetValue( hDefaultSession ))
+  else
+    Result := nil;
+  if not Assigned( Result ) then
+  begin
+    Result := TIB_Session.Create( nil );
+    Result.FIsDefaultSession := true;
+    Result.Name := 'DefaultSession';
+    if hDefaultSession > 0 then
+      TlsSetValue( hDefaultSession, Result );
+  end;
+end;
+
+procedure FreeDefaultSession( var ASession: TIB_Session );
+var
+  tmpSession: TIB_Session;
+begin
+  if hDefaultSession > 0 then
+    tmpSession := TIB_Session( TlsGetValue(hDefaultSession))
+  else
+    tmpSession := nil;
+// It is possible to be in another thread's environment now.
+// Objects being created will persist beyond the thread's boundries in the
+// same process. So, if a default session is created in one thread it may
+// not be destroyed until after that thread has long terminated.
+  if Assigned( tmpSession ) and
+     ( tmpSession = ASession ) and
+     ( hDefaultSession > 0 ) then
+    TlsSetValue( hDefaultSession, nil );
+  tmpSession := ASession;
+  ASession := nil;
+  tmpSession.Free;
+end;
+
+class function TIB_Session.DefaultSession: TIB_Session;
+begin
+// This will always return a valid session instance.
+// It first looks for an alternate session and if there is not any
+// it looks for an existing default session and if there is not any
+// it will automatically generate one.
+{$IFDEF ALLOW_ALT_SESSION}
+  Result := GetAlternateSession;
+  if not Assigned( Result ) then
+{$ENDIF}
+    Result := GetDefaultSession;
+end;
+{$ENDIF}
+
+constructor TIB_Session.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  InitializeCriticalSection( FTimerCS );
+  FTimerItems := TList.Create;
+  FTimerItemIndex := 0;
+  Session_Components := TList.Create;
+  Session_Connections := TList.Create;
+  Session_ConnectionLinks := TList.Create;
+  Session_Transactions := TList.Create;
+  Session_TransactionLinks := TList.Create;
+  Session_Statements := TList.Create;
+  Session_Datasets := TList.Create;
+  Session_DataSources := TList.Create;
+  Session_DataLinks := TList.Create;
+  FBusyCursor := -17; //crSQLWait;
+  FYieldCursor := -19; //crSQLYield;
+  FBusyLevel := 0;
+  FLockCursorLevel := 0;
+  FYieldLevel := -1;
+  FStoreActive := false;
+  FAllowDefaultConnection := true;
+  FAllowDefaultTransaction := true;
+  FEditingColor := clYellow;
+  FInsertingColor := clLime;
+  FDeletingColor := clRed;
+  FSearchingColor := clAqua;
+  FReadOnlyColor := clSilver;
+  FSelectedColor := clBlue;
+  FInvalidColor := clNone;
+  FPreparedColor := clGrayText;
+  FBrowsingColor := clWindow;
+  FInCnt := 5;
+  FInDa := AllocMem( XSQLDA_LENGTH( FInCnt ));
+  FInDa.version := SQLDA_VERSION1;
+  FInDa.sqln := FInCnt;
+  FOutCnt := 30;
+  FOutDa := AllocMem( XSQLDA_LENGTH( FOutCnt ));
+  FOutDa.version := SQLDA_VERSION1;
+  FOutDa.sqln := FOutCnt;
+{$IFDEF IBO4_BETA}
+  FUseCursor := false;
+  // The next section initialises FUseCursor to true and the TimerInterval
+  // to 5000  **ONLY** in the main process thread.
+  // Notes:
+  //   * Using AttachCS CriticalSection here to ensure we have secure
+  //     access to the Application.MainForm definition
+  //   * It is NOT safe to use FUseCursor=true or the Timer on
+  //     secondary threads.
+  //   * This processing will only achieve the desired aim of initialising
+  //     the session properly for the main thread IF there is a MainForm
+  //     defined for the Application - at the time the session is needed.
+  //     IF you need the session before the mainform is constructed, or
+  //     are not providing a mainform then the application should define
+  //     these defaults for itself - if required.
+  // Setup this way (in replacement of the previous initialisation section of
+  // IB_Components.pas) so that it is possible to avoid creating an IB_Session
+  // instance when not required.
+  EnterCriticalSection( AttachCS );
+  try
+    if Assigned( Application ) and Assigned( Application.MainForm ) and
+       Application.MainForm.HandleAllocated then
+    begin
+      if GetWindowThreadProcessID( Application.MainForm.Handle, nil ) =
+         GetCurrentThreadID then
+      begin
+        FUseCursor := true;
+        {$IFNDEF CONSOLE}
+        SetTimerInterval( 5000 );
+        {$ENDIF}
+      end;
+    end;
+  finally
+    LeaveCriticalSection( AttachCS );
+  end;
+{$ENDIF}
+end;
+
+destructor TIB_Session.Destroy;
+begin
+  SetTimerInterval( 0 );
+  Destroying;
+  while Session_Components.Count > 0 do
+    TIB_Component(Session_Components.Items[ 0 ]).IB_Session := nil;
+  inherited Destroy;
+  if Assigned( FTimerItems ) then FTimerItems.Free;
+  if Assigned( Session_Components ) then Session_Components.Free;
+  if Assigned( Session_Connections ) then Session_Connections.Free;
+  if Assigned( Session_ConnectionLinks ) then Session_ConnectionLinks.Free;
+  if Assigned( Session_Transactions ) then Session_Transactions.Free;
+  if Assigned( Session_TransactionLinks ) then Session_TransactionLinks.Free;
+  if Assigned( Session_Statements ) then Session_Statements.Free;
+  if Assigned( Session_Datasets ) then Session_Datasets.Free;
+  if Assigned( Session_DataSources ) then Session_DataSources.Free;
+  if Assigned( Session_DataLinks ) then Session_DataLinks.Free;
+  FTimerItems := nil;
+  Session_Components := nil;
+  Session_Connections := nil;
+  Session_ConnectionLinks := nil;
+  Session_Transactions := nil;
+  Session_TransactionLinks := nil;
+  Session_Statements := nil;
+  Session_Datasets := nil;
+  Session_DataSources := nil;
+  Session_DataLinks := nil;
+  DeleteCriticalSection( FTimerCS );
+
+//  try
+    FreeMem( FInDa );
+    FInCnt := 0;
+//  except
+  // There is a certain statement type that reveals a bug in the IB API.
+  // This bug causes the buffer to get corrupted and an InvalidPointer
+  // Operation error happens here when closing. So, I'm preventing it from
+  // causing the flow to be interrupted.
+//  end;
+//  try
+    FreeMem( FOutDa );
+    FOutCnt := 0;
+//  except
+  // Same as above.
+//  end;
+end;
+
+procedure TIB_Session.Notification( AComponent: TComponent;
+                                    Operation: TOperation);
+var
+  tmpIndex: integer;
+begin
+  inherited Notification( AComponent, Operation );
+  if Operation = opRemove then
+  begin
+    tmpIndex := FTimerItems.IndexOf( AComponent );
+    if tmpIndex >= 0 then
+    begin
+      FTimerItems.Delete( tmpIndex );
+      if ( tmpIndex <= FTimerItemIndex ) and ( FTimerItemIndex > 0 ) then
+        Dec( FTimerItemIndex );
+    end;
+  end;
+end;
+
+procedure TIB_Session.WndProc( var AMsg: TMessage );
+var
+  IsDone, IsWaiting, Terminated: boolean;
+begin
+  with AMsg do
+    if Msg = WM_TIMER then
+    begin
+      IsDone := true;
+      IsWaiting := false;
+      Terminated := false;
+      ProcessPassiveTasks( IsDone, IsWaiting, Terminated );
+    end
+    else
+      Result := DefWindowProc( FTimerHandle, Msg, wParam, lParam );
+end;
+
+procedure TIB_Session.ResetTimerNotification( AComponent: TIB_Component );
+var
+  tmpBelongs: boolean;
+  tmpIndex: integer;
+begin
+  tmpBelongs := not AComponent.ChildOfProcess and
+                    AComponent.NeedTimerNotifications;
+  tmpIndex := FTimerItems.IndexOf( AComponent );
+  if tmpIndex >= 0 then
+  begin
+    if not tmpBelongs then
+    begin
+      FTimerItems.Delete( tmpIndex );
+      if ( tmpIndex <= FTimerItemIndex ) and ( FTimerItemIndex > 0 ) then
+        Dec( FTimerItemIndex );
+    end;
+  end
+  else
+  if tmpBelongs then
+    FTimerItems.Add( AComponent );
+end;
+
+procedure TIB_Session.BeginCallbackFreeze;
+begin
+  Inc( FCallbackFreezeLevel );
+end;
+
+procedure TIB_Session.EndCallbackFreeze;
+begin
+  if FCallbackFreezeLevel > 0 then
+    Dec( FCallbackFreezeLevel );
+end;
+
+procedure TIB_Session.ProcessPassiveTasks( var IsDone,
+                                               IsWaiting,
+                                               Terminated: boolean );
+var
+  tmpIsDone: boolean;
+  tmpIsWaiting: boolean;
+  tmpTerminated: boolean;
+begin
+  IsDone := true;
+  IsWaiting := false;
+  Terminated := false;
+  if not Assigned( Application ) or Application.Terminated then
+  begin
+    SetTimerInterval( 0 );
+    Exit;
+  end;
+  if not TimerIsBusy then
+  begin
+    FTimerIsBusy := true;
+    try
+      if FTimerItemIndex = 0 then
+      begin
+        FTimerIsDone := true;
+        FTimerIsWaiting := false;
+        FTimerTerminated := false;
+      end;
+      tmpIsDone := FTimerIsDone;
+      tmpIsWaiting := FTimerIsWaiting;
+      tmpTerminated := FTimerTerminated;
+      if FTimerItemIndex < FTimerItems.Count then
+      begin
+        TIB_Component(FTimerItems[FTimerItemIndex]).ProcessPassiveTasks(
+          tmpIsDone,
+          tmpIsWaiting,
+          tmpTerminated );
+        Inc( FTimerItemIndex );
+      end
+      else
+      begin
+        if Assigned( FOnSessionTimer ) then
+          FOnSessionTimer( Self, tmpIsDone, tmpIsWaiting, tmpTerminated );
+        FTimerItemIndex := 0;
+      end;
+      if FTimerIsDone then FTimerIsDone := tmpIsDone;
+      if not FTimerIsWaiting then FTimerIsWaiting := tmpIsWaiting;
+      if not FTimerTerminated then FTimerTerminated := tmpTerminated;
+      IsDone := FTimerIsDone and ( FTimerItemIndex = 0 );
+      IsWaiting := FTimerIsWaiting;
+      Terminated := FTimerTerminated;
+    except
+      on E: Exception do
+        Application.HandleException( E );
+    end;
+    FTimerisBusy := false;
+  end;
+end;
+                
+procedure TIB_Session.SetTimerInterval( AValue: cardinal );
+begin
+  if FTimerInterval <> AValue then
+  begin
+    if FTimerInterval > 0 then
+    begin
+      KillTimer( FTimerHandle, 1 );
+{$IFDEF IBO_VCL60_OR_GREATER}
+      Classes.DeallocateHWnd( FTimerHandle );
+{$ELSE}
+      DeallocateHWnd( FTimerHandle );
+{$ENDIF}
+    end;
+    if AValue > 0 then
+    begin
+{$IFDEF IBO_VCL60_OR_GREATER}
+      FTimerHandle := Classes.AllocateHWnd( WndProc );
+{$ELSE}
+      FTimerHandle := AllocateHWnd( WndProc );
+{$ENDIF}
+      if SetTimer( FTimerHandle, 1, AValue, nil ) = 0 then
+      begin
+        FTimerInterval := 0;
+        raise EOutOfResources.Create( 'SNoTimers' );
+      end;
+    end;
+    FTimerInterval := AValue;
+  end;
+end;
+
+procedure TIB_Session.DoHandleError(        Sender: TObject;
+                                      const errcode: longint;
+                                            ErrorMessage,
+                                            ErrorCodes: TStringList;
+                                      const SQLCODE: longint;
+                                            SQLMessage,
+                                            SQL: TStringList;
+                                        var RaiseException: boolean);
+begin
+  if Sender is TIB_Component then
+    (Sender as TIB_Component).DoHandleError( Sender as TIB_Component,
+                                             errcode,
+                                             ErrorMessage,
+                                             ErrorCodes,
+                                             SQLCODE,
+                                             SQLMessage,
+                                             SQL,
+                                             RaiseException );
+  if RaiseException then
+    inherited DoHandleError( Sender,
+                             errcode,
+                             ErrorMessage,
+                             ErrorCodes,
+                             SQLCODE,
+                             SQLMessage,
+                             SQL,
+                             RaiseException );
+end;
+
+function TIB_Session.GetConnectionByName(
+  const ADBName: string ): TIB_Connection;
+var
+  ii: integer;
+begin
+  Result := nil;
+  if Assigned( Session_Connections ) then
+    for ii := 0 to Session_Connections.Count - 1 do
+      with TIB_Connection( Session_Connections.Items[ ii ] ) do
+        if CompareText( ADBName, DatabaseName ) = 0 then
+        begin
+          Result := Session_Connections.Items[ ii ];
+          Break;
+        end;
+end;
+
+procedure TIB_Session.AnnounceConnection;
+var
+  ii: integer;
+begin
+  if Session_ConnectionLinks <> nil then
+    for ii := 0 to Session_ConnectionLinks.Count - 1 do
+      with TIB_ConnectionLink( Session_ConnectionLinks.Items[ ii ] ) do
+        if ReceiveFocus then
+          DoReceiveFocus( FocusedConnection );
+end;
+
+procedure TIB_Session.AnnounceTransaction;
+var
+  ii: integer;
+begin
+  if Session_TransactionLinks <> nil then
+    for ii := 0 to Session_TransactionLinks.Count - 1 do
+      with TIB_TransactionLink( Session_TransactionLinks.Items[ ii ] ) do
+        if ReceiveFocus then
+          DoReceiveFocus( FocusedTransaction );
+end;
+
+procedure TIB_Session.AnnounceDataSource;
+var
+  ii: integer;
+begin
+  if Session_DataLinks <> nil then
+    for ii := 0 to Session_DataLinks.Count - 1 do
+      with TIB_DataLink( Session_DataLinks.Items[ ii ] ) do
+        if ReceiveFocus then
+          DoReceiveFocus( FocusedDataSource );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Session.SetFocusedConnection( C: TIB_Connection );
+begin
+  if Assigned( C ) and C.FHasNilAncestry then Exit;
+  if FocusedConnection <> C then
+  begin
+    if FocusedConnection <> nil then
+      FocusedConnection.DoLoseFocus;
+    FFocusedConnection := C;
+    if FocusedConnection <> nil then
+    begin
+      with FocusedConnection do
+      begin
+        if AnnounceFocus then
+          AnnounceConnection;
+        DoGainFocus;
+      end;
+    end
+    else
+      AnnounceConnection;
+  end;
+end;
+
+procedure TIB_Session.SetFocusedTransaction( T: TIB_Transaction );
+begin
+  if Assigned( T ) and T.FHasNilAncestry then Exit;
+  if FocusedTransaction <> T then
+  begin
+    if FocusedTransaction <> nil then
+      FocusedTransaction.DoLoseFocus;
+    FFocusedTransaction := T;
+    if FocusedTransaction <> nil then
+    begin
+      with FocusedTransaction do
+      begin
+        if AnnounceFocus then
+          AnnounceTransaction;
+        DoGainFocus;
+      end;
+    end
+    else
+      AnnounceTransaction;
+  end;
+end;
+
+procedure TIB_Session.SetFocusedDataset( D: TIB_Dataset );
+begin
+  if Assigned( D ) and D.FHasNilAncestry then Exit;
+  if FocusedDataset <> D then
+  begin
+    FFocusedDataset := D;
+    if FocusedDataset <> nil then
+    begin
+      with FocusedDataset do
+      begin
+        FocusedConnection := IB_Connection;
+        FocusedTransaction := IB_Transaction;
+      end;
+    end
+    else
+    begin
+      FocusedConnection := nil;
+      FocusedTransaction := nil;
+    end;
+  end;
+end;
+
+procedure TIB_Session.SetFocusedDataSource( DS: TIB_DataSource );
+begin
+  if Assigned( DS ) and DS.FHasNilAncestry then Exit;
+  if FocusedDataSource <> DS then
+  begin
+    if FocusedDataSource <> nil then
+      FocusedDataSource.DoLoseFocus;
+    FFocusedDataSource := DS;
+    if FocusedDataSource <> nil then with FocusedDataSource do
+    begin
+      FocusedDataset := Dataset;
+      if AnnounceFocus then
+        AnnounceDataSource;
+      DoGainFocus;
+    end
+    else
+      AnnounceDataSource;
+  end;
+end;
+
+procedure TIB_Session.BeginLockCursor;
+begin Inc( FLockCursorLevel ); end;
+procedure TIB_Session.EndLockCursor;
+begin Dec( FLockCursorLevel ); end;
+procedure TIB_Session.DoBeginBusy;
+begin if Assigned( FOnBeginBusy ) then FOnBeginBusy( Self ); end;
+procedure TIB_Session.DoEndBusy;
+begin if Assigned( FOnEndBusy ) then FOnEndBusy( Self ); end;
+procedure TIB_Session.DoBeginYield;
+begin if Assigned( FOnBeginYield ) then FOnBeginYield( Self ); end;
+procedure TIB_Session.DoEndYield;
+begin if Assigned( FOnEndYield ) then FOnEndYield( Self ); end;
+function TIB_Session.GetIsBusy: boolean;
+begin Result := ( BusyLevel > 0 ) or TimerIsBusy; end;
+function TIB_Session.GetIsYielding: boolean;
+begin Result := YieldLevel <> -1; end;
+
+function TIB_Session.GetWakeup: TNotifyEvent;
+begin
+  EnterCriticalSection( FTimerCS );
+  try
+    Result := FOnWakeUp;
+  finally
+    LeaveCriticalSection( FTimerCS );
+  end;
+end;
+
+procedure TIB_Session.SetWakeup( AValue: TNotifyEvent );
+begin
+  EnterCriticalSection( FTimerCS );
+  try
+    FOnWakeUp := AValue;
+  finally
+    LeaveCriticalSection( FTimerCS );
+  end;
+end;
+
+procedure TIB_Session.DoWakeUp( Sender: TObject );
+begin
+  if Assigned( Application ) then
+    PostMessage( Application.Handle, WM_ENTERIDLE, 0, 0 );
+  EnterCriticalSection( FTimerCS );
+  try
+    if Assigned( FOnWakeUp ) then
+      FOnWakeUp( Sender );
+  finally
+    LeaveCriticalSection( FTimerCS );
+  end;
+end;
+
+procedure TIB_Session.DoGetDataLinkColor(     DataLink: TIB_DataLink;
+                                          var FieldColor: TColor );
+begin
+  if Assigned( OnGetDataLinkColor ) then
+    OnGetDataLinkColor( Self, DataLink, FieldColor );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Session.BeginBusy( Yield: boolean );
+begin
+  if Yield and ( YieldLevel = -1 ) then
+    FYieldLevel := BusyLevel;
+  if BusyLevel = 0 then
+  begin
+    DoBeginBusy;
+    if Yield then
+      DoBeginYield;
+    if UseCursor and not TimerIsBusy then
+    begin
+      if ( Screen.Cursor <> BusyCursor ) and
+         ( Screen.Cursor <> YieldCursor ) then
+        FOldCursor := Screen.Cursor
+      else
+        FOldCursor := 0{crDefault};
+      if LockCursorLevel = 0 then
+        if Yield then
+          Screen.Cursor := YieldCursor
+        else
+          Screen.Cursor := BusyCursor;
+    end
+    else
+      FOldCursor := -1;
+  end
+  else
+  if BusyLevel = YieldLevel then
+  begin
+    DoBeginYield;
+    if FOldCursor <> -1 then
+      if LockCursorLevel = 0 then
+        Screen.Cursor := YieldCursor;
+  end;
+  Inc( FBusyLevel );
+end;
+
+procedure TIB_Session.EndBusy;
+begin
+  if IsBusy then
+    Dec( FBusyLevel );
+  if YieldLevel = BusyLevel then
+  begin
+    FYieldLevel := -1;
+    if ( FOldCursor <> -1 ) and ( BusyLevel > 0 ) then
+      if LockCursorLevel = 0 then
+        Screen.Cursor := BusyCursor;
+    DoEndYield;
+  end;
+  if BusyLevel = 0 then
+  begin
+    if ( FOldCursor <> -1 ) and
+       ( Screen.Cursor <> FOldCursor ) then
+      Screen.Cursor := FOldCursor;
+    DoEndBusy;
+  end;
+end;
+
+procedure TIB_Session.GetAliasParams( const AliasName: string; List: TStrings );
+begin
+  GetBDEAliasInfo( 'ALIAS', AliasName, List );
+end;

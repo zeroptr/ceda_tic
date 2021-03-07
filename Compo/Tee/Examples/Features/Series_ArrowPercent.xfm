@@ -1,0 +1,86 @@
+inherited SeriesArrowPercent: TSeriesArrowPercent
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Arrow series can control the width of the arrow body relative to' +
+        ' the total arrow head width.'
+      ''
+      'In percent, from 0 to 100 % '
+      ''
+      
+        'Series1.ArrowPercent := 75;  // 75% body width, relative to head' +
+        ' size')
+  end
+  inherited Chart1: TChart
+    MarginTop = 10
+    Title.Visible = False
+    ColorPaletteIndex = 1
+    object Series1: TArrowSeries
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      EndXValues.Name = 'EndX'
+      EndXValues.Order = loNone
+      EndYValues.Name = 'EndY'
+      EndYValues.Order = loNone
+      StartXValues.Name = 'X'
+      StartXValues.Order = loAscending
+      StartYValues.Name = 'Y'
+      StartYValues.Order = loNone
+      Data = {
+        010A000000000000006016E3400000000000B07D40000000008016E340000000
+        0000F88340000000006016E3400000000000388740000000008017E340000000
+        0000D89040000000008016E340000000000000534000000000A017E340000000
+        0000B88940000000008016E340000000000000514000000000C016E340000000
+        0000C07C40000000000017E3400000000000406040000000000017E340000000
+        0000008240000000000017E3400000000000E07140000000004017E340000000
+        0000E88740000000002017E3400000000000405440000000002018E340000000
+        0000907E40000000006017E3400000000000C88240000000004018E340000000
+        0000A88940000000008017E3400000000000D07A40000000006018E340000000
+        0000A89440000000008017E3400000000000206240000000004018E340000000
+        0000A07140}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 16
+      Top = 14
+      Width = 72
+      Height = 13
+      Caption = '&Arrow percent :'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 97
+      Top = 11
+      Width = 33
+      Height = 21
+      TabOrder = 0
+      Text = '50'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 130
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Position = 50
+      TabOrder = 1
+    end
+  end
+end

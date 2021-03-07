@@ -1,0 +1,171 @@
+inherited CursorScopeForm: TCursorScopeForm
+  Left = 387
+  Top = 170
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      
+        'The CursorTool may be set to use a Scope-style cursor. See the o' +
+        'ptions by selecting them from the '
+      'comboboxes below.'
+      ''
+      '- Size of the Scope Cursor may be set by using Cursor.ScopeSize.'
+      '- Style may be set by using Cursor.ScopeStyle.'
+      'Eg.  Cursor.ScopeStyle:=scsCircle;')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 289
+    Border.Visible = True
+    Gradient.Balance = 27
+    Gradient.Direction = gdRightLeft
+    Gradient.EndColor = 151
+    Gradient.StartColor = 14671839
+    Gradient.Visible = True
+    Legend.Visible = False
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Visible = False
+    RightAxis.Axis.Width = 1
+    RightAxis.Grid.Visible = False
+    View3D = False
+    BorderWidth = 1
+    TabOrder = 2
+    object Series1: TFastLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 6225919
+      VertAxis = aBothVertAxis
+      LinePen.Color = 6225919
+      LinePen.Width = 2
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00640000000000000000D87D4000000000005876400000000000807640000000
+        000078794000000000001875400000000000D873400000000000807640000000
+        0000406F400000000000405F4000000000000014400000000000005440000000
+        00000059400000000000D061400000000000406F400000000000387340000000
+        00009872400000000000A876400000000000307B400000000000387840000000
+        0000F0794000000000001073400000000000407A400000000000487740000000
+        000040754000000000007879400000000000D87D400000000000987740000000
+        00007874400000000000F0744000000000002077400000000000587140000000
+        00005074400000000000587B400000000000B875400000000000606D40000000
+        0000C06C4000000000007062400000000000D066400000000000B06D40000000
+        00006870400000000000B06D400000000000F871400000000000E06A40000000
+        0000787440000000000048774000000000004877400000000000287E40000000
+        0000C07C400000000000E8774000000000003071400000000000887340000000
+        0000D878400000000000507E400000000000E882400000000000F48540000000
+        00004C88400000000000C8844000000000004887400000000000DC8440000000
+        00005084400000000000D08640000000000020874000000000009C8340000000
+        0000E085400000000000C0874000000000000089400000000000148940000000
+        0000C889400000000000AC87400000000000B489400000000000208C40000000
+        00003C8940000000000038884000000000002C8A400000000000908A40000000
+        0000848C4000000000005089400000000000FC8C400000000000F48A40000000
+        0000B48940000000000050894000000000009085400000000000248340000000
+        0000D482400000000000D4824000000000009085400000000000388340000000
+        0000808140000000000060834000000000002884400000000000AC8240000000
+        000048824000000000002C80400000000000407A400000000000187F40000000
+        0000207C400000000000D081400000000000907F400000000000287940000000
+        0000487740}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 7
+      Top = 12
+      Width = 60
+      Height = 13
+      Caption = '&Cursor style :'
+      FocusControl = cbStyle
+    end
+    object Label2: TLabel
+      Left = 157
+      Top = 12
+      Width = 61
+      Height = 13
+      Caption = '&Scope style :'
+      FocusControl = cbScopeStyle
+    end
+    object Label3: TLabel
+      Left = 314
+      Top = 12
+      Width = 58
+      Height = 13
+      Caption = 'Sc&ope size :'
+      FocusControl = Edit1
+    end
+    object cbStyle: TComboBox
+      Left = 74
+      Top = 9
+      Width = 77
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 0
+      OnChange = cbStyleChange
+      Items.Strings = (
+        'Horizontal'
+        'Vertical'
+        'Both'
+        'Scope')
+    end
+    object cbScopeStyle: TComboBox
+      Left = 226
+      Top = 9
+      Width = 77
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = cbScopeStyleChange
+      Items.Strings = (
+        'Rectangle'
+        'Circle'
+        'Diamond'
+        'Empty'
+        'Camera')
+    end
+    object Edit1: TEdit
+      Left = 378
+      Top = 9
+      Width = 25
+      Height = 21
+      TabOrder = 2
+      Text = '10'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 403
+      Top = 9
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Position = 10
+      TabOrder = 3
+    end
+    object ButtonPen1: TButtonPen
+      Left = 427
+      Top = 8
+      Width = 91
+      Caption = 'Cursor &Pen '
+      TabOrder = 4
+    end
+  end
+end

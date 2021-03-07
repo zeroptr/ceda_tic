@@ -1,0 +1,32 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Simple Horizontal [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<ChangeBodyColor>1</ChangeBodyColor>
+<ClosedColor>255</ClosedColor>
+<OpenedColor>65280</OpenedColor>
+<Orientation>1</Orientation>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Simple Vertical</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<ChangeBodyColor>1</ChangeBodyColor>
+<ClosedColor>255</ClosedColor>
+<OpenedColor>65280</OpenedColor>
+<Orientation>0</Orientation>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+</SchemeType>
+</SchemeTypes>

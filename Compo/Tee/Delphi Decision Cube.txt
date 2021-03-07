@@ -1,0 +1,57 @@
+Steema Software
+Rebuilding Borland's Decision Cube packages.
+--------------------------------------------
+
+When TeeChart Pro is installed in the Enterprise
+versions of Delphi and C++ Builder, the Decision
+Cube packages are automatically disabled because TeeChart
+Pro packages are different than the ones included by 
+default in Delphi / C++ Builder.
+
+With the release of Enterprise versions, source
+code files for the Decision Cube components are included,
+so it's possible to recompile the Decision Cube packages
+using TeeChart Pro following these steps:
+
+Instructions to recompile:
+
+Option 1: Automatic
+====================
+
+Use the included application DCubeRecomp.exe to
+recompile the Decision Cube components.
+This program makes a copy of every modified file, 
+prefixing the file name with "BackupOf_" text.
+
+Option 2: Manually
+====================
+
+1. Download and install TeeChart Pro.
+   (Available at www.steema.com, Customer Downloads)
+
+2. Select "Components->Install packages", and remove
+   "Borland Decision Cube components" with the "Remove" button.
+
+3. Locate the Decision Cube source code. 
+   It should be in the Delphi / C++ Builder :
+   "\Source\Decision Cube" directory.
+
+4. Open the DSS70.dpk package. Remove the Tee.dcp package and add 
+   (on the same place) the Tee77.dcp package and recompile. If you
+   get a complaint about "always built package with the newer built...",
+   then click on "Options" speed button and change:
+   "Build control" to "Rebuild as needed", and recompile.
+
+5. Then open the DclDSS70.dpk package and remove the DclTee70.dcp 
+   package and replace it with the DclTee77.dcp package. 
+   Change "Build control" to "Rebuild as needed" and recompile.
+
+6. Copy the new DSS70.bpl to Windows \System directory, DclDSS70.bpl 
+   to Delphi / C++ Builder \Bin directory and all the 
+   *.dcu and *.dcp files to Delphi / C++ Builder \Lib directory.
+
+7. Select "Component->Install packages" menu and click the "Add" button.
+   Then select the new DclDSS70.bpl package, located at the 
+   \Bin directory.
+
+---------------------------------------------------------------------------

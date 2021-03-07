@@ -1,0 +1,46 @@
+package cxTreeListD14;
+
+{$R *.res}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressQuantumTreeList 5 by Developer Express Inc.'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  dxCoreD14,
+  cxDataD14,
+  cxEditorsD14,
+  cxExportD14,
+  cxLibraryD14,
+  dxThemeD14,
+  cxExtEditorsD14,
+  cxPageControlD14;
+
+contains
+  cxTL,
+  cxTLStrs,
+  cxDBTL,
+  cxTLExportLink,
+  cxTLData;
+
+end.

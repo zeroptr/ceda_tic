@@ -1,0 +1,49 @@
+object ChartOther: TChartOther
+  Left = 192
+  Top = 107
+  Width = 484
+  Height = 376
+  Color = clBtnFace
+  ParentFont = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 476
+    Height = 349
+    Align = alClient
+    Lines.Strings = (
+      'Several 3rd party tools and component vendors that integrate or'
+      'support TeeChart Pro in their products:'
+      ''
+      ''
+      'Company              '#9'Web site'
+      '______________ '#9'_____________________________________'
+      ''
+      'Dew Research        www.dewresearch.com'
+      'Inverline'#9#9'www.inverline.com'
+      'IntraWeb'#9#9'www.atozedsoftware.com'
+      'ExpressWeb'#9'www.devexpress.com'
+      ''
+      'Multilizer           '#9'www.multilizer.com'
+      'ArrayTran            '#9'personal.lig.bellsouth.net/~hazelco/'
+      'AutomatedQA          www.totalqa.com'
+      'Kuling.com           '#9'www.kuling.com'
+      'MyNapster            '#9'www.mynapster.com/'
+      'Monex                '#9'www.monex.com'
+      'Health Monitor       '#9'www.vidyasoft.com/'
+      'ESB Stats            '#9'www.esbconsult.com.au/esbstats.html'
+      'FFT Properties       '#9'www.steema.com/FFTProp/'
+      'Knosys               '#9'www.knosysinc.com'
+      'Zenia Software       '#9'www.qbit.com'
+      'COAS Enterprise      www.coas.com'
+      'SeaBreeze            '#9'www.seabreeze.com.au'
+      ''
+      ' '
+      'Please contact us to include your TeeChart aware application !')
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+end

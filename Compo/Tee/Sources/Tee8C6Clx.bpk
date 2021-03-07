@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="Tee8C6Clx.bpl"/>
+    <OBJFILES value="Tee8C6Clx.obj BubbleCh.obj Chart.obj GanttCh.obj Series.obj TeCanvas.obj 
+      TeeAbout.obj TeeConst.obj TeeFunci.obj TeEngine.obj TeeProcs.obj 
+      TeeShape.obj TeeStore.obj ArrowCha.obj"/>
+    <RESFILES value="Tee8C6Clx.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) TeeAbout.xfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="qtintf.lib"/>
+    <SPARELIBS value="rtl.lib visualclx.lib qtintf.lib"/>
+    <PACKAGES value="rtl.bpi visualclx.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="CLX"/>
+    <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
+    <MAINSOURCE value="Tee8C6Clx.cpp"/>
+    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\clx60.csm -Hc -Vx -Ve -X- -r- -a8 -6 -b- -k- -y -vi -c 
+      -tW -tWM"/>
+    <PFLAGS value="-$Y- -$W -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-GB&quot;Tee8C6Clx&quot; -D&quot;TeeChart 8 CLX Components&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="Tee8C6Clx.res" FORMNAME="" UNITNAME="Tee8C6Clx.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Tee8C6Clx.cpp" FORMNAME="" UNITNAME="Tee8C6Clx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="BubbleCh.pas" FORMNAME="" UNITNAME="BubbleCh" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Chart.pas" FORMNAME="" UNITNAME="Chart" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GanttCh.pas" FORMNAME="" UNITNAME="GanttCh" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Series.pas" FORMNAME="" UNITNAME="Series" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeCanvas.pas" FORMNAME="" UNITNAME="TeCanvas" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeeAbout.pas" FORMNAME="TeeAboutForm" UNITNAME="TeeAbout" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeeConst.pas" FORMNAME="" UNITNAME="TeeConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeeFunci.pas" FORMNAME="" UNITNAME="TeeFunci" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeEngine.pas" FORMNAME="" UNITNAME="TeEngine" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeeProcs.pas" FORMNAME="" UNITNAME="TeeProcs" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeeShape.pas" FORMNAME="" UNITNAME="TeeShape" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="TeeStore.pas" FORMNAME="" UNITNAME="TeeStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ArrowCha.pas" FORMNAME="" UNITNAME="ArrowCha" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="$(BCB)\Lib\Release\visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+
+  </IDEOPTIONS>
+</PROJECT>

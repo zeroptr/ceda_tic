@@ -1,0 +1,56 @@
+inherited LegendGenFormat: TLegendGenFormat
+  Left = 290
+  Top = 191
+  Width = 455
+  Height = 403
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Width = 447
+    Height = 38
+    Lines.Strings = (
+      'Chart Legend object now derive from TeeCustomShape object. '
+      
+        'A class with many formatting properties like gradient, font, bru' +
+        'sh, border, etc.')
+  end
+  inherited Chart1: TChart
+    Top = 206
+    Width = 447
+    Height = 170
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TDonutSeries
+      Marks.ArrowLength = 8
+      Marks.Gradient.EndColor = clGray
+      Marks.Gradient.MidColor = 8453888
+      Marks.Gradient.Visible = True
+      Marks.Visible = True
+      SeriesColor = clRed
+      Circled = True
+      PiePen.Color = clWhite
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Shadow.Color = 10526880
+      DonutPercent = 65
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 38
+    Width = 447
+    Height = 168
+    object PageControl1: TPageControl
+      Left = 1
+      Top = 1
+      Width = 445
+      Height = 166
+      Align = alClient
+      TabOrder = 0
+    end
+  end
+end

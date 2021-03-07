@@ -1,0 +1,129 @@
+
+{                                                                              }
+{  IB_WinControl.INT                                                           }
+{                                                                              }
+
+{$DEFINE IB_WinControl}
+{$I IB_Control.INT}
+{$UNDEF IB_WinControl}
+
+{$IFDEF IB_CustomEdit}
+{$ELSE}{$IFDEF IBC_ListBox}
+{$ELSE}{$IFDEF IBG_CustomGrid}
+{$ELSE}
+
+private
+
+FBorderStyle: TBorderStyle;
+procedure SetBorderStyle( AValue: TBorderStyle );
+
+protected
+
+property BorderStyle: TBorderStyle read FBorderStyle
+                                   write SetBorderStyle
+                                   default bsSingle;
+{$ENDIF}{$ENDIF}{$ENDIF}
+
+private
+FTabStopAutomation: boolean;
+procedure SetTabStopAutomation( AValue: boolean );
+function StoreTabStop: boolean;
+
+{$IFDEF IB_FieldControl}
+function GetParamName: string;
+procedure SetParamName(AVal: string);
+{$ENDIF}
+procedure SetPreventDeleting( AValue: Boolean );
+procedure SetPreventEditing( AValue: Boolean );
+procedure SetPreventInserting( AValue: Boolean );
+procedure SetPreventSearching( AValue: Boolean );
+function GetPreventDeleting: Boolean;
+function GetPreventEditing: Boolean;
+function GetPreventInserting: Boolean;
+function GetPreventSearching: Boolean;
+procedure CMEnter( var Message: TCMEnter ); message CM_ENTER;
+procedure CMExit( var Message: TCMExit ); message CM_EXIT;
+procedure CMEnabledChanged( var Message: TMessage ); message CM_ENABLEDCHANGED;
+procedure WMSetFocus( var Message: TWMSetFocus ); message WM_SETFOCUS;
+
+protected
+
+procedure UpdateTabStop;
+function GetReadOnly: boolean; virtual;
+procedure SetReadOnly( AValue: Boolean); virtual;
+procedure SysUpdateData( IB_Field: TIB_Column ); virtual;
+procedure UpdateData( Sender: TIB_DataLink;
+                      IB_DataSource: TIB_DataSource;
+                      IB_Field: TIB_Column );
+
+public
+
+function CanModify: Boolean; virtual;
+
+{: Determines whether any modifications can be entered through this control.
+<br><br>
+This applies to either data or search criteria.}
+property ReadOnly: boolean read GetReadOnly
+                           write SetReadOnly
+                           default false;
+
+{: Determines whether the control can initiate the deletion of records.
+<br><br>
+It has effect only if ReadOnly is false.}
+property PreventDeleting: boolean read GetPreventDeleting
+                                  write SetPreventDeleting
+                                  default false;
+{: Determines whether any editing changes can be made through this control.
+<br><br>
+It has effect only if ReadOnly is false.}
+property PreventEditing: boolean read GetPreventEditing
+                                 write SetPreventEditing
+                                 default false;
+{: Determines whether any inserting changes can be made through this control.
+<br><br>
+It has effect only if ReadOnly is false.}
+property PreventInserting: boolean read GetPreventInserting
+                                   write SetPreventInserting
+                                   default false;
+{: Determines whether any search criteria changes can be made through this
+control.
+<br><br>
+It has effect only if ReadOnly is false.}
+property PreventSearching: boolean read GetPreventSearching
+                                   write SetPreventSearching
+                                   default false;
+{: Automatic management of TabStop.
+<br><br>
+When True, TabStop for the control will be updated automatically to reflect the
+editable state of the control.  When the associated field is editable, TabStop
+is set True.  When the field is not editable, TabStop is set False.
+<br><br>
+When this property is True, the TabStop setting is not stored.
+<br><br>
+When this property is False, the False setting will be stored and no automation
+of its value will be applied. }
+property TabStopAutomation: boolean read FTabStopAutomation
+                                  write SetTabStopAutomation
+                                  default false;
+{$IFDEF IB_FieldControl}
+{: Override the DataField property with a Parameter name.
+<br><br>
+When ParamName is defined, the DataField is ignored and the ParamName is used
+to turn the control into a Parameter editing control.}
+property ParamName: string read GetParamName write SetParamName;
+{$ENDIF}
+
+{$IFNDEF HELPSCAN}
+{$IFDEF IBC_ListBox}
+property Ctl3D default true;
+{$ENDIF}
+{$IFDEF IBC_Image}
+property TabStop stored StoreTabStop;
+{$ELSE}{$IFDEF IBC_RadioGroup}
+property TabStop read FTabStop write SetTabStop stored StoreTabStop;
+{$ELSE}
+property TabStop stored StoreTabStop;
+{$ENDIF}{$ENDIF}
+{$ENDIF}
+
+// IB_WinControl.IMP

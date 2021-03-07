@@ -1,0 +1,73 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Standard Edit Box [Default]</Name>
+<Properties>
+<Alignment>1</Alignment>
+<AlignmentMargin>0</AlignmentMargin>
+<AutoFrameRate>1</AutoFrameRate>
+<AutoSelect>1</AutoSelect>
+<AutoSize>1</AutoSize>
+<BorderStyle>2</BorderStyle>
+<Color>-2147483643</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Style>1</ErrorFont.Style>
+<ErrorFont.Color>255</ErrorFont.Color>
+<ErrorFont.Name>MS Sans Serif</ErrorFont.Name>
+<ErrorFont.Size>8</ErrorFont.Size>
+<ErrorText>Error</ErrorText>
+<Font.Style>1</Font.Style>
+<Font.Color>-2147483640</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>8</Font.Size>
+<MaxLength>0</MaxLength>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Standard Black on White [Default]</Name>
+<Properties>
+<Color>-2147483643</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>-2147483640</Font.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<Color>0</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>65535</Font.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<Color>0</Color>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>16777215</Font.Color>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Error Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Style>1</ErrorFont.Style>
+<ErrorFont.Color>255</ErrorFont.Color>
+<ErrorFont.Name>MS Sans Serif</ErrorFont.Name>
+<ErrorFont.Size>8</ErrorFont.Size>
+<ErrorText>Error</ErrorText>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

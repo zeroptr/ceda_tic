@@ -1,0 +1,67 @@
+inherited TruncPyramidForm: TTruncPyramidForm
+  Caption = 'TruncPyramidForm'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      'The Tee Canvas now includes a method to draw truncated Pyramids.'
+      ''
+      'Example: Chart1.Canvas.PyramidTrunc( );')
+  end
+  inherited Chart1: TChart
+    Top = 124
+    Height = 213
+    OnAfterDraw = Chart1AfterDraw
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    Height = 34
+    object Label1: TLabel
+      Left = 8
+      Top = 8
+      Width = 10
+      Height = 13
+      Caption = '&X:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 176
+      Top = 8
+      Width = 10
+      Height = 13
+      Caption = '&Z:'
+      FocusControl = ScrollBar2
+    end
+    object ScrollBar1: TScrollBar
+      Left = 24
+      Top = 8
+      Width = 121
+      Height = 16
+      Max = 50
+      Position = 10
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object ScrollBar2: TScrollBar
+      Left = 192
+      Top = 8
+      Width = 121
+      Height = 16
+      Max = 50
+      Position = 10
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 91
+    Width = 479
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 3
+  end
+end

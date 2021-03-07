@@ -1,0 +1,103 @@
+// IBA_ConnectionLink.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+destructor TIB_ConnectionLink.Destroy;
+begin
+  IB_Connection := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_ConnectionLink.Loaded;
+begin
+  inherited Loaded;
+  if Assigned( IB_Session ) then
+    DoReceiveFocus( IB_Session.FocusedConnection );
+end;
+
+function TIB_ConnectionLink.GetConnected: boolean;
+begin
+  Result := Assigned( IB_Connection ) and IB_Connection.Connected
+end;
+
+function TIB_ConnectionLink.GetConnectionStatus: TIB_ConnectionStatus;
+begin
+  if IB_Connection <> nil then
+    Result := IB_Connection.ConnectionStatus
+  else
+    Result := csDisconnected;
+end;
+
+procedure TIB_ConnectionLink.SetConnection( AValue: TIB_Connection );
+begin
+  if AValue <> IB_Connection then
+  begin
+    ProcessEvent( cetBeforeAssignment );
+    if IB_Connection <> nil then
+      IB_Connection.RemoveConnectionLink( Self );
+    FIB_Connection := AValue;
+    if IB_Connection <> nil then
+      IB_Connection.AddConnectionLink( Self );
+    ProcessEvent( cetAfterAssignment );
+  end;
+end;
+
+procedure TIB_ConnectionLink.SetReceiveFocus( AValue: boolean );
+begin
+  if ReceiveFocus <> AValue then
+  begin
+    FReceiveFocus := AValue;
+    DoReceiveFocus( IB_Session.FocusedConnection );
+  end;
+end;
+
+procedure TIB_ConnectionLink.DoReceiveFocus( C: TIB_Connection );
+begin
+  if ReceiveFocus and ( IB_Connection <> C ) then
+  begin
+    if Assigned( OnReceiveFocus ) then
+      OnReceiveFocus( Self, C )
+    else
+      IB_Connection := C;
+  end;
+end;
+
+procedure TIB_ConnectionLink.ProcessEvent( AEvent: TIB_ConnectionEventType );
+begin
+  if Assigned( OnProcessEvent ) then OnProcessEvent( Self, AEvent );
+end;
+
+

@@ -1,0 +1,64 @@
+
+{                                                                              }
+{ TIB_Text                                                                     }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  2002/01/05                                                                  }
+{     Added property for borders around the control like TPanel has            }
+{  2001/10/25                                                                  }
+{     Now if in design time and dataset active, if the field is empty or null  }
+{     it shows '<EMPTY>' as a placeholder for the component                    }
+{            Copyright (C) 2001 Marco Menardi                                  }
+{                                                                              }
+{******************************************************************************}
+
+{: This control allows the string contents of a column to be displayed in a
+standard label control. It has also borders property like TPanel.}
+
+TIB_TextEvent = procedure (Sender: TObject;var AString: string) of object;
+
+TIB_CustomText = class(TCustomLabel)
+private
+  FOnGetDisplayText: TIB_TextEvent;
+{$I IB_Control.INT}
+protected
+  function GetLabelText: string; override;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+published
+  property AutoSize default false;
+{$IFDEF IBO_VCL30_OR_GREATER}
+  property Layout;
+{$ENDIF}
+  property Transparent;
+  property WordWrap;
+  property OnGetDisplayText: TIB_TextEvent read FOnGetDisplayText write FOnGetDisplayText;
+end;
+
+TIB_Text = class(TIB_CustomText)
+{$I IB_Control.PBL}
+private
+  FBevelInner: TPanelBevel;
+  FBevelOuter: TPanelBevel;
+  FBevelWidth: TBevelWidth;
+  FBorderWidth: TBorderWidth;
+  FBorderStyle: TBorderStyle;
+  procedure SetBevelInner(Value: TPanelBevel);
+  procedure SetBevelOuter(Value: TPanelBevel);
+  procedure SetBevelWidth(Value: TBevelWidth);
+  procedure SetBorderWidth(Value: TBorderWidth);
+  procedure SetBorderStyle(Value: TBorderStyle);
+protected
+  procedure Paint; override;
+published
+  property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
+  property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvNone;
+  property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
+  property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 1;
+  property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
+public
+  constructor Create(AOwner: TComponent); override;
+end;
+// IBC_Text.IMP

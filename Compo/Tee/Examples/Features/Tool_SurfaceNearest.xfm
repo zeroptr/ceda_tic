@@ -1,0 +1,163 @@
+inherited SurfaceNearestForm: TSurfaceNearestForm
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 49
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'The SurfaceNearest tool can be used to highlight a surface cell'
+      'when moving the mouse over a surface series.')
+  end
+  inherited Chart1: TChart
+    Top = 89
+    Height = 241
+    BackWall.Color = clWhite
+    BackWall.Dark3D = False
+    BackWall.Pen.Color = clBlue
+    BackWall.Size = 3
+    Border.Visible = True
+    BottomWall.Dark3D = False
+    BottomWall.Pen.Color = clBlue
+    BottomWall.Size = 3
+    Gradient.EndColor = 13556735
+    Gradient.MidColor = 14739177
+    Gradient.StartColor = 16774122
+    Gradient.Visible = True
+    LeftWall.Color = clWhite
+    LeftWall.Dark3D = False
+    LeftWall.Pen.Color = clBlue
+    LeftWall.Size = 3
+    Legend.Font.Height = -13
+    Legend.Font.Name = 'Times New Roman'
+    Legend.Frame.Visible = False
+    Legend.Shadow.HorizSize = 0
+    Legend.Shadow.VertSize = 0
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Pen.Visible = False
+    Legend.Transparent = True
+    Legend.Visible = False
+    RightWall.Color = clWhite
+    RightWall.Dark3D = False
+    RightWall.Size = 3
+    Title.Font.Color = clBlack
+    Title.Font.Height = -16
+    Title.Font.Name = 'Times New Roman'
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = clSilver
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.GridCentered = True
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.LabelsFont.Name = 'Times New Roman'
+    BottomAxis.MinorTicks.Visible = False
+    BottomAxis.Ticks.Color = clBlack
+    BottomAxis.TicksInner.Visible = False
+    BottomAxis.Title.Font.Name = 'Times New Roman'
+    Chart3DPercent = 75
+    DepthAxis.Axis.Width = 1
+    DepthAxis.Grid.Color = clSilver
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Height = -13
+    DepthAxis.LabelsFont.Name = 'Times New Roman'
+    DepthAxis.MinorTicks.Visible = False
+    DepthAxis.Ticks.Color = clBlack
+    DepthAxis.TicksInner.Visible = False
+    DepthAxis.Title.Font.Name = 'Times New Roman'
+    DepthAxis.Visible = True
+    DepthTopAxis.Axis.Width = 1
+    DepthTopAxis.Grid.Color = clBlack
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Height = -13
+    DepthTopAxis.LabelsFont.Name = 'Times New Roman'
+    DepthTopAxis.MinorTicks.Visible = False
+    DepthTopAxis.Ticks.Color = clBlack
+    DepthTopAxis.TicksInner.Visible = False
+    DepthTopAxis.Title.Font.Name = 'Times New Roman'
+    Frame.Color = clBlue
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clSilver
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Height = -13
+    LeftAxis.LabelsFont.Name = 'Times New Roman'
+    LeftAxis.MinorTicks.Visible = False
+    LeftAxis.Ticks.Color = clBlack
+    LeftAxis.TicksInner.Visible = False
+    LeftAxis.Title.Font.Name = 'Times New Roman'
+    RightAxis.Axis.Width = 1
+    RightAxis.Grid.Color = clBlack
+    RightAxis.Grid.Style = psSolid
+    RightAxis.LabelsFont.Height = -13
+    RightAxis.LabelsFont.Name = 'Times New Roman'
+    RightAxis.MinorTicks.Visible = False
+    RightAxis.Ticks.Color = clBlack
+    RightAxis.TicksInner.Visible = False
+    RightAxis.Title.Font.Name = 'Times New Roman'
+    TopAxis.Axis.Width = 1
+    TopAxis.Grid.Color = clBlack
+    TopAxis.Grid.Style = psSolid
+    TopAxis.LabelsFont.Height = -13
+    TopAxis.LabelsFont.Name = 'Times New Roman'
+    TopAxis.MinorTicks.Visible = False
+    TopAxis.Ticks.Color = clBlack
+    TopAxis.TicksInner.Visible = False
+    TopAxis.Title.Font.Name = 'Times New Roman'
+    View3DOptions.Elevation = 304
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 100
+    View3DOptions.Rotation = 334
+    View3DOptions.Zoom = 65
+    BevelOuter = bvNone
+    Color = clWhite
+    ColorPaletteIndex = 5
+    object Series1: TSurfaceSeries
+      Marks.Arrow.Color = clBlack
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Font.Height = -13
+      Marks.Font.Name = 'Times New Roman'
+      Marks.Symbol.Shadow.HorizSize = 1
+      Marks.Symbol.Shadow.Smooth = False
+      Marks.Symbol.Shadow.VertSize = 1
+      Marks.Transparent = True
+      Marks.Visible = False
+      EndColor = 4227327
+      Pen.Color = clSilver
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      StartColor = 10026216
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 51
+    Height = 38
+    object Label1: TLabel
+      Left = 104
+      Top = 16
+      Width = 15
+      Height = 13
+      Caption = '0,0'
+    end
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit tool...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

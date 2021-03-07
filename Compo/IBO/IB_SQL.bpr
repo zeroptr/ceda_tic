@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="IB_SQL.exe"/>
+    <OBJFILES value="IBF_Base.obj IBD_About.obj IBF_SQL.obj IBF_Browse.obj IBF_Who.obj 
+      IBF_DSQL.obj IBF_Events.obj IBF_Monitor.obj IBF_Query.obj IBF_Script.obj 
+      IBF_Users.obj IBF_DataPump.obj IBF_Parameters.obj IBD_Login.obj 
+      IBD_Ordering.obj IBF_DataDump.obj IBF_Export.obj IBD_CancelQuery.obj 
+      IB_Script.obj IB_ConnectionBar.obj IB_ConnectionSource.obj 
+      IB_Constants.obj IB_CursorGrid.obj IB_DatasetBar.obj IB_Events.obj 
+      IB_Export.obj IB_FieldDataLink.obj IB_Grid.obj IB_Header.obj 
+      IB_Monitor.obj IB_NavigationBar.obj IB_ParamEdit.obj IB_Parse.obj 
+      IB_Schema.obj IB_Components.obj IB_Process.obj IB_DataScan.obj 
+      IB_DataPump.obj IB_SearchBar.obj IB_SearchEdit.obj IB_SearchPanel.obj 
+      IB_Session.obj IB_SessionProps.obj IB_StatementBar.obj 
+      IB_StatementGrid.obj IB_StatementSource.obj IB_StoredProc.obj 
+      IB_TransactionBar.obj IB_TransactionSource.obj IB_UpdateBar.obj 
+      IBD_CreateOrdering.obj IB_Profiler.obj IB_UtilityBar.obj IB_Utils.obj 
+      IB_IncSearch.obj IBD_Credits.obj IBD_Error.obj IBD_IBMemoEdit.obj 
+      IBD_Loading.obj IBD_MemoEdit.obj IBD_USearch.obj IBF_GenCalcFields.obj 
+      IBF_GenCustomSQL.obj IBF_Lookup.obj IBF_Profiler.obj IB_SQL.obj"/>
+    <RESFILES value="IB_SQL.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) IBF_Base.dfm IBD_About.dfm IBF_SQL.dfm IBF_Browse.dfm 
+      IBF_Who.dfm IBF_DSQL.dfm IBF_Events.dfm IBF_Monitor.dfm IBF_Query.dfm 
+      IBF_Script.dfm IBF_Users.dfm IBF_DataPump.dfm IBF_Parameters.dfm 
+      IBD_Login.dfm IBD_Ordering.dfm IBF_DataDump.dfm IBF_Export.dfm 
+      IBD_CancelQuery.dfm IBD_CreateOrdering.dfm IBD_Credits.dfm IBD_Error.dfm 
+      IBD_IBMemoEdit.dfm IBD_Loading.dfm IBD_MemoEdit.dfm IBD_USearch.dfm 
+      IBF_GenCalcFields.dfm IBF_GenCustomSQL.dfm IBF_Lookup.dfm IBF_Profiler.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="IBO40TRT_C5.lib IBO40FRT_C5.lib IBO40VRT_C5.lib IBO40CRT_C5.lib"/>
+    <SPARELIBS value="Vcl50.lib IBO40CRT_C5.lib IBO40VRT_C5.lib IBO40FRT_C5.lib Vclx50.lib 
+      IBO40TRT_C5.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi Vcldb50.bpi Vclbde50.bpi KBMMEMC5RUN.bpi 
+      CommX.bpi pImagN30.bpi QRPT50.bpi mmtools_c5.bpi Tee50.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="IB_SQL.cpp"/>
+    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\IBO4"/>
+    <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;$(BCB)\Projects\IBO4"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-$YD -$W -$O- -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=2057
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[Excluded Packages]
+$(BCB)\Projects\Bpl\Dclrxdb5.bpl=RX Library Database Components
+$(BCB)\Projects\Bpl\Dclrxbd5.bpl=RX Library BDE Database Components
+$(BCB)\Bin\dclqrt50.bpl=QuickReport 3 Package
+
+[HistoryLists\hlIncludePath]
+Count=5
+Item0=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\IBO4
+Item1=..\..;$(BCB)\include;$(BCB)\include\vcl
+Item2=..;$(BCB)\include;$(BCB)\include\vcl
+Item3=..\;$(BCB)\include;$(BCB)\include\vcl
+Item4=$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;$(BCB)\Projects\IBO4
+Item1=$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib
+Item2=$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+  </IDEOPTIONS>
+</PROJECT>

@@ -1,0 +1,71 @@
+inherited BarStackNegative: TBarStackNegative
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 81
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'Bar and Horizontal bar series can now display multiple stacked'
+      'with a mix of positive and negative values.')
+  end
+  inherited Chart1: TChart
+    Top = 83
+    Height = 254
+    Title.Text.Strings = (
+      'Negative and Positive Stacked Bars')
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbStacked
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+    object Series2: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbStacked
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+    object Series3: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbStacked
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+    object ChartTool1: TColorLineTool
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    Height = 32
+    BevelOuter = bvNone
+    object TeeCommander1: TTeeCommander
+      Left = 0
+      Top = 0
+      Width = 479
+      Height = 33
+      Panel = Chart1
+      Align = alTop
+      ParentShowHint = False
+      TabOrder = 0
+    end
+  end
+end

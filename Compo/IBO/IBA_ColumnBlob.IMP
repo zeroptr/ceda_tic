@@ -1,0 +1,494 @@
+// IBA_ColumnBlob.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_ColumnBlob.Create( ARow: TIB_Row;
+                                   PSQLVAR: PXSQLVAR;
+                                   AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FBlobNode := Row.GetBlobNode( AFieldNo );
+  FIsBlob := true;
+end;
+
+constructor TIB_ColumnMemo.Create( ARow: TIB_Row;
+                                   PSQLVAR: PXSQLVAR;
+                                   AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FIsText := true;
+end;
+
+constructor TIB_ColumnBLR.Create( ARow: TIB_Row;
+                                  PSQLVAR: PXSQLVAR;
+                                  AFieldNo: smallint );
+begin
+  inherited Create( ARow, PSQLVAR, AFieldNo );
+  FIsText := true;
+end;
+
+{------------------------------------------------------------------------------}
+
+{$IFDEF IBO_VCL30_OR_GREATER}
+function TIB_ColumnMemo.GetAsWideString: WideString;
+begin
+  Result := AsString;
+end;
+
+procedure TIB_ColumnMemo.SetAsWideString( const NewValue: WideString );
+begin
+  AsString := NewValue;
+end;
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+
+function TIB_ColumnBlob.GetBlobSize: longint;
+var
+  tmpStream: TStream;
+  Blob_Handle: ISC_BLOB_HANDLE;
+  MaxSegmentSize: longint;
+  NumSegments: longint;
+begin
+  if IsNull then
+    Result := 0
+  else
+  if IsLoaded then
+  begin
+    tmpStream := Statement.CreateBlobStream( Self, bsmRead );
+    try
+      Result := tmpStream.Size;
+    finally
+      tmpStream.Free;
+    end;
+  end
+  else
+  with Statement.IB_Session do
+  begin
+    Statement.CheckTransaction( true );
+    Blob_Handle := nil;
+    errcode := isc_open_blob( @Status,
+                              Statement.pdbHandle,
+                              Statement.ptrHandle,
+                              @Blob_Handle,
+                              pisc_quad( FNewColumnBuffer ));
+    if errcode = 0 then
+      GetBlobSize( MaxSegmentSize, Result, NumSegments, @Blob_Handle, PSQLVAR );
+    errcode := isc_close_blob( @status, @Blob_Handle );
+  end;
+end;
+
+function TIB_ColumnBlob.GetIsLoaded: boolean;
+var
+  ParentBlobRef: PIB_BlobNode;
+begin
+  Result := IsNull or
+            IsModified or
+            ( BlobNode.BlobSize > 0 ) or
+            Assigned( FindBlobNodeInList( Row.PBlobHead,
+                                          BlobID,
+                                          FieldNo,
+                                          true,
+                                          ParentBlobRef ));
+end;
+
+function TIB_ColumnBlob.GetLoadedBlobNode: PIB_BlobNode;
+var
+  ParentBlobRef: PIB_BlobNode;
+begin
+  if IsNull then
+    Result := nil
+  else
+  if IsModified or ( BlobNode.BlobSize > 0 ) then
+    Result := BlobNode
+  else
+    Result := FindBlobNodeInList( Row.PBlobHead,
+                                  BlobID,
+                                  FieldNo,
+                                  true,
+                                  ParentBlobRef );
+end;
+
+function TIB_ColumnBlob.GetIsModified: boolean;
+begin
+  Result := inherited GetIsModified or BlobNode.BlobChanged;
+end;
+
+function TIB_ColumnBlob.SysInternalChanged: boolean;
+begin
+  Result := true;
+end;
+
+function TIB_ColumnBlob.GetDisplayText: string;
+begin
+  if IsNull then
+    Result := ''
+  else
+  if IsText and IsLoaded then
+    Result := inherited GetDisplayText
+  else
+    Result := '( ' + DisplayName + ' )';
+end; 
+
+function TIB_ColumnBlob.GetBlobID: isc_quad;
+begin
+  Result := isc_quad( FNewColumnBuffer^ );
+end;
+
+function TIB_ColumnBlob.GetOldBlobID: isc_quad;
+begin
+  Result := isc_quad( FOldColumnBuffer^ );
+end;
+
+function TIB_ColumnBlob.GetOldAsString: string;
+var
+  PBlobNode: PIB_BlobNode;
+  ParentBlobRef: PIB_BlobNode;
+begin
+  if IsModified then
+  begin
+    if OldIsNull then
+      Result := ''
+    else
+    begin
+      PBlobNode := FindBlobNodeInList( Row.PBlobHead,
+                                       OldBlobID,
+                                       FieldNo,
+                                       true,
+                                       ParentBlobRef );
+      if not Assigned( PBlobNode ) then
+      begin
+        PBlobNode := AllocMem( SizeOf( TIB_BlobNode ));
+        try
+          ClearBlobNodeData( PBlobNode );
+          PBlobNode.BlobID := OldBlobID;
+          Statement.GetBlobNodeData( Self.PSQLVAR, nil, PBlobNode );
+        except
+          FreeBlobNodeData( PBlobNode );
+          FreeMem( PBlobNode );
+          raise;
+        end;
+        PBlobNode.Next := Row.PBlobHead^;
+        Row.PBlobHead^ := PBlobNode;
+      end;
+      SetLength( Result, PBlobNode.BlobSize );
+      Move( PBlobNode.BlobBuffer^, Result[1], PBlobNode.BlobSize );
+    end;
+  end
+  else
+    Result := AsString;
+end;
+
+function TIB_ColumnBlob.GetAsString: string;
+var
+  tmpStream: TStream;
+begin
+  if IsNull then
+    Result := ''
+  else
+  begin
+    tmpStream := Statement.CreateBlobStream( Self, bsmRead );
+    try
+      SetString( Result, nil, tmpStream.Size );
+      tmpStream.ReadBuffer( Pointer( Result )^, Length( Result ));
+    finally
+      tmpStream.Free;
+    end;
+  end;
+end;
+
+procedure TIB_ColumnBlob.SetAsString( const NewValue: string );
+var
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmWrite );
+  try
+    if Length( NewValue ) > 0 then
+      tmpStream.WriteBuffer( NewValue[1], Length( NewValue ))
+    else
+    if BlankIsNull then 
+      SysSetIsNull( true )
+    else
+      SysSetIsNull( false );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.Clear;
+begin
+  Statement.CreateBlobStream( Self, bsmWrite ).Free;
+end;
+
+procedure TIB_ColumnBlob.AssignTo( Dest: TObject );
+begin
+  if Dest is TIB_ColumnBlob then
+    SaveToBlob(TIB_ColumnBlob( Dest ))
+  else
+  if Dest is TStrings then
+    SaveToStrings(TStrings(Dest))
+  else
+  if Dest is TStream then
+    SaveToStream(TStream(Dest))
+  else
+  if Dest is TGraphic then
+    SaveToGraphic(TGraphic(Dest))
+  else
+  if Dest is TPicture then
+  begin
+    if Assigned( TPicture(Dest).Graphic ) then
+      SaveToGraphic(TPicture(Dest).Graphic)
+    else
+      SaveToGraphic(TPicture(Dest).Bitmap);
+  end
+  else
+    inherited AssignTo( Dest );
+end;
+
+procedure TIB_ColumnBlob.Assign( Source: TObject );
+begin
+  if Source is TIB_ColumnBlob then begin
+    LoadFromBlob( TIB_ColumnBlob( Source ));
+  end else if Source is TStrings then begin
+    LoadFromStrings( TStrings( Source ));
+  end else if Source is TStream then begin
+    LoadFromStream( TStream( Source ));
+  end else if Source is TGraphic then begin
+    LoadFromGraphic( TGraphic( Source ));
+  end else if Source is TPicture then begin
+    LoadFromGraphic( TPicture( Source ).Graphic );
+  end else begin
+    inherited Assign( Source );
+  end;
+end;
+
+procedure TIB_ColumnBlob.SetBlobData( ABuffer: Pointer; ASize: integer );
+begin
+  with Statement.CreateBlobStream( Self, bsmWrite ) do try
+    WriteBuffer( ABuffer^, ASize );
+  finally
+    Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.LoadFromFile( const AFileName: string );
+var
+  tmpStream: TStream;
+begin
+  tmpStream := TFileStream.Create( AFileName, fmOpenRead );
+  try
+    LoadFromStream( tmpStream );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.SaveToFile( const AFileName: string );
+var
+  tmpStream: TStream;
+begin
+// Get the contents of the BLOB loaded prior to creating the file.
+  Statement.CreateBlobStream( Self, bsmRead ).Free;
+  tmpStream := TFileStream.Create( AFileName, fmCreate );
+  try
+    SaveToStream( tmpStream );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.LoadFromStream( const AStream: TStream );
+var
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmWrite );
+  try
+    tmpStream.CopyFrom( AStream, 0 );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.SaveToStream( const AStream: TStream );
+var
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmRead );
+  try
+    AStream.CopyFrom( tmpStream, 0 );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.LoadFromBlob( const ABlob: TIB_ColumnBlob );
+var
+  tmpStream: TStream;
+begin
+  if not Assigned( ABlob ) or ( ABlob.IsNull ) then
+    Clear
+  else
+  begin
+    tmpStream := Statement.CreateBlobStream( Self, bsmWrite );
+    try
+      if not BlankIsNull then
+        SysSetIsNull( false );
+      ABlob.SaveToStream( tmpStream );
+    finally
+      tmpStream.Free;
+    end;
+  end;
+end;
+
+procedure TIB_ColumnBlob.SaveToBlob( const ABlob: TIB_ColumnBlob );
+var
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmRead );
+  try
+    ABlob.LoadFromStream( tmpStream );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.LoadFromGraphic( const AGraphic: TGraphic );
+var
+  Header: TIB_GraphicHeader;
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmWrite );
+  try
+    if AGraphic <> nil then
+    begin
+      if ( SQLSubType = isc_blob_graphic      ) or
+         ( SQLSubType = isc_blob_typed_binary ) then
+      begin
+        Header.Count := 1;
+        Header.HType := $0100;
+        Header.Size := 0;
+        tmpStream.Write( Header, SizeOf(Header) );
+        AGraphic.SaveToStream( tmpStream );
+        Header.Size := tmpStream.Position - SizeOf( Header );
+        tmpStream.Position := 0;
+        tmpStream.Write( Header, SizeOf( Header ));
+      end
+      else
+        AGraphic.SaveToStream( tmpStream );
+    end;
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.SaveToGraphic( const AGraphic: TGraphic );
+var
+  Size: Longint;
+  Header: TIB_GraphicHeader;
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmRead );
+  try
+    Size := tmpStream.Size;
+    if Size >= SizeOf(TIB_GraphicHeader) then
+    begin
+      tmpStream.Read( Header, SizeOf( Header ));
+      if ( Header.Count <> 1 ) or ( Header.HType <> $0100 ) or
+        ( Header.Size <> Size - SizeOf( Header )) then
+        tmpStream.Position := 0;
+    end;
+    if Assigned( AGraphic ) then
+      AGraphic.LoadFromStream( tmpStream )
+    else
+      raise EIB_ColumnError.Create( E_Unable_Save_Graphic );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.LoadFromStrings( const AStrings: TStrings );
+var
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmWrite );
+  try
+    if Assigned( AStrings ) then
+      AStrings.SaveToStream( tmpStream );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.SaveToStrings( const AStrings: TStrings );
+var
+  tmpStream: TStream;
+begin
+  tmpStream := Statement.CreateBlobStream( Self, bsmRead );
+  try
+    if Assigned( AStrings ) then
+      AStrings.LoadFromStream( tmpStream );
+  finally
+    tmpStream.Free;
+  end;
+end;
+
+procedure TIB_ColumnBlob.SysSetIsNull( const AValue: boolean );
+begin
+  if AValue then
+    if BlobNode.BlobChanged then
+      BlobNode.BlobChanged := false;
+  inherited SysSetIsNull( AValue );
+end;
+
+function TIB_ColumnBlob.IsEqualTo( ABlob: TIB_ColumnBlob ): boolean;
+begin
+  if IsNull <> ABlob.IsNull then
+    Result := false
+  else
+  if IsNull and ABlob.IsNull then
+    Result := true
+  else
+    Result := Statement.IB_Session.BlobsEqual(
+                                      Statement.IB_Connection.PdbHandle,
+                                      ABlob.Statement.IB_Connection.PdbHandle,
+                                      Statement.IB_Transaction.PtrHandle,
+                                      ABlob.Statement.IB_Transaction.PtrHandle,
+                                      PSQLVAR, ABlob.PSQLVAR,
+                                      BlobID, ABlob.BlobID,
+                                      LoadedBlobNode, ABlob.LoadedBlobNode,
+                                      Statement.OnBlobCallback,
+                                      ABlob.Statement.OnBlobCallback );
+end;

@@ -1,0 +1,140 @@
+object MarginsEditor: TMarginsEditor
+  Left = 192
+  Top = 121
+  AutoScroll = False
+  Caption = 'MarginsEditor'
+  ClientHeight = 209
+  ClientWidth = 171
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 62
+    Top = 96
+    Width = 21
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '&Left:'
+    FocusControl = ELeft
+  end
+  object Label2: TLabel
+    Left = 61
+    Top = 123
+    Width = 22
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '&Top:'
+    FocusControl = ETop
+  end
+  object Label3: TLabel
+    Left = 55
+    Top = 155
+    Width = 28
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '&Right:'
+    FocusControl = ERight
+  end
+  object Label4: TLabel
+    Left = 47
+    Top = 182
+    Width = 36
+    Height = 13
+    Alignment = taRightJustify
+    Caption = '&Bottom:'
+    FocusControl = EBottom
+  end
+  object RGUnits: TRadioGroup
+    Left = 8
+    Top = 6
+    Width = 145
+    Height = 75
+    Caption = '&Units:'
+    ItemIndex = 0
+    Items.Strings = (
+      'Percent &Font'
+      'P&ercent Size'
+      'P&ixels')
+    TabOrder = 0
+    OnClick = RGUnitsClick
+  end
+  object ELeft: TEdit
+    Left = 87
+    Top = 93
+    Width = 41
+    Height = 21
+    TabOrder = 1
+    Text = '0'
+    OnChange = ELeftChange
+  end
+  object UDLeft: TUpDown
+    Left = 128
+    Top = 93
+    Width = 16
+    Height = 21
+    Associate = ELeft
+    Min = -32000
+    Max = 32000
+    TabOrder = 2
+  end
+  object ETop: TEdit
+    Left = 87
+    Top = 120
+    Width = 41
+    Height = 21
+    TabOrder = 3
+    Text = '0'
+    OnChange = ETopChange
+  end
+  object UDTop: TUpDown
+    Left = 128
+    Top = 120
+    Width = 16
+    Height = 21
+    Associate = ETop
+    Min = -32000
+    Max = 32000
+    TabOrder = 4
+  end
+  object ERight: TEdit
+    Left = 87
+    Top = 152
+    Width = 41
+    Height = 21
+    TabOrder = 5
+    Text = '0'
+    OnChange = ERightChange
+  end
+  object UDRight: TUpDown
+    Left = 128
+    Top = 152
+    Width = 16
+    Height = 21
+    Associate = ERight
+    Min = -32000
+    Max = 32000
+    TabOrder = 6
+  end
+  object EBottom: TEdit
+    Left = 87
+    Top = 179
+    Width = 41
+    Height = 21
+    TabOrder = 7
+    Text = '0'
+    OnChange = EBottomChange
+  end
+  object UDBottom: TUpDown
+    Left = 128
+    Top = 179
+    Width = 16
+    Height = 21
+    Associate = EBottom
+    Min = -32000
+    Max = 32000
+    TabOrder = 8
+  end
+end

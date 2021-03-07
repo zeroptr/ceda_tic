@@ -1,0 +1,66 @@
+inherited AddForm: TAddForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Add function calculates the sum of all points in the'
+      'data source.'
+      ''
+      'It can also be used to calculate sums by every "n" number'
+      'of points.')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'Add function')
+    Chart3DPercent = 10
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.BackColor = clBlack
+      Marks.Color = clBlack
+      Marks.Font.Color = clRed
+      Marks.Visible = True
+      SeriesColor = clRed
+      Title = 'Source'
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.ShadowSize = 0
+      Marks.ShapeStyle = fosRoundRectangle
+      Marks.Visible = True
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Add'
+      Pointer.Brush.Color = 33023
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TAddTeeFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 13
+      Width = 129
+      Height = 17
+      Caption = '&By every 2 points'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

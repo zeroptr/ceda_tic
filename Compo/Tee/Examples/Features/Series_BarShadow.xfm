@@ -1,0 +1,121 @@
+inherited SeriesBarShadow: TSeriesBarShadow
+  Left = 272
+  Top = 195
+  Width = 641
+  Height = 406
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 633
+  end
+  inherited Memo1: TMemo
+    Width = 633
+    Lines.Strings = (
+      
+        'Bar and horizontal Bar series can display "shadows" as backgroun' +
+        'd of bar points.'
+      ''
+      'Series1.Shadow.Visible := True;'
+      'Series1.Shadow.Size := 8;'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 633
+    Height = 223
+    BackWall.Visible = False
+    Gradient.EndColor = clSilver
+    Gradient.StartColor = clBlack
+    Gradient.Visible = True
+    Legend.ColorWidth = 55
+    Legend.Font.Gradient.EndColor = clSilver
+    Legend.Font.Gradient.Visible = True
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Gradient.EndColor = clNavy
+    Legend.Symbol.Gradient.Visible = True
+    Legend.Symbol.Pen.Visible = False
+    Legend.Symbol.Width = 55
+    Legend.Transparent = True
+    MarginTop = 10
+    Title.Visible = False
+    BottomAxis.Axis.Color = clWhite
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Axis.SmallDots = True
+    BottomAxis.Axis.Visible = False
+    BottomAxis.Grid.Visible = False
+    BottomAxis.LabelsFont.Color = clSilver
+    BottomAxis.LabelsFont.Gradient.EndColor = clSilver
+    BottomAxis.LabelsFont.Gradient.Visible = True
+    BottomAxis.MaximumOffset = 5
+    LeftAxis.Axis.Color = clWhite
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Axis.SmallDots = True
+    LeftAxis.Axis.Visible = False
+    LeftAxis.Grid.Visible = False
+    LeftAxis.LabelsFont.Color = clSilver
+    LeftAxis.LabelsFont.Gradient.EndColor = clSilver
+    LeftAxis.LabelsFont.Gradient.Visible = True
+    LeftAxis.MaximumOffset = 10
+    View3D = False
+    object Series1: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = clNavy
+      BarStyle = bsRectGradient
+      Gradient.Direction = gdTopBottom
+      Shadow.Color = clBlack
+      Shadow.HorizSize = 5
+      Shadow.VertSize = 5
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000B8704000000000002062400000000000C06C40000000
+        0000E075400000000000106D400000000000206C40}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 633
+    object Label1: TLabel
+      Left = 200
+      Top = 13
+      Width = 46
+      Height = 13
+      Caption = '&Bar style :'
+      FocusControl = cbStyle
+    end
+    object cbVisible: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 65
+      Height = 17
+      Caption = '&Visible'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbVisibleClick
+    end
+    object bShadow: TButton
+      Left = 83
+      Top = 8
+      Width = 94
+      Height = 25
+      Caption = '&Shadow...'
+      TabOrder = 1
+      OnClick = bShadowClick
+    end
+    object cbStyle: TComboFlat
+      Left = 256
+      Top = 9
+      Width = 97
+      TabOrder = 2
+      OnChange = cbStyleChange
+      Items.Strings = (
+        'Vertical'
+        'Horizontal')
+    end
+  end
+end

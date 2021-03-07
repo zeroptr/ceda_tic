@@ -1,0 +1,74 @@
+inherited ChartGridVisibleColumns: TChartGridVisibleColumns
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Selecte Visible Colums.'
+      'Example:'
+      '  with ChartGrid1 do'
+      '  begin'
+      '    ShowColors:=True;'
+      '    ShowLabels:=True;'
+      '    ShowFields:=True;'
+      '    ShowXValues:=cgsYes;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Left = 273
+    Width = 377
+    Legend.TopPos = 0
+  end
+  inherited Panel1: TPanel
+    inherited cbAllowAppend: TCheckBox
+      Visible = False
+    end
+    object cbShowColors: TCheckBox
+      Left = 10
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = 'Show &Colors'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbShowColorsClick
+    end
+    object cbShowLabels: TCheckBox
+      Left = 105
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = 'Show &Labels'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = cbShowLabelsClick
+    end
+    object cbShowXValues: TCheckBox
+      Left = 201
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = 'Show &XValues'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = cbShowXValuesClick
+    end
+    object cbShowFields: TCheckBox
+      Left = 309
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = 'Show &Fields'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = cbShowFieldsClick
+    end
+  end
+  inherited ChartGrid1: TChartGrid
+    Width = 273
+    ShowHint = False
+  end
+end

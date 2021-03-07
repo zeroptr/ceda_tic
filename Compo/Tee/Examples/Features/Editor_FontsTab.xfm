@@ -1,0 +1,74 @@
+inherited EditorFontsTab: TEditorFontsTab
+  Left = 438
+  Top = 260
+  Width = 490
+  Height = 440
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 482
+  end
+  inherited Memo1: TMemo
+    Width = 482
+    Lines.Strings = (
+      
+        'See the TeeChart extended Font configuration tab. May be called ' +
+        'for all Chart texts.'
+      'Example:'
+      'uses'
+      '  TeeEdiFont;'
+      '...'
+      '  EditTeeFontEx(Self,Chart1.Axes.Left.LabelsFont);')
+  end
+  inherited Chart1: TChart
+    Width = 482
+    Height = 257
+    BackWall.Gradient.EndColor = clBlue
+    BackWall.Gradient.MidColor = 8454016
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Fonts Tab demo')
+    BottomAxis.Axis.Width = 1
+    BottomAxis.LabelsFont.Color = 157
+    BottomAxis.LabelsFont.Height = -19
+    BottomAxis.LabelsFont.Style = [fsItalic]
+    LeftAxis.Axis.Width = 1
+    LeftAxis.LabelsFont.Color = clNavy
+    LeftAxis.LabelsFont.Height = -19
+    LeftAxis.LabelsFont.Style = [fsItalic]
+    View3D = False
+    object Series1: THistogramSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Transparency = 40
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000000000000040704000000000006073400000000000506E40000000
+        00006875400000000000D06B4000000000008066400000000000806140000000
+        0000E0504000000000000049400000000000A054400000000000C04740000000
+        0000001E40000000000060534000000000003066400000000000606340000000
+        0000404A400000000000E05A400000000000205C400000000000000000000000
+        0000404F400000000000205C400000000000405A400000000000806640000000
+        00004872400000000000987740}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 482
+    object Button1: TButton
+      Left = 12
+      Top = 8
+      Width = 149
+      Height = 25
+      Caption = '&Edit Left axis font...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

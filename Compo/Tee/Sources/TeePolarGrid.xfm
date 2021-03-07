@@ -1,0 +1,30 @@
+inherited PolarGridEditor: TPolarGridEditor
+  Left = 192
+  Top = 107
+  Width = 384
+  Height = 277
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited PageControl1: TPageControl
+    Width = 376
+    Height = 249
+    inherited TabSheet1: TTabSheet
+      inherited CBNulls: TComboFlat
+        TabOrder = 11
+      end
+      object CBCentered: TCheckBox
+        Left = 208
+        Top = 128
+        Width = 107
+        Height = 17
+        Caption = '&Centered'
+        TabOrder = 10
+        OnClick = CBCenteredClick
+      end
+    end
+    object TabPalette: TTabSheet
+      Caption = 'Palette'
+      ImageIndex = 3
+    end
+  end
+end

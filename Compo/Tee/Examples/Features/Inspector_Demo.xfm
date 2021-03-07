@@ -1,0 +1,85 @@
+inherited InspectorForm: TInspectorForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 106
+  end
+  object Splitter1: TSplitter [1]
+    Left = 324
+    Top = 108
+    Height = 229
+    Align = alRight
+  end
+  inherited Panel1: TPanel [2]
+    Top = 65
+    TabOrder = 3
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Show header'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+  object TeeInspector1: TTeeInspector [3]
+    Left = 327
+    Top = 108
+    Width = 152
+    Height = 229
+    Align = alRight
+    RowCount = 6
+    FixedRows = 0
+    Options = [goFixedVertLine, goVertLine, goHorzLine, goColSizing, goThumbTracking]
+    TabOrder = 2
+    Items = <
+      item
+        Caption = 'Chart Color'
+        Style = iiColor
+        Value = 0
+        OnChange = TeeInspector1Items0Change
+      end
+      item
+        Caption = 'Font Size'
+        Style = iiInteger
+        Value = 0
+        OnChange = TeeInspector1Items1Change
+      end
+      item
+        Caption = 'Title visible'
+        OnChange = TeeInspector1Items2Change
+      end
+      item
+        Caption = 'Edit Chart'
+        Style = iiButton
+        Value = 'Click ... !'
+        OnChange = TeeInspector1Items3Change
+      end
+      item
+        Caption = 'Gradient'
+        Style = iiGradient
+      end>
+    Header.Font.Color = clNavy
+    ColWidths = (
+      82
+      66)
+  end
+  inherited Chart1: TChart
+    Top = 108
+    Width = 324
+    Height = 229
+  end
+  inherited Memo1: TMemo [5]
+    Height = 65
+    Lines.Strings = (
+      'The TeeInspector component can also be used with custom'
+      'properties, completely independent from objects and TeeChart.'
+      
+        'Suitable for custom inspector needs, not linked to any object cl' +
+        'ass.')
+  end
+end

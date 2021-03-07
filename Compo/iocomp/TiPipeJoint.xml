@@ -1,0 +1,37 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>You Have Got To Be Kidding!?</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Themes for a Simple Component?!</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Like This??? :)</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

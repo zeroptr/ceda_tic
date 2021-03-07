@@ -1,0 +1,1734 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Author" CONTENT="Kambiz R. Khojasteh">
+<TITLE>Office Assistant Package for Delphi</TITLE>
+<STYLE TYPE="text/css">
+<!--
+body, td, th { font-family: Verdana, Arial, sans-serif; font-size: 10pt; }
+a { text-decoration: none; color: #800; }
+a:hover { color: #f00; }
+-->
+</STYLE>
+</HEAD>
+<BODY> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="5" CELLSPACING="5" BGCOLOR="#660000"> 
+  <TR> 
+    <TH ALIGN="CENTER" VALIGN="MIDDLE"><FONT COLOR="#FFFFFF" SIZE="+3">Office Assistant Package v3.36</FONT></TH> 
+  </TR> 
+</TABLE> 
+<P>Copyright &copy; 1999-2008 <A HREF="mailto:kambiz@delphiarea.com">Kambiz R. Khojasteh</A>. All rights reserved. </P> 
+<H5><BR> 
+  <A NAME="Table of Contents"></A>TABLE OF CONTENTS</H5> 
+<UL> 
+  <LI> <A HREF="#Description"><B>Description</B></A> </LI> 
+  <LI> <A HREF="#Compatibility"><B>Compatibility</B></A> </LI> 
+  <LI> <A HREF="#Installation"><B>Installation</B></A> </LI> 
+  <LI> <A HREF="#Office Assistant"><B>Office Assistant</B></A> </LI> 
+  <UL> 
+    <LI> <A HREF="#TAssistant-Properties">Properties</A> </LI> 
+    <LI> <A HREF="#TAssistant-Methods">Methods</A> </LI> 
+    <LI> <A HREF="#TAssistant-Events">Events</A> </LI> 
+  </UL> 
+  <LI> <A HREF="#Classes, Type Definitions, and Constants"><B>Classes, Type Definitions, and Constants</B></A> </LI> 
+  <UL> 
+    <LI> <A HREF="#Classes">Classes</A> </LI> 
+    <LI> <A HREF="#Types">Type Definitions</A> </LI> 
+    <LI> <A HREF="#Constants">Constants</A> </LI> 
+  </UL> 
+  <LI> <B><A HREF="offbtn97.htm">TOffice97Button</A></B> </LI> 
+  <LI> <A HREF="#Actor Library"><B>Actor Library</B></A> </LI> 
+  <LI> <A HREF="#Actor Editor"><B>Actor Editor</B></A> </LI> 
+  <LI> <A HREF="#History"><B>Version History</B></A> </LI> 
+  <LI> <A HREF="#Disclaimer"><B>Disclaimer</B></A> </LI> 
+  <LI> <A HREF="#Licence"><B>Licence</B></A> </LI> 
+  <LI> <A HREF="#Credits"><B>Credits</B></A> </LI> 
+  <LI> <A HREF="#Contact Information"><B>Contact Information</B></A> </LI> 
+</UL> 
+<H5><BR> 
+  <A NAME="Description"></A>DESCRIPTION</H5> 
+<P>The Office Assistant package has one non-visual component named <B>TAssistant</B>. Each instance of this component can manage one animated character (actor) and message boxes, hints and tips, and search balloons. The main features of TAssistant component are: </P> 
+<UL> 
+  <LI> Ability to replace the active actor dynamically. </LI> 
+  <LI> Has integrated balloon tips for showing tip of the day or any other tips. </LI> 
+  <LI> Powered by a guide (search) balloon to accept the users search requests and show the topics of the search result. </LI> 
+  <LI> Has integrated balloon shape message box with customizable icon. </LI> 
+  <LI> Has both round and rectangular cloud balloons. </LI> 
+  <LI> Can manipulate custom balloons. </LI> 
+  <LI> Uses separated threads for handling the actor's states. </LI> 
+  <LI> Can be moved (dragged) even when a modal balloon/dialog is showing. </LI> 
+  <LI> A specific queued or playing animation can be stopped within the program. </LI> 
+  <LI> Has three level of predefined idling animations. </LI> 
+  <LI> Plays idle animations automatically. Idle times can also be controlled manually. </LI> 
+  <LI> Supports Middle Eastern languages and can be customized easily for use in multi-lingual applications. </LI> 
+  <LI> Powered by a large collection of events to give complete control over the component operation. </LI> 
+  <LI> The relative speed of animations can be controlled within the component. </LI> 
+  <LI> Can show animations in a 256-color screen mode without loosing color quality. </LI> 
+  <LI> Supports both Microsoft<SUP>®</SUP> Office 97 and 2000 balloons look. </LI> 
+  <LI> Includes <A HREF="offbtn97.htm">TOffice97Button</A> component by <A HREF="mailto:jonathan@the-hoskings.freeserve.co.uk">Jonathan Hosking</A>. </LI> 
+</UL> 
+<H5><BR> 
+  <A NAME="Compatibility"></A>COMPATIBILITY</H5> 
+Office Assistant Package is built for Borland Delphi 3 and higher. Because Delphi 3 does not support bi-directional languages and variant variables, when using the package on this version of Delphi, consider the following notes:
+<OL> 
+  <LI> Changes in <B><A HREF="#BiDiMode">BiDiMode</A></B> property has no effect. </LI> 
+  <LI> To play animation by using its index reference, developers must use <A HREF="#PlayIndex"><B>PlayIndex</B></A> method instead of <A HREF="#Play"><B>Play</B></A> method. </LI> 
+</OL> 
+<H5><BR> 
+  <A NAME="Installation"></A>INSTALLATION</H5> 
+To install the Office Assistant Package follow the procedure below:
+<OL> 
+  <LI> Unzip the file <B>ASSIST.ZIP</B> to any directory </LI> 
+  <LI> Click on <B>File|Open</B> menu item </LI> 
+  <LI> Select the file <B>AssistX.DPK</B> from the open dialog and click <B>Open</B><BR> 
+    (<B>X</B> is 3, 4, 5, 6, 7, 2005, or 2007 depending to your Delphi version) </LI> 
+  <LI> Click the <B>Install</B> button on the package window to install the component </LI> 
+  <LI> Click on <B>File|Close</B> menu item to close the package window </LI> 
+  <LI> Click on <B>Tools|Environment Options</B> menu item </LI> 
+  <LI> Go to <B>Library</B> tab </LI> 
+  <LI> Add the install directory to <B>Library Path</B> </LI> 
+  <LI> Click <B>OK</B> to confirm changes </LI> 
+</OL> 
+Alternatively, you can add <B>oaReg.pas</B> into a new or existing package.<BR> 
+<H5><BR> 
+  <A NAME="Office Assistant"></A><A NAME="TAssistant"></A>OFFICE ASSISTANT</H5> 
+<P>The following tables contain the list of properties, methods and events of <B>TAssistant</B> component. </P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="4" CELLSPACING="2"> 
+  <CAPTION> 
+  <A NAME="TAssistant-Properties"></A><B>TAssistant Properties</B> 
+  </CAPTION> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD WIDTH="25%" BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Property Name</FONT></B></TD> 
+    <TD WIDTH="20%" BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Data Type</FONT></B></TD> 
+    <TD BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Description</FONT></B></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="ActorLibrary-a"></A> 
+    <TD><B>ActorLibrary</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Specifies the filename of the currently loaded <A HREF="#Actor Library">actor library</A>.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>ActorName&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Contains the actor's name of the currently loaded <A HREF="#Actor Library">actor library</A>.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="ActorVerInfo-a"></A> 
+    <TD><B>ActorVerInfo&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>This property is an array of version information for the currently loaded <A HREF="#Actor Library">actor library</A>. For example <B>ActorVerInfo['Language']</B> returns the language name of the actor.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B><A NAME="AlwaysOnTop"></A>AlwaysOnTop</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Indicates wether the actor should be the top most window even when the application is not active.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>Animations&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B><A HREF="#TAnimation">TAnimation</A></B></TD> 
+    <TD>This property is an array of animations data that indexed from one to AnimationCount.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>AnimationCount&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Contains the number of animations in the currently loaded <A HREF="#Actor Library">actor library</A>.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B><A NAME="AutoIdle"></A>AutoIdle</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Controls whether the assistant plays the idle animations automatically.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="Balloon"></A> 
+    <TD><B>Balloon</B></TD> 
+    <TD><B>TBalloonOptions</B></TD> 
+    <TD>Contains the balloon properties.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.BorderColor</B></TD> 
+    <TD><B>TColor</B></TD> 
+    <TD>Specifies the border color of the balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Color</B></TD> 
+    <TD><B>TColor</B></TD> 
+    <TD>Specifies the background color of the balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Font</B></TD> 
+    <TD><B>TFont</B></TD> 
+    <TD>Controls the attributes of text written on the balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="HoverFont"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.HoverFont</B></TD> 
+    <TD><B>TFont</B></TD> 
+    <TD>Determines the font of buttons when the cursor is over them.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="LabelClass"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.LabelClass</B></TD> 
+    <TD><B>Class of TControl</B></TD> 
+    <TD>Determines the control class that the component will use for displaying text labels. When this property set to something other than <B>TLabel</B>, <A HREF="#OnAdjustCustomLabel">OnAdjustCustomLabel</A> event will fire to initialize properties of custom labels.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="Balloon.Metrics"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics</B></TD> 
+    <TD><B>TBalloonMetrics</B></TD> 
+    <TD>Contains basic information about balloon's size and spacing. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.BalloonOffset</B></TD> 
+    <TD><B>Integer</B></TD> 
+    <TD>Specifies distance between the balloon and its <A HREF="#BalloonAnchor">anchor</A>, if any is set. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.ArrowThickness</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies thickness of the balloons arrow. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.ArrowLength</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies length of the balloons arrow. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.ThoughtLength</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies length of circles for the think balloons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.RoundCorner</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies size of ellipse used to draw rounded corners of the balloons.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.ControlSpacing</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies distance between neighbor controls on the balloons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MaxButtonSpacing</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies maximum horizontal distance between two nighbor buttons on the balloons.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MinButtonWidth</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies mimimum width of the buttons on the balloons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MinButtonHeight</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies mimimum height of the buttons on the balloons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MinMsgDlgWidth</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies the minimum width of the message balloons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MinTipsDlgWidth</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies the minimum width of the tip balloons.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MinGuideDlgWidth</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies the minimum width of the guide balloons.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MinHintDlgWidth</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies the minimum width of the hint balloons.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Metrics.MinQueryDlgWidth</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies the minimum width of the input query balloons.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="Office2000Look"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>Balloon.Office2000Look</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether Office 2000 look is applied to balloons.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="BalloonAnchor"></A> 
+    <TD><B>BalloonAnchor</B></TD> 
+    <TD><B>TWinControl</B></TD> 
+    <TD>Determines the form or windowed-control that the balloon attaches to it. When value of this property is not assigned, the anchor is the assistant. When Anchor item is not visible, balloon centers to desktop and <A HREF="#BalloonPos">BalloonPos</A> property sets to bpCenter.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="BalloonPos"></A> 
+    <TD><B>BalloonPos&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B><A HREF="#TBalloonPos">TBalloonPos</A></B></TD> 
+    <TD>Indicates the position of the balloon relative to the <A HREF="#BalloonAnchor">BalloonAnchor</A> form.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="BiDiMode"></A> 
+    <TD><B>BiDiMode</B></TD> 
+    <TD><B>TBiDiMode</B></TD> 
+    <TD>Specifies the bi-directional mode for the balloons and assistant's popup menu.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="BlockingMove"></A> 
+    <TD><B>BlockingMove</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>When this property is true, call to <A HREF="#MoveTo">MoveTo</A> method executes in main VCL thread. To move the actor asynchronously, set this property to false.<BR> 
+      <B>Note: </B>When this property is true and assistant is moving, any attempt to show a modal balloon fails and the function immediately returns mrNone.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="BoundsRect"></A> 
+    <TD><B>BoundsRect</B></TD> 
+    <TD><B>TRect</B></TD> 
+    <TD>Indicates the bounding rectangle of the actor on the Windows desktop or <A HREF="#DockSite">DockSite</A>.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="CustomDialog"></A> 
+    <TD><B>CustomDialog</B></TD> 
+    <TD><B>TAssistantBalloon</B></TD> 
+    <TD>Determines the form which will be used as custom balloon. By calling <A HREF="#ShowCustom">ShowCustom</A> or <A HREF="#ShowCustomModal">ShowCustomModal</A> methods the custom balloon will be displayed. To create a custom balloon please follow the procedures below:<BR> 
+      <OL> 
+        <LI>Create a new form.</LI> 
+        <LI>Add <I>oaBaloon</I> to the interface uses clause of the unit.</LI> 
+        <LI>Change the form's class ancestor from <I>TForm</I> to <I>TAssistantBalloon.</I></LI> 
+        <LI>Drop one and only one <I>TPanel</I> control on the form. At run-time, the balloon's size will be set to the panel's size.</LI> 
+        <LI>Set the panel's properties as below:
+          <P>  
+          <DL> 
+            <DD>ParentColor := True;</DD> 
+            <DD>BevelOuter := bvNone;</DD> 
+            <DD>Caption := EmptyStr;</DD> 
+          </DL> 
+          <P></P> 
+        </LI> 
+        <LI>Instead of the form, put the other controls on the panel.</LI> 
+      </OL></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="DockSite"></A> 
+    <TD><B>DockSite</B></TD> 
+    <TD><B>TWinControl</B></TD> 
+    <TD BGCOLOR="#F8F8F8">Determines the form or windowed control, which actor placed on it. When this property is not assigned, the actor will be float on the Windows desktop.<BR> 
+      <B>Note:</B> Assistant's position is relative to <A HREF="#DockSite">DockSite</A>.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="CanDrag"></A> 
+    <TD><B>Draggable</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>If set to true, the actor can be repositioned by dragging it.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>Dragging&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>While Dragging is true, the user is dragging the assistant window.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="Empty"></A>Empty&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether an <A HREF="#Actor Library">actor library</A> is loaded to the component.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="FastShowHide"></A> 
+    <TD><B>FastShowHide</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>When this property is false, the assistant automatically plays SHOW and HIDE animations on changes in <A HREF="#Visible">Visibile</A> property. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="GuideDlg"></A> 
+    <TD><B>GuideDlg</B></TD> 
+    <TD><B>TGuideDlgOptions</B></TD> 
+    <TD>Contains the Guide balloon options.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="AcceptRequest"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.AcceptRequest</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>If AcceptRequest is false, the edit box and search button will not be displayed on the Guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.Description</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Contains a short description about the found topics.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.Icon</B></TD> 
+    <TD><B>TIcon</B></TD> 
+    <TD>Specifies an icon for the guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.Request</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Contains the requested search text entered by the user.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="RequestResult"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.RequestResult</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Indicates whether topics are result of a user request's search or not. When RequestResult is true, topics will be displayed followed by a circle button, otherwise a bulb will be displayed instead of circle button.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.Title</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Specifies the title of the Guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="GuideDlg.Topics"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.Topics</B></TD> 
+    <TD><B><A HREF="#TTopicsList">TTopicsList</A></B></TD> 
+    <TD>Specifies the list of found topics according to the user search request.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.VisibleButtons</B></TD> 
+    <TD><B><A HREF="#TGuideDlgButtons">TGuideDlgButtons</A></B></TD> 
+    <TD>Determines which button appear on the Guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>Height</B></TD> 
+    <TD><B>Integer</B></TD> 
+    <TD>Specifies the vertical size of the assistant in pixels.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="HintBulb"></A> 
+    <TD><B>HintBulb</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Indicates whether a hint bulb appear beside the assistant.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="HintDlg"></A> 
+    <TD><B>HintDlg</B></TD> 
+    <TD><B>THintDlgOptions</B></TD> 
+    <TD>Contains the Hint balloon options.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>HintDlg.Description</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Contains the hint itself or a short description about available hints.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>GuideDlg.Icon</B></TD> 
+    <TD><B>TIcon</B></TD> 
+    <TD>Specifies an icon for the Hint balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>HintDlg.Title</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Specifies the title of the Hint balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="HintDlg.Topics"></A> 
+    <TD><B>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4">HintDlg.Topics</B></TD> 
+    <TD><B><A HREF="#TTopicsList">TTopicsList</A></B></TD> 
+    <TD>Specifies the list of available hint topics.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><A NAME="MaxIdleTime"></A><B>MaxIdleTime</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Determines the maximum time in milliseconds, which actor can stay freezed before playing an Idle animation. When <A HREF="#AutoIdle">AutoIdle</A> is false, this property has no meaning.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><A NAME="MaxIdleTime"></A><B>MinIdleTime</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Determines the minimum time in milliseconds, which actor can stay freezed before playing an Idle animation. When <A HREF="#AutoIdle">AutoIdle</A> is false, this property has no meaning.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>ModalBalloon&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>If ModalBalloon is true, the visible balloon has been shown as modal.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>MoveStep</B></TD> 
+    <TD><B>Byte</B></TD> 
+    <TD>Specifies the amount of movements, in pixels, in every step of <A HREF="#MoveTo">MoveTo</A> method.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B><A NAME="MovingTo"></A>MovingTo&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether the actor is moving on the screen using a call to <A HREF="#MoveTo">MoveTo</A> method.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B><A NAME="MovingToSync"></A>MovingToSync&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether the actor is moving on the screen using a call to <A HREF="#MoveTo">MoveTo</A> method as blocking move. When this property is true any attempt to show a modal balloon fails and the function immediately returns mrNone.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="MsgDlg"></A> 
+    <TD><B>MsgDlg</B></TD> 
+    <TD><B>TMsgDlgOptions</B></TD> 
+    <TD>Contains the Message balloon options.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="CheckBox"></A> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CheckBox</B></TD> 
+    <TD><B>TCheckBoxOptions</B></TD> 
+    <TD>Contains check box options.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CheckBox.AllowGrayed</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether check box can be in "grayed" state.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CheckBox.Caption</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Specifies the display text of check box.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CheckBox.Checked</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether the check box appears checked.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CheckBox.Enabled</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether the check box is enabled.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CheckBox.State</B></TD> 
+    <TD><B>TCheckBoxState</B></TD> 
+    <TD>Indicates whether the check box is selected, deselected, or grayed.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="0" HSPACE="4">&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CheckBox.Visible</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether the check box is visible.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.CustomIcon</B></TD> 
+    <TD><B>TIcon</B></TD> 
+    <TD>When Type parameter of <A HREF="#MessageDlg">MessageDlg</A> method is mtCustom, the balloon shows the icon specified by this property..</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>MsgDlg.Title</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Determines the title of the Message balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>Mute</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Controls whether the assistant makes sound.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>Name</B></TD> 
+    <TD><B>String</B></TD> 
+    <TD>Specifies the name of the assistant as referenced in code.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="PlayIdling"></A> 
+    <TD><B>PlayIdling&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Indicates whether an idle animation is playing on the idle time.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>Playing&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>If Playing is true, indicates an animation is playing.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="PlayingID"></A> 
+    <TD><B>PlayingID&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B><A HREF="#TRequestID">TRequestID</A></B></TD> 
+    <TD>Identifies the ID of current playing animation</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>PopupMenu</B></TD> 
+    <TD><B>TPopupMenu</B></TD> 
+    <TD>Identifies the pop-up menu associated with the assistant.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>Priority</B></TD> 
+    <TD><B>TThreadPriority</B></TD> 
+    <TD>Determines the priority of the animation sequencer thread.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B><A NAME="Showing"></A>Showing&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Indicates whether the is currently visible. This property is true when <A HREF="#Visible">Visible</A> property is true and the <A HREF="#Empty">Empty</A> property is false.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>Speed</B></TD> 
+    <TD><B>Word</B></TD> 
+    <TD>Specifies the relational speed of animations according to the original animation speed in percent.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B><A NAME="StageLeft"></A>StageLeft</B></TD> 
+    <TD><B>Integer</B></TD> 
+    <TD>Specifies the horizontal coordinate of the left edge of the assistant window relative to the Windows desktop or <A HREF="#DockSite">DockSite</A>.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B><A NAME="StageTop"></A>StageTop</B></TD> 
+    <TD><B>Integer</B></TD> 
+    <TD>Specifies the vertical coordinate of the top edge of the assistant window relative to the Windows desktop or <A HREF="#DockSite">DockSite</A>.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>Tag</B></TD> 
+    <TD><B>Integer</B></TD> 
+    <TD>Stores an integer value as part of the component.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>TipsDlg</B></TD> 
+    <TD><B>TTipsDlgOptions</B></TD> 
+    <TD>Contains the Tips balloon options.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>TipsDlg.TipIndex</B></TD> 
+    <TD><B>Integer</B></TD> 
+    <TD>Specifies the index of the current selected tip on the Tips balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>TipsDlg.Tips</B></TD> 
+    <TD><B>TStringList</B></TD> 
+    <TD>Contains the list of tip strings.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD>&nbsp;&nbsp;&nbsp;&nbsp;<IMG WIDTH="10" HEIGHT="10" HSPACE="4"><B>TipsDlg.VisibleButtons</B></TD> 
+    <TD><B><A HREF="#TTipsDlgButtons">TTipsDlgButtons</A></B></TD> 
+    <TD>Determines which button appear on the Tips balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B><A NAME="Visible"></A>Visible</B></TD> 
+    <TD><B>Boolean</B></TD> 
+    <TD>Determines whether the assistant should be visible.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>VisibleBalloon&nbsp;<SUP><NOBR>Read-only</NOBR></SUP></B></TD> 
+    <TD><B><A HREF="#TBalloonKind">TBalloonKind</A></B></TD> 
+    <TD>Indicates the kind of visible balloon. If balloon is not visible the value of this property is bkNone.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>Width</B></TD> 
+    <TD><B>Integer</B></TD> 
+    <TD>Specifies the horizontal size of the assistant in pixels.</TD> 
+  </TR> 
+</TABLE> 
+<BR> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="4" CELLSPACING="2"> 
+  <CAPTION> 
+  <A NAME="TAssistant-Methods"></A><B>TAssistant Methods</B> 
+  </CAPTION> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Methods</FONT></B></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"> <P><B><A NAME="BringTofront"></A>procedure BringToFront;</B><BR> 
+        Brings the assistant and its balloon in front of the other assistant instances.<BR> 
+        <B>Note:</B> Assistant automatically keeps itself as top-most form of the application and you do not need to call this method in most of applications.</P></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="CloseBalloon"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>procedure CloseBalloon;</B><BR> 
+      Closes the current visible balloon. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"> <B>constructor Create(AOwner: TComponent);</B><BR> 
+      Creates and initializes a new TAssistant. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"> <B>destructor Destroy; </B><BR> 
+      Destroys an instance of TAssistant. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"> <B>function GestureAt(X, Y: Integer): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Plays the gesture animation according to the screen coordinate specified by X and Y parameters. The function returns a unique id for played animation or zero on error. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"> <B>function GlanceAt(X, Y: Integer): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Plays the glance animation according to the screen coordinate specified by X and Y parameters. The function returns a unique id for played animation or zero on error. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure Hide(Fast: Boolean = False);</B><BR> 
+      Hides the assistant. If Fast is true, the hide animation will not play. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="InputQuery"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>function InputQuery(const ACaption, APrompt: String; var Value: String): Boolean;</B><BR> 
+      Displays an input balloon that enables the user to enter a string. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"><A NAME="IsJustPlayed"></A><B>function IsJustPlayed(Actions: <A HREF="#TActorActions">TActorActions</A> = []): Boolean;</B><BR> 
+      Returns true if one of the specified actions are just played but its return animation is not played, otherwise the function returns false. When set of Actions is empty, the function looks for any action, which is just played.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="IsPlaying"></A>function IsPlaying(Actions: <A HREF="#TActorActions">TActorActions</A> = []): Boolean;</B><BR> 
+      If one of the specified actions are playing or waiting to play, the function returns true. When set of Actions is empty, the function looks for any playing action.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"><B>function IsValid(RequestID: <A HREF="#TRequestID">TRequestID</A>): Boolean;</B><BR> 
+      If the specified RequestID is playing or waiting to play, the function returns true. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"> <B>function LookAt(X, Y: Integer): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Plays the look animation according to the screen coordinate specified by X and Y parameters. The function returns a unique id for played animation or zero on error. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="MessageDlg"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B><A NAME="MessageDlg"></A>function MessageDlg(const Msg: String; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: LongInt): Word;</B><BR> 
+      This function is as same as Delphi MessageDlg function except that this method shows a balloon. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="MessageDlg"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B><A NAME="MessageDlgDef"></A>function MessageDlgDef(const Msg: String; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: LongInt; DefButton: TMsgDlgBtn): Word;</B><BR> 
+      This function works as same as <A HREF="#MessageDlg">MessageDlg</A> method except that this method has an extra parameter that determines which button has focus as default. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="MoveBalloonTo"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure MoveBalloonTo(Point: TPoint);</B><BR> 
+      Moves the visible balloon to the specified point. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="MoveBalloonToControl"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>procedure MoveBalloonToControl(Control: TControl);</B><BR> 
+      Moves the visible balloon over the specified control. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="MoveBalloonToCursor"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure MoveBalloonToCursor;</B><BR> 
+      Moves the visible balloon to the mouse cursor's position. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="MoveTo"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>procedure MoveTo(X, Y: Integer);</B><BR> 
+      Moves the assistant to the specified coordinate of X and Y relative to <A HREF="#DockSite">DockSite</A> and plays the approperiate animations. When <A HREF="#BlockingMove">BlockingMove</A> is false, the procedure returns immediately.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"> All versions:<BR> 
+      <B>function Play(Action: <A HREF="#TActorAction">TActorAction</A>): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Delphi 3:<BR> 
+      <B>function PlayAction(Action: <A HREF="#TActorAction">TActorAction</A>): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Plays randomly one of animations associated to the action. The function returns a unique id for played animation or zero on error. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"><A NAME="Play"></A><A NAME="PlayIndex"></A> Delphi 4 and Higher:<BR> 
+      <B>function Play(Index: Word): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Delphi 3:<BR> 
+      <B>function PlayIndex(Index: Word): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Plays the animation specified by the animation's index. The function returns a unique id for played animation or zero on error. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"> All versions:<BR> 
+      <B>function Play(const Name: String): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Delphi 3:<BR> 
+      <B>function PlayName(const Name: String): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Plays the animation specified by the animation's name. The function returns a unique id for played animation or zero on error. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"> <P><B><A NAME="PlayRandom"></A></B>Delphi 4 and higher:<BR> 
+        <B>function Play(const Actions: array of <A HREF="#TActorAction">TActorAction</A>);<BR> 
+        </B>Delphi 3:<BR> 
+        <B>function PlayRandom(const Actions: array of <A HREF="#TActorAction">TActorAction</A>);</B><BR> 
+        Randomly selects one of the actions from the list and plays randomly one of the animations related to the selected action. The function returns a unique id for played animation or zero on error. To give a higher priority to an action, simply repeat it in the list. For example, using PlayRandom([aaWave, aaWave, aaWave, aaGreet]) gives three times more chance to aaWave to play. In the action list, you can also use special action aaNone, which means play nothing.</P></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="PlaySafe"></A>function PlaySafe(Action: <A HREF="#TActorAction">TActorAction</A>): <A HREF="#TRequestID">TRequestID</A>;</B><BR> 
+      Plays randomly one of animations associated to the action if there is no running animation or actor is playing an idle animation. Besides that, if the Action parameter is one of aaGetAttention, aaRead, or aaWrite, the function may convert them respectively to aaGetAttentionContinued, aaReadContinued, or aaWriteContinued actions to prevent jumping in actor sequences. The function returns a unique id for played animation or zero on error. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"><A NAME="ResetIdle"></A><B>procedure ResetIdle;</B><BR> 
+      Resets the ideling level to the first level and if it is neccessary, returns the assistant to rest pose state.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="MoveTo"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B><A NAME="SetPosition"></A>procedure SetPosition(X, Y: Integer);</B><BR> 
+      Moves the assistant to the specified coordinate of X and Y relative to <A HREF="#DockSite">DockSite</A> without playing the approperiate animations. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"> <B>procedure Show(Fast: Boolean = False);</B><BR> 
+      Shows the assistant. If Fast is true, the show animation will not play. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="ShowcUSTOM"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure ShowCustom;</B><BR> 
+      Shows the custom balloon. Custom balloon determines by <A HREF="#CustomDialog">CustomDialog</A> property. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="ShowCustomModal"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>function ShowCustomModal: Word;</B><BR> 
+      Shows the custom balloon as modal. Custom balloon determines by <A HREF="#CustomDialog">CustomDialog</A> property. The retuned value is the modal result. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="ShowHint"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure ShowHint;</B><BR> 
+      Shows the Hint balloon. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="ShowHintModal"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>function ShowHintModal: Word;</B><BR> 
+      Shows the Hint balloon as modal. The retuned value is the id or index of the selected hint topic. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="ShowGuide"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure ShowGuide;</B><BR> 
+      Shows the Guide balloon. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="ShowGuideModal"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>function ShowGuideModal: Word;</B><BR> 
+      Shows the Guide balloon as modal. The retuned value is the id or index of the selected guide topic. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="ShowTips"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure ShowTips;</B><BR> 
+      Shows the Tips balloon. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="Speak"></A> 
+    <TD BGCOLOR="#EEEEEE"> <B>procedure Speak(const Msg: String; Timeout: Integer = 0);</B><BR> 
+      Shows a balloon containing the Msg and wait for timeout to hide the balloon. The timeout is in milliseconds and if it is zero the balloon will be hide only by calling the <A HREF="#CloseBalloon">CloseBalloon</A> method.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure Stop(RequestID: <A HREF="#TRequestID">TRequestID</A> = 0);</B><BR> 
+      Stops the specified animation if it is playing otherwise removes it from the queue. Zero RequestID passed as parameter means the current running animatin.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"> <B><A NAME="StopAll"></A>procedure StopAll(Cut: Boolean = False);</B><BR> 
+      Stops the current playing animation and empties the animation queue. When Cut is true, the return sequence of the stopped animation will not played.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="Think"></A> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure Think(const Msg: String; Timeout: Integer = 0);</B><BR> 
+      Shows a think balloon containing the Msg and wait for timeout to hide the balloon. The timeout is in milliseconds and if it is zero the balloon will be hide only by calling the <A HREF="#CloseBalloon">CloseBalloon</A> method. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#EEEEEE"> <B><A NAME="WaitFor"></A>function WaitFor(RequestID: <A HREF="#TRequestID">TRequestID</A> = 0): Boolean;</B><BR> 
+      Waits for specified animation until it stops to play. If the specified animation has an infinite loop, the function returns immediately with a false result. Zero RequestID passed as parameter means the current running animatin.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="WaitForMove"></A>function WaitForMove: Boolean;</B><BR> 
+      Waits for an asynchronous call to <A HREF="#MoveTo">MoveTo</A> method. If a blocking move is running, the function returns immediately with false result.</TD> 
+  </TR> 
+</TABLE> 
+<BR> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="4" CELLSPACING="2"> 
+  <CAPTION> 
+  <A NAME="TAssistant-Events"></A><B>TAssistant Events</B> 
+  </CAPTION> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD WIDTH="25%" BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Event Name</FONT></B></TD> 
+    <TD WIDTH="20%" BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Type</FONT></B></TD> 
+    <TD BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Description</FONT></B></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="OnAdjustCustomLabel"></A> 
+    <TD><B>OnAdjustCustomLabel</B></TD> 
+    <TD><B><A HREF="#TCustomLabelEvent">TCustomLabelEvent</A></B></TD> 
+    <TD>Occurs when a control class other than <B>TLabel</B> has been defined for <A HREF="#LabelClass">LabelClass</A> property of the component. Use this event for initializing properties of the new label control. For example, if the new control class has a word-wrap property, in this event set it to true.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnBalloonHide</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the balloon hides.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>OnBalloonShow</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the balloon shows.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnChange</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs whenever the <A HREF="#ActorLibrary-a">ActorLibrary</A> changes.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>OnClick</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user clicks on the assistant.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnDblClick</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user double-clicks on the assistant.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>OnDragging</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user is dragging the assistant.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnDragStart</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user begins to drag the assistant.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>OnDragStop</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the dragging of the assistant ends.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnGuideOptionsClick</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user clicks on the options button of the Guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>OnGuideRequestChange</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user changes the text of the edit box on the Guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnGuideSearchClick</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user clicks on the search button of the Guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="OnGuideTopicClick"></A> 
+    <TD><B>OnGuideTopicClick</B></TD> 
+    <TD><B><A HREF="#TTopicClickEvent">TTopicClickEvent</A></B></TD> 
+    <TD>Occurs when the user clicks on the one of topics displayed on the Guide balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnHide</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>This event just triggered when the assistant goes to hide.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="OnHintBulbClick"></A> 
+    <TD><B>OnHintBlubClick</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when the user clicks on the hint bulb.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="OnHintTopicClick"></A> 
+    <TD><B>OnHintTopicClick</B></TD> 
+    <TD><B><A HREF="#TTopicClickEvent">TTopicClickEvent</A></B></TD> 
+    <TD>Occurs when the user clicks on the one of topics displayed on the Hint balloon.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="OnIdle"></A> 
+    <TD><B><A NAME="OnIdle"></A>OnIdle</B></TD> 
+    <TD><B><A HREF="#TIdleEvent">TIdleEvent</A></B></TD> 
+    <TD> <P>This event triggered when the assistant needs to play an idle animation.<BR> 
+        <B>Note:</B> This event does not occur in the main VCL thread.</P></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="OnHintTopicClick"></A> 
+    <TD><B><A NAME="OnMoveStart"></A>OnMoveStarts</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when just before the assistant begins to move on the screen. This event occurs only by calling <A HREF="#MoveTo">MoveTo</A> method.<BR> 
+      <B>Note:</B> When <A HREF="#BlockingMove">BlockingMove</A> is false, this event does not occur in the main VCL thread. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="OnIdle"></A> 
+    <TD><B><A NAME="OnMoveStop"></A>OnMoveStop</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD> <P>Occurs when just before the assistant ends to move on the screen. This event occurs only by calling <A HREF="#MoveTo">MoveTo</A> method.<BR> 
+        <B>Note:</B> When <A HREF="#BlockingMove">BlockingMove</A> is false, this event does not occur in the main VCL thread.</P></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="OnPlayStart"></A> 
+    <TD><B><A NAME="OnMoving"></A>OnMoving</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>Occurs when while the assistant is moving on the screen. This event occurs only by calling <A HREF="#MoveTo">MoveTo</A> method.<BR> 
+      <B>Note:</B> When <A HREF="#BlockingMove">BlockingMove</A> is false, this event does not occur in the main VCL thread.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"><A NAME="OnPlayStart"></A> 
+    <TD><B><A NAME="OnPlayStart"></A>OnPlayStart</B></TD> 
+    <TD><B><A HREF="#TPlayEvent">TPlayEvent</A></B></TD> 
+    <TD>This event just triggered when an animation begins to play.<BR> 
+      <B>Note:</B> This event does not occur in the main VCL thread. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"><A NAME="OnPlayStop"></A> 
+    <TD><B><A NAME="OnPlayStop"></A>OnPlayStop</B></TD> 
+    <TD><B><A HREF="#TPlayEvent">TPlayEvent</A></B></TD> 
+    <TD>This event triggered when an animation terminates.<BR> 
+      <B>Note:</B> This event does not occur in the main VCL thread. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B><A NAME="OnResize"></A>OnResize</B></TD> 
+    <TD><B>TTNotifyEvent</B></TD> 
+    <TD>Occurs immediately after the assistant is resized.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD><B>OnShow</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>This event just triggered when the assistant goes to show.</TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD><B>OnTipsTipChange</B></TD> 
+    <TD><B>TNotifyEvent</B></TD> 
+    <TD>This event triggered after changing the current tip of the Tips balloon.</TD> 
+  </TR> 
+</TABLE> 
+<BR> 
+<H5><BR> 
+  <A NAME="Classes, Type Definitions, and Constants"></A>CLASSES, TYPE DEFINITIONS, AND CONSTANTS</H5> 
+<P>Here, is a list of classes, type definitions, and constants that declared and used by Office Assistant package. The multi-language application developers can change string constants to the appropriate language.</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="4" CELLSPACING="2"> 
+  <CAPTION> 
+  <A NAME="Classes"></A><B>Classes</B> 
+  </CAPTION> 
+  <TR> 
+    <TD BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Classes</FONT></B></TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#BBBBBB"><B><A NAME="TTopicsList"></A>TTopicsList = class(TStringList);</B></TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"> <B>property Count: Integer;</B><BR> 
+      Determines the number of topics in the list. This property is read-only. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#EEEEEE"> <B>property Strings [Index: Integer]: String;</B><BR> 
+      Contains list of topics' titles. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"> <B>property Options [Index: Integer]: <A HREF="#TTopicOptions">TTopicOptions</A>;</B><BR> 
+      Contains the list of topic options. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#EEEEEE"> <B>constructor Create;</B><BR> 
+      Default constructor of the class. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"> <B>function Add(const S: String): Integer;</B><BR> 
+      Adds a new topic to end of the topic list. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#EEEEEE"> <B>function AddOptions(const S: String; AOptions: <A HREF="#TTopicOptions">TTopicOptions</A>): Integer;</B><BR> 
+      Adds a new topic to end of the topic list and sets its options by the specified options as parameter. The Options object passed as parameter can be freed by the caller. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="AddID"></A>function AddID(const S: String; ID: Integer): Integer;</B><BR> 
+      Adds a new topic to end of the topic list and set its reference ID. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#EEEEEE"><B>function AddStyle(const S: String; AStyles: <A HREF="#TTopicStyles">TTopicStyles</A>): Integer;</B><BR> 
+      Adds a new topic to end of the topic list and set its display style. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"> <B><A NAME="AddStyleID"></A>function AddStyleID(const S: String; AStyles: <A HREF="#TTopicStyles">TTopicStyles</A>; ID: Integer): Integer;</B><BR> 
+      Adds a new topic to end of the topic list and set its display style and reference ID. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#EEEEEE"> <B>procedure Assign(Source: TPersistent);</B><BR> 
+      Copies the contents of another topic list to the object where the method is executed. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"> <B>procedure Delete(Index: Integer);</B><BR> 
+      Deletes the topic with the specified index from the list of topics. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#EEEEEE"> <B>procedure Clear;</B><BR> 
+      Deletes all topics from the list. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#BBBBBB"><B><A NAME="TTopicOptions"></A>TTopicOptions = class(TPersistent);</B></TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"> <B>property ID: Integer;</B><BR> 
+      Determines the ID of the topic. If this value is zero or a non-negative value, by selecting the topic the second parameter of <A HREF="#OnGuideTopicClick">OnGuideTopicClick</A> or <A HREF="#OnHintTopicClick">OnHintTopicClick</A> events will be the topic ID otherwise index of the topic in the topics list will be used. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#EEEEEE"> <B>property Styles: <A HREF="#TTopicStyles">TTopicStyles</A>;</B><BR> 
+      Determines the visual style of the topic item. </TD> 
+  </TR> 
+  <TR> 
+    <TD BGCOLOR="#F8F8F8"> <B>property OnSelect: <A HREF="#TTopicClickEvent">TTopicClickEvent</A>;</B><BR> 
+      Occurs when user selects the topic. If this event is not assigned <A HREF="#OnGuideTopicClick">OnGuideTopicClick</A> or <A HREF="#OnHintTopicClick">OnHintTopicClick</A> events will be called. </TD> 
+  </TR> 
+</TABLE> 
+<BR> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="4" CELLSPACING="2"> 
+  <CAPTION> 
+  <A NAME="Types"></A><B>Type Definitions</B> 
+  </CAPTION> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Type Definitions</FONT></B></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="TRequestID"></A>TRequestID = Cardinal;</B><BR> 
+      This type holds a unique id for playing or queued animations. By this id you can stop an animation or wait until it be finished. The low order word of TRequestID contains animation's index. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="TBalloonKind"></A>TBalloonKind = (bkNone, bkMessage, bkTips, bkHint, bkGuide, bkSpeak, bkThink, bkQuery, bkCustom </B> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkNone</B></TD> 
+          <TD><B>Indicates the balloon is not visible</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkMessage</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#MessageDlg">MessageDlg</A> method</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkTips</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#ShowTips">ShowTips</A> method</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkHint</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#ShowHint">ShowHint</A> or <A HREF="#ShowHintModal">ShowHintModal</A> methods</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkGuide</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#ShowGuide">ShowGuide</A> or <A HREF="#ShowGuideModal">ShowGuideModal</A> methods</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkSpeak</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#Speak">Speak</A> method</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkThink</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#Think">Think</A> method</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkQuery</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#InputQuery">InputQuery</A> method</B></TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%"><B>bkCustom</B></TD> 
+          <TD><B>Indicates the visible balloon has been shown by <A HREF="#ShowCustom">ShowCustom</A> or <A HREF="#ShowCustomModal">ShowCustomModal</A> methods</B></TD> 
+        </TR> 
+      </TABLE></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="TBalloonPos"></A>TBalloonPos = (bpCenter, bpTopLeft, bpTopRight, bpRightTop, bpRightBottom, bpBottomRight, bpBottomLeft, bpLeftBottom, bpLeftTop);</B><BR> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%">bpCenter</TD> 
+          <TD>The balloon centered on the Windows Desktop (or Screen on Delphi 3)</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpTopLeft</TD> 
+          <TD>The balloon placed on top of the assistant window and left aligned</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpTopRight</TD> 
+          <TD>The balloon placed on top of the assistant window and right aligned</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpRightTop</TD> 
+          <TD>The balloon placed on right of the assistant window and top aligned</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpRightBottom</TD> 
+          <TD>The balloon placed on right of the assistant window and bottom aligned</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpBottomRight</TD> 
+          <TD>The balloon placed on bottom of the assistant window and left aligned</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpBottomLeft</TD> 
+          <TD>The balloon placed on bottom of the assistant window and right aligned</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpLeftBottom</TD> 
+          <TD>The balloon placed on left of the assistant window and top aligned</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">bpLeftTop</TD> 
+          <TD>The balloon placed on left of the assistant window and bottom aligned</TD> 
+        </TR> 
+      </TABLE></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="TExitType"></A>TExitType = (etNone, etAnimation, etExitBranch);</B><BR> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%">etNone</TD> 
+          <TD>Indicates the animation does not have a return animation</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">etAnimation</TD> 
+          <TD>Indicates the animation has a return animation</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">etExitBranch</TD> 
+          <TD>Indicates the animation returns by using exit branches</TD> 
+        </TR> 
+      </TABLE> 
+      Office Assistant Package plays the return animations automatically. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="TTipsDlgBtn"></A>TTipsDlgBtn = (tbClose, tbNext, tbBack);</B><BR> 
+      <B><A NAME="TTipsDlgButtons"></A>TTipsDlgButtons = set of TTipsDlgBtn;</B><BR> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%">tbClose</TD> 
+          <TD>The id of Close button on the Tips balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tbNext</TD> 
+          <TD>The id of Next button on the Tips balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tbBack</TD> 
+          <TD>The id of Back button on the Tips balloon</TD> 
+        </TR> 
+      </TABLE></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="TGuideDlgBtn"></A>TGuideDlgBtn = (gbClose, gbOptions, gbTips, gbSearch, gbBackPage, gbNextPage);</B><BR> 
+      <B>TGuideDlgCmdBtn = gbClose..gbSearch;</B><BR> 
+      <B>TGuideDlgNavBtn = gbBackPage..gbNextPage;</B><BR> 
+      <B><A NAME="TGuideDlgButtons"></A>TGuideDlgButtons = set of TGuideDlgCmdBtn;</B><BR> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%">gbClose</TD> 
+          <TD>The id of Close button on the Guide balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">gbOptions</TD> 
+          <TD>The id of Options button on the Guide balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">gbTips</TD> 
+          <TD>The id of Tips button on the Guide balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">gbSearch</TD> 
+          <TD>The id of Search button on the Guide balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">gbBackPage</TD> 
+          <TD>The id of Previous Topics button on the Guide balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">gbNextPage</TD> 
+          <TD>The id of Next Topics button on the Guide balloon</TD> 
+        </TR> 
+      </TABLE></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="THintDlgBtn"></A>THintDlgBtn = (hbClose, hbBackPage, hbNextPage);</B><BR> 
+      <B>THintDlgCmdBtn = hbClose..hbClose;</B><BR> 
+      <B>THintDlgNavBtn = hbBackPage..hbNextPage;</B><BR> 
+      <B><A NAME="THintDlgButtons"></A>THintDlgButtons = set of THintDlgCmdBtn;</B><BR> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%">hbClose</TD> 
+          <TD>The id of Close button on the Hint balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">hbBackPage</TD> 
+          <TD>The id of Previous Topics button on the Hint balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">hbNextPage</TD> 
+          <TD>The id of Next Topics button on the Hint balloon</TD> 
+        </TR> 
+      </TABLE></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="TQueryDlgBtn"></A>TQueryDlgBtn = (qbClose, qbCancel);</B><BR> 
+      <B><A NAME="TQueryDlgButtons"></A>TQueryDlgButtons = set of TQueryDlgCmdBtn;</B><BR> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%">qbOK</TD> 
+          <TD>The id of OK button on the Input Query balloon</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">qbCancel</TD> 
+          <TD>The id of Cancel button on the Input Query balloon</TD> 
+        </TR> 
+      </TABLE></TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="TActorAction"></A>TActorAction = (aaNone, aaAcknowledge, aaAlert, aaAnnounce, aaBlink, aaConfused, aaCongratulate, aaDecline, aaDoMagic, aaDontRecognize, aaExplain, aaGestureDown, aaGestureDownLeft, aaGestureDownRight, aaGestureLeft, aaGestureRight, aaGestureUp, aaGestureUpLeft, aaGestureUpRight, aaGetAttention, aaGetAttentionContinued, aaGlanceDown, aaGlanceDownLeft, aaGlanceDownRight, aaGlanceLeft, aaGlanceRight, aaGlanceUp, aaGlanceUpLeft, aaGlanceUpRight, aaGreet, aaHear, aaHearing, aaHide, aaIdlingLevel1, aaIdlingLevel2, aaIdlingLevel3, aaListen, aaListening, aaLookDown, aaLookDownLeft, aaLookDownRight, aaLookLeft, aaLookRight, aaLookUp, aaLookUpLeft, aaLookUpRight, aaMoveDown, aaMoveDownLeft, aaMoveDownRight, aaMoveLeft, aaMoveRight, aaMoveUp, aaMoveUpLeft, aaMoveUpRight, aaPleased, aaProcess, aaProcessing, aaRead, aaReadContinued, aaReading, aaRestPose, aaSad, aaSearch, aaSearching, aaShow, aaSpeak, aaSpeaking, aaStartListening, aaStopListening, aaSuggest, aaSurprised, aaThink, aaThinking, aaUncertain, aaWave, aaWrite, aaWriteContinued, aaWriting); </B><BR> 
+      <B><A NAME="TActorActions"></A>TActorActions = set of TActorAction;</B><BR> 
+      The ActorAction is a predefined identifier for animations of an <A HREF="#Actor Library">actor library</A>. Each animation may be assigned to one or more ActorAction and vice versa. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="TAnimation"></A>TAnimation = record<BR> 
+&nbsp;&nbsp;&nbsp;Name: String[255];<BR> 
+&nbsp;&nbsp;&nbsp;Actions: <A HREF="#TActorActions">TActorActions</A>;<BR> 
+&nbsp;&nbsp;&nbsp;case ExitType: <A HREF="#TExitType">TExitType</A> of<BR> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;etNone: ();<BR> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;etAnimation: (ReturnName: String[255]);<BR> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;etExitBranch: ();<BR> 
+&nbsp;&nbsp;&nbsp;end;<BR> 
+      end;<BR> 
+      </B> This record holds specifications of the animation. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="TTopicStyle"></A>TTopicStyle = (tsHeader, tsUnderline, tsBold, tsItalic, tsHoverUnderline, tsHoverBold, tsHoverItalic);</B><BR> 
+      <B><A NAME="TTopicStyles"></A>TTopicStyles = set of TTopicStyle;</B><BR> 
+      <TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="5"> 
+        <TR> 
+          <TD WIDTH="15%">tsHeader</TD> 
+          <TD>Indicates the topic is a header and will not response to mouse click</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tsUnderline</TD> 
+          <TD>The topic will be displayed as underline</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tsBold</TD> 
+          <TD>The topic will be displayed as bold</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tsItalic</TD> 
+          <TD>The topic will be displayed as italic</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tsHoverUnderline</TD> 
+          <TD>The topic will be displayed as underline while cursor is over the topic</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tsHoverBold</TD> 
+          <TD>The topic will be displayed as bold while cursor is over the topic</TD> 
+        </TR> 
+        <TR> 
+          <TD WIDTH="15%">tsHoverItalic</TD> 
+          <TD>The topic will be displayed as italic while cursor is over the topic</TD> 
+        </TR> 
+      </TABLE></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="TCustomLabelEvent"></A>TCustomLabelEvent = procedure(Sender: TObject; TheLabel: TControl) of object;</B><BR> 
+      This is type of <A HREF="#OnAdjustCustomLabel">OnAdjustCustomLabel</A> event. TheLabel parameter is the new created label control that you may want to initialize its properties. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="TIdleEvent"></A>TIdleEvent = procedure(Sender: TObject; Level: Integer; var Handled: Boolean) of object;</B><BR> 
+      This is type of <A HREF="#OnIdle">OnIdle</A> event. Level parameter Indicates the level of idling and is a value between 1 and 3. If you want to ignore the default handler, set Handled parameter to true.</TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="TPlayEvent"></A>TPlayEvent = procedure(Sender: TObject; RequestID: <A HREF="#TRequestID">TRequestID</A>) of object;</B><BR> 
+      This is type of <A HREF="#OnPlayStart">OnPlayStart</A> and <A HREF="#OnPlayStop">OnPlayStop</A> events. RequestID is the unique id of the played or stopped animation. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="TTopicClickEvent"></A>TTopicClickEvent = procedure(Sender: TObject; TopicID: Integer) of Object;</B><BR> 
+      This is type of <A HREF="#OnGuideTopicClick">OnGuideTopicClick</A> and <A HREF="#OnHintTopicClick">OnHintTopicClick</A> events. If ID of the selected topic is negative, TopicID parameter refers to the index of the topic otherwise it is its ID. </TD> 
+  </TR> 
+</TABLE> 
+<BR> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="4" CELLSPACING="2"> 
+  <CAPTION> 
+  <A NAME="Constants"></A><B>Constants</B> 
+  </CAPTION> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#660000"><B><FONT COLOR="#FFFFFF">Constants</FONT></B></TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="DefMsgDlgBtns"></A>DefMsgDlgBtns</B> : array [TMsgDlgBtn] of String = ('&Yes', '&No', '&OK', 'Cancel', '&Abort', '&Retry', '&Ignore', 'All', <NOBR>'No To All'</NOBR>, <NOBR>'Yes To All'</NOBR>, '&Help');<BR> 
+      This constant contains the caption of Message balloon buttons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="DefTipsDlgBtns"></A>DefTipsDlgBtns</B> : array [<A HREF="#TTipsDlgBtn">TTipsDlgBtn</A>] of String = ('Close', '&Next', '&Back');<BR> 
+      This constant contains the caption of Tips balloon buttons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="DefGuideDlgBtns"></A>DefGuideDlgBtns</B> : array [<A HREF="#TGuideDlgBtn">TGuideDlgBtn</A>] of String = ('Close', '&Options', '&Tips', '&Search', <NOBR>'See previous...'</NOBR>, <NOBR>'See more...'</NOBR>);<BR> 
+      This constant contains the caption of Guide balloon buttons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#F8F8F8"> 
+    <TD BGCOLOR="#EEEEEE"><B><A NAME="DefHintDlgBtns"></A>DefHintDlgBtns</B> : array [<A HREF="#THintDlgBtn">THintDlgBtn</A>] of String = ('&OK', <NOBR>'See previous...'</NOBR>, <NOBR>'See more...'</NOBR>);<BR> 
+      This constant contains the caption of Hint balloon buttons. </TD> 
+  </TR> 
+  <TR BGCOLOR="#EEEEEE"> 
+    <TD BGCOLOR="#F8F8F8"><B><A NAME="DefQueryDlgBtns"></A>DefQueryDlgBtns</B> : array [<A HREF="#TQueryDlgBtn">TQueryDlgBtn</A>] of String = ('&OK', 'Cancel');<BR> 
+      This constant contains the caption of Input Query balloon buttons. </TD> 
+  </TR> 
+</TABLE> 
+<H5><BR> 
+  <A NAME="Actor Library"></A>ACTOR LIBRARY</H5> 
+<P>The <B>Actor Library</B> is a DLL file with <B>.aal</B> extension that stores the assistant's actor definitions and animations. Each actor has a set of animations that may be assigned to one or more predefined actions and vice versa. Each animation has one or many frames and each frame may be had a sound. Some animation after stop needs to another animation so that returns the actor to its original state (<B>RestPose</B>). Return animations may be created as a separate animation or may be defined by exit branches in the first animation. Each actor has at least one animation assigned to its <B>RestPose</B> action. 
+<P>Actor libraries can be used as compressed. <B>ASPack</B> is an exe compressor that has been tested for compressing actor libraries and works great. You could download <B>ASPack</B> from <B><A HREF="http://www.aspack.com/">http://www.aspack.com</A></B>.
+   Thanks to <A HREF="mailto:w2m@netheaven.com"><B>Bill Miller</B></A> for giving me this information.</p> 
+<p><B>Note:</B> Office Assistant Package needs at least one <A HREF="#Actor Library"><B>Actor Library</B></A>. You can find some actor libraries at <A HREF="http://www.delphiarea.com/products/delphi-packages/assistant/">Office Assistant's Page</A>. </P> 
+<H5><BR> 
+  <A NAME="Actor Editor"></A>ACTOR EDITOR</H5> 
+<P>On my web site there is a simple editor for creating <A HREF="#Actor Library">actor libraries</A>. Unfortunately this editor does not have help file or documentation and needs Delphi command line compiler (DCC32.EXE) to build libraries. </P> 
+<H5><BR> 
+  <A NAME="History"></A>VERSION HISTORY</H5> 
+<UL> 
+  <LI> <B>Version 3.36 - 7 Nov 2008</B>
+      <UL>
+        <LI> Upgraded to support Delphi 2009. <BR>
+            <BR>
+        </LI>
+      </UL>
+  </LI>
+  <LI> <B>Version 3.35 - 13 Sep 2005</B>
+      <UL>
+        <LI> The bug in <A HREF="#TTopicsList">TTopicsList</A> property editor fixed. The property editor improved too. <BR>
+            <BR>
+        </LI>
+      </UL>
+  </LI>
+  <LI> <B>Version 3.30 - 25 Jul 2005</B> 
+    <UL> 
+      <LI> The new property <A HREF="#Balloon.Metrics">Balloon.Metrics</A> added. The values of this peroperty were before used as constants.<BR> 
+        <BR> 
+      </LI>
+    </UL>
+  </LI>
+  <LI> <B>Version 3.26.1 - 21 Feb 2005</B> 
+    <UL> 
+      <LI> Delphi 2005 is supported.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.26 - 28 Jun 2004</B> 
+    <UL> 
+      <LI> The new method <A HREF="#MessageDlgDef">MessageDlgDef</A> added.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.25 - 12 Jan 2004</B> 
+    <UL> 
+      <LI> Bug Fix: When <A HREF="#BalloonAnchor"><B>BalloonAnchor</B></A> property was nil and the actor was not visible, the ballon was hiding behind the main form. </LI> 
+      <LI> Bug Fix: There was no way to know when the showing animation of a balloon is complete. Now, after showing a balloon (Modeless), one call to Application.ProcessMessages guarantees that the animation is completed and the balloon is visible.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+    <B>Version 3.24 - 3 Dec 2003</B> 
+    <UL> 
+      <LI> The issue regarding to the modal balloons on Windows 98 fixed.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.23 - 14 Nov 2003</B> 
+    <UL> 
+      <LI> The issue regarding to the buttons' shurtcuts on the balloons fixed (Thanks to <A HREF="mailto:rgletter@hotmail.com">Robert</A>).<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.22 - 16 Oct 2003</B> 
+    <UL> 
+      <LI> The new property <B><A HREF="#AlwaysOnTop">AlwaysOnTop</A></B> added. When this property is True, the actor will stay on top of all other windows (including the other running applications) even if the application is not active. </LI> 
+      <LI> Minimizing the application will no more hide the actor. </LI> 
+      <LI> Now, the modal balloons manage properly.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.21 - 11 Oct 2003</B> 
+    <UL> 
+      <LI> The wrong position of balloon's arrow when the text was small and the balloon was on the left or right side of the actor fixed (Thanks to <A HREF="mailto:riceball@cq118.com">riceball</A> for the fix).<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.20 - 21 Aug 2003</B> 
+    <UL> 
+      <LI> The potentianl access violation bug in <A HREF="#PlayRandom"><B>PlayRandom</B></A> method fixed.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.19 - 10 Aug 2003</B> 
+    <UL> 
+      <LI> The bad sound effect because of wrong definition of the actor fixed. </LI> 
+      <LI> The bug of disappearing buttons of tips balloon fixed.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.18 - 10 Aug 2003</B> 
+    <UL> 
+      <LI> The algorithm of waiting for synchronization objects without blocking the main thread message queue changed. The new algoriythm consumes less CPU resource and is safer.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.17 - 22 Mar 2003</B> 
+    <UL> 
+      <LI> A possible thread dead-lock in frame sequencer fixed. </LI> 
+      <LI> Since this release, the package includes <A HREF="http://www.delphiarea.com/products/delphi-components/offbtn/"><B>TOffice97Button</B></A> component by <A HREF="mailto:jonathan@the-hoskings.freeserve.co.uk">Jonathan Hosking</A>. Thanks to Jonathan for his permission.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.16 - 1 Feb 2003</B> 
+    <UL> 
+      <LI> New property <B><A HREF="#MovingToSync">MovingToSync</A> </B>and new method <A HREF="#WaitForMove"><B>WaitForMove</B></A> add. </LI> 
+      <LI> Since version 3.0 of the component, there was a method named <A HREF="#BringToFront"><B>BringToFront</B></A>. I added this method again however, most of applications do not need to call this method. Particullary, this method is for controlling the z-order placement of several assistant instances. </LI> 
+      <LI> Now, when application is not active, the assistant does not stay on top of the active application. </LI> 
+      <LI> Some major improvements in assistant's stage and queue manager thread. </LI> 
+      <LI> Demo application updated. </LI> 
+    </UL> 
+  </LI> 
+</UL> 
+<UL> 
+  <LI> <B>Version 3.15 - 26 Jan 2003</B> 
+    <UL> 
+      <LI> The following methods and events added:<BR> 
+        <UL> 
+          <LI> <B><A HREF="#ResetIdle">ResetIdle</A> </B>(Method) </LI> 
+          <LI> <B><A HREF="#OnMoveStart">OnMoveStart</A> </B>(Event) </LI> 
+          <LI> <B><A HREF="#OnMoving">OnMoving</A> </B>(Event) </LI> 
+          <LI> <A HREF="#OnMoveStop"><B>OnMoveStop</B></A> (Event) </LI> 
+          <LI> <B><A HREF="#IsJustPlayed">IsJustPlayed</A></B> (Method) </LI> 
+        </UL> 
+      </LI> 
+      <LI> Definition of the following methods extended:
+        <UL> 
+          <LI> <B><A HREF="#StopAll">StopAll</A></B> </LI> 
+          <LI> <B><A HREF="#IsPlaying">IsPlaying</A></B> </LI> 
+          <LI> <B><A HREF="#IsJustPlayed">IsJustPlayed</A></B><BR> 
+          </LI> 
+        </UL> 
+      </LI> 
+      <LI> Now, <A HREF="#MoveTo"><B>MoveTo</B></A> method is thread safe. </LI> 
+      <LI> Some minor improvements.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.10 - 19 Jan 2003</B> 
+    <UL> 
+      <LI> Since this version, assistant plays automatically return sequence for the following special animations:
+        <UL> 
+          <LI> GetAttention </LI> 
+          <LI> GetAttentionContinued </LI> 
+          <LI> Read </LI> 
+          <LI> ReadContinued </LI> 
+          <LI> Write </LI> 
+          <LI> WriteContinued </LI> 
+        </UL> 
+      </LI> 
+      <LI> When <A HREF="#FastShowHide"><B>FastShowHide</B></A> property is true, showing and hiding functions do not return until the animation finishes </LI> 
+      <LI> <A HREF="#MoveTo"><B>MoveTo</B></A> method can work asynchronously. </LI> 
+      <LI> The following properties and methods added:<BR> 
+        <UL> 
+          <LI> <B><A HREF="#BlockingMove">BlockingMove</A> </B>(Property) </LI> 
+          <LI> <B><A HREF="#MovingTo">MovingTo</A> </B>(Property) </LI> 
+          <LI> <B><A HREF="#MinIdleTime">MinIdleTime</A> </B>(Property) </LI> 
+          <LI> <A HREF="#MaxIdleTime"><B>MaxIdleTime</B></A> (Method) </LI> 
+          <LI> <A HREF="#PlaySafe"><B>PlaySafe</B></A> (Method) </LI> 
+          <LI> <B><A HREF="#IsJustPlayed">IsJustPlayed</A></B> (Method)<BR> 
+          </LI> 
+        </UL> 
+      </LI> 
+      <LI> The problem of non-visible balloons on Windows NT 4.0 fixed. </LI> 
+      <LI> The bug on loading some actors on Windows 98 fixed. </LI> 
+      <LI> The demo application updated.<BR> 
+        <BR> 
+      </LI> 
+    </UL> 
+  </LI> 
+  <LI> <B>Version 3.00 - 13 Nov 2002</B> </LI> 
+  <UL> 
+    <LI> TAssistantPanel removed from the package. Using the new property <B> <A HREF="#DockSite">DockSite</A></B> TAssistant can do the same task of TAssistantPanel with more functionality. </LI> 
+    <LI> In the new version, assistant appears only as transparent. <BR> 
+      Assistant stays always on top of the other application forms (VCL and non-VCL). (Thanks to <A HREF="mailto:dear@madshi.net">Mathias Rauen</A>) </LI> 
+    <LI> The following properties, methods, and events removed:<BR> 
+      <UL> 
+        <LI> AutoSize (Property) </LI> 
+        <LI> BgMode (Property) </LI> 
+        <LI> BgPicture (Property) </LI> 
+        <LI> Caption (Property) </LI> 
+        <LI> Color (Property) </LI> 
+        <LI> ClientHeight (Property) </LI> 
+        <LI> ClientHeight (Property) </LI> 
+        <LI> Transparent (Property) </LI> 
+        <LI> AdjustClientSize (Method) </LI> 
+        <LI> BringToFront (Method) </LI> 
+        <LI> OnCanResize (Event) </LI> 
+        <LI> OnCloseQuery (Event) </LI> 
+      </UL> 
+    </LI> 
+    <LI> The following properties, methods, and events added:<BR> 
+      <UL> 
+        <LI> <B><A HREF="#BoundsRect">BoundsRect</A> </B>(Property) </LI> 
+        <LI> <B><A HREF="#DockSite">DockSite</A> </B>(Property) </LI> 
+        <LI> <B><A HREF="#Showing">Showing</A> </B>(Property) </LI> 
+        <LI> <A HREF="#IsPlaying"><B>IsPlaying</B></A> (Method) </LI> 
+        <LI> <A HREF="#PlayRandom"><B>PlayRandom</B></A> (Method) </LI> 
+        <LI> <B><A HREF="#SetPosition">SetPosition</A></B> (Method) </LI> 
+        <LI> <B><A HREF="#OnResize">OnResize</A></B> (Event)<BR> 
+        </LI> 
+      </UL> 
+    </LI> 
+    <LI> The following properties renamed (because of new property <A HREF="#DockSite"><B>DockSite</B></A> these properties should be reviewed in your code):
+      <UL> 
+        <LI> <B><A NAME="CanDrag"></A>CanDrag</B> to <A HREF="#Draggable"><B>Draggable</B></A> </LI> 
+        <LI> <A NAME="FormLeft"></A><B>FormLeft</B> to <B><A HREF="#StageLeft">StageLeft</A></B> </LI> 
+        <LI> <A NAME="FormTop"></A><B>FormTop</B> to <B><A HREF="#StageTop">StageTop</A></B> </LI> 
+      </UL> 
+    </LI> 
+    <LI> Since this version, the assistant can be shown at design-time. For this purpose, <A HREF="#Visible"><B>Visible</B></A> property changed to published. </LI> 
+    <LI> The following event do not occur in main VCL thread any more:
+      <UL> 
+        <LI> <B><A HREF="#OnIdle">OnIdle</A></B> </LI> 
+        <LI> <A HREF="#OnPlayStart"><B>OnPlayStart</B></A> </LI> 
+        <LI> <A HREF="#OnPlayStop"><B>OnPlayStop</B></A> </LI> 
+      </UL> 
+    </LI> 
+    <LI> CPU usage almost two times reduced. </LI> 
+    <LI> The number of threads in charge of controlling actor's states increased to two threads. One thread handles requests and idling, and the other plays animations. In addition, synchronization with main VCL thread removed. </LI> 
+    <LI> New methods <B><A HREF="#AddID">AddID</A></B> and <A HREF="#AddStyleID"><B>AddStyleID</B></A> added to <B><A HREF="#TTopicsList">TTopicsList</A></B> class. </LI> 
+    <LI> On Windows XP balloons have shadow. (Thanks to <A HREF="mailto:administrator@cityplus.ur.ru">Andrew N. Tuseyev</A>) </LI> 
+    <LI> Deffinition of <A HREF="#BalloonAnchor"><B>BalloonAnchor</B></A> property changed. </LI> 
+    <LI> On multi-monitor stations amd on applications compiled by Delphi 4 and higher, balloons do not cross the screen bounds of the monitor that <A HREF="#BalloonAnchor"><B>BalloonAnchor</B></A> belongs to it. </LI> 
+    <LI> Entire part of the source codes reviewd and optimized. </LI> 
+    <LI> The demo application updated. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.52 - 7 Jan 2002</B> </LI> 
+  <UL> 
+    <LI> New property <B><A HREF="#CanDrag">CanDrag</A></B> added to <A HREF="#TAssistant"><B>TAssistant</B></A> component. </LI> 
+    <LI> Raised bug on Delphi 6 fixed. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.51 - 27 Dec 2001</B> </LI> 
+  <UL> 
+    <LI> Now package can be installed on Delphi 6. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.50 - 12 Apr 2001</B> </LI> 
+  <UL> 
+    <LI> New Properties <A HREF="#HoverFont"><B>HoverFont</B></A> and <A HREF="#LabelClass"><B>LabelClass</B></A> added to <A HREF="#Balloon"><B>Balloon</B></A> properties of <A HREF="#TAssistant"><B>TAssistant</B></A> component. </LI> 
+    <LI> New event <A HREF="#OnAdjustCustomLabel"><B>OnAdjustCustomLabel</B></A> added to <A HREF="#TAssistant"><B>TAssistant</B></A> component. </LI> 
+    <LI> <A HREF="#BringToFront"><B>BringToFront</B></A> method of <A HREF="#TAssistant"><B>TAssistant</B></A> component now works smoother. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.40 - 6 Jan 2001</B> </LI> 
+  <UL> 
+    <LI> New methods <A HREF="#MoveBalloonTo"><B>MoveBalloonTo</B></A>, <A HREF="#MoveBalloonToControl"><B>MoveBalloonToControl</B></A>, and <A HREF="#MoveBalloonToCursor"><B>MoveBalloonToCursor</B></A>, added to <A HREF="#TAssistant"><B>TAssistant</B></A> component. (Thanks to <A HREF="mailto:rdaniel2000@hotmail.com">Daniel Ramirez</A>) </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.30 - 10 Dec 2000</B> </LI> 
+  <UL> 
+    <LI> New property <A HREF="#CustomDialog"><B>CustomDialog</B></A> and new methods <A HREF="#ShowCustom"><B>ShowCustom</B></A> and <A HREF="#ShowCustom"><B>ShowCustomModal</B></A> added to <A HREF="#TAssistant"><B>TAssistant</B></A> component. By using this property and methods you can display your own balloons. (Thanks to <A HREF="mailto:f.ritter@link4link.com">Felix Ritter</A>) </LI> 
+    <LI> New methods <A HREF="#ShowGuideModal"><B>ShowGuideModal</B></A> and <A HREF="#ShowHintModal"><B>ShowHintModal</B></A> added to <A HREF="#TAssistant"><B>TAssistant</B></A> component. (Thanks to <A HREF="mailto:f.ritter@link4link.com">Felix Ritter</A>) </LI> 
+    <LI> Type of <A HREF="#GuideDlg.Topics"><B>GuideDlg.Topics</B></A> and <A HREF="#HintDlg.Topics"><B>HintDlg.Topics</B></A> in <A HREF="#TAssistant"><B>TAssistant</B></A> component changed from TStringList to <A HREF="#TTopicsList"><B>TTopicsList</B></A>. By this change, each topics can have its own result ID, font style, hover font style, and OnSelect event. (Thanks to <A HREF="mailto:f.ritter@link4link.com">Felix Ritter</A>) </LI> 
+    <LI> Some bugs fixed. (Thanks to <A HREF="mailto:f.ritter@link4link.com">Felix Ritter</A>) </LI> 
+    <LI> From this release, Office Assistant Package needs <B><A HREF="http://www.the-hoskings.freeserve.co.uk">TOffice97Button</A> version 2.01 or later</B>. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.23 - 9 Nov 2000</B> </LI> 
+  <UL> 
+    <LI> A minor bug fixed. Before this release if main form style was fsStayOnTop, Assistant went behind the form. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.22 - 17 Aug 2000</B> </LI> 
+  <UL> 
+    <LI> A small bug fixed. <A HREF="#InputQuery"><B>InputQuery</B></A> did not return the entered text by the user. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.21 - 15 Jun 2000</B> </LI> 
+  <UL> 
+    <LI> New method <A HREF="#InputQuery"><B>InputQuery</B></A> added to <A HREF="#TAssistant"><B>TAssistant</B></A> component. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.20 - 27 Apr 2000</B> </LI> 
+  <UL> 
+    <LI> A few minor bugs fixed. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.10 - 15 Apr 2000</B> </LI> 
+  <UL> 
+    <LI> A few minor bugs fixed. </LI> 
+    <LI> New property <A HREF="#CheckBox"><B>CheckBox</B></A> added to <A HREF="#MsgDlg"><B>TAssistant.MsgDlg</B></A>. (Thanks to <A HREF="mailto:SzarvasP@digitalsoft.hu">Szarvas Péter</A>) </LI> 
+    <LI> New property <A HREF="#RequestResult"><B>RequestResult</B></A> added to <A HREF="#GuideDlg"><B>TAssistant.GuideDlg</B></A>.
+  </UL> 
+  <BR> 
+  <LI> <B>Version 2.00 - 30 Mar 2000</B> </LI> 
+  <UL> 
+    <LI> The file format of actor libraries changed. The new format has smaller size and better performance. Now, actors have a global color palette for all their animations. </LI> 
+    <LI> Some parts of package rewritten to increase animation speed and reduce resource usage. </LI> 
+    <LI> <B>ActorCopyright</B> and <B>ActorVersion</B> properties removed. Instead of these properties, new property <A HREF="#ActorVerInfo-a"><B>ActorVerInfo</B></A> returns all version informations for the actor. </LI> 
+    <LI> To improve operation of <B>GlanceAt</B>, <B>GestureAt</B>, <B>LookAt</B>, and <B>MoveTo</B> methods Down Left, Down Right, Up Left, and Up Right directions added to suported directions. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.61 - 22 Mar 2000</B> </LI> 
+  <UL> 
+    <LI> Bug of showing the wrong icon for application in the Windows Explorer and Short Cuts fixed. (Thanks to <A HREF="mailto:mwe@easylearn.ch">Martin Wey</A>) </LI> 
+    <LI> A minor bug on Stop method of both components fixed. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.60 - 16 Mar 2000</B> </LI> 
+  <UL> 
+    <LI> New dialog <A HREF="#HintDlg"><B>Hint Balloon</B></A> added to the <A HREF="#TAssistant">TAssistant</A> available balloons. </LI> 
+    <LI> Property <B>GuidDlg.RequestBox</B> renamed to <A HREF="#AcceptRequest"><B>GuideDlg.AcceptRequest</B></A>. </LI> 
+    <LI> New event <A HREF="#OnHintTopicClick"><B>OnHintTopicClick</B></A> added to <A HREF="#TAssistant">TAssistant</A> component. This event occurs when user clicks on a hint topic on the hint balloon. </LI> 
+    <LI> Now, Guide balloon can have an icon. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.50 - 11 Mar 2000</B> &nbsp;&nbsp;<B>( This version did not release to public domain )</B> </LI> 
+  <UL> 
+    <LI> Now, balloons look more similar to Microsoft Office 2000. (Thanks to <A HREF="mailto:jonathan@the-hoskings.freeserve.co.uk">Jonathan Hosking</A>) </LI> 
+    <LI> New property <A HREF="#HintBulb"><B>HintBulb</B></A> added to <A HREF="#TAssistant">TAssistant</A> component. When this property is true, a bulb apears beside the assistant. </LI> 
+    <LI> New event <A HREF="#OnHintBulbClick"><B>OnHintBulbClick</B></A> added to <A HREF="#TAssistant">TAssistant</A> component. This event occurs when user clicks on the hint bulb. </LI> 
+    <LI> <B>Title</B> property of <B>Assistant.GuideDlg</B> and <B>Assistant.MsgDlg</B> now can have multiple lines. </LI> 
+    <LI> From this release, Office Assistant Package needs <B><A HREF="http://www.the-hoskings.freeserve.co.uk">TOffice97Button</A> version 1.91 or later</B>. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.40 - 6 Mar 2000</B> </LI> 
+  <UL> 
+    <LI> <B>StayOnTop</B> property of <A HREF="#TAssistant">TAssistant</A> component removed. </LI> 
+    <LI> New method <A HREF="#BringToFront"><B>BringToFront</B></A> added to <A HREF="#TAssistant">TAssistant</A> component. This method makes assistant top most form. See <B>demo</B> for example of usage. </LI> 
+    <LI> Some minor bugs fixed. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.30 - 1 Mar 2000</B> </LI> 
+  <UL> 
+    <LI> According to new feature of <A HREF="http://www.the-hoskings.freeserve.co.uk">TOffice97Button</A>, new property <A HREF="#Office2000Look"><B>Balloon.Office2000Look</B></A> added to <A HREF="#TAssistant">TAssistant</A> component.<BR> 
+    <LI> From this release, Office Assistant Package needs <B><A HREF="http://www.the-hoskings.freeserve.co.uk">TOffice97Button</A> version 1.9 or later</B>. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.24 - 25 Feb 2000</B> </LI> 
+  <UL> 
+    <LI> Reported bugs fixed. </LI> 
+    <LI> CS_SAVEBITS and CS_BYTEALIGNWINDOW added to window class of TAssistantStage and TAssistantBalloon. </LI> 
+    <LI> FrameCount proprty of TAssistantEngine changed from read-only to read and write. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.23 - 17 Feb 2000</B> </LI> 
+  <UL> 
+    <LI> Trancparency bug on Windows NT fixed. (Thanks to <A HREF="mailto:robe@electrica.ispjae.edu.cu">Roberto Cardentey Ruiz</A>) </LI> 
+    <LI> New property <A HREF="#BalloonAnchor"><B>BaloonAnchor</B></A> added to <A HREF="#TAssistant">TAssistant</A> component. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.22 - 10 Feb 2000</B> </LI> 
+  <UL> 
+    <LI> Assistant now can work in 256-color mode. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.21 - 4 Feb 2000</B> </LI> 
+  <UL> 
+    <LI> A minor improvment in <B>CreateBitmapRgn</B> function in <B>oaBitmap</B> unit. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.20 - 2 Feb 2000</B> </LI> 
+  <UL> 
+    <LI> Some bugs fixed. </LI> 
+    <LI> The speed of assistant transparency increased. (Thanks to <A HREF="mailto:alexsander_messias@starmedia.com">Alexsander Messias</A>) </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.10 - 17 Jan 2000</B> </LI> 
+  <UL> 
+    <LI> Now, the package can be installed on Delphi 3. </LI> 
+    <LI> Two properties added to components: <A HREF="#PlayIdling"><B>PlayIdling</B></A> and <A HREF="#PlayingID"><B>PlayingID</B></A>. </LI> 
+    <LI> Bug on <A HREF="#TAssistantPanel"><B>TAssistantPanel</B></A> auto sizing fixed. </LI> 
+  </UL> 
+  <BR> 
+  <LI> <B>Version 1.00 - 11 Jan 2000</B> </LI> 
+  <UL> 
+    <LI> Initial release. </LI> 
+  </UL> 
+</UL> 
+<H5><BR> 
+  <A NAME="Disclaimer"></A>DISCLAIMER</H5> 
+<P>The Office Assistant Package is provided "<B>AS IS</B>" without any warranty of any kind, either express or implied. The entire risk as to the quality and performance of the software is with you. The author is not liable for any damages resulting from the use and misuse of the software.</P> 
+<P>  
+<H5><BR> 
+  <A NAME="Licence"></A>LICENCE</H5> 
+<P>The Office Assistant Package is freeware. You may copy it <B>as long as you copy all of files</B>. If you want to change the source code in order to improve the components' features, performance, etc. please send to the author the new source code so that the author can have a look at it. The changed source code should contain descriptions what you have changed, and your name. The only thing you <B>may not change</B> is the <B>original copyright information</B>.</P> 
+<H5><BR> 
+  <A NAME="Credits"></A>CREDITS</H5> 
+<UL> 
+  <LI> The Office Assistant Package uses ideas from <B>Microsoft<SUP>&reg;</SUP> Agent</B> and <B>Microsoft<SUP>&reg;</SUP> Office Assistant</B>.<BR> 
+    web: <A HREF="http://msdn.microsoft.com/workshop/imedia/agent/default.asp"><B>http://msdn.microsoft.com/workshop/imedia/agent/default.asp</B></A><BR> 
+  </LI> 
+  <BR> 
+  <LI> <A HREF="offbtn97.htm"><B>TOffice97Button</B></A> is an Office 97 style button component for Delphi and C++Builder written by <A HREF="mailto:jonathan@the-hoskings.freeserve.co.uk"><B>Jonathan Hosking</B></A>.<BR> 
+    e-mail: <A HREF="mailto:jonathan@the-hoskings.freeserve.co.uk"><B>jonathan@the-hoskings.freeserve.co.uk</B></A><BR> 
+    web: <A HREF="http://www.the-hoskings.freeserve.co.uk"><B>http://www.the-hoskings.freeserve.co.uk</B></A><BR> 
+  </LI> 
+  <BR> 
+  <LI> And special thanks to: <BR> 
+    <UL> 
+      <LI> <A HREF="mailto:alexsander_messias@starmedia.com"><B>Alexsander Messias</B></A> for his comments on creating window region from bitmaps.<BR> 
+        e-mail: <A HREF="mailto:alexsander_messias@starmedia.com"><B>alexsander_messias@starmedia.com</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:robe@electrica.ispjae.edu.cu"><B>Roberto Cardentey Ruiz</B></A> for fixing transparency bug on Windows NT.<BR> 
+        e-mail: <A HREF="mailto:robe@electrica.ispjae.edu.cu"><B>robe@electrica.ispjae.edu.cu</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:manuel.r.l@usa.net"><B>Manuel Rodriguez</B></A> for his helps on Windows NT and Windows 2000.<BR> 
+        e-mail: <A HREF="mailto:manuel.r.l@usa.net"><B>manuel.r.l@usa.net</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:mwe@easylearn.ch"><B>Martin Wey</B></A> for his help to fix bug of application's icon because of hint bulb icon.<BR> 
+        e-mail: <A HREF="mailto:mwe@easylearn.ch"><B>mwe@easylearn.ch</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:SzarvasP@digitalsoft.hu"><B>Szarvas Péter</B></A> for adding check box to Assistant message dialog.<BR> 
+        e-mail: <A HREF="mailto:SzarvasP@digitalsoft.hu"><B>SzarvasP@digitalsoft.hu</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:f.ritter@link4link.com"><B>Felix Ritter</B></A> for his great improvements in assistant's balloons and also fixing some bugs.<BR> 
+        e-mail: <A HREF="mailto:f.ritter@link4link.com"><B>f.ritter@link4link.com</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:rdaniel2000@hotmail.com"><B>Daniel Ramirez</B></A> for adding balloon movement procedures.<BR> 
+        e-mail: <A HREF="mailto:rdaniel2000@hotmail.com"><B>rdaniel2000@hotmail.com</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:administrator@cityplus.ur.ru"><B>Andrew N. Tuseyev</B></A> for the idea of customizable labels and also adding shadow to the balloons.<BR> 
+        e-mail: <A HREF="mailto:administrator@cityplus.ur.ru"><B>administrator@cityplus.ur.ru</B></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:dear@madshi.net"><B>Mathias Rauen</B></A> for his help in keeping assistant's stage on top of modal dialogs.<BR> 
+        e-mail: <A HREF="mailto:dear@madshi.net"><B>dear@madshi.net</B></A><BR> 
+        web: <A HREF="http://www.madshi.net/"><B>http://www.madshi.net</B></A><BR> 
+        <BR> 
+      </LI> 
+      <LI> <A HREF="mailto:dcoun@galinos.med.uoc.gr"><B>Dimitris Kounalakis</B></A> for the MessageDlgDef method.<BR> 
+        e-mail: <B><A HREF="mailto:dcoun@galinos.med.uoc.gr">dcoun@galinos.med.uoc.gr</A></B><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:abergamini@wiredred.com"><B>Alec Bergamini </B></A> for Delphi 2005 support.<BR> 
+        e-mail: <A HREF="mailto:abergamini@wiredred.com"><STRONG>abergamini@wiredred.com</STRONG></A><BR> 
+      </LI> 
+      <BR> 
+      <LI> <A HREF="mailto:tav@newmail.ru"><STRONG>&#1040;&#1083;&#1077;&#1082;&#1089;&#1072;&#1085;&#1076;&#1088;</STRONG></A> for the MessageDlgDef method.<BR> 
+        e-mail: <B><A HREF="mailto:tav@newmail.ru">tav@newmail.ru</A></B><BR> 
+      </LI> 
+    </UL> 
+</UL> 
+<H5><BR> 
+  <A NAME="Contact Information"></A>CONTACT INFORMATION</H5> 
+<P>If you have any bug reports, suggestions, or comments please post a topic in my forum at <A HREF="http://froum.delphiarea.com">http://forum.delphiarea.com</A>. You can also visit Office Assistant's web page at <A HREF="http://www.delphiarea.com/products/delphi-packages/assistant/">http://www.delphiarea.com/products/delphi-packages/assistant</A> to find out about the latest updates or to download the <A HREF="#Actor Library">actor libraries</A>.</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="2" CELPADDING="0"> 
+  <TR> 
+    <TD WIDTH="100%" VALIGN="bottom"> <HR NOSHADE SIZE="2" WIDTH="100%"> </TD> 
+    <TD VALIGN="top" NOWRAP><NOBR><SUP><FONT SIZE="1">END OF DOCUMENT</FONT></SUP></NOBR></TD> 
+</TABLE> 
+</BODY>
+</HTML>

@@ -1,0 +1,108 @@
+inherited FilterRotate: TFilterRotate
+  Width = 567
+  Height = 464
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 559
+  end
+  inherited Memo1: TMemo
+    Width = 559
+    Lines.Strings = (
+      
+        'This filter allows to rotate the image using the given Angle pro' +
+        'perty.'
+      
+        'It optionally resizes the image to fit the whole width x height ' +
+        'current size.'
+      ''
+      '  with RotateFilter do'
+      '  begin'
+      '    Angle := 10;'
+      '    AutoSize:= True;'
+      '    BackColor:=clWhite;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 559
+    Height = 281
+    Chart3DPercent = 85
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    Color = clWhite
+    ColorPaletteIndex = 11
+    object Series1: TDonutSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdDiagonalDown
+      Gradient.EndColor = 14274724
+      Gradient.StartColor = 15066597
+      Gradient.Visible = True
+      OtherSlice.Legend.Visible = False
+      PieMarks.VertCenter = True
+      PieMarks.LegSize = 27
+      PiePen.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      DonutPercent = 55
+      Data = {
+        04080000000000000000F8884004436172730000000000003F400650686F6E65
+        730000000000708E40065461626C65730000000000D08640084D6F6E69746F72
+        730000000000988540054C616D70730000000000107C40094B6579626F617264
+        730000000000707D400542696B65730000000000D0784006436861697273}
+    end
+    object ChartTool1: TAntiAliasTool
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 559
+    object Label1: TLabel
+      Left = 20
+      Top = 14
+      Width = 30
+      Height = 13
+      Caption = '&Angle:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 193
+      Top = 14
+      Width = 6
+      Height = 13
+      Caption = '0'
+    end
+    object ScrollBar1: TScrollBar
+      Left = 62
+      Top = 12
+      Width = 121
+      Height = 17
+      Max = 360
+
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object cbAutosize: TCheckBox
+      Left = 227
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = 'A&utosize'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbAutosizeClick
+    end
+    object bBackColor: TButtonColor
+      Left = 336
+      Top = 8
+      Width = 97
+      Caption = '&Back Color'
+      TabOrder = 2
+      OnClick = bBackColorClick
+    end
+  end
+end

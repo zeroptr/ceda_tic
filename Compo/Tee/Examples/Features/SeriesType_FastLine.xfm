@@ -1,0 +1,148 @@
+inherited FastLineForm: TFastLineForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Fast-Line chart style is, at it'#39's name implies, the fastest ' +
+        'way to'
+      
+        'plot many points.  It simply draws a thin line connecting all po' +
+        'ints.'
+      
+        'Some optimizations (like not drawing repeated values) are perfor' +
+        'med.'
+      
+        'It can be used in real-time applications to plot new added point' +
+        's.')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 115
+    Height = 222
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    BackWall.Pen.Color = clBlue
+    BackWall.Pen.Visible = False
+    Foot.Font.Height = -12
+    Foot.Frame.Color = clScrollBar
+    Foot.Visible = False
+    Legend.Visible = False
+    MarginBottom = 1
+    MarginLeft = 1
+    MarginRight = 1
+    MarginTop = 1
+    Title.Frame.Color = clScrollBar
+    Title.Text.Strings = (
+      'TChart Component')
+    Title.Visible = False
+    AxisVisible = False
+    BottomAxis.Grid.Color = 8421440
+    BottomAxis.LabelsFont.Color = clFuchsia
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.Ticks.Color = clLime
+    ClipPoints = False
+    Frame.Color = clBlue
+    Frame.Visible = False
+    LeftAxis.Grid.Color = clBlue
+    LeftAxis.LabelsFont.Color = clNavy
+    LeftAxis.LabelsFont.Height = -13
+    LeftAxis.Ticks.Color = clRed
+    RightAxis.Grid.Visible = False
+    RightAxis.LabelsFont.Color = clRed
+    RightAxis.LabelsFont.Height = -13
+    RightAxis.Ticks.Color = clBlue
+    TopAxis.Grid.Visible = False
+    TopAxis.LabelsFont.Color = clGreen
+    TopAxis.LabelsFont.Height = -13
+    TopAxis.Ticks.Color = clYellow
+    View3D = False
+    Zoom.Animated = True
+    Zoom.AnimatedSteps = 15
+    BevelOuter = bvNone
+    BevelWidth = 6
+    Color = clSilver
+    TabOrder = 0
+    object FastLineSeries1: TFastLineSeries
+      HorizAxis = aTopAxis
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      VertAxis = aRightAxis
+      LinePen.Color = clRed
+      LinePen.Style = psDot
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Left = 199
+      Top = 204
+    end
+    object FastLineSeries2: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      LinePen.Color = clGreen
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Left = 237
+      Top = 206
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 40
+    object CheckBox1: TCheckBox
+      Left = 10
+      Top = 13
+      Width = 71
+      Height = 17
+      Caption = '&Buffered '
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 82
+      Top = 13
+      Width = 79
+      Height = 17
+      Caption = 'Draw &Axes'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 170
+      Top = 13
+      Width = 75
+      Height = 17
+      Caption = '&Clip Points'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+    object Button1: TButton
+      Left = 264
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Test speed'
+      TabOrder = 3
+      OnClick = Button1Click
+    end
+  end
+end

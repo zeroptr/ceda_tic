@@ -1,0 +1,95 @@
+inherited TeeCommanderDemo: TTeeCommanderDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'The TeeCommander component is used to manipulate Charts, offerin' +
+        'g several '
+      
+        'buttons in a single panel. The buttons allow zooming, scrolling,' +
+        ' rotating, '
+      
+        'changing depth, editing, printing, copying to clipboard and savi' +
+        'ng charts.')
+  end
+  inherited Chart1: TChart
+    Top = 119
+    Height = 218
+    object Series1: TBar3DSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      BarStyle = bsPyramid
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      OffsetValues.DateTime = False
+      OffsetValues.Name = 'Offset'
+      OffsetValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    Height = 37
+    object CheckBox1: TCheckBox
+      Left = 13
+      Top = 11
+      Width = 68
+      Height = 17
+      Caption = '&Vertical'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 96
+      Top = 11
+      Width = 57
+      Height = 17
+      Caption = '&Hints'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 160
+      Top = 11
+      Width = 57
+      Height = 17
+      Caption = '&Text'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+    object CheckBox4: TCheckBox
+      Left = 240
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Enable'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox4Click
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 86
+    Width = 479
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 3
+  end
+end

@@ -1,0 +1,95 @@
+inherited EditorPixelsPerInch: TEditorPixelsPerInch
+  Width = 587
+  Height = 454
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 579
+  end
+  inherited Memo1: TMemo
+    Width = 579
+    Lines.Strings = (
+      
+        'Resize the ChartEditor using the ChartEditor.PixelsPerInch prope' +
+        'rty.')
+  end
+  inherited Chart1: TChart
+    Width = 579
+    Height = 271
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        001900000000000000003066400000000000106D400000000000A06E40000000
+        0000F871400000000000E075400000000000A06E400000000000005E40000000
+        000080514000000000001068400000000000406A400000000000B07340000000
+        000090754000000000003873400000000000B06D400000000000E06040000000
+        00007062400000000000506E4000000000005871400000000000487740000000
+        0000E87C4000000000008081400000000000B87F400000000000987C40000000
+        0000C077400000000000E07540}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 579
+    object Label1: TLabel
+      Left = 100
+      Top = 15
+      Width = 71
+      Height = 13
+      Caption = '&Pixels per inch:'
+      FocusControl = Edit1
+    end
+    object bEdit: TButton
+      Left = 8
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = bEditClick
+    end
+    object Edit1: TEdit
+      Left = 178
+      Top = 13
+      Width = 36
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 214
+      Top = 13
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Max = 3000
+      TabOrder = 2
+    end
+    object cbDefault: TCheckBox
+      Left = 253
+      Top = 14
+      Width = 95
+      Height = 17
+      Caption = '&Default'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = cbDefaultClick
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 352
+    Top = 80
+  end
+end

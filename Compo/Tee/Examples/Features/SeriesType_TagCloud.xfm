@@ -1,0 +1,155 @@
+inherited SeriesTagCloud: TSeriesTagCloud
+  Width = 935
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 927
+  end
+  inherited Memo1: TMemo
+    Width = 927
+    Lines.Strings = (
+      
+        'Draws the list of XLabel text values (tags) sorted alphabeticall' +
+        'y or by their YValue.'
+      ''
+      
+        'Each label (tag) is displayed using a different font size, that ' +
+        'is proportional to its value compared to the other labels (tags)' +
+        '.'
+      
+        'The GetTagFontSize function returns the appropiate font size for' +
+        ' a given tag index.'
+      ''
+      
+        'Tags can be added using the AddTag method which is simplier but ' +
+        'equivalent to call the inherited Add method.'
+      ''
+      
+        'The tag color is obtained using the default ValueColor method wh' +
+        'ich calculates colors based on the tag YValue and the Palette or' +
+        ' UseColorRange properties.'
+      ''
+      'Tags can be filtered using the Filter property.'
+      
+        'Separation between tags is controlled by the TagSeparation prope' +
+        'rty.'
+      ''
+      
+        'The Pen, Brush and Gradient properties can be used to fill the a' +
+        'rea behind the tags.'
+      ''
+      
+        'The Chart ClipPoints property controls if tags can be displayed ' +
+        'outside the chart boundaries or not.'
+      ''
+      
+        'You can customize the font used to display each tag by using the' +
+        ' OnDrawTag event, which is called everytime a tag is displayed a' +
+        'nd when the series needs to calculate a tag width and height.')
+  end
+  inherited Chart1: TChart
+    Width = 927
+    Gradient.EndColor = clSilver
+    Gradient.Visible = True
+    Legend.Transparent = True
+    Title.Text.Strings = (
+      'Tag Cloud Series')
+    View3D = False
+    OnAfterDraw = Chart1AfterDraw
+    OnMouseMove = Chart1MouseMove
+    object Series1: TTagCloudSeries
+      Font.Height = -43
+      Cursor = crHandPoint
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      OnClick = Series1Click
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      EndColor = 1330417
+      PaletteStyle = psCustom
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomPalette = {
+        20000000000000004031E640FFFFFF007CEFBDF77EDEF140FCF30500F8DE7BEF
+        5DA4F840FF64020073CE39E73C6AFF40DD080600F8DE7BEF0D180341F2088400
+        B5D65A6BFD7A06414600A50073CE39E7ECDD09410000D40031C61863DC400D41
+        02ABEA00F8DE7BEFE55110411FB71400D65A6BAD5D03124100641100B5D65A6B
+        D5B41341562C050094524A294D66154190713A0073CE39E7C4171741C0C0C000
+        524A29A53CC918418080800031C61863B47A1A4140404000104208212C2C1C41
+        00000000EFBDF7DEA3DD1D41FFFFFF00CE39E79C1B8F1F41FCF30500D65A6BAD
+        49A02041FF640200C618638C05792141DD080600B5D65A6BC1512241F2088400
+        A594524A7D2A23414600A50094524A29390324410000D40084104208F5DB2441
+        02ABEA0073CE39E7B0B425411FB71400638C31C66C8D264100641100524A29A5
+        28662741562C050042082184E43E284190713A0031C61863A0172941C0C0C000
+        218410425CF02941808080001042082118C92A414040400000000000D4A12B41
+        00000000}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 927
+    object Label1: TLabel
+      Left = 100
+      Top = 12
+      Width = 49
+      Height = 13
+      Caption = '&Max. Size:'
+      FocusControl = TrackBar1
+    end
+    object Label2: TLabel
+      Left = 296
+      Top = 12
+      Width = 25
+      Height = 13
+      Caption = '&Filter:'
+      FocusControl = Edit1
+    end
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Font...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object TrackBar1: TTrackBar
+      Left = 152
+      Top = 8
+      Width = 113
+      Height = 24
+      LineSize = 5
+      Max = 100
+      Min = 1
+      Frequency = 10
+      Position = 1
+      TabOrder = 1
+      OnChange = TrackBar1Change
+    end
+    object Edit1: TEdit
+      Left = 327
+      Top = 9
+      Width = 74
+      Height = 21
+      TabOrder = 2
+      OnChange = Edit1Change
+    end
+    object ComboFlat1: TComboFlat
+      Left = 416
+      Top = 8
+      Width = 89
+      ItemIndex = 0
+      TabOrder = 3
+      Text = 'Sort by Text'
+      OnChange = ComboFlat1Change
+      Items.Strings = (
+        'Sort by Text'
+        'Sort by Value')
+    end
+  end
+end

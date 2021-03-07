@@ -1,0 +1,281 @@
+//IB_CustomMemo.INT
+
+{$I IBC_CustomEdit.IMP}
+
+constructor {$I IB_Classes.INC} Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  {$IFNDEF VER90}
+  {$IFDEF IB_AutoLabel}
+  FAutoLabel := TIB_AutoLabel.Create( Self );
+  {$ENDIF}
+  {$ENDIF}
+  inherited Create(AOwner);
+  inherited ReadOnly := true;
+  ControlStyle := ControlStyle + [csReplicatable];
+  FAutoDisplay := true;
+  FAllowCRLF := true;
+  DataLink.Control := Self;
+  DataLink.OnEditingChanged := EditingChanged;
+  DataLink.OnStateChanged := StateChanged;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnUpdateData := UpdateData;
+end;
+
+destructor {$I IB_Classes.INC} Destroy;
+begin
+  {$IFNDEF VER90}
+  {$IFDEF IB_AutoLabel}
+  FAutoLabel.Free;
+  FAutoLabel := nil;
+  {$ENDIF}
+  {$ENDIF}
+  DataSource := nil;
+  DataLink.Control := nil;
+  DataLink.OnEditingChanged := nil;
+  DataLink.OnStateChanged := nil;
+  DataLink.OnDataChange := nil;
+  DataLink.OnUpdateData := nil;
+  inherited Destroy;
+end;
+
+procedure {$I IB_Classes.INC} Loaded;
+begin
+  inherited Loaded;
+  SysStateChanged;
+  DataLink.DataChange;
+  {$IFNDEF VER90}
+  {$IFDEF IB_AutoLabel}
+  RemakeAutoLabel;
+  {$ENDIF}
+  {$ENDIF}
+end;
+
+procedure {$I IB_Classes.INC} SetAutoDisplay( AValue: Boolean );
+begin
+  if FAutoDisplay <> AValue then
+    if AValue then
+      LoadMemo;
+  FAutoDisplay := AValue;
+end;
+
+procedure {$I IB_Classes.INC} LoadMemo;
+begin
+  if Assigned( Field ) and not MemoLoaded then
+  begin
+    try
+      Lines.BeginUpdate;
+      Inc( FIgnoreChangeLevel );
+      try
+        if Field.IsNull then
+          Lines.Clear
+        else
+          Field.AssignTo( Lines );
+        FMemoLoaded := True;
+      except
+        Lines.Text := E_Could_Not_Load_Memo;
+        Application.HandleException( Self );
+      end;
+    finally
+      Dec( FIgnoreChangeLevel );
+      Lines.EndUpdate;
+    end;
+    SysStateChanged;
+    Modified := false;
+  end;
+end;
+
+procedure {$I IB_Classes.INC} SysDataChange( IB_Field: TIB_Column );
+begin
+  Inc( FIgnoreChangeLevel );
+  try
+    with DataLink do
+    begin
+      MaxLength := FieldMaxLength;
+      FMemoLoaded := false;
+      if Assigned( Field ) then
+      begin
+        case State of
+          dssPrepared,
+          dssBrowse,
+          dssDelete,
+          dssEdit,
+          dssInsert:
+          begin
+            if Field.IsBlob then
+            begin
+              if AutoDisplay or Field.IsNull or Field.IsLoaded then
+                LoadMemo
+              else
+                Text := FieldText;
+              FMemoLoaded := Field.IsNull or Field.IsLoaded;
+            end
+            else
+            begin
+              if Lines.Text <> FieldText then
+                Lines.Text := FieldText;
+              FMemoLoaded := true;
+            end;
+          end
+          else
+          begin
+            if Lines.Text <> FieldText then
+              Lines.Text := FieldText;
+            FMemoLoaded := true;
+          end;
+        end;
+      end
+      else
+      if Lines.Text <> FieldText then
+        Lines.Text := FieldText;
+    end;
+    Modified := false;
+  finally
+    Dec( FIgnoreChangeLevel );
+  end;
+end;
+
+procedure {$I IB_Classes.INC} SysUpdateData;
+begin
+  if DataLink.ControlIsModified and Assigned( Field ) then
+  begin
+    case DataLink.State of
+      dssEdit,
+      dssInsert:
+      begin
+        if Field.IsBlob then
+          Field.Assign( Lines )
+        else
+          DataLink.FieldText := Lines.Text;
+      end
+      else
+        DataLink.FieldText := Lines.Text;
+    end;
+  end;
+end;
+
+procedure {$I IB_Classes.INC} Change;
+begin
+  if FIgnoreChangeLevel = 0 then
+  begin
+    with DataLink do
+    begin
+      if MemoLoaded then
+        Modify;
+      FMemoLoaded := true;
+      if (State in [ dssInsert, dssEdit, dssSearch ]) or IsParamEdit then
+        ControlIsModified := true;
+    end;
+  end;
+  if MemoLoaded then
+    inherited Change;
+end;
+
+procedure {$I IB_Classes.INC} KeyDown(var Key: Word; Shift: TShiftState);
+var
+  Msg: TMsg;
+begin
+  if ( not AllowCRLF ) and ( Key = VK_RETURN ) then
+  begin
+    PeekMessage( Msg, Handle, WM_CHAR, WM_CHAR, PM_REMOVE );
+    inherited KeyDown( Key, Shift );
+    Key := 0;
+  end
+  else
+  begin
+    inherited KeyDown(Key, Shift);
+    if MemoLoaded then
+    begin
+      if ( Key in [ 8..10, 13, 23, 24 ] ) or
+         ( Key = VK_DELETE ) or
+         (( Key = VK_INSERT ) and ( ssShift in Shift )) then
+        DataLink.Modify;
+    end
+    else
+    if ( DataLink.State in [ dssInsert, dssEdit, dssSearch ] ) or
+      DataLink.IsParamEdit then
+      LoadMemo
+    else
+      Key := 0;
+  end;
+end;
+
+procedure {$I IB_Classes.INC} KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if MemoLoaded then
+  begin
+    if Assigned( Field ) and ( Key in [#32..#255] ) and
+       not DataLink.FieldIsValidChar(Key) then
+    begin
+      MessageBeep(0);
+      Key := #0;
+    end;
+    case Key of
+      ^V,^X,#32..#255: DataLink.Modify;
+      #27: SysDataChange( nil );
+    end;
+  end
+  else
+  begin
+    if Key = #13 then
+      LoadMemo;
+    Key := #0;
+  end;
+end;
+
+procedure {$I IB_Classes.INC} WMLButtonDblClk(var Message: TWMLButtonDblClk);
+begin
+  if MemoLoaded then
+    inherited
+  else
+    LoadMemo;
+end;
+
+procedure {$I IB_Classes.INC} WMCut(var Message: TMessage);
+begin
+  if MemoLoaded and DataLink.Modify then
+    inherited;
+end;
+
+procedure {$I IB_Classes.INC} WMPaste(var Message: TMessage);
+begin
+  if DataLink.Modify then
+  begin
+    if not MemoLoaded then
+      Lines.Clear;
+    inherited;
+  end;
+end;
+
+procedure {$I IB_Classes.INC} SysStateChanged;
+begin
+  if DataLink.ColorScheme then begin
+    inherited Color := DataLink.Color;
+  end;
+  inherited Alignment := DataLink.FieldAlignment;
+  UpdateTabStop;
+end;
+
+procedure {$I IB_Classes.INC} CMEnter(var Message: TCMEnter);
+begin
+{$IFDEF IBC_Edit}
+  SetFocused(True);
+{$ENDIF}
+  inherited;
+end;
+
+procedure {$I IB_Classes.INC} CMExit(var Message: TCMExit);
+begin
+  try
+    DataLink.UpdateData;
+  except
+    SetFocus;
+    raise;
+  end;
+{$IFDEF IBC_Edit}
+  SetFocused(False);
+{$ENDIF}
+  inherited;
+end;
+

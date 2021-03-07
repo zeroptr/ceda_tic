@@ -1,0 +1,859 @@
+
+{                                                                              }
+{ TIB_Column                                                                   }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: Exception type for column exceptions.}
+EIB_ColumnError = class( EIB_Error );
+{: Event type used with the TIB_Column object. }
+TIB_ColumnEvent = procedure( Sender: TIB_Column ) of object;
+{: Event type used with the TIB_Column object. }
+TIB_ColumnEventAs = procedure(     Sender: TIB_Column;
+                               var AValue: string ) of object;
+{: The character case that should be used when accessing this column through a
+data bound control. }
+TIB_CharCase = ( ccNormal, ccUpper, ccLower, ccProper );
+{: This object is like the VCL TField and TParam combined. It serves as both
+the input and output column specifier.
+<br><br>
+Design-time fields are not possible with the native IBO components so it is
+necessary to do one of two things if you need static references to a column or
+parameter:
+<ul>
+<li>1) Use the FieldByName( ) method, Fields[ ] array;  or
+<li>2) At prepare time assign STATIC variables as references to the
+field objects that are defined by storing the results of the FieldByName()
+method. Be sure to refresh the list each time a prepare is done too.
+</ul>
+<br><br>
+Blob contents can be accessed using the AsString property, Assign() and
+AssignTo() methods.  You can also use blob streams directly with the
+CreateBlobStream() method of the TIB_Statement class.  Casting the reference
+to a TIB_ColumnBlob is unnecessary, unless you need something that is made
+accessible specifically only at that level of sub-classing.}
+TIB_Column = class(TObject)
+private
+  FRow: TIB_Row;
+  FFieldNo: smallint;
+  FPXSQLVAR: PXSQLVAR;
+  FOldColumnInd: ^smallint;
+  FNewColumnInd: ^smallint;
+  FOldColumnBuffer: pointer;
+  FNewColumnBuffer: pointer;
+  FDomainName: string;
+  FNotInForUpdate: boolean;
+  FReadOnly: boolean;
+  FForceControlsReadOnly: boolean;
+  FAlignment: TAlignment;
+  FCharCase: TIB_CharCase;
+  FEditMask: string;
+  FMaskIntf: IIB_MaskProcessor;
+  FDisplayFormat: string;
+  FDisplayLabel: string;
+  FGridDisplayLabel: string;
+  FDisplayWidth: integer;
+  FTrimming: TIB_ColumnTrimming;
+  FVisible: boolean;
+  FBooleanTrue: string;
+  FBooleanFalse: string;
+  FIsBoolean: boolean;
+  FIsText: boolean;
+  FIsNumeric: boolean;
+  FIsDateTime: boolean;
+  FPadChar: char;
+  FDateOnlyFmt: string;
+  FTimeOnlyFmt: string;
+  FIsBlob: boolean;
+  FIsArray: boolean;
+  FIsCurrency: boolean;
+  FPreventEditing: boolean;
+  FPreventInserting: boolean;
+  FPreventSearching: boolean;
+  FBDEFieldName: string;
+  FDBFFieldName: string;
+  FNoCaseFieldName: string;
+  FBlankIsNull: boolean;
+  FValidating: boolean;
+  FValidateBuffer: pointer;
+  FPreserveBuffer: pointer;
+  FOrderingLinkItemNo: integer;
+  FIsCurrencyDataType: boolean;
+  FDefaultValue: string;
+  FOnBeforeModify: TIB_ColumnEvent;
+  FOnAfterModify: TIB_ColumnEvent;
+  FOnValidate: TIB_ColumnEvent;
+  FOnGetText: TIB_ColumnEventAs;
+  FOnSetText: TIB_ColumnEventAs;
+{ Property access methods }
+  function GetBDEFieldName: string;
+  function GetDBFFieldName: string;
+  function GetDisplayLabel: string;
+  function GetGridDisplayLabel: string;
+  function GetIsDateOnly: boolean;
+  function GetIsTimeOnly: boolean;
+  function GetBooleanTrue: string;
+  function GetBooleanFalse: string;
+  function GetDataSize: word;
+  function GetSQLName: string;
+  function GetRelName: string;
+  function GetOwnerName: string;
+  function GetFieldName: string;
+  function GetFullFieldName: string;
+  function GetBestFieldName: string;
+  function GetDomainName: string;
+  function GetSQLType: smallint;
+  function GetSQLScale: smallint;
+  function GetSQLSubType: smallint;
+  function GetSQLLen: smallint;
+  function GetOldIsNull: boolean;
+  function GetOldIsNotNull: boolean;
+  procedure SetIsNull( const NewValue: boolean );
+  function GetComputed: boolean;
+  function GetIsNotNull: boolean;
+  function GetIsNull: boolean;
+  function GetIsNullable: boolean;
+  function GetIsPrimary: boolean;
+  function GetIsForeign: boolean;
+  function GetIsDefaulted: boolean;
+  function GetIsIndexField: boolean;
+  function GetIsAlternate: boolean;
+  function GetStatement: TIB_Statement;
+  function GetIndex: integer;
+  procedure SetIndex( AValue: integer );
+  function GetColData: string;
+  procedure SetColData( const AValue: string );
+  function GetOldColData: string;
+  procedure SetOldColData( const AValue: string );
+  procedure SetBooleanTrue( const AValue: string );
+  procedure SetBooleanFalse( const AValue: string );
+  procedure SetPreventEditing( AValue: boolean );
+  procedure SetPreventInserting( AValue: boolean );
+  procedure SetPreventSearching( AValue: boolean );
+  procedure SetForceControlsReadOnly( AValue: boolean );
+  function GetOrderingLinkItemNo: integer;
+  procedure FreeMaskIntf;
+  function CalcDefaultWidth( IsGrid: boolean ): integer;
+protected
+{ Property access methods }
+  function GetBlobSize: longint; virtual;
+  function GetFieldSource( DomainInfo: boolean ): string; //~virtual;
+  function GetReadOnly: boolean; //~virtual;
+  function GetControlsReadOnly: boolean; //~virtual;
+  function GetIsLoaded: boolean; virtual;
+  function GetIsModified: boolean; virtual;
+  function GetIsCalculated: boolean; //~virtual;
+  function GetRequired: boolean; //~virtual;
+  function GetOldAsString: string; virtual;
+  function GetOldAsVariant: variant; virtual;
+  function GetAsString: string; virtual; abstract;
+  function GetAsRawString: string; virtual; 
+  function GetAsXML: string; virtual;
+{$IFDEF IBO_VCL30_OR_GREATER}
+  function GetAsWideString: widestring; virtual;
+{$ENDIF}
+  function GetAsDate: TDateTime; virtual;
+  function GetAsDateTime: TDateTime; virtual;
+  function GetAsDateTimeEncodeString: string; virtual;
+  function GetAsBoolean: boolean; //~virtual;
+  function GetAsInteger: integer; virtual;
+  function GetAsInt64: ISC_INT64; //~virtual;
+  function GetAsFloat: double; virtual;
+  function GetAsSmallint: smallint; virtual;
+  function GetAsDouble: double; virtual;
+  function GetAsCurrency: currency; virtual;
+{$IFNDEF IBO_CPPB}
+  function GetAsComp: comp; virtual;
+{$ENDIF}
+  function GetAsExtended: extended; virtual;
+  function GetAsVariant: variant; virtual;
+{ Property Manipulation Methods }
+  procedure SetAsString( const NewValue: string ); virtual; abstract;
+  procedure SetAsRawString( const NewValue: string ); virtual; 
+{$IFDEF IBO_VCL30_OR_GREATER}
+  procedure SetAsWideString( const NewValue: widestring ); virtual;
+{$ENDIF}
+  procedure SetAsDate( const NewValue: TDateTime ); virtual;
+  procedure SetAsDateTime( const NewValue: TDateTime ); virtual;
+  procedure SetAsDateTimeEncodeString( const NewValue: string ); virtual;
+  procedure SetAsBoolean( const NewValue: boolean ); //~virtual;
+  procedure SetAsInteger( const NewValue: integer ); virtual;
+  procedure SetAsInt64( const NewValue: ISC_INT64 ); //~virtual;
+  procedure SetAsFloat( const NewValue: double ); virtual;
+  procedure SetAsSmallint( const NewValue: smallint ); virtual;
+  procedure SetAsDouble( const NewValue: double ); virtual;
+  procedure SetAsCurrency( const NewValue: currency ); virtual;
+{$IFNDEF IBO_CPPB}
+  procedure SetAsComp( const NewValue: comp ); virtual;
+{$ENDIF}
+  procedure SetAsExtended( const NewValue: extended); virtual;
+  procedure SetAsVariant( const NewValue: variant ); virtual;
+  function GetSQLTypeSource: string; virtual;
+  function GetDisplayName: string; //~virtual;
+  function GetGridDisplayName: string; //~virtual;
+  function GetDisplayText: string; virtual;
+  function GetDefaultWidth: integer; virtual;
+  function GetDisplayWidth: integer; //~virtual;
+{ Attribute Manipulation Methods }
+  function GetAttributeParams( const AParam: string ): string;
+  procedure SetAttributeParams( const AParam: string; AValue: string );
+  function GetIsAttributeSet( const AParam: string ): boolean;
+  procedure SetIsAttributeSet( const AParam: string; AValue: boolean );
+{ Property coordination methods }
+  procedure SetAlignment( AValue: TAlignment ); //~virtual;
+  procedure SetCharCase( AValue: TIB_CharCase ); //~virtual;
+  function GetDisplayFormat: string; //~virtual;
+  procedure SetDisplayFormat( const AValue: string ); //~virtual;
+  function GetEditMask: string;
+  procedure SetEditMask( const AValue: string ); //~virtual;
+  function IsMasked: boolean; //~virtual;
+  function EmptyMaskText: string; //~virtual;
+  function FormatTextWithMask( const SourceStr: string ): string; //~virtual;
+  procedure SetDisplayLabel( const AValue: string ); //~virtual;
+  procedure SetGridDisplayLabel( const AValue: string ); //~virtual;
+  procedure SetDisplayWidth( AValue: integer ); //~virtual;
+  procedure SetTrimming( AValue: TIB_ColumnTrimming ); //~virtual;
+  procedure SetVisible( AValue: boolean ); //~virtual;
+{ System methods }
+  procedure SysBeforeModify; //~virtual;
+  procedure SysAfterModify; //~virtual;
+  function SysInternalChanged: boolean; virtual;
+  procedure SysSetIsNull( const NewValue: boolean ); virtual;
+  procedure SysLayoutChanged; //~virtual;
+{ Event dispatch methods }
+  procedure DoBeforeModify; //~virtual;
+  procedure DoAfterModify; //~virtual;
+public
+  constructor Create( ARow: TIB_Row;
+                      PSQLVAR: PXSQLVAR;
+                      AFieldNo: smallint ); virtual;
+  destructor Destroy; override;
+{ Methods }
+
+  property BlankIsNull: boolean read FBlankIsNull write FBlankIsNull;
+{: }
+  property BlobSize: longint read GetBlobSize;
+{: }
+  procedure LoadFromFile( const AFileName: string ); dynamic;
+{: }
+  procedure SaveToFile( const AFileName: string ); dynamic;
+
+{: This function is used by data-aware controls to determine if a key press is
+valid for the column to which it is bound.}
+  function IsValidChar( AChar: Char ): boolean; //~virtual;
+{: This function sets a column to NULL.}
+  procedure Clear; virtual;
+{: This function scans through all data bound controls and tries to bring
+to a focused state one which is bound to this column.
+<br><br>
+It is used in the CheckRequiredFields after data entry, to bring the user's
+focus directly, if possible, to a Required field that has been left out.}
+  procedure FocusControl;
+{: Assigns the data contents of the column or other data member passed in.
+<br><br>
+All necessary data conversions are performed or an exception is raised.
+<br><br>
+This works very well when moving BLOB data to and from TStrings, TStream,
+TBitmap, TPicture, etc.
+<br><br>
+It does not support passing in a VCL TField.}
+  procedure Assign( Source: TObject ); virtual;
+{: Assigns the column's data contents to another data member passed in.
+<br><br>
+All necessary data conversions are performed or an exception is raised.
+<br><br>
+This works very well when moving BLOB data to and from TStrings, TStream,
+TBitmap, TPicture, etc.
+<br><br>
+It does not support passing in a VCL TField.}
+  procedure AssignTo( Dest: TObject ); virtual;
+{: This method is for improving accuracy when working with the ColumnAttributes
+settings.}
+  function GetAttributeParamsEx( const AParam: string;
+                                   var IsSet: boolean ): string;
+{: Method to cause this column to go back to its original value.}
+  procedure Revert; //~virtual;
+{: Method to transfer data from a raw buffer to the contents of the column.}
+  procedure SetBlobData( ABuffer: Pointer; ASize: integer ); virtual;
+
+{ Properties }
+
+{: This is the FieldName that the BDE will use.}
+  property BDEFieldName: string read GetBDEFieldName;
+{: This is the FieldName that a DBF file will use.}
+  property DBFFieldName: string read GetDBFFieldName;
+{: This property indicates the name of the column in the table that is the
+uppercase equivalent of this column. It is set by making an entry in the
+ColumnAttributes property of the connection or dataset.}
+  property NoCaseFieldName: string read FNoCaseFieldName;
+{: Reference to the statement to which this object belongs.}
+  property Statement: TIB_Statement read GetStatement;
+{: Reference to the row to which this object belongs.
+
+The row determines whether it is an input (Params) or output (Fields) row to
+which the column objects belong.}
+  property Row: TIB_Row read FRow;
+{: Size of the memory block used to store the contents of this column. The
+storage for the NULL indicator is included.
+<br><br>
+For BLOB and ARRAY columns this only indicates the size of storage for the
+8-byte ID.}
+  property DataSize: word read GetDataSize;
+{: The numeric position that the column occupies in the row buffer, starting at
+0 in the first position.  It represents the native SQL ordering of the
+column buffer within the row buffer.}
+  property FieldNo: smallint read FFieldNo;
+{: Pointer to the SQLVAR SQL column structure used by the IB API.}
+  property PSQLVAR: PXSQLVAR read FPXSQLVAR;
+{: Name of the column as it maps to the table.}
+  property SQLName: string read GetSQLName;
+{: Name of the table to which the column belongs.}
+  property RelName: string read GetRelName;
+{: Name of the owner of the resource in the database.}
+  property OwnerName: string read GetOwnerName;
+{: Name of column as defined in the SELECT statement.
+<br><br>
+Otherwise known as the Alias. }
+  property FieldName: string read GetFieldName;
+{: }
+  property FieldSource[ DomainInfo: boolean ]: string read GetFieldSource;   
+{: A fully qualified column name that includes the name of the table and a
+period with the alias name of the column.}
+  property FullFieldName: string read GetFullFieldName;
+{: A fully qualified column name that omits the table prefix if that can be done
+and still distinguish it from other columns in the dataset.}
+  property BestFieldName: string read GetBestFieldName;
+{: Name of the InterBase domain to which this column belongs.
+<br><br>
+Use of this property will invoke a performance hit since it will need to
+query the database metadata.}
+  property DomainName: string read GetDomainName;
+{: This property returns the text which serves as a display string
+for this column in the application. If there is no DisplayFormat or
+EditFormat then AsString is used.}
+  property DisplayText: string read GetDisplayText;
+{: This property stores the text which serves as a standard display string
+to accompany this column as a label in the application.
+<br><br>
+If DisplayName is left blank then the column's field name will be used.}
+  property DisplayName: string read GetDisplayName;
+{: This property stores the text which serves as to override the DisplayName
+when displaying the column title of a grid.
+<br><br>
+If GridDisplayName is left blank then DisplayName or the column's field name
+will be used.}
+  property GridDisplayName: string read GetGridDisplayName;
+{: This is a default width of a column in pixels to be used by data bound
+controls.}
+  property DefaultWidth: integer read GetDefaultWidth;
+{: }
+  property IsCurrencyDataType: boolean read FIsCurrencyDataType;
+{: Set the NOEDIT param in the FieldsReadOnly property to configure this value
+at design-time.}
+  property PreventEditing: boolean read FPreventEditing
+                                   write SetPreventEditing;
+{: Set the NOINSERT param in the FieldsReadOnly property to configure this value
+at design-time.}
+  property PreventInserting: boolean read FPreventInserting
+                                     write SetPreventInserting;
+{: Set the NOSEARCH param in the FieldsReadOnly property to configure this value
+at design-time.}
+  property PreventSearching: boolean read FPreventSearching
+                                     write SetPreventSearching;
+{: This property indicates whether controls associated with this column will
+allow user manipulation.}
+  property ControlsReadOnly: boolean read GetControlsReadOnly;
+{: This property is to be used at runtime to make a column read-only for a
+special case that may be temporary. Setting it to True does not alter a column
+that is already read-only. It will just force it to be read-only if some other
+setting or factor has not made it read-only.}
+  property ForceControlsReadOnly: boolean read FForceControlsReadOnly
+                                          write SetForceControlsReadOnly;
+{: This property indicates the character that is used to pad the white space of
+the column. This applies when it is null and when a varchar is shorter than the
+declared potential length.}
+  property PadChar: char read FPadChar;
+{: This returns the SQL code that will provide the data type of the column when
+it was created in a CREATE TABLE statement.}
+  property SQLTypeSource: string read GetSQLTypeSource;
+{: Native InterBase SQLType code for this column.}
+  property SQLType: smallint read GetSQLtype;
+{: The number of digits of precision for numerical storage.}
+  property SQLScale: smallint read GetSQLscale;
+{: The BLOB type is indicated with this property.
+<ul>
+<li> >1 - System defined
+<li>  1 - Text
+<li>  0 - Binary
+<li> <0 - User-defined
+</ul>}
+  property SQLSubType: smallint read GetSQLsubtype;
+{: The number of characters used in the data portion of the column buffer.
+<br><br>
+For VARCHAR fields this does not include the two-byte length indicator which
+is located in the beginning of the column buffer.}
+  property SQLLen: smallint read GetSQLLen;
+{: Returns True if this column's content has been loaded.
+<br><br>
+This really only applies to BLOB and ARRAY columns.}
+  property IsLoaded: boolean read GetIsLoaded;
+{: Returns True if this column has been modified.}
+  property IsModified: boolean read GetIsModified;
+{: Returns True if this column's value is obtained from a calculation.}
+  property IsCalculated: boolean read GetIsCalculated;
+{: Returns True if this column has a server defined default value.}
+  property IsDefaulted: boolean read GetIsDefaulted;
+{: Returns True if the CURRENCY column attribute was set.}
+  property IsCurrency: boolean read FIsCurrency;
+{: Returns True if this column must provide a value to the server, i.e. is
+defined in the database as NOT NULL.
+<br><br>
+Set a ColumnAttribute setting of NOTREQUIRED to flag a column so that it will
+be ignored by the CheckRequiredFields method.  It is also possible to enforce a
+user entry in a nullable column by setting it to REQUIRED in the
+ColumnAttributes.}
+  property Required: boolean read GetRequired;
+{: Returns True if this column can contain a NULL on the server.}
+  property IsNullable: boolean read GetIsNullable;
+{: Returns True if this column is used in a table's primary key.}
+  property IsPrimary: boolean read GetIsPrimary;
+{: Returns True if this column is used in a table's foreign key.}
+  property IsForeign: boolean read GetIsForeign;
+{: Work in progress}
+  property IsIndexField: boolean read GetIsIndexField;
+{: Work in progress}
+  property IsAlternate: boolean read GetIsAlternate;
+{: Run-time only. This a conversion property.
+<br><br>
+AsString can be used to read or set the value of the column as a string.
+<br><br>
+It will even work with the contents of BLOB columns.
+<br><br>
+All trimming rules will be honored when reading and writing to this property.
+If you want to get or set the raw string value of the column please use the
+AsRawString property.}
+  property AsString: string read GetAsString write SetAsString;
+{: This will get and set the value of the column exactly as it is directly in
+the buffers, without any trimming rules or OnGetText/OnSetText events applied.}
+  property AsRawString: string read GetAsRawString write SetAsRawString;
+{$IFDEF IBO_VCL30_OR_GREATER}
+{: This is for use with Unicode strings.}
+  property AsWideString: widestring read GetAsWideString write SetAsWideString;
+{$ENDIF}
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsDate: TDateTime read GetAsDate write SetAsDate;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsDateTime: TDateTime read GetAsDateTime write SetAsDateTime;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.  See IB_Utils.pas functions DateTimeToEncodeString and
+EncodeStringToDateTime for details of the string value expected by this
+property.}
+  property AsDateTimeEncodeString: string read GetAsDateTimeEncodeString
+                                          write SetAsDateTimeEncodeString;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsBoolean: boolean read GetAsBoolean write SetAsBoolean;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsInteger: integer read GetAsInteger write SetAsInteger;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsInt64: ISC_INT64 read GetAsInt64 write SetAsInt64;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsSmallint: smallint read GetAsSmallint write SetAsSmallint;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsFloat: double read GetAsFloat write SetAsFloat;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsDouble: double read GetAsDouble write SetAsDouble;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsCurrency: currency read GetAsCurrency write SetAsCurrency;
+{$IFNDEF IBO_CPPB}
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsComp: comp read GetAscomp write SetAscomp;
+{$ENDIF}
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsExtended: extended read GetAsExtended write SetAsExtended;
+{: Conversion property. An exception will be raised if a conversion cannot
+be performed.}
+  property AsVariant: variant read GetAsVariant write SetAsVariant;
+{: This property returns the text for a cell of XML for the column's value.}
+  property AsXML: string read GetAsXML;
+{: Returns the boolean inverted NULL status of the column.}
+  property IsNotNull: boolean read GetIsNotNull;
+{: Returns the NULL status of the column.}
+  property IsNull: boolean read GetIsNull write SetIsNull;
+{: Returns the original value of a column if it has changed. Otherwise, it
+returns the current value.}
+  property OldAsString: string read GetOldAsString;
+{: Returns the original value of a column if it has changed. Otherwise, it
+returns the current value.}
+  property OldAsVariant: variant read GetOldAsVariant;
+{: Returns whether or not the column was originally NULL.}
+  property OldIsNull: boolean read GetOldIsNull;
+{: Returns whether or not the column was originally NOT NULL.}
+  property OldIsNotNull: boolean read GetOldIsNotNull;
+{: This property is controlled by the BOOLEAN attribute in the
+ColumnAttributes property of the connection or dataset.}
+  property BooleanTrue: string read GetBooleanTrue write SetBooleanTrue;
+{: This property is controlled by the BOOLEAN attribute in the
+ColumnAttributes property of the connection or dataset.}
+  property BooleanFalse: string read GetBooleanFalse write SetBooleanFalse;
+{: This column is used to indicate whether the underlying column in a table is
+defined with a COMPUTED BY expression. This makes it become a calculated column,
+even though it appears to be derived from a valid table column.}
+  property Computed: boolean read GetComputed;
+{: Flag to quickly check whether the column is an ARRAY column.}
+  property IsArray: boolean read FIsArray;
+{: Flag to quickly check whether the column is a BLOB column.}
+  property IsBlob: boolean read FIsBlob;
+{: Flag to quickly check whether the column is defined as a boolean.}
+  property IsBoolean: boolean read FIsBoolean;
+{: Flag to quickly check whether the column is date-time based.}
+  property IsDateTime: boolean read FIsDateTime;
+{: Flag to quickly check whether the column is date-only based.}
+  property IsDateOnly: boolean read GetIsDateOnly;
+{: Flag to quickly check to whether the column is time-only.}
+  property IsTimeOnly: boolean read GetIsTimeOnly;
+{: Flag to quickly check whether the column is based on a numeric type.}
+  property IsNumeric: boolean read FIsNumeric;
+{: Flag to quickly check whether the column is based on a text type.}
+  property IsText: boolean read FIsText;
+{: Provides information about whether this column can be modified.}
+  property ReadOnly: boolean read GetReadOnly;
+{: A particular member of the user-defined column properties can be read and
+modified via this property.}
+  property IsAttributeSet[ const Index: string ]: boolean
+      read GetIsAttributeSet
+     write SetIsAttributeSet;
+{: User-defined column properties can be stored via this property.}
+  property AttributeParams[ const Index: string ]: string
+      read GetAttributeParams
+     write SetAttributeParams;
+{: Direct binary based string of the column's buffer.
+<br><br>
+No notification is given when the buffer is changed.  Changes will be detected at
+the time of posting.}
+  property ColData: string read GetColData write SetColData;
+{: Direct binary based string of the column's old value buffer. }
+  property OldColData: string read GetOldColData write SetOldColData;
+{: BDE compatibility property.
+<br><br>
+This property is also very handy with ARRAY columns since the results are
+bundled up into a variant array.}
+  property Value: variant read GetAsVariant write SetAsVariant;
+{: This provides the value of the OrderingItemNo from the OrderingLinks property
+that would take effect if this column were used to initiate the Ordering.  This
+value would be available, for example, if the column's title in a grid is
+clicked while IndicateOrdering is set to True and OrderingLinks are present for
+this column.}
+  property OrderingLinkItemNo: integer read GetOrderingLinkItemNo;
+published
+{ Properties }
+
+{: Used to align the data in the TIB_Grid and other data bound controls.}
+  property Alignment: TAlignment read FAlignment write SetAlignment;
+{: Used by databound controls to provide the case expected for this column.}
+  property CharCase: TIB_CharCase read FCharCase write SetCharCase;
+{: Used by the DisplayText property to display data in a more appropriate format
+in bound controls when the dataset is not in editing mode.}
+  property DisplayFormat: string read FDisplayFormat write SetDisplayFormat;
+{: Text used as a display label for this column. }
+  property DisplayLabel: string read GetDisplayLabel write SetDisplayLabel;
+{: Text used as a display label for this column in a grid instead of
+DisplayLabel.}
+  property GridDisplayLabel: string read GetGridDisplayLabel
+                                    write SetGridDisplayLabel;
+{: Width in pixels for this column when displayed in an IB_Grid column.}
+  property DisplayWidth: integer read GetDisplayWidth write SetDisplayWidth;
+{: Used in masked data entry controls for cleaner data entry.}
+  property EditMask: string read GetEditMask write SetEditMask;
+{: Numeric reference to the position of the TIB_Column in the TList of columns.
+<br><br>
+This is used by the TIB_Grid to determine the left-to-right display order of the
+columns.
+<br><br>
+Do not confuse this property with the FieldNo property , which represents the
+native SQL ordering of the column buffer within the row buffer.}
+  property Index: integer read GetIndex write SetIndex;
+{: This property controls how CHAR and VARCHAR columns are trimmed and gives a
+few extra nice options.<ul>
+<li>NONE (ctNone) emulates the VCL behavior and leaves the string exactly as it
+comes over from the server
+<li>ALL (ctAll) trims leading and trailing blank characters (#32) and also
+removes any that occur within the string.  Use with caution!  blanks are
+sometimes used by developers to overrule the standard ASCII sequencing of number
+strings.  This setting will defeat such a system.
+<li>BOTH (ctBoth) trims leading and trailing blank characters.
+<li>LEFT  (ctLeft) trims leading blanks only.
+<li>RIGHT (ctRight) trims trailing blanks only.
+<li>SENTENCE (ctSentence) trims leading and trailing blanks.  It also searches
+the string for occurrences of two or more contiguous blank spaces and reduces
+the size of these whitespace sequences to one blank space.
+</ul>
+.}
+  property Trimming: TIB_ColumnTrimming read FTrimming write SetTrimming;
+{: Used by the TIB_Grid to determine whether it should display this column.  A
+column will always be visible unless its VISIBLE attribute is set False
+explicitly.}
+  property Visible: boolean read FVisible write SetVisible;
+
+{ Events }
+
+{: Event triggered immediately after a column has been modified.}
+  property OnAfterModify: TIB_ColumnEvent read FOnAfterModify
+                                          write FOnAfterModify;
+{: Event triggered immediately before a column is modified.}
+  property OnBeforeModify: TIB_ColumnEvent read FOnBeforeModify
+                                           write FOnBeforeModify;
+{: This event is used in conjunction with the AsString property. It is
+triggered any time the column is referenced with AsString.}
+  property OnGetText: TIB_ColumnEventAs read FOnGetText write FOnGetText;
+{:This event is used in conjunction with the AsString property. It is
+triggered any time something is assigned to the column using AsString.}
+  property OnSetText: TIB_ColumnEventAs read FOnSetText write FOnSetText;
+{: Event to validate the new value written to the field.
+<br><br>
+If the new value is invalid then raise an exception to cause it to be rejected.}
+  property OnValidate: TIB_ColumnEvent read FOnValidate write FOnValidate;
+
+end;
+
+{: Column type sub-class.}
+TIB_ColumnNumBase = class( TIB_Column )
+public
+  constructor Create( ARow: TIB_Row;
+                      PSQLVAR: PXSQLVAR;
+                      AFieldNo: smallint ); override;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnNumeric = class( TIB_ColumnNumBase )
+private
+  FNoRoundErr: boolean;
+  FFmtStr: string;
+protected
+  function GetAsCurrency: currency; override;
+  procedure SetAsCurrency( const NewValue: currency ); override;
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetAsExtended: extended; override;
+  procedure SetAsExtended( const NewValue: extended ); override;
+  function GetValue: extended; //~virtual;
+  procedure SetValue( const NewValue: extended ); //~virtual;
+  function GetAsInteger: integer; override; 
+  procedure SetAsInteger( const NewValue: integer ); override;
+public
+  constructor Create( ARow: TIB_Row;
+                      PSQLVAR: PXSQLVAR;
+                      AFieldNo: smallint ); override;
+  property Value: extended read GetValue write SetValue;
+  property NoRoundErr: boolean read FNoRoundErr;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnFloat = class( TIB_ColumnNumBase )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string); override;
+  function GetAsFloat: double; override;
+  procedure SetAsFloat( const NewValue: double); override;
+  function GetValue: single; //~virtual;
+  procedure SetValue( const NewValue: single ); //~virtual;
+public
+  property Value: single read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnDouble = class( TIB_ColumnNumBase )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string); override;
+  function GetAsDouble: Double; override;
+  procedure SetAsDouble( const NewValue: Double); override;
+  function GetValue: double; //~virtual;
+  procedure SetValue( const NewValue: double ); //~virtual;
+public
+  property Value: double read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnBoolean = class( TIB_ColumnNumBase )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetValue: boolean; 
+  procedure SetValue( const NewValue: boolean );
+public
+  property Value: boolean read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnSmallInt = class( TIB_ColumnNumBase )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetAsSmallint: smallint; override;
+  procedure SetAsSmallint( const NewValue: smallint); override;
+  function GetValue: smallint; //~virtual;
+  procedure SetValue( const NewValue: smallint ); //~virtual;
+public
+  property Value: smallint read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnInteger = class( TIB_ColumnNumBase )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetAsInteger: integer; override;
+  procedure SetAsInteger( const NewValue: integer ); override;
+  function GetValue: integer; //~virtual;
+  procedure SetValue( const NewValue: integer ); //~virtual;
+public
+  property Value: integer read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnInt64 = class( TIB_ColumnNumBase )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetAsInteger: integer; override;
+  procedure SetAsInteger( const NewValue: integer ); override;
+  function GetValue: ISC_INT64; //~virtual;
+  procedure SetValue( const NewValue: ISC_INT64 ); //~virtual;
+public
+  property Value: ISC_INT64 read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnQuad = class( TIB_ColumnNumBase )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetAsInteger: integer; override;
+  procedure SetAsInteger( const NewValue: integer ); override;
+  function GetValue: ISC_INT64; //~virtual;
+  procedure SetValue( const NewValue: ISC_INT64 ); //~virtual;
+public
+  property Value: ISC_INT64 read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnDateTime = class( TIB_Column )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetAsDate: TDateTime; override;
+  procedure SetAsDate( const NewValue: TDateTime ); override;
+  function GetAsDateTime: TDateTime; override;
+  procedure SetAsDateTime( const NewValue: TDateTime ); override;
+  function GetAsDateTimeEncodeString: string; override;
+  procedure SetAsDateTimeEncodeString( const NewValue: string ); override;
+  function GetValue: TDateTime; //~virtual;
+  procedure SetValue( const NewValue: TDateTime ); //~virtual;
+public
+  constructor Create( ARow: TIB_Row;
+                      PSQLVAR: PXSQLVAR;
+                      AFieldNo: smallint ); override;
+  property Value: TDateTime read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnDate = class( TIB_ColumnDateTime );
+{: Column type sub-class.}
+TIB_ColumnTime = class( TIB_ColumnDateTime );
+{: Column type sub-class.}
+TIB_ColumnTimeStamp = class( TIB_ColumnDateTime );
+
+{: Column type sub-class.}
+TIB_ColumnText = class( TIB_Column )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+{$IFDEF IBO_VCL30_OR_GREATER}
+  function GetAsWideString: widestring; override;
+  procedure SetAsWideString( const NewValue: widestring ); override;
+{$ENDIF}
+  function GetValue: string; virtual;
+  procedure SetValue( const NewValue: string ); virtual;
+public
+  constructor Create( ARow: TIB_Row;
+                      PSQLVAR: PXSQLVAR;
+                      AFieldNo: smallint ); override;
+  property Value: string read GetValue write SetValue;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnVarText = class( TIB_ColumnText )
+protected
+{$IFDEF IBO_VCL30_OR_GREATER}
+  function GetAsWideString: widestring; override;
+  procedure SetAsWideString( const NewValue: widestring ); override;
+{$ENDIF}
+  function GetValue: string; override;
+  procedure SetValue( const NewValue: string ); override;
+end;
+
+{: Column type sub-class.}
+TIB_ColumnDB_KEY = class( TIB_Column )
+protected
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string ); override;
+  function GetDefaultWidth: integer; override;
+  function GetValue: string; //~virtual;
+  procedure SetValue( const NewValue: string ); //~virtual;
+public
+  constructor Create( ARow: TIB_Row;
+                      PSQLVAR: PXSQLVAR;
+                      AFieldNo: smallint ); override;
+  property Value: string read GetValue write SetValue;
+end;
+
+// IBA_ColumnArray.INT
+// IBA_ColumnArray.IMP
+// IBA_ColumnBlob.INT
+// IBA_ColumnBlob.IMP
+// IBA_Column.IMP

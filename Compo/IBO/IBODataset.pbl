@@ -1,0 +1,87 @@
+
+{                                                                              }
+{  IBODataset.PBL                                                              }
+{                                                                              }
+
+published
+
+{ Properties }
+  property Active;
+  property AutoCalcFields;
+  property AutoFetchAll;
+  property BufferSynchroFlags;
+  property CachedUpdates;
+  property CallbackCaption;
+  property CallbackInc;
+  property CallbackInitInt;
+  property CallbackRefreshInt;
+  property ColumnAttributes;
+  property CommitAction;
+  property DatabaseName;
+  property DefaultValues;
+  property DeleteSQL;
+  property EditSQL;
+  property FetchWholeRows;
+  property FieldsAlignment;
+  property FieldsDisplayLabel;
+  property FieldsDisplayFormat;
+  property FieldsReadOnly;
+  property FieldsEditMask;
+  property FieldsVisible;  
+  property Filtered;
+  property Filter;
+  property FilterOptions;
+  property GeneratorLinks;
+  property IB_Connection;
+  property IB_Transaction;
+  property InsertSQL;
+  property LockSQL;
+  property KeyLinks;
+  property KeyLinksAutoDefine;
+  property MaxRows;
+  property PessimisticLocking;
+  property ReadOnly;
+  property RecordCountAccurate;
+  property Prepared;
+  property Unidirectional;
+{$IFDEF IBO_VCL40_OR_GREATER}
+  property UpdateObject;
+{$ENDIF}  
+{ Events from IBO }  
+  property OnCallback;
+  property OnError;
+  property OnPrepareSQL;
+
+{ Events from the VCL }
+  property BeforeCancel;
+  property AfterCancel;
+  property BeforeClose;
+  property AfterClose;
+  property BeforeEdit;
+  property AfterEdit;
+  property BeforeDelete;
+  property AfterDelete;
+  property BeforeInsert;
+  property AfterInsert;
+  property BeforeOpen;
+  property AfterOpen;
+  property BeforeScroll;
+  property AfterScroll;
+  property BeforePost;
+  property AfterPost;
+  property AfterPrepare;
+  property BeforePrepare;
+  property OnCalcFields;
+  property OnFilterRecord;
+  property OnNewRecord;
+  property OnUpdateError;
+  property OnUpdateRecord;
+{$IFDEF IBO_VCL40_OR_GREATER}
+  property OnPostError;
+  property OnDeleteError;
+  property OnEditError;
+{$IFDEF IBO_VCL50_OR_GREATER}
+  property BeforeRefresh;
+  property AfterRefresh;
+{$ENDIF}
+{$ENDIF}

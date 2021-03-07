@@ -1,0 +1,146 @@
+inherited SmoothingFunctionDemo: TSmoothingFunctionDemo
+  Width = 495
+  Height = 404
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 487
+  end
+  inherited Memo1: TMemo
+    Width = 487
+    Lines.Strings = (
+      
+        'The new Smoothing function interpolates points using a B-Spline ' +
+        'algorithm.'
+      'Several properties control the Spline calculation.'
+      ''
+      
+        'The smoothed points can optionally pass just exactly over the so' +
+        'urce points.')
+  end
+  inherited Chart1: TChart
+    Top = 113
+    Width = 487
+    Height = 264
+    Title.Text.Strings = (
+      'Smoothing using Splines')
+    BottomAxis.Grid.SmallDots = True
+    LeftAxis.Grid.SmallDots = True
+    View3D = False
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      LinePen.Width = 2
+      Pointer.Brush.Color = clYellow
+      Pointer.InflateMargins = True
+      Pointer.Pen.Color = 4227327
+      Pointer.Style = psTriangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      Data = {
+        000C0000000000000000008C400000000000608D400000000000488F40000000
+        00008890400000000000208E400000000000F08F400000000000008F40000000
+        0000B08C400000000000D88A400000000000E88C400000000000A88A40000000
+        0000888B40}
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Smooth'
+      LinePen.Width = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.ValueSource = 'Y'
+      object TeeFunction1: TSmoothingFunction
+        Period = 1.000000000000000000
+        Interpolate = False
+        Factor = 6
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 487
+    Height = 38
+    object Label1: TLabel
+      Left = 260
+      Top = 12
+      Width = 33
+      Height = 13
+      Caption = 'Factor:'
+    end
+    object Button2: TButton
+      Left = 374
+      Top = 6
+      Width = 75
+      Height = 25
+      Caption = 'Random !'
+      TabOrder = 0
+      OnClick = Button2Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 177
+      Top = 11
+      Width = 82
+      Height = 17
+      Caption = 'Interpolate'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object Edit2: TEdit
+      Left = 298
+      Top = 9
+      Width = 49
+      Height = 21
+      TabOrder = 2
+      Text = '4'
+      OnChange = Edit2Change
+    end
+    object UDFactor: TUpDown
+      Left = 347
+      Top = 9
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Min = 1
+      Position = 4
+      TabOrder = 3
+      Wrap = False
+    end
+    object CheckBox2: TCheckBox
+      Left = 90
+      Top = 11
+      Width = 83
+      Height = 17
+      Caption = 'View source'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 9
+      Top = 11
+      Width = 77
+      Height = 17
+      Caption = 'View points'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+      OnClick = CheckBox3Click
+    end
+  end
+end

@@ -1,0 +1,98 @@
+inherited AxisMaxMinRoundedForm: TAxisMaxMinRoundedForm
+  Left = 233
+  Top = 285
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Axis Minimum and Maximum values, when Automatic, can also be aut' +
+        'omatically calculated to show'
+      'a "rounded" value.'
+      ''
+      
+        'For example, if a Series has values from 12 to 95, the axis Mini' +
+        'mum rounded will be 10 and the Maximum'
+      'rounded will be 100.'
+      ''
+      'Chart1.Axes.Left.MaximumRound := True;'
+      'Chart1.Axes.Left.MinimumRound := True;'
+      '')
+  end
+  inherited Chart1: TChart
+    BackWall.Pen.Color = clWhite
+    Legend.Font.Color = clWhite
+    Legend.LegendStyle = lsValues
+    Legend.Transparent = True
+    Legend.Visible = False
+    MarginTop = 10
+    Title.Visible = False
+    BottomAxis.Axis.Color = clGray
+    BottomAxis.Axis.Width = 1
+    BottomAxis.LabelsFont.Color = clWhite
+    Frame.Color = clWhite
+    LeftAxis.Axis.Color = clGray
+    LeftAxis.Axis.Width = 1
+    LeftAxis.LabelsFont.Color = clWhite
+    LeftAxis.MaximumRound = True
+    LeftAxis.MinimumRound = True
+    View3D = False
+    Color = clBlack
+    object Series1: TFastLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 8421631
+      LinePen.Color = 8421631
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label2: TLabel
+      Left = 14
+      Top = 14
+      Width = 25
+      Height = 13
+      Caption = '&Axis :'
+      FocusControl = cbAxis
+    end
+    object cbAxis: TComboFlat
+      Left = 41
+      Top = 11
+      Width = 73
+      ItemIndex = 0
+      TabOrder = 0
+      Text = 'Left'
+      OnChange = cbAxisChange
+      Items.Strings = (
+        'Left'
+        'Bottom')
+    end
+    object cbRoundMax: TCheckBox
+      Left = 144
+      Top = 13
+      Width = 129
+      Height = 17
+      Caption = '&Maximum Rounded'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = cbRoundMaxClick
+    end
+    object cbRoundMin: TCheckBox
+      Left = 288
+      Top = 13
+      Width = 129
+      Height = 17
+      Caption = 'Minimum &Rounded'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = cbRoundMinClick
+    end
+  end
+end

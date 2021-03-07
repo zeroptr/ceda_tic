@@ -1,0 +1,72 @@
+inherited ChartThemes: TChartThemes
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'TeeChart Themes enable rapid change of many chart properties wit' +
+        'h a single mouse click. '
+      ''
+      
+        'Several themes are provided through the Themes Editor and progra' +
+        'matically. '
+      'Creating new themes by code is really simple.')
+  end
+  inherited Chart1: TChart
+    Left = 121
+    Width = 358
+    CustomAxes = <
+      item
+        Horizontal = False
+        OtherSide = False
+        Visible = False
+      end>
+    object Series1: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 69
+      Height = 13
+      Caption = '&Select Theme:'
+    end
+    object Button1: TButton
+      Left = 128
+      Top = 8
+      Width = 129
+      Height = 25
+      Caption = '&Theme Editor...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 280
+      Top = 8
+      Width = 129
+      Height = 25
+      Caption = '&Apply by code'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+  object ListBox1: TListBox
+    Left = 0
+    Top = 116
+    Width = 121
+    Height = 221
+    Align = alLeft
+    ItemHeight = 13
+    TabOrder = 3
+    OnClick = ListBox1Click
+  end
+end

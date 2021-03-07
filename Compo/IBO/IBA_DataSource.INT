@@ -1,0 +1,283 @@
+
+{                                                                              }
+{ TIB_DataSource                                                               }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Dirk Schiffler <ds@rcs.de>                                                  }
+{  10/13/2001                                                                  }
+{     I make FInterfaceDisabledLevel public like FControlsDisabledLevel.       }
+{                                                                              }
+{******************************************************************************}
+
+{: Event to notify of a column that has had a data change or update request.}
+TIB_DataChangeEvent = procedure( Sender: TIB_DataSource;
+                                 ADataset: TIB_Dataset;
+                                 AField: TIB_Column) of object;
+{: General event type used by the TIB_DataSource class.}
+TIB_DataSourceEvent = procedure( Sender: TIB_DataSource;
+                                 ADataset: TIB_Dataset ) of object;
+{: This component provides a reference to an IB_Dataset
+component.
+<br><br>
+It has the mechanisms for attaching data aware controls to a dataset.
+<br><br>
+It also serves, when required, to implement the linkages between datasets that
+are related in one or more ways, via the KeySource and MasterSource properties
+of the TIB_Dataset class.}
+TIB_DataSource = class(TIB_StatementLink)
+private
+{ Utility Storage Fields }
+  FDataLinkList: TList;
+{ Property Storage Fields }
+  FAutoEdit: boolean;
+  FAutoInsert: boolean;
+  FAnnounceFocus: boolean;
+  FAllowFocus: boolean;
+  FDSStateChange: boolean;
+  FDSDataChange: boolean;
+  FControlsDisabledLevel: integer;
+  FInterfaceDisabledLevel: integer;
+  FEnabled: boolean;
+{ Flag for testing }
+  flag_junk_value: integer;
+{ Event Storage Fields }
+  FBeforeAssignment: TIB_DataSourceEvent;
+  FAfterAssignment: TIB_DataSourceEvent;
+  FOnGainFocus: TIB_DataSourceEvent;
+  FOnLoseFocus: TIB_DataSourceEvent;
+  FOnStateChanged: TIB_DataSourceEvent;
+  FOnDataChange: TIB_ColLinkEvent;
+  FOnUpdateData: TIB_ColLinkEvent;
+{ Property Access Methods }
+  function GetDataLinkCount: integer;
+  function GetDataset: TIB_Dataset; //~virtual;
+  procedure SetDataset( AValue: TIB_Dataset ); //~virtual;
+  function GetState: TIB_DatasetState; //~virtual;
+  function GetRowState: TIB_RowState; //~virtual;
+  function GetReadOnly: boolean; //~virtual;
+  function GetCanModify: boolean; //~virtual;
+  function GetNeedToPost: boolean; //~virtual;
+  function GetEof: boolean;
+  function GetBof: boolean;
+  procedure SetAnnounceFocus( AValue: boolean );
+  procedure SetAllowFocus( AValue: boolean );
+  function IsAllowFocusStored: boolean;
+protected
+{ Inherited Methods }
+  procedure SetSession( ASession: TIB_Session ); override;
+  procedure SetStatement( AValue: TIB_Statement ); override;
+  procedure SysPrepareSQL; override;
+  procedure ProcessEvent( AEvent: TIB_StatementEventType;
+                          Info: longint ); override;
+{ System Methods }
+  procedure SysStateChanged; //~virtual;
+  procedure SysDataChange( AField: TIB_Column ); virtual;
+  procedure SysUpdateData( AField: TIB_Column ); //~virtual;
+{ Event Dispatch Methods  }
+  procedure DoGainFocus; //~virtual;
+  procedure DoLoseFocus; //~virtual;
+  procedure DoStateChanged; //~virtual;
+{ Utility Methods }
+  procedure AddDataLink( ADataLink: TObject ); //~virtual;
+  procedure RemoveDataLink( ADataLink: TObject ); //~virtual;
+{ Property Access Methods }
+  procedure SetEnabled( AValue: boolean ); //~virtual;
+  property DataLinkList: TList read FDataLinkList;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+{ Methods }
+{: Method to cache up any state and datachange notifications. All other
+event notifications will be discarded except the before and after assignment
+notifications.}
+  procedure DisableControls;
+{: Method to dispatch cached-up state and datachange notifications.
+<br><br>
+All other event notifications will resume operating.
+<br><br>
+Note, this call may be nested.  Cached events will not be dispatched until
+the last level terminates.
+<br><br>
+Be sure to use a "try...finally" block to guarantee that every call to
+DisableControls has a corresponding call to EnableControls.}
+  procedure EnableControls;
+{: Similar to DisableControls but calling this only disables user interface
+controls.  Master-Detail and Lookup links will continue to operate.
+NB. Isolates user interface controls by checking for datalinks that have
+been derived from TIB_ControlDataLink.
+<br><br>
+Be sure to use a "try...finally" block to guarantee that every call to
+DisableInterface has a corresponding call to EnableInterface.}
+  procedure DisableInterface;
+{: Method to restore enabled status of interface controls.  See
+DisableInterface. }
+  procedure EnableInterface;
+{: Method that checks for a circular relationship between datasets.}
+  function IsLinkedTo(Dataset: TIB_Dataset): boolean;
+{: Method used to attempt to put the dataset into dssEdit state in order for
+a control to allow its data to be modified.}
+  function Edit: boolean; dynamic;
+{: Method used to attempt to put the dataset into dssInsert state in order
+to allow data to be inserted.}
+  function Insert: boolean; dynamic;
+{: General request made to see if the dataset can go into a state that will
+allow a general change to data in a data aware control.}
+  function Modify: boolean; dynamic;
+{: Method that returns whether the dataset is in a state that allows data to
+be modified.}
+  function Modifying: boolean; dynamic;
+{: This method will cause all data aware controls to be reset to the current
+values in the data buffers. }
+  procedure Reset; dynamic;
+{: This method causes this component to become the currently focused
+TIB_DataSource component for the current Session.}
+  procedure SetFocus; dynamic;
+
+{ Properties }
+
+{: This property indicates whether this component will be announcing state and
+datachange events coming from the parent dataset.}
+  property ControlsDisabledLevel: integer read FControlsDisabledLevel;
+  property InterfaceDisabledLevel: integer read FInterfaceDisabledLevel;
+{: Number of DataLinks that are associated with this DataSource.}
+  property DataLinkCount: integer read GetDatalinkCount;
+{: Returns the current state of the associated dataset. }
+  property State: TIB_DatasetState read GetState;
+{: Current state of the Fields.RowState of the associated dataset. }
+  property RowState: TIB_RowState read GetRowState;
+{: Returns the statement type that was prepared in the associated dataset.}
+  property StatementType: TIB_StatementType read GetStatementType;
+{: Indicates whether the controls attached through this component should be
+Read-Only.}
+  property ReadOnly: boolean read GetReadOnly;
+{: This property returns True if the dataset contents can be modified.}
+  property CanModify: boolean read GetCanModify;
+{: This property returns True if the associated dataset is in a state
+that needs to be posted.}
+  property NeedToPost: boolean read GetNeedToPost;
+{: This property returns True if the associated dataset is at Eof.}
+  property Eof: boolean read GetEof;
+{: This property returns True if the associated dataset is at Bof.}
+  property Bof: boolean read GetBof;
+
+published
+{ Properties }
+
+{: When a DataSource receives the current focus, this property determines
+whether the session should announce that a new DataSource has become focused.}
+  property AnnounceFocus: boolean read FAnnounceFocus
+                                  write SetAnnounceFocus
+                                  default false;
+{: This property determines whether the session should consider this DataSource
+focused if its SetFocus method is called. Set this to True if you want the
+controls associated with this datasource to be announced and considered the
+focused datasource in the session.}
+  property AllowFocus: boolean read FAllowFocus
+                               write SetAllowFocus
+                               stored IsAllowFocusStored;
+{: This property determines whether a data-aware control can place the dataset
+into dssEdit state if not already in that state.}
+  property AutoEdit: boolean read FAutoEdit
+                             write FAutoEdit
+                             default true;
+{: This property determines whether a data-aware control can place the dataset
+into dssInsert state if not already in that state.}
+  property AutoInsert: boolean read FAutoInsert
+                               write FAutoInsert
+                               default true;
+{: This is the reference to the Dataset used by this component.}
+  property Dataset: TIB_Dataset read GetDataset write SetDataset;
+{: Turns off the announcement of data and state change event notifications.
+<br><br>
+It will also turn off the announcement of many other events;  but the assignment
+events will always stay in effect.
+<br><br>
+This property should not be used to manipulate visual controls. That portion
+of the standard VCL components will not be fully supported.
+<br><br>
+There are other more powerful and fitting techniques for working with datasets
+in ways that avoid affecting the user interface.  For example, using the
+AssignSQLWithSearch method of the TIB_Cursor component, it is possible to
+transfer all of the SQL criteria from the component that defines the dataset for
+the visual interface and process it separately.  Reports and exports can be run
+in a separate transaction with minimum effort this way, too.
+<br><br>
+With the IB_Query component there is a technique to scan the entire dataset if
+needed, without impacting any of the visual controls.  It uses the BufferFirst,
+BufferNext, BufferEof, BufferRowNum, BufferBookmark, BufferFields,
+BufferFieldByName(), etc. resources.  It is like having a second cursor to
+operate within the dataset. It is really easy to move data between them, too.
+BufferFields.RowData := Fields.RowData will transfer the
+contents of the whole record from the Fields to the BufferFields.}
+  property Enabled: boolean read FEnabled write SetEnabled default true;
+
+{------------------------------------------------------------------------------}
+
+{: Number of DataLinks associated to this component.
+<br><br>
+This is used for design-time visibility only.}
+  property _DataLinkCount: integer read GetDatalinkCount
+                                   write flag_junk_value
+                                   stored false;
+{------------------------------------------------------------------------------}
+
+{ Events }
+
+{: This event is fired before the Dataset property is about to be changed to
+a new value.}
+  property BeforeAssignment: TIB_DataSourceEvent read FBeforeAssignment
+                                                 write FBeforeAssignment;
+{: This event is fired after the Dataset property has been changed to
+a new value.}
+  property AfterAssignment: TIB_DataSourceEvent read FAfterAssignment
+                                                write FAfterAssignment;
+{: When this component gains the focus this event is fired.}
+  property OnGainFocus: TIB_DataSourceEvent read FOnGainFocus
+                                            write FOnGainFocus;
+{: When this component loses the focus this event is fired.}
+  property OnLoseFocus: TIB_DataSourceEvent read FOnLoseFocus
+                                            write FOnLoseFocus;
+{: When the dataset announces a data change event this event gets fired.}
+  property OnDataChange: TIB_ColLinkEvent read FOnDataChange
+                                          write FOnDataChange;
+{: When the dataset announces an update data event this event gets fired.}
+  property OnUpdateData: TIB_ColLinkEvent read FOnUpdateData
+                                          write FOnUpdateData;
+{: When the dataset announces a state change event this event gets fired.}
+  property OnStateChanged: TIB_DataSourceEvent read FOnStateChanged
+                                               write FOnStateChanged;
+end; { TIB_DataSource }
+
+//IBA_DataSource.IMP

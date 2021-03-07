@@ -1,0 +1,108 @@
+inherited SeriesLineGradient: TSeriesLineGradient
+  Left = 307
+  Top = 195
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Line series can fill their space (in 3D mode only), using a Grad' +
+        'ient of colors.'
+      ''
+      'Series1.Gradient.Visible :=True ;'
+      ''
+      'NOTE: Only the Series1.Gradient.EndColor is used.'
+      
+        'The other color is the Series1.Color (or specific Series1.ValueC' +
+        'olor[index] )')
+  end
+  inherited Chart1: TChart
+    Border.Color = clNavy
+    Border.Width = 6
+    Border.Visible = True
+    BorderRound = 10
+    BottomWall.Transparent = True
+    Gradient.EndColor = clGray
+    Gradient.Visible = True
+    LeftWall.Color = clWhite
+    LeftWall.Transparent = True
+    Legend.Bevel = bvRaised
+    Legend.Color = 14211288
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = clYellow
+    Legend.Gradient.StartColor = clWhite
+    Legend.Shadow.Visible = False
+    Title.Visible = False
+    BottomAxis.Grid.DrawEvery = 3
+    Chart3DPercent = 35
+    LeftAxis.Grid.DrawEvery = 3
+    View3DOptions.Elevation = 324
+    View3DOptions.Orthogonal = False
+    View3DOptions.Rotation = 330
+    View3DOptions.Zoom = 106
+    BevelOuter = bvNone
+    ColorPaletteIndex = 2
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      SeriesColor = 11075466
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000000000000000C0674000000000008061400000000000906540000000
+        0000406A400000000000605D400000000000C052400000000000000440000000
+        00004055400000000000205C4000000000007067400000000000F87140000000
+        0000C8744000000000000876400000000000987C400000000000887840000000
+        0000E07540000000000070724000000000009877400000000000007940000000
+        00000074400000000000B06D400000000000D066400000000000687040000000
+        0000D071400000000000B87040}
+    end
+    object Series2: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      SeriesColor = 4605695
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        001900000000000000004377400000000000C674406666666666B17640000000
+        00006B744033333333335B724066666666663474409999999999247240989999
+        9999BD6E4032333333335B724098999999994674403233333333D87440989999
+        99991E7740CBCCCCCCCCD576409899999999EB7340CBCCCCCCCCD57640FEFFFF
+        FFFF0F74406466666666A67040CACCCCCCCC257140C8CCCCCCCC086D40C8CCCC
+        CCCC306A40C8CCCCCCCCE06F403133333333B672403133333333EF7040C8CCCC
+        CCCCE66A409599999999576840}
+    end
+  end
+  inherited Panel1: TPanel
+    object ButtonGradient1: TButtonGradient
+      Left = 16
+      Top = 8
+      Width = 137
+      Caption = '&Gradient Line1'
+      TabOrder = 0
+    end
+    object ButtonGradient2: TButtonGradient
+      Left = 176
+      Top = 8
+      Width = 137
+      Caption = 'Gr&adient Line2'
+      TabOrder = 1
+    end
+  end
+end

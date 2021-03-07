@@ -1,0 +1,61 @@
+inherited ChartGrid3D: TChartGrid3D
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter [1]
+    Left = 268
+    Top = 116
+    Height = 221
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'ChartGrid component can display XYZ series (3D series) data'
+      'in "grid mode".'
+      ''
+      'ChartGrid1.Series:=Series1;   // <-- must be XYZ grid series'
+      'ChartGrid1.Grid3DMode:=True ;'
+      '')
+  end
+  inherited Chart1: TChart
+    Left = 271
+    Width = 208
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: TColorGridSeries
+      CenteredPoints = True
+      Marks.ArrowLength = 0
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 0
+      Marks.Visible = False
+      SeriesColor = clRed
+      Title = 'XYZ'
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 10
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Grid 3D mode'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+  object ChartGrid1: TChartGrid
+    Left = 0
+    Top = 116
+    Width = 268
+    Height = 221
+    Align = alLeft
+    Options = [goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing, goColSizing, goEditing, goTabs, goThumbTracking]
+    TabOrder = 3
+    Series = Series1
+  end
+end

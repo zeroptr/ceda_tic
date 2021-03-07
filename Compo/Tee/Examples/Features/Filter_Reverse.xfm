@@ -1,0 +1,59 @@
+inherited FilterReverse: TFilterReverse
+  Width = 580
+  Height = 484
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 572
+  end
+  inherited Memo1: TMemo
+    Width = 572
+    Lines.Strings = (
+      
+        'The Reverse filter mirrors the image in the horizontal direction' +
+        '.'
+      ''
+      'Example :'
+      '  // ChartTool1 is an Anti-Alias tool'
+      '  ReverseFilter := TReverseFilter.Create(ChartTool1.Filters);'
+      '  ')
+  end
+  inherited Chart1: TChart
+    Width = 572
+    Height = 301
+    Chart3DPercent = 20
+    object Series1: THorizBarSeries
+      BarPen.Visible = False
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      BarStyle = bsBevel
+      Gradient.Direction = gdLeftRight
+      XValues.Name = 'Bar'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loAscending
+      Data = {
+        0006000000000000000090604000000000000024400000000000003940000000
+        000080564000000000000044400000000000404F40}
+    end
+    object ChartTool1: TAntiAliasTool
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 572
+    object cbReverse: TCheckBox
+      Left = 14
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Reverse'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbReverseClick
+    end
+  end
+end

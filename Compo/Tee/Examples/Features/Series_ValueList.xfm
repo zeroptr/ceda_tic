@@ -1,0 +1,60 @@
+inherited DynArrays: TDynArrays
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 59
+    Lines.Strings = (
+      
+        'Chart Series internally use standard VCL Dynamic Arrays. This gi' +
+        'ves faster'
+      'speed and less memory consumption than using TList objects.'
+      'Custom Arrays can be directly assigned to Series.')
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 59
+    object Label1: TLabel
+      Left = 199
+      Top = 14
+      Width = 83
+      Height = 13
+      Caption = '&Number of points:'
+      FocusControl = Edit1
+    end
+    object Button1: TButton
+      Left = 24
+      Top = 8
+      Width = 161
+      Height = 25
+      Caption = '&Add custom Array'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Edit1: TEdit
+      Left = 288
+      Top = 11
+      Width = 49
+      Height = 21
+      TabOrder = 1
+      Text = '1000'
+    end
+  end
+end

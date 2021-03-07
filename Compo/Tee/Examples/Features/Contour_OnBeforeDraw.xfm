@@ -1,0 +1,122 @@
+inherited ContourOnBefore: TContourOnBefore
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 57
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      'New event in Contour series "OnBeforeDrawLevel".'
+      
+        'This event is called just before each contour level is going to ' +
+        'be displayed.'
+      
+        'One example of use is to change the pen for some particular leve' +
+        'l lines...')
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Contour levels with different pens')
+    View3D = False
+    object Series1: TContourSeries
+      AutomaticLevels = False
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Levels = <
+        item
+          Color = clRed
+          Pen.Color = clRed
+          UpToValue = -0.817829987360012400
+        end
+        item
+          Color = clGreen
+          Pen.Color = clGreen
+          UpToValue = -0.616344333030610900
+        end
+        item
+          Color = clYellow
+          Pen.Color = clYellow
+          UpToValue = -0.414858678701209300
+        end
+        item
+          Color = clBlue
+          Pen.Color = clBlue
+          UpToValue = -0.213373024371807800
+        end
+        item
+          Color = clWhite
+          Pen.Color = clWhite
+          UpToValue = -0.011887370042406250
+        end
+        item
+          Color = clGray
+          Pen.Color = clGray
+          UpToValue = 0.189598284286995300
+        end
+        item
+          Color = clFuchsia
+          Pen.Color = clFuchsia
+          UpToValue = 0.391083938616396800
+        end
+        item
+          Color = clTeal
+          Pen.Color = clTeal
+          UpToValue = 0.592569592945798400
+        end
+        item
+          Color = clNavy
+          Pen.Color = clNavy
+          UpToValue = 0.794055247275199900
+        end
+        item
+          Color = clMaroon
+          Pen.Color = clMaroon
+          UpToValue = 0.995540901604601500
+        end>
+      XValues.Name = 'X'
+      YPosition = 0.189598284286995300
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+      OnBeforeDrawLevel = Series1BeforeDrawLevel
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 59
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 101
+      Height = 13
+      Caption = '&Change pen for level:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 115
+      Top = 13
+      Width = 33
+      Height = 21
+      TabOrder = 0
+      Text = '6'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 148
+      Top = 13
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 1
+      Max = 9
+      Position = 6
+      TabOrder = 1
+    end
+  end
+end

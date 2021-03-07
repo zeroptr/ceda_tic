@@ -1,0 +1,208 @@
+// IBC_CheckBox.INT
+
+{$I IB_WinControl.IMP}
+
+constructor TIB_CustomCheckBox.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csReplicatable];
+  DataLink.Control := Self;
+  DataLink.OnStateChanged := StateChanged;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnUpdateData := Self.UpdateData;
+  FBorderStyle := bsSingle;
+  FDisplayLabelAsCaption := false;
+  State := cbGrayed;
+end;
+
+destructor TIB_CustomCheckBox.Destroy;
+begin
+  DataSource := nil;
+  DataLink.Control := nil;
+  DataLink.OnStateChanged := nil;
+  DataLink.OnDataChange := nil;
+  DataLink.OnUpdateData  := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomCheckBox.Loaded;
+begin
+  inherited Loaded;
+  SysStateChanged;
+  SysDataChange( nil );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomCheckBox.SysStateChanged;
+begin
+  with DataLink do
+  begin
+    if Assigned( Field ) then
+    begin
+      FValueChecked := Field.BooleanTrue;
+      FValueUncheck := Field.BooleanFalse;
+    end
+    else
+    begin
+      FValueChecked := 'T';
+      FValueUncheck := 'F';
+    end;
+    if ColorScheme then
+      inherited Color := Color;
+    inherited AllowGrayed := ( State = dssSearch ) or
+                             ( FAllowGrayed and
+                               Assigned( Field ) and
+                               Field.IsNullable );
+    if DisplayLabelAsCaption and Assigned( Field ) then
+      Caption := Field.DisplayLabel;
+  end;
+  UpdateTabStop;
+end;
+
+procedure TIB_CustomCheckBox.SysDataChange;
+begin
+  State := GetFieldState;
+end;
+
+procedure TIB_CustomCheckBox.SysUpdateData;
+begin
+  if Assigned( Field ) then
+    with DataLink do
+      if Field.IsDateTime or Field.IsBlob or Field.IsArray then
+      begin
+        if ( State = dssSearch ) or SearchAlways then
+        begin
+          if Self.State = cbUnchecked then
+            SearchBuffer := 'IS NULL'
+          else if Self.State = cbChecked then
+            SearchBuffer := 'IS NOT NULL'
+          else
+            SearchBuffer := '';
+        end;
+      end
+      else
+        if Self.State = cbGrayed then
+          FieldText := ''
+        else
+        if Checked then
+          FieldText := FValueChecked
+        else
+          FieldText := FValueUncheck;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomCheckBox.SetDisplayLabelAsCaption( AValue: boolean );
+begin
+  if DisplayLabelAsCaption <> AValue then
+  begin
+    FDisplayLabelAsCaption := AValue;
+    if DisplayLabelAsCaption then
+      SysStateChanged;
+  end;
+end;
+
+function TIB_CustomCheckBox.GetFieldState: TCheckBoxState;
+begin
+  with DataLink do 
+    if not Assigned( Field ) then
+      Result := cbGrayed
+    else
+    if Field.IsDateTime or Field.IsBlob or Field.IsArray then
+    begin
+      if ( State = dssSearch ) or SearchAlways then
+      begin
+        if SearchBuffer = 'IS NULL' then
+          Result := cbUnchecked
+        else if SearchBuffer = 'IS NOT NULL' then
+          Result := cbChecked
+        else
+          Result := cbGrayed;
+      end
+      else
+      begin
+        if Field.IsNull then
+          Result := cbUnchecked
+        else
+          Result := cbChecked
+      end;          
+    end
+    else
+      if FValueChecked = FieldText then
+        Result := cbChecked
+      else if FValueUncheck = FieldText then
+        Result := cbUnchecked
+      else
+        Result := cbGrayed;
+end;
+
+procedure TIB_CustomCheckBox.Toggle;
+begin
+  with DataLink do 
+    if Assigned( Field ) and
+       Field.IsBoolean and
+       Modify then
+    begin
+      inherited Toggle;
+      DataLink.ControlIsModified := true;
+    end;
+end;
+
+procedure TIB_CustomCheckBox.SetAllowGrayed( AValue: boolean );
+begin
+  if FAllowGrayed <> AValue then
+  begin
+    FAllowGrayed := AValue;
+    SysStateChanged;
+  end;
+end;
+
+procedure TIB_CustomCheckBox.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  case Key of
+    #8, ' ':
+      if DataLink.Modify then
+        DataLink.ControlIsModified := true;
+    #27:
+      SysDataChange( nil );
+  end;
+end;
+
+procedure TIB_CustomCheckBox.CMEnter(var Message: TCMEnter);
+begin
+  inherited;
+end;
+
+procedure TIB_CustomCheckBox.CMExit(var Message: TCMExit);
+begin
+  try
+    DataLink.UpdateData;
+  except
+    SetFocus;
+    raise;
+  end;
+  inherited;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomCheckBox.CreateParams(var Params: TCreateParams);
+const
+  BorderStyles: array[TBorderStyle] of integer = (0, WS_BORDER);
+begin
+  inherited CreateParams(Params);
+  with Params do
+  begin
+    Style := longint(Style) or longint(BorderStyles[FBorderStyle]);
+    if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
+    begin
+      Style := Style and not WS_BORDER;
+      ExStyle := ExStyle or WS_EX_CLIENTEDGE;
+    end;
+  end;
+end;
+
+

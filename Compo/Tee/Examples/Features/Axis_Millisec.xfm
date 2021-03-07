@@ -1,0 +1,48 @@
+inherited AxisMillisec: TAxisMillisec
+  Left = 470
+  Top = 174
+  Caption = 'AxisMillisec'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 98
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      'Axis can now show Labels using Milliseconds format.'
+      ''
+      'Example: Chart1.BottomAxis.DateTimeFormat := '#39'ss.zzz'#39' ;')
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    Legend.Visible = False
+    MarginRight = 10
+    View3D = False
+    object Series1: TPointSeries
+      Marks.ArrowLength = 0
+      Marks.Visible = False
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.Brush.Color = 8421440
+      Pointer.HorizSize = 7
+      Pointer.InflateMargins = True
+      Pointer.Pen.Color = clWhite
+      Pointer.Style = psTriangle
+      Pointer.VertSize = 7
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    Visible = False
+  end
+end

@@ -1,0 +1,71 @@
+inherited TitleGenFormat: TTitleGenFormat
+  Left = 290
+  Top = 191
+  Width = 455
+  Height = 403
+  Caption = 'TitleGenFormat'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 0
+    Top = 193
+    Width = 447
+    Height = 3
+    Cursor = crVSplit
+    Align = alTop
+  end
+  inherited Memo1: TMemo
+    Width = 447
+    Height = 37
+    Lines.Strings = (
+      
+        'Titles and Footers objects now derive from TeeCustomShape object' +
+        '. '
+      
+        'A class with many formatting properties like gradient, font, bru' +
+        'sh, border, etc.')
+  end
+  inherited Chart1: TChart
+    Top = 196
+    Width = 447
+    Height = 180
+    Title.Brush.Color = clAqua
+    Title.Brush.Image.Data = {
+      07544269746D61707E000000424D7E000000000000003E000000280000001000
+      0000100000000100010000000000400000000000000000000000020000000200
+      000000000000FFFFFF007DF70000BAEB0000D75D0000EFBE00007DF70000BAEB
+      0000D75D0000EFBE00007DF70000BAEB0000D75D0000EFBE00007DF70000BAEB
+      0000D75D0000EFBE0000}
+    Title.Color = 4227327
+    Title.Font.Color = 16744576
+    Title.Font.Height = -35
+    Title.Font.Style = [fsBold]
+    Title.Font.OutLine.Color = clRed
+    Title.Font.OutLine.Visible = True
+    Title.Font.Shadow.Color = clBlack
+    Title.Font.Shadow.HorizSize = 2
+    Title.Font.Shadow.VertSize = 2
+    Title.Frame.Color = clGreen
+    Title.Frame.Style = psDot
+    Title.Frame.Width = 2
+    Title.ShadowColor = clGray
+    Title.ShadowSize = 5
+    Title.ShapeStyle = fosRoundRectangle
+    Title.Transparent = False
+  end
+  inherited Panel1: TPanel
+    Top = 37
+    Width = 447
+    Height = 156
+    object PageControl1: TPageControl
+      Left = 1
+      Top = 1
+      Width = 445
+      Height = 154
+      Align = alClient
+      TabOrder = 0
+    end
+  end
+end

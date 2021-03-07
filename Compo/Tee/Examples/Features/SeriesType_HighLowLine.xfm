@@ -1,0 +1,184 @@
+inherited SeriesTypeHighLowLine: TSeriesTypeHighLowLine
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'High-Low Line series display vertical lines that go from a Low v' +
+        'alue to a High value for each point in the series.'
+      ''
+      
+        'It can optionally display pointer symbols either at the Low and ' +
+        '/ or High positions of each series point.')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    BackWall.Color = clWhite
+    BackWall.Dark3D = False
+    BackWall.Gradient.EndColor = 13565951
+    BackWall.Gradient.StartColor = 11062267
+    BackWall.Gradient.Visible = True
+    BackWall.Size = 8
+    BackWall.Transparent = False
+    Border.Visible = True
+    BottomWall.Dark3D = False
+    BottomWall.Size = 8
+    Gradient.Direction = gdBottomTop
+    Gradient.EndColor = 15597291
+    Gradient.MidColor = 16631527
+    Gradient.StartColor = 14540754
+    Gradient.Visible = True
+    LeftWall.Color = clWhite
+    LeftWall.Dark3D = False
+    LeftWall.Size = 8
+    Legend.Font.Height = -13
+    Legend.Font.Name = 'Times New Roman'
+    Legend.Frame.Visible = False
+    Legend.Shadow.HorizSize = 0
+    Legend.Shadow.VertSize = 0
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Pen.Visible = False
+    Legend.Transparent = True
+    Legend.Visible = False
+    RightWall.Color = clWhite
+    RightWall.Dark3D = False
+    RightWall.Size = 8
+    Title.Font.Color = clBlack
+    Title.Font.Height = -16
+    Title.Font.Name = 'Times New Roman'
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = 7912429
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.GridCentered = True
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.LabelsFont.Name = 'Times New Roman'
+    BottomAxis.MinorTicks.Visible = False
+    BottomAxis.Ticks.Color = clBlack
+    BottomAxis.TicksInner.Visible = False
+    BottomAxis.Title.Font.Name = 'Times New Roman'
+    DepthAxis.Axis.Width = 1
+    DepthAxis.Grid.Color = clBlack
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Height = -13
+    DepthAxis.LabelsFont.Name = 'Times New Roman'
+    DepthAxis.MinorTicks.Visible = False
+    DepthAxis.Ticks.Color = clBlack
+    DepthAxis.TicksInner.Visible = False
+    DepthAxis.Title.Font.Name = 'Times New Roman'
+    DepthTopAxis.Axis.Width = 1
+    DepthTopAxis.Grid.Color = clBlack
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Height = -13
+    DepthTopAxis.LabelsFont.Name = 'Times New Roman'
+    DepthTopAxis.MinorTicks.Visible = False
+    DepthTopAxis.Ticks.Color = clBlack
+    DepthTopAxis.TicksInner.Visible = False
+    DepthTopAxis.Title.Font.Name = 'Times New Roman'
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = 14676217
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Height = -13
+    LeftAxis.LabelsFont.Name = 'Times New Roman'
+    LeftAxis.MinorTicks.Visible = False
+    LeftAxis.Ticks.Color = clBlack
+    LeftAxis.TicksInner.Visible = False
+    LeftAxis.Title.Font.Name = 'Times New Roman'
+    RightAxis.Axis.Width = 1
+    RightAxis.Grid.Color = clBlack
+    RightAxis.Grid.Style = psSolid
+    RightAxis.Grid.Visible = False
+    RightAxis.LabelsFont.Height = -13
+    RightAxis.LabelsFont.Name = 'Times New Roman'
+    RightAxis.MinorTicks.Visible = False
+    RightAxis.Ticks.Color = clBlack
+    RightAxis.TicksInner.Visible = False
+    RightAxis.Title.Font.Name = 'Times New Roman'
+    TopAxis.Axis.Width = 1
+    TopAxis.Grid.Color = clBlack
+    TopAxis.Grid.Style = psSolid
+    TopAxis.Grid.Visible = False
+    TopAxis.LabelsFont.Height = -13
+    TopAxis.LabelsFont.Name = 'Times New Roman'
+    TopAxis.MinorTicks.Visible = False
+    TopAxis.Ticks.Color = clBlack
+    TopAxis.TicksInner.Visible = False
+    TopAxis.Title.Font.Name = 'Times New Roman'
+    View3D = False
+    BevelOuter = bvNone
+    Color = clWhite
+    TabOrder = 0
+    ColorPaletteIndex = 5
+    object Series1: THighLowLineSeries
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      HorizAxis = aBothHorizAxis
+      Marks.Arrow.Color = clBlack
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Font.Name = 'Times New Roman'
+      Marks.Transparent = True
+      Marks.Visible = False
+      Pen.Color = 15466453
+      Pen.Width = 2
+      SeriesColor = 4210752
+      VertAxis = aBothVertAxis
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      HighPointer.Brush.Color = 8388863
+      HighPointer.Brush.BackColor = clOlive
+      HighPointer.Brush.Image.Data = {
+        07544269746D61707E000000424D7E000000000000003E000000280000001000
+        0000100000000100010000000000400000000000000000000000020000000200
+        000000000000FFFFFF00AAAA0000FFFF0000AAAA0000FFFF0000AAAA0000FFFF
+        0000AAAA0000FFFF0000AAAA0000FFFF0000AAAA0000FFFF0000AAAA0000FFFF
+        0000AAAA0000FFFF0000}
+      HighPointer.HorizSize = 6
+      HighPointer.InflateMargins = True
+      HighPointer.Pen.Color = 16711808
+      HighPointer.Style = psCircle
+      HighPointer.VertSize = 6
+      HighPointer.Visible = True
+      LowPointer.Brush.Color = 6937749
+      LowPointer.InflateMargins = True
+      LowPointer.Style = psRectangle
+      LowPointer.Visible = True
+      Data = {
+        00190000000000000000C0764000000000006068400000000000207640000000
+        0000407340000000000080714000000000002074400000000000107740000000
+        000040724000000000008075400000000000606F400000000000407440000000
+        0000006F4000000000008079400000000000206A400000000000507940000000
+        0000B071400000000000C079400000000000C076400000000000E07640000000
+        00006068400000000000407C400000000000C073400000000000808040000000
+        00007079400000000000F07A400000000000C073400000000000707D40000000
+        00006078400000000000607D400000000000407B400000000000807740000000
+        0000406B400000000000107C4000000000005070400000000000C07640000000
+        0000206F400000000000C07B400000000000406F400000000000008040000000
+        000060784000000000004880400000000000007E400000000000407C40000000
+        00008079400000000000907A4000000000009070400000000000907540000000
+        000020634000000000006074400000000000107140}
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 13
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ButtonPen1: TButtonPen
+      Left = 112
+      Top = 8
+      Caption = '&Lines...'
+      TabOrder = 1
+    end
+  end
+end

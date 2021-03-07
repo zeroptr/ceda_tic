@@ -1,0 +1,363 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Plain Label [Default]</Name>
+<Properties>
+<Alignment>1</Alignment>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<Font.Style>0</Font.Style>
+<Font.Color>-2147483640</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>8</Font.Size>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>0</OuterMarginLeft>
+<OuterMarginRight>0</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<ShadowShow>0</ShadowShow>
+<ShadowXOffset>1</ShadowXOffset>
+<ShadowYOffset>1</ShadowYOffset>
+<ShadowColor>8421504</ShadowColor>
+<UpdateFrameRate>0</UpdateFrameRate>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Shadow Thin</Name>
+<Properties>
+<Alignment>1</Alignment>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<Font.Style>0</Font.Style>
+<Font.Color>16776960</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>14</Font.Size>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>0</OuterMarginLeft>
+<OuterMarginRight>0</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<ShadowShow>1</ShadowShow>
+<ShadowXOffset>1</ShadowXOffset>
+<ShadowYOffset>1</ShadowYOffset>
+<ShadowColor>0</ShadowColor>
+<UpdateFrameRate>0</UpdateFrameRate>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Shadow Thick</Name>
+<Properties>
+<Alignment>1</Alignment>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<Font.Style>0</Font.Style>
+<Font.Color>16776960</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>14</Font.Size>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>0</OuterMarginLeft>
+<OuterMarginRight>0</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<ShadowShow>1</ShadowShow>
+<ShadowXOffset>2</ShadowXOffset>
+<ShadowYOffset>2</ShadowYOffset>
+<ShadowColor>0</ShadowColor>
+<UpdateFrameRate>0</UpdateFrameRate>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Chiseled Thin</Name>
+<Properties>
+<Alignment>1</Alignment>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<Font.Style>0</Font.Style>
+<Font.Color>0</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>14</Font.Size>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>0</OuterMarginLeft>
+<OuterMarginRight>0</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<ShadowShow>1</ShadowShow>
+<ShadowXOffset>1</ShadowXOffset>
+<ShadowYOffset>1</ShadowYOffset>
+<ShadowColor>16777215</ShadowColor>
+<UpdateFrameRate>0</UpdateFrameRate>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Chiseled Thick</Name>
+<Properties>
+<Alignment>1</Alignment>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<Font.Style>0</Font.Style>
+<Font.Color>0</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>14</Font.Size>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>0</OuterMarginLeft>
+<OuterMarginRight>0</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<ShadowShow>1</ShadowShow>
+<ShadowXOffset>2</ShadowXOffset>
+<ShadowYOffset>2</ShadowYOffset>
+<ShadowColor>16777215</ShadowColor>
+<UpdateFrameRate>0</UpdateFrameRate>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Semi-Transparent Black [Default]</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<Font.Color>0</Font.Color>
+<ShadowColor>8421504</ShadowColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Blue</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<Font.Color>16711680</Font.Color>
+<ShadowColor>8421504</ShadowColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Green</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<Font.Color>32768</Font.Color>
+<ShadowColor>8421504</ShadowColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Red</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<Font.Color>255</Font.Color>
+<ShadowColor>8421504</ShadowColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<Font.Color>65535</Font.Color>
+<ShadowColor>32896</ShadowColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<Font.Color>16777215</Font.Color>
+<ShadowColor>8421504</ShadowColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Size Scheme</Name>
+<Scheme>
+<Name>Small (8pt) [Default]</Name>
+<Properties>
+<Font.Size>8</Font.Size>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Medium (10pt)</Name>
+<Properties>
+<Font.Size>10</Font.Size>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large (12pt)</Name>
+<Properties>
+<Font.Size>12</Font.Size>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Extra-Large (14pt)</Name>
+<Properties>
+<Font.Size>14</Font.Size>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Border Scheme</Name>
+<Scheme>
+<Name>Plain [Default]</Name>
+<Properties>
+<BorderStyle>0</BorderStyle>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>0</OuterMarginLeft>
+<OuterMarginRight>0</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Outlined</Name>
+<Properties>
+<BorderStyle>1</BorderStyle>
+<OuterMarginBottom>1</OuterMarginBottom>
+<OuterMarginLeft>3</OuterMarginLeft>
+<OuterMarginRight>3</OuterMarginRight>
+<OuterMarginTop>1</OuterMarginTop>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Raised</Name>
+<Properties>
+<BorderStyle>3</BorderStyle>
+<OuterMarginBottom>1</OuterMarginBottom>
+<OuterMarginLeft>3</OuterMarginLeft>
+<OuterMarginRight>3</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Lowered</Name>
+<Properties>
+<BorderStyle>2</BorderStyle>
+<OuterMarginBottom>1</OuterMarginBottom>
+<OuterMarginLeft>3</OuterMarginLeft>
+<OuterMarginRight>3</OuterMarginRight>
+<OuterMarginTop>1</OuterMarginTop>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Units Scheme</Name>
+<Scheme>
+<Name>Degrees Celcius (°C)</Name>
+<Properties>
+<Caption>°C</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Farenheight (°F)</Name>
+<Properties>
+<Caption>°F</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Kelvin (°K)</Name>
+<Properties>
+<Caption>°K</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Amps (A)</Name>
+<Properties>
+<Caption>A</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Milliamps (mA)</Name>
+<Properties>
+<Caption>mA</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Microamps (µA)</Name>
+<Properties>
+<Caption>µA</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Volts (V)</Name>
+<Properties>
+<Caption>V</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Kilovolts (kV)</Name>
+<Properties>
+<Caption>kV</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Millivolts (mV)</Name>
+<Properties>
+<Caption>mV</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Microvolts (µV)</Name>
+<Properties>
+<Caption>µV</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Watts (W)</Name>
+<Properties>
+<Caption>W</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Killowatts (kW)</Name>
+<Properties>
+<Caption>kW</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Megawatts (MW)</Name>
+<Properties>
+<Caption>MW</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Kilometers (km)</Name>
+<Properties>
+<Caption>km</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Centimeters (cm)</Name>
+<Properties>
+<Caption>cm</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Millimeters (mm)</Name>
+<Properties>
+<Caption>mm</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Micrometers (µm)</Name>
+<Properties>
+<Caption>µm</Caption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Angstroms (Å)</Name>
+<Properties>
+<Caption>Å</Caption>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

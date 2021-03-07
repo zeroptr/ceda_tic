@@ -1,0 +1,66 @@
+
+select SEFER_ID,cast ('SEFER araç hareketi araçhar da yok' as varchar(255))  from SEFER
+where
+SEFER_TAMAMLANDI=1
+and
+SEFER_ID not IN (select belge_id from ARACHAR
+where ARACHAR.ARAC_KOD=sefer.ARAC_KOD and ARACHAR.belge_tur=41 and SEFER.sefer_id=ARACHAR.belge_id)
+
+union all
+
+select SEFER_ID,cast ('SEFER alýcý kod carihar da yok' as varchar(255))  from SEFER
+where
+SEFER_TAMAMLANDI=1
+and
+SEFER_SATIS_FAT_KESILDI=0
+and
+SEFER_ID NOT IN (select belge_id from CARIHAR
+where CARIHAR.CARI_KOD=sefer.ALICI_KOD and CARIHAR.belge_tur=41 and SEFER.sefer_id=CARIHAR.belge_id)
+
+union all
+
+select SEFER_ID,cast ('SEFER alýcý kod beklemesi carihar da yok' as varchar(255))  from SEFER
+where
+SEFER_TAMAMLANDI=1
+and
+BEKLEME_FATURASI_KESILDI=0 and BEKLEME_FAT_VAR=1
+and
+SEFER_ID NOT IN (select belge_id from CARIHAR
+where CARIHAR.CARI_KOD=sefer.ALICI_KOD and CARIHAR.belge_tur=41 and SEFER.sefer_id=CARIHAR.belge_id)
+
+union all
+
+select SEFER_ID,cast ('SEFER satýcý kod carihar da yok' as varchar(255))  from SEFER
+where
+SEFER_TAMAMLANDI=1
+and
+SEFER_ALIS_FAT_ALINDI=0
+AND
+SEFER.ARAC_KOD=(select ARAC_KOD from ARAC
+where ARAC.ARAC_KOD=sefer.ARAC_KOD and ARAC.OZ_MAL=0)
+and
+SEFER_ID NOT IN (select belge_id from CARIHAR
+where CARIHAR.CARI_KOD=sefer.SATICI_KOD and CARIHAR.belge_tur=41 and SEFER.sefer_id=CARIHAR.belge_id)
+
+union all
+
+select MAZOT_FIS_ID,cast ('MAZOT_FISI alan cari kod carihar da yok' as varchar(255))  from MAZOT_FISI
+where
+MAZOT_FISI.ARAC_KOD=(select ARAC_KOD from ARAC
+where ARAC.ARAC_KOD=MAZOT_FISI.ARAC_KOD and ARAC.OZ_MAL=0)
+AND
+MAZOT_FIS_ID NOT IN (select belge_id from CARIHAR
+where CARIHAR.CARI_KOD=MAZOT_FISI.ALAN_CARI_KOD and CARIHAR.belge_tur=42 and MAZOT_FISI.MAZOT_FIS_ID=CARIHAR.belge_id)
+
+union all
+
+select MAZOT_FIS_ID,cast ('MAZOT FISI mazotçu cari kod  carihar da yok' as varchar(255))  from MAZOT_FISI
+where
+ALIS_FATURASI_ALINDI=0
+AND
+SEFER_ID NOT IN (select belge_id from CARIHAR
+where CARIHAR.CARI_KOD=MAZOT_FISI.MAZOTCU_CARI_KOD and CARIHAR.belge_tur=42 and MAZOT_FISI.MAZOT_FIS_ID=CARIHAR.belge_id)
+
+
+
+

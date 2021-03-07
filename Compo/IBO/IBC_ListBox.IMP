@@ -1,0 +1,218 @@
+// IBC_ListBox.INT
+
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.IMP}
+{$UNDEF IB_AutoLabel}
+
+constructor TIB_CustomListBox.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  {$IFNDEF VER90}
+  FAutoLabel := TIB_AutoLabel.Create( Self );
+  {$ENDIF}
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csReplicatable];
+  DataLink.Control := Self;
+  DataLink.OnStateChanged := StateChanged;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnUpdateData := Self.UpdateData;
+  FItemValues := TIB_StringList.Create;
+  TIB_StringList(FItemValues).OnChange := ValuesChanged;
+end;
+
+destructor TIB_CustomListBox.Destroy;
+begin
+  {$IFNDEF VER90}
+  FAutoLabel.Free;
+  FAutoLabel := nil;
+  {$ENDIF}
+  DataSource := nil;
+  DataLink.Control := nil;
+  DataLink.OnStateChanged := nil;
+  DataLink.OnDataChange := nil;
+  DataLink.OnUpdateData := nil;
+  FItemValues.Free;
+  FItemValues := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomListBox.Loaded;
+begin
+  inherited Loaded;
+  SysStateChanged;
+  SysDataChange( nil );
+  {$IFNDEF VER90}
+  RemakeAutoLabel;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomListBox.SysStateChanged;
+begin
+  with DataLink do begin
+    if ColorScheme then begin
+      inherited Color := Color;
+    end;
+  end;
+  UpdateTabStop;
+end;
+
+procedure TIB_CustomListBox.SysDataChange;
+begin
+  Value := DataLink.FieldText;
+end;
+
+procedure TIB_CustomListBox.SysUpdateData;
+begin
+  DataLink.FieldText := Value;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomListBox.Click;
+begin
+  if DataLink.Modify then begin
+    inherited Click;
+    DataLink.ControlIsModified := true;
+// Added by NVE 29/07/1999
+// without this changes are not immediately visible in other datalinked controls
+// test : have several data-aware components linked to the same field as the
+// component based on TIB_CustomListbox, click on a new value in the listbox and
+// the change should be visible in the other components too
+     try
+       SysUpdateData( Field );
+    except
+        SetFocus;
+        raise;
+       end;
+//
+  end;
+end;
+
+procedure TIB_CustomListBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if Key in [VK_PRIOR, VK_NEXT, VK_END, VK_HOME, VK_LEFT, VK_UP,
+    VK_RIGHT, VK_DOWN] then
+// Modified by NVE 29/07/1999
+// without this changes are not immediately visible in other datalinked controls
+//    if not DataLink.Modify then Key := 0;
+    if not DataLink.Modify then Key := 0
+    else
+    begin
+        try
+            SysUpdateData( Field );
+        except
+            SetFocus;
+       raise;
+           end;
+    end;
+//
+end;
+
+procedure TIB_CustomListBox.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  case Key of
+    #32..#255: if not DataLink.Modify then Key := #0;
+    #27: SysDataChange( nil );
+  end;
+end;
+
+procedure TIB_CustomListBox.WMLButtonDown(var Message: TWMLButtonDown);
+begin
+  if DataLink.Modify then begin
+    inherited
+  end else begin
+    SetFocus;
+    with Message do MouseDown(mbLeft, KeysToShiftState(Keys), XPos, YPos);
+  end;
+end;
+
+procedure TIB_CustomListBox.CMEnter(var Message: TCMEnter);
+begin
+  inherited;
+end;
+
+procedure TIB_CustomListBox.CMExit(var Message: TCMExit);
+begin
+  try
+    SysUpdateData( Field );
+  except
+    SetFocus;
+    raise;
+  end;
+  inherited;
+end;
+
+procedure TIB_CustomListBox.SetItems( AValue: TStrings );
+begin
+  Items.Assign( AValue );
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomListBox.SetItemValues(AValue: TStrings);
+begin FItemValues.Assign(AValue); end;
+procedure TIB_CustomListBox.ValuesChanged( Sender: TObject );
+begin SysDataChange( nil ); end;
+
+function TIB_CustomListBox.GetValue: string;
+begin
+  Result := '';
+  if (ItemIndex >= 0) then begin
+    if Assigned(FItemValues) and (ItemIndex < FItemValues.Count) then begin
+      Result := FItemValues.Strings[ItemIndex];
+    end else begin
+      Result := Items.Strings[ItemIndex];
+    end;
+  end;
+end;
+
+procedure TIB_CustomListBox.SetValue( const AValue: string );
+var
+  ii: Integer;
+begin
+  if AValue = '' then begin
+    ItemIndex := -1;
+  end else begin
+    if Assigned( FItemValues ) and ( FItemValues.Count > 0 ) then begin
+      for ii := 0 to FItemValues.Count - 1 do begin
+        //NOTE// Use case-sensitive comparison here
+        if CompareStr( FItemValues.Strings[ii], AValue ) = 0 then begin
+          if ii < Items.Count then begin
+            ItemIndex := ii;
+            Exit;
+          end;
+          Break;
+        end;
+      end;
+    end;
+    ItemIndex := Items.IndexOf(AValue);
+  end;
+end;
+
+//Added by NVE 21/07/1999
+procedure TIB_CustomListBox.CreateWnd;
+begin
+    inherited;
+    if not (csDesigning in ComponentState) and Parent.InheritsFrom(TCustomEdit) then begin
+      Windows.SetParent( Handle, 0 );
+       CallWindowProc( DefWndProc, Handle, WM_SETFOCUS, 0, 0 );
+    end;
+end;
+
+procedure TIB_CustomListBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if not (csDesigning in ComponentState) then begin
+        if Parent.InheritsFrom(TCustomEdit) then begin
+            with Params do begin
+                  Style := Style or WS_BORDER;
+                  ExStyle := WS_EX_TOOLWINDOW;
+                  WindowClass.Style := CS_SAVEBITS;
+            end;
+       end;
+  end;
+end;
+//

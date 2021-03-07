@@ -1,0 +1,113 @@
+
+{                                                                              }
+{ TIB_TransactionLink                                                          }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: This event serves as the general event type for transaction link
+components. }
+TIB_TransactionLinkEvent = procedure( Sender: TIB_TransactionLink;
+                                      ATransaction: TIB_Transaction) of object;
+
+{: Event type for the TIB_TransactionLink component.}
+TIB_TransactionLinkNotifyEvent = procedure( Sender: TIB_TransactionLink;
+                                            AEvent: TIB_TransactionEventType ) of object;
+
+{: This component serves as a base class or contained object for other
+components needing to become transaction-aware.
+<br><br>
+Its role is analogous to the role of a TDataSource linking other components to a
+TDataset, except that TIB_TransactionLink links other components to an InterBase
+transaction.}
+TIB_TransactionLink = class(TIB_Component)
+private
+{ Property Storage Fields }
+  FIB_Transaction: TIB_Transaction;
+  FNewTransaction: TIB_Transaction;
+  FReceiveFocus: boolean;
+{ Event Storage }
+  FOnProcessEvent: TIB_TransactionLinkNotifyEvent;
+  FOnReceiveFocus: TIB_TransactionLinkEvent;
+protected
+{ Property Access Methods }
+  function GetStarted: boolean; //~virtual;
+  function GetTransactionState: TIB_TransactionState; //~virtual;
+  procedure SetTransaction( AValue: TIB_Transaction ); //~virtual;
+  procedure SetReceiveFocus( AValue: boolean ); //~virtual;
+{ Inherited Methods }
+  procedure Loaded; override;
+  procedure SetSession( ASession: TIB_Session ); override;
+{ Event Dispatch Methods }
+  procedure DoReceiveFocus( T: TIB_Transaction ); //~virtual;
+  procedure ProcessEvent( AEvent: TIB_TransactionEventType ); virtual;
+  
+public
+{ Inherited Methods }
+  destructor Destroy; override;
+{ Properties }
+{: Returns the transaction state of the referenced transaction.}
+  property TransactionState: TIB_TransactionState read GetTransactionState;
+{: Returns whether or not a referenced transaction is started.}
+  property Started: boolean read GetStarted;
+{: This provides a hook so that events can be captured and processed from this
+component. }
+  property OnProcessEvent: TIB_TransactionLinkNotifyEvent read FOnProcessEvent
+                                                          write FOnProcessEvent;
+published
+{ Properties }
+{: Reference to the IB_Transaction for which this component is to receive event
+notifications. }
+  property IB_Transaction: TIB_Transaction read FIB_Transaction
+                                           write SetTransaction;
+{: Determines whether this component should receive a notification of a newly
+focusing transaction component.
+<br><br>
+By default, a newly focusing transaction becomes referenced by this component.
+<br><br>
+To define a custom action to take, use the OnReceiveFocus event.}
+  property ReceiveFocus: boolean read FReceiveFocus write SetReceiveFocus;
+{ Events }
+{: If ReceiveFocus is true then, this event will be triggered each time a new
+IB_Transaction component is becoming focused.
+<br><br>
+If this event is assigned, the default behavior of assigning this component to
+any newly focusing IB_Transaction will not be performed.}
+  property OnReceiveFocus: TIB_TransactionLinkEvent read FOnReceiveFocus
+                                                    write FOnReceiveFocus;
+end;
+
+// IBA_TransactionLink.IMP

@@ -1,0 +1,94 @@
+inherited ChartListBoxRadio: TChartListBoxRadio
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Chart ListBox control supports displaying check-boxes and radio-' +
+        'buttons.'
+      
+        'The main purpose of radio-buttons is to show only one series at ' +
+        'a time.'
+      ''
+      'ChartListBox1.CheckStyle := cbsRadio ')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Left = 121
+    Width = 358
+    TabOrder = 0
+    object Series3: TAreaSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clYellow
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clGreen
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series1: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series4: TPointSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object RadioGroup1: TRadioGroup
+      Left = 10
+      Top = 3
+      Width = 185
+      Height = 33
+      Caption = '&Check style:'
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        'Check'
+        'Radio')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+  end
+  object ChartListBox1: TChartListBox
+    Left = 0
+    Top = 116
+    Width = 121
+    Height = 221
+    Chart = Chart1
+    Align = alLeft
+    ItemHeight = 24
+    TabOrder = 3
+  end
+end

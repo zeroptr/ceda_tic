@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008.04.01 19:29:03.562.pas,C:\CedaLite\Prog\Arac\ufrmGRABBER_WINDOW.pas=</Transaction>
+    <Transaction>2008.04.01 19:29:03.562.dfm,C:\CedaLite\Prog\Arac\ufrmGRABBER_WINDOW.dfm=</Transaction>
+    <Transaction>2008.04.01 19:33:52.671.pas,C:\CedaLite\Prog\Arac\ufrmSETTINGS.pas=</Transaction>
+    <Transaction>2008.04.01 19:33:52.671.dfm,C:\CedaLite\Prog\Arac\ufrmSETTINGS.dfm=</Transaction>
+    <Transaction>2008.04.01 19:37:54.656.pas,C:\CedaLite\Prog\Arac\unGLOBALS.pas=</Transaction>
+  </Transactions>
+</BorlandProject>

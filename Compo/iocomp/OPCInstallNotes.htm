@@ -1,0 +1,123 @@
+<HTML>
+
+<head>
+<title>Iocomp Components OPC Install Notes</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<b>
+<h1><font color="#800000">Iocomp Components OPC Install Notes</font></h1>
+<hr>
+<h2><font COLOR="#000080">Latest News</font></h2>
+</b>
+<p>This and future releases will include support for OPC client connections to
+OPC Servers. OPC is OLE for Process Control which allows our components to
+communicate with OPC Servers sold with many popular factory floor and automation
+hardware without writing code.</p>
+<p>Please refer to the License Agreement for information about OPC Distribution
+License requirements or contact Iocomp Software. For installer related questions
+or bug reports, please submit a copy to <a href="mailto:support@iocomp.com">support@iocomp.com</a>
+or visit our website at <a href="http://www.iocomp.com/support">http://www.iocomp.com/support</a></p>
+<b>
+<hr>
+<h2><font COLOR="#000080">Installation Notes</font></h2>
+<p>ActiveX and VCL Users</p>
+</b>
+<ol>
+  <li>The Iocomp Components Product Installer will install several required DLLs
+    and EXEs on your computer for support of our OPC features.</li>
+  <li>If you intend to utilize the OPC features of our components, a
+    distribution license will need to be obtained from Iocomp Software or your
+    Iocomp Authorized Reseller.</li>
+  <li>Additional files that were installed on your development computer will
+    need to be distributed to your end-users for the OPC client features to
+    function correctly. We have provided a copy of all of the necessary OPC
+    files and dependency files in a directory named &quot;OPC Distributables&quot;
+    located in our installation directory. The required OPC files necessary for
+    our components are as follows...<b><br>
+    <br>
+    OPC Support Files</b><br>
+    opcenum.exe<br>
+    OPCProxy.dll<br>
+    opccomn_ps.dll<br>
+    aprxdist.exe {only needed if IE 3.x or higher not installed}<br>
+  iOPC.dll</li>
+</ol>
+<b>
+<hr size="1" color="#C0C0C0">
+<p>Installation on End-User Computer</p>
+</b>
+<p>We have an installation program on our website that can install the required
+OPC files on your end user system.&nbsp; You can download this installer from
+our <a href="http://www.iocomp.com/download">Download Section</a>.&nbsp; You can 
+also download various OPC End-User installation packages and installation 
+components directly from the OPC Foundation at
+<a href="http://www.opcfoundation.org">http://www.opcfoundation.org</a></p>
+<p>If you plan on creating your own installer for your product, read on...</p>
+<p>The two DLL files &quot;OPCProxy.dll&quot; and &quot;opccomn_ps.dll&quot; will need to be registered on your end-users computer using
+regsvr32 or with your installation program's automatic registration option. The opcenum.exe program will need to be registered by executing &quot;opcenum /regserver&quot;
+on the command line or through your installation program's shell command. All
+four files should be placed in the Window's System or System32 directory.</p>
+<b><i>
+<p>Manual Installation From Command Line</p>
+</i></b>
+<p>Run the following commands from your Windows System directory (Windows
+95/98/ME) or your Windows System32 directory (WinNT/2000/XP/2003)...</p>
+<blockquote>
+  <p>ocpenum /regserver<br>
+  regsvr32 OPCProxy.dll<br>
+  regsvr32 opccomn_ps.dll</p>
+</blockquote>
+<p>If the End-User's computer does not have Internet Explorer 3.x or higher
+installed, you will need to distribute aprxdist.exe from Microsoft's Technical
+Support or from our OPC Distributables directory that was installed when you
+installed our software. This will installed critical OLE support files that come
+with IE 3.x and higher. This installation of aprxdist.exe is only required on
+Windows 95 or Windows NT 4.0 as higher versions of Windows already have Internet
+Explorer 4.x or higher installed by default.</p>
+<p><b>NOTE</b>: other OPC client or OPC Server vendors may have already
+installed these support files on your system. It is critical that you do version
+checking on these files and that you increment the installation counter for
+these files in the Windows registry using your Install Program's Shared File
+features. Also, these three files are the minimum number of OPC support files
+needed by our components. Other OPC clients or OPC servers may require other OPC
+files which are not supplied by Iocomp Software. For more information or
+updates, refer to the OPC Foundation's Website at <a href="http://www.opcfoundation.org">http://www.opcfoundation.org</a></p>
+<b>
+<hr size="1" color="#C0C0C0">
+<p>DCOM Configuration on Development and End-User Computer</p>
+</b>
+<p>Configuration of DCOM on your computer varies depending on your the security
+model of the Windows installation at your company's site. DCOM is generally
+already setup by default to work correctly with our OPC clients. However, each
+company's security settings and security policies are different, so we cannot
+completely cover DCOM configuration here. Please contact Iocomp Support for
+assistance or refer to Microsoft Technical Support documentation for more
+information.</p>
+<font FACE="Courier New" SIZE="2">
+</font><b>
+<hr size="1" color="#C0C0C0">
+<p>CLX Users</p>
+</b>
+<p>Support for OPC under the CLX versions of our components running under either 
+Windows or Linux will be supported in a future release.</p>
+<b>
+<hr>
+<h2><font COLOR="#000080">Tech Support</font></h2>
+</b>
+<p>For support, please contact us at <a href="mailto:support@iocomp.com">support@iocomp.com</a>
+or visit our web site at <a href="http://www.iocomp.com/support">http://www.iocomp.com/support</a>
+for telephone and other support options.</p>
+<font FACE="Courier New" SIZE="2">
+</font><i>
+<b>
+<hr>
+</b>
+<p>Software and All Documentation Copyright 1998-2008 Iocomp Inc.<br>
+Iocomp and the Iocomp logo are registered trademarks of Iocomp Software</p>
+</i><font FACE="Courier New" SIZE="2">
+<p>&nbsp;</p>
+</font>
+
+</HTML>

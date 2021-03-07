@@ -1,0 +1,79 @@
+inherited PieShadowEllipse: TPieShadowEllipse
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'A procedure to draw elliptical shadows. '
+      
+        'Useful for circular series like Pie, at Chart OnBeforeDrawSeries' +
+        ' event.'
+      ''
+      'DrawEllipseShadow( Chart1.Canvas, Chart1.Color, R );')
+  end
+  inherited Chart1: TChart
+    Border.Color = clNavy
+    Border.Width = 6
+    Border.Visible = True
+    BorderRound = 10
+    Gradient.EndColor = clGray
+    Legend.Gradient.Visible = True
+    Legend.Symbol.Pen.Visible = False
+    Title.Visible = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    OnBeforeDrawSeries = Chart1BeforeDrawSeries
+    BevelOuter = bvNone
+    ColorPaletteIndex = 2
+    object Series1: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Gradient.Visible = True
+      Marks.Symbol.Shadow.Smooth = False
+      Marks.Visible = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+    end
+  end
+  inherited Panel1: TPanel
+    object ButtonColor1: TButtonColor
+      Left = 144
+      Top = 8
+      Caption = '&Color...'
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 121
+      Height = 17
+      Caption = '&View Shadow'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object RadioGroup1: TRadioGroup
+      Left = 239
+      Top = 2
+      Width = 185
+      Height = 33
+      Caption = 'Animation:'
+      Columns = 3
+      Items.Strings = (
+        'None'
+        'Slow'
+        'Fast')
+      TabOrder = 2
+      OnClick = RadioGroup1Click
+    end
+  end
+  object Timer1: TTimer
+    Interval = 200
+    OnTimer = Timer1Timer
+    Left = 312
+    Top = 267
+  end
+end

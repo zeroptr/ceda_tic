@@ -1,0 +1,41 @@
+
+private
+  FIB_DataLink: TIB_DataLink;
+  function GetDataSource: TIB_DataSource;
+  procedure SetDataSource(AValue: TIB_DataSource);
+  function GetReceiveFocus: boolean;
+  procedure SetReceiveFocus(AValue: boolean);
+  function GetOnReceiveFocus: TIB_DataLinkEvent;
+  procedure SetOnReceiveFocus( AValue: TIB_DataLinkEvent );
+
+protected
+  procedure IB_DatasetStateChanged( Sender: TIB_DataLink;
+                                    DataSource: TIB_DataSource );
+  procedure IB_DatasetDataChange( Sender: TIB_DataLink;
+                                  DataSource: TIB_DataSource;
+                                  IB_Field: TIB_Column );
+  property DataLink: TIB_DataLink read FIB_DataLink;
+
+published
+
+{: Reference to the DataSource upon which to perform actions.}
+  property DataSource: TIB_DataSource read GetDataSource write SetDataSource;
+{: This property is used in conjunction with the AnnounceFocus property of
+the DataSource component. It is a global focusing system that allows
+the SearchBar to link itself to wherever the user's focus goes.
+<br><br>
+For example, in an MDI application, the user could go from one child window
+to another. Each child window could have its own DataSource context.
+Thus, if each child window's DataSource component's AnnounceFocus
+property is set to true the SearchBar will receive the focus and align
+with it.
+<br><br>
+You can also customize the action taken by supplying an OnReceiveFocus event
+handler. }
+  property ReceiveFocus: boolean read GetReceiveFocus write SetReceiveFocus;
+{: This event allows a custom action to be performed when a Focus event
+is received. The newly announced Datasource is passed in the ADataSource
+parameter.}
+  property OnReceiveFocus: TIB_DataLinkEvent read GetOnReceiveFocus
+                                             write SetOnReceiveFocus;
+

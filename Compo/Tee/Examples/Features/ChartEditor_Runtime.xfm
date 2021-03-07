@@ -1,0 +1,72 @@
+inherited ChartEditorRuntime: TChartEditorRuntime
+  Left = 213
+  Top = 349
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 106
+  end
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      
+        'The Chart Editor dialog can be customized and displayed at run-t' +
+        'ime.'
+      ''
+      'Example: ChartEditor1.Execute')
+  end
+  inherited Chart1: TChart
+    Top = 108
+    Height = 229
+    object Series1: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    object Button1: TButton
+      Left = 24
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 120
+      Top = 13
+      Width = 121
+      Height = 17
+      Caption = '&Remember position'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+    end
+    object CheckBox2: TCheckBox
+      Left = 264
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Highlight tabs'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+    end
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Title = 'Example of ChartEditor component'
+    Left = 72
+    Top = 130
+  end
+end

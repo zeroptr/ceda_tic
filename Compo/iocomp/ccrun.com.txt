@@ -1,0 +1,22 @@
+[info]
+name=Iocomp Components
+ver=4.00 SP0
+author=iocomp
+web=http://www.iocomp.com
+devtool=Delphi4~7,9~11 / C++Builder5~6,10~11
+sn=
+fullsource=1
+desc=iocomp 公司的用于工控领域的控件。产品功能强大，能够实现各种仪表的显示效果
+
+本版本支持以下 IDE：
+Delphi 4,5,6,7,2005
+C++Builder 5,6
+BDS 2006 (Delphi 2006, C++Builder 2006)
+RAD Studio 2007 (Delphi 2007, C++Builder 2007)
+
+╔---------------------------╗
+┆ 欢迎访问 C++Builder 研究  ┆
+┆   http://www.ccrun.com    ┆
+╚---------------------------╝
+
+// 63 63 72 75 6E 2E 63 6F 6D

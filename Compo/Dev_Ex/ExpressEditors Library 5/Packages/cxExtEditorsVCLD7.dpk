@@ -1,0 +1,81 @@
+package cxExtEditorsVCLD7;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressExtendedEditors Library 5 (VCL Edition) by Developer Express Inc.'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  vcl,
+  vclx,
+  dbrtl,
+  vcljpg,
+  vcldb,
+  cxLibraryVCLD7,
+  dxThemeD7,
+  cxEditorsVCLD7,
+  cxDataD7;
+
+contains
+  cxCheckListBox,
+  cxProgressBar,
+  cxLabel,
+  cxTrackBar,
+  cxFontNameComboBox,
+  cxColorComboBox,
+  cxExtEditUtils,
+  cxCheckComboBox,
+  cxTreeView,
+  cxSplitter,
+  cxDBColorComboBox,
+  cxDBProgressBar,
+  cxDBLabel,
+  cxDBTrackBar,
+  cxHint,
+  cxMCListBox,
+  cxListView,
+  cxHeader,
+  cxDBCheckListBox,
+  cxDBCheckComboBox,
+  cxExtEditConsts,
+  cxSpinButton,
+  cxDBFontNameComboBox,
+  cxShellComboBox,
+  cxShellCommon,
+  cxShellControls,
+  cxShellListView,
+  cxShellTreeView,
+  cxDBShellComboBox,
+  cxShellBrowser,
+  cxShellBrowserDialog,
+  cxShellDlgs,
+  cxExtEditRepositoryItems,
+  cxShellEditRepositoryItems,
+  cxCheckGroup,
+  cxDBCheckGroup,
+  cxRichEdit,
+  cxDBRichEdit;
+
+end.

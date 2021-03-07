@@ -1,0 +1,119 @@
+
+{                                                                              }
+{  IBA_Dataset.PBL                                                             }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+public
+
+{ Properties }
+
+property IsRowLocked;
+property SQLSelect;
+property SQLFrom;
+property SQLWhere;
+property SQLGroup;
+property SQLHaving;
+property SQLUnion;
+property SQLPlan;
+property SQLOrder;
+property SQLForUpdate;
+
+published
+
+{ Properties }
+
+property Active;
+property AutoFetchAll;
+property AutoFetchFirst;
+property AutoPostDelete;
+property CallbackCaption;
+property CallbackInc;
+property CallbackInitInt;
+property CallbackRefreshInt;
+property CheckRequired;
+property ColorScheme;
+property ConfirmDeletePrompt;
+property DefaultValues;
+property DeleteSQL;
+property EditSQL;
+property GeneratorLinks;
+property GetServerDefaults;
+property Hints;
+property InsertSQL;
+property JoinLinks;
+property KeyLinks;
+property KeyLinksAutoDefine;
+property KeyDescLinks;
+property KeySeeking;
+property KeySource;
+property KeyRelation;
+property LockSQL;
+property MasterSource;
+property MasterLinks;
+property MasterSearch;
+property MasterSearchFlags;
+property MasterParamLinks;
+property MaxRows;
+property MaxTicks;
+property OrderingItemNo;
+property OrderingItems;
+property OrderingLinks;
+property PessimisticLocking;
+property PreparedEdits;
+property PreparedInserts;
+property PreventEditing;
+property PreventInserting;
+property PreventDeleting;
+property PreventSearching;
+property ReadOnly;
+property RefreshAction;
+property RefreshOnParamChange;
+property RequestLive;
+property SearchedEdits;
+property SearchedDeletes;
+property SearchingLinks;
+property _DataSourceCount;
+
+{ Events }
+
+property AfterCancel;
+property AfterClose;
+property AfterDelete;
+property AfterEdit;
+property AfterInsert;
+property AfterOpen;
+property AfterPost;
+property AfterPrepare;
+property AfterScroll;
+property AfterSearch;
+property AfterUnprepare;
+property BeforeCancel;
+property BeforeClose;
+property BeforeDelete;
+property BeforeEdit;
+property BeforeInsert;
+property BeforeOpen;
+property BeforePost;
+property BeforePrepare;
+property BeforeScroll;
+property BeforeSearch;
+property BeforeUnprepare;
+property OnCallback;
+property OnConfirmDelete;
+property OnDMLCacheAnnounceItem;
+property OnDMLCacheReceivedItem;
+property OnGetCanModify;
+property OnGetCanScroll;
+property OnGetRecordCount;
+property OnNewRecord;
+property OnOrderingChanged;
+{$IFDEF IBO_VCL30_OR_GREATER}
+property OnEditError;
+property OnPostError;
+property OnDeleteError;
+{$ENDIF}
+property OnValidateField;
+
+{$ENDIF}

@@ -1,0 +1,120 @@
+// IB_WinControl.INT
+
+{$I IB_Control.IMP}
+
+{$IFDEF IB_CustomEdit}
+{$ELSE}{$IFDEF IBC_ListBox}
+{$ELSE}{$IFDEF IBG_CustomGrid}
+{$ELSE}
+procedure {$I IB_Classes.INC} SetBorderStyle( AValue: TBorderStyle );
+begin
+  if FBorderStyle <> AValue then begin
+    FBorderStyle := AValue;
+    RecreateWnd;
+  end;
+end;
+{$ENDIF}{$ENDIF}{$ENDIF}
+
+{$IFDEF IB_FieldControl}
+function {$I IB_Classes.INC} GetParamName: string;
+begin
+  Result := DataLink.ParamName;
+end;
+
+procedure {$I IB_Classes.INC} SetParamName(AVal: string);
+begin
+  DataLink.ParamName := AVal;
+end;
+{$ENDIF}
+
+procedure {$I IB_Classes.INC} SetTabStopAutomation( AValue: boolean );
+begin
+  if FTabStopAutomation <> AValue then
+  begin
+    FTabStopAutomation := AValue;
+    if FTabStopAutomation then
+      UpdateTabStop
+    else
+      TabStop := true; // return to original default
+  end;
+end;
+
+function {$I IB_Classes.INC} StoreTabStop: boolean;
+begin
+  // Dont store TabStop when automating its value
+  if FTabStopAutomation then
+    Result := false
+  // if no automation then store when not true (the usual default)
+  else
+    Result := (TabStop <> true);
+end;
+
+procedure {$I IB_Classes.INC} UpdateTabStop;
+begin
+  // Only perform update if automation is enabled
+  if FTabStopAutomation then
+  begin
+    // We only play with TabStop when in a valid state.  Otherwise we
+    // can end up setting all controls to readonly at form startup, which
+    // may alter which control is selected.
+    if DataLink.State in [dssSearch,dssBrowse,dssEdit,dssInsert,dssDelete] then
+      TabStop := not DataLink.ReadOnly;
+  end;
+end;
+
+function {$I IB_Classes.INC} CanModify: Boolean;
+begin
+{$IFDEF IB_FieldControl}
+  if DataLink.ParamName <> '' then
+    Result := DataLink.Prepared
+  else
+{$ENDIF}
+    Result := DataLink.CanModify;
+end;
+function {$I IB_Classes.INC} GetReadOnly: Boolean;
+begin Result := DataLink.ControlIsReadOnly; end;
+procedure {$I IB_Classes.INC} SetReadOnly( AValue: Boolean );
+begin DataLink.ControlIsReadOnly := AValue; end;
+function {$I IB_Classes.INC} GetPreventDeleting: Boolean;
+begin Result := DataLink.ControlPreventsDeleting; end;
+procedure {$I IB_Classes.INC} SetPreventDeleting( AValue: Boolean );
+begin DataLink.ControlPreventsDeleting := AValue; end;
+function {$I IB_Classes.INC} GetPreventEditing: Boolean;
+begin Result := DataLink.ControlPreventsEditing; end;
+procedure {$I IB_Classes.INC} SetPreventEditing( AValue: Boolean );
+begin DataLink.ControlPreventsEditing := AValue; end;
+function {$I IB_Classes.INC} GetPreventInserting: Boolean;
+begin Result := DataLink.ControlPreventsInserting; end;
+procedure {$I IB_Classes.INC} SetPreventInserting( AValue: Boolean );
+begin DataLink.ControlPreventsInserting := AValue; end;
+function {$I IB_Classes.INC} GetPreventSearching: Boolean;
+begin Result := DataLink.ControlPreventsSearching; end;
+procedure {$I IB_Classes.INC} SetPreventSearching( AValue: Boolean );
+begin DataLink.ControlPreventsSearching := AValue; end;
+
+{$IFNDEF IBG_LookupCombo}
+procedure {$I IB_Classes.INC} CMEnabledChanged(var Message: TMessage);
+begin
+  inherited;
+  SysStateChanged;
+end;
+{$ENDIF}
+
+procedure {$I IB_Classes.INC} UpdateData( Sender: TIB_DataLink;
+                                          IB_DataSource: TIB_DataSource;
+                                          IB_Field: TIB_Column );
+begin
+  SysUpdateData( IB_Field );
+end;
+
+{$IFNDEF IBG_LookupCombo}
+procedure {$I IB_Classes.INC} WMSetFocus(var Message: TWMSetFocus);
+begin
+  inherited;
+  DataLink.SetFocus;
+{$IFDEF IBC_ComboBox}
+  SysDataChange( Field );
+{$ENDIF}
+end;
+{$ENDIF}
+

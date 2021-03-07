@@ -1,0 +1,80 @@
+
+{                                                                              }
+{ IB_KeyDataLink                                                               }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{$IFNDEF HELPSCAN}
+{: This component is used to handle the relationship between two datasets
+formed when the parent dataset is supplying dynamic lookup information to its
+child dataset by
+<ul>
+<li>Child connecting its KeySource property to the Datasource of the
+parent and
+<li>matching the child dataset's KeyLinks to a parent column that acts as a
+key pointing to one and only one of the child rows
+</ul>
+}
+TIB_KeyDataLink = class(TIB_DataLink)
+private
+  FChildDataset: TIB_Dataset;
+  FSearchSync: boolean;
+protected
+  procedure DoBeforeAssignment; override;
+  procedure DoAfterAssignment; override;
+  procedure SysPreparedChanged; override;
+  procedure SysStateChanged; override;
+  procedure SysDataChange( AField: TIB_Column ); override;
+  procedure SetAdvSearchData( const AValue: string ); override;
+  function GetSearchEntryName: string; override;
+public
+  procedure CheckBrowseMode; override;
+{: Reference to the IB_Dataset that owns this link and is the child part
+of the relationship.}
+  property ChildDataset: TIB_Dataset read FChildDataset;
+{: Updates the search criteria according to the data in the lookup key in the
+current row.  It expects that the parent dataset (the KeyDataset) has already
+been confirmed to be in dssSearch mode.<br>
+This property is made public only to allow access from BDataset.}
+  procedure SetSearchFromKeyData;
+{: Used when considering the read status of the key columns in the parent
+dataset (the KeyDataset).}
+  function Modify: boolean; override;
+end;
+{$ENDIF}
+
+// IBA_KeyDataLink.IMP

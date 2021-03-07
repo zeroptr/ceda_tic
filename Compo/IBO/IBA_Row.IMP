@@ -1,0 +1,1542 @@
+// IBA_Row.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Marco Krause <mkrause@hellmut-springer.de> - 19.05.2002                     }
+{    Improved performance in GetByName - It is important, that calls to				 }
+{		 FieldByName() comes in the same order, the columns are typed in the sql   }
+{		 statement.                                                                }
+{                                                                              }
+{  Jason Wharton - 9 Sep 2001                                                  }
+{    I made it so that the int64 based numerics use the extended data type to  }
+{    store and retrieve their values into variants.                            }
+{                                                                              }
+{    I also made it so that you can use the '*' character in the variant       }
+{    values array to indicate all fields in the row.                           }
+{                                                                              }
+{  Wassim Haddad - 10 Aug 2001                                                 }
+{    Made modifications to control the firing of OnCalculateField depending on }
+{    the DataSet's CalculateAllFields property.                                }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_Row.Create( AStatement: TIB_Statement;
+                            DescType: TIB_RowType );
+begin
+  inherited Create;
+  FStatement := AStatement;
+  FRowType := DescType;
+  FColumnList := TList.Create;
+  FBlobList := TList.Create;
+  FArrayList := TList.Create;
+  FCalcList := TList.Create;
+  FUpdatedColumns := TList.Create;
+  FRelationList := TIB_StringList.Create;
+  FRelationList.Sorted := true;
+  FRelationList.Duplicates := dupIgnore;
+  FRowState := rsNone;
+  FOldBuffer := nil;
+  FRowBuffer := nil;
+  FPSQLDA := nil;
+  FSysBlobHead := nil;
+  lastColumnIndex := -1;
+end;
+
+destructor TIB_Row.Destroy;
+begin
+  FreeBlobRefList( @FSysBlobHead );
+  FreeVarList;
+  inherited Destroy;
+  FRelationList.Free;
+  FRelationList := nil;
+  FColumnList.Free;
+  FColumnList := nil;
+  FBlobList.Free;
+  FBlobList := nil;
+  FCalcList.Free;
+  FCalcList := nil;
+  FArrayList.Free;
+  FArrayList := nil;
+  FUpdatedColumns.Free;
+  FUpdatedColumns := nil;
+end;
+
+procedure TIB_Row.FreeVARList;
+var
+  tmpCol: TIB_Column;
+  ii: integer;
+  tmpBlobNode: PIB_BlobNode;
+begin
+
+// Free up all the data associated with the permanent BlobNodes.
+  if Assigned( FPSQLDA ) then
+    for ii := 0 to PSQLDA.sqln - 1 do
+    begin
+      tmpBlobNode := GetBlobNode( ii );
+      if Assigned( tmpBlobNode ) then
+        FreeBlobNodeData( tmpBlobNode );
+    end;
+  FreeMem( FBlobNodeList );
+  FBlobNodeList := nil;
+  FreeMem( FBlobFieldMap );
+  FBlobFieldMap := nil;
+
+// Free up all of the TIBOColumn instances.
+  while FColumnList.Count > 0 do
+  begin
+    tmpCol := Columns[ 0 ];
+    FColumnList.Remove( tmpCol );
+    tmpCol.Free;
+  end;
+  FColumnCount := 0;
+  FSysColumnCount := 0;
+  FBlobCount := 0;
+  FArrayCount := 0;
+  FBufferLength := 0;
+  FRelationList.Clear;
+  FColumnList.Clear;
+  FCalcList.Clear;
+  FBlobList.Clear;
+  FArrayList.Clear;
+  try
+    if Assigned( FPSQLDA ) then
+      FreeMem( FPSQLDA );
+    FPSQLDA := nil;
+  except
+  end;
+  try
+    if Assigned( FRowBuffer ) then
+      FreeMem( FRowBuffer );
+    FRowBuffer := nil;
+  except
+  end;
+  try
+    if Assigned( FOldBuffer ) then
+      FreeMem( FOldBuffer );
+    FOldBuffer := nil;
+  except
+  end;
+end;
+
+procedure TIB_Row.SysUpdate( NewColumnCount: word );
+begin
+  FreeVarList;
+  try
+    FCalcCount := 0;
+    if ( NewColumnCount > 0 ) and
+       ( RowType = rtField ) and
+       ( not IsKeyFields or IsKeyFieldsWhole ) then
+      FCalcCount := Statement.CalculatedFields.Count;
+    FPSQLDA := AllocMem( XSQLDA_LENGTH( NewColumnCount + FCalcCount));
+    FPSQLDA.version := SQLDA_VERSION1;
+    FPSQLDA.sqln := NewColumnCount + FCalcCount;
+    FPSQLDA.sqld := NewColumnCount;
+    if NewColumnCount > 0 then
+    begin
+      Statement.SysDescribeVARList( Self );
+      if RowType = rtParam then
+        PrepDuplicateParamList;
+      AllocateBlobNodes;
+      CreateVARList;
+      FBDENamesValid := false;
+      AllocateVARList;
+      UpdateBufferPointers;
+      SysClearBuffers;
+    end;
+  except
+    FreeVarList;
+    raise;
+  end;
+  if RowState <> rsNone then
+    SetRowState( rsNone );
+end;
+
+procedure TIB_Row.AllocateBlobNodes;
+var
+  ii: integer;
+  tmpInt: integer;
+begin
+  FBlobCount := 0;
+  FArrayCount := 0;
+  for ii := 0 to PSQLDA.SQLn - 1 do
+    case PSQLDA.SQLVAR[ ii ].SQLType of
+      SQL_BLOB,
+      SQL_BLOB_: Inc( FBlobCount );
+      SQL_ARRAY,
+      SQL_ARRAY_: Inc( FArrayCount );
+    end;
+  FBlobNodeList := AllocMem(( FBlobCount +
+                              FArrayCount ) * SizeOf( TIB_BlobNode ));
+  FBlobFieldMap := AllocMem( SizeOf( integer ) * PSQLDA.SQLn );
+  tmpInt := 0;
+  for ii := 0 to PSQLDA.SQLn - 1 do
+    case PSQLDA.SQLVAR[ ii ].SQLType of
+      SQL_BLOB,
+      SQL_BLOB_,
+      SQL_ARRAY,
+      SQL_ARRAY_:
+      begin
+        FBlobFieldMap.BlobIndex[ ii ] :=  tmpInt;
+        Inc( tmpInt );
+      end
+      else
+        FBlobFieldMap.BlobIndex[ ii ] :=  -1;
+    end;
+end;
+
+procedure TIB_Row.NameParams;
+var
+  ii: integer;
+  RelPos: integer;
+  ARelName,
+  AColName: string;
+  tmpStr: string;
+begin
+  if RowType = rtParam then
+  for ii := 0 to PSQLDA.sqld - 1 do
+  with PSQLDA.SQLVAR[ ii ] do
+  begin
+    FillChar( relname, 32, #0 );
+    relname_length := -1;
+    FillChar( sqlname, 32, #0 );
+    sqlname_length := -1;
+    FillChar( aliasname, 32, #0 );
+    aliasname_length := 0;
+    if ii < Statement.FSysParamNames.Count then
+      AColName := Trim( Statement.FSysParamNames[ ii ] )
+    else
+      if Statement.FUnExPrmCnt > 0 then
+        try
+          AColName := Statement.FSysParamNames[ ii - Statement.FUnExPrmCnt ];
+          AColName := Trim( AColName );
+        except
+          AColName := 'PARAM_' + IntToStr( ii );
+        end
+      else
+        AColName := 'PARAM_' + IntToStr( ii );
+    RelPos := getLitSafePos( '.', AColName, 1 );
+    if RelPos > 0 then
+    begin
+      ARelName := Trim( Copy( AColName, 1, RelPos - 1 ));
+      AColName := Trim( Copy( AColName, RelPos + 1, maxint ));
+      if ( Statement.SQLDialect < 3 ) or
+         ( Pos( '"', ARelName ) = 0 ) then
+        ARelName := AnsiUpperCase( ARelName );
+      ARelName := stLitCriteria( ARelName );
+      relname_length := Length( ARelName );
+      if relname_length > 32 then
+        relname_length := 32;
+      Move( Pchar(ARelName)^, relname, relname_length );
+    end;
+    tmpStr := UpperCase( Copy( AColName, 1, 5 ));
+    if tmpStr = 'OLD_"' then
+      AColName := '"OLD_' + Copy( AColName, 6, MaxInt )
+    else
+    if tmpStr = 'OLD."' then
+      AColName := '"OLD.' + Copy( AColName, 6, MaxInt )
+    else
+    if ( Statement.SQLDialect < 3 ) or
+       ( Pos( '"', AColName ) = 0 ) then
+      AColName := AnsiUpperCase( AColName );
+    AColName := stLitCriteria( AColName );
+    if CompareText( IB_DB_KEY, AColName ) = 0 then
+      AColName := IB_RDB + IB_DB_KEY;
+    aliasname_length := Length( AColName );
+    if aliasname_length > 32 then
+      aliasname_length := 32;
+    Move( Pchar(AColName)^, aliasname, aliasname_length );
+  end;
+end;
+
+procedure TIB_Row.CreateVARList;
+var
+  tmpCol: TIB_Column;
+  procedure DoCreateVAR( const ANewIndex: smallint;
+                         const PSQLVAR: PXSQLVAR );
+  var
+    tmpStr: string;
+  begin
+    Inc( FColumnCount );
+    tmpCol := nil;
+    if Assigned( Statement.FOnCreateColumn ) then
+      Statement.FOnCreateColumn( Statement,
+                                 Self,
+                                 ANewIndex,
+                                 PSQLVAR,
+                                 tmpCol )
+    else
+      DefaultColumnCreation( ANewIndex,
+                             PSQLVAR,
+                             tmpCol );
+    if Assigned( tmpCol ) then
+    begin
+      tmpStr := stLitCriteria( tmpCol.FieldName );
+      if ( RowType = rtParam ) and
+         (( Pos( IB_MASTERLINK, tmpStr ) = 1 ) or
+          ( Pos( IB_QBE_PARAMETER, tmpStr ) = 1 )) then
+      begin
+        FColumnList.Insert( FColumnCount - 1, tmpCol );
+        Inc( FSysColumnCount );
+      end
+      else
+        FColumnList.Insert( FColumnCount - 1 - FSysColumnCount, tmpCol );
+    end
+    else
+      raise EIB_Error.Create( 'Must create a TIB_Column instance' );
+    if ANewIndex < 0 then
+      FCalcList.Add( tmpCol );
+    case PSQLVAR.SQLType of
+      SQL_ARRAY,
+      SQL_ARRAY_: FArrayList.Add( tmpCol );
+      SQL_BLOB,
+      SQL_BLOB_: FBlobList.Add( tmpCol );
+    end;
+    tmpCol := nil;
+  end;
+var
+  tmpS: string;
+  ii, jj: integer;
+begin
+{ Create the IB_Column instances for fields and parameters. }
+  tmpCol := nil;
+  for ii := 0 to FPSQLDA.sqld - 1 do
+  begin
+    if Statement.FCombineDuplicateParams and
+       ( RowType = rtParam ) then
+    begin
+      tmpS := Copy( FPSQLDA.sqlvar[ii].relname, 1,
+                    FPSQLDA.sqlvar[ii].relname_length );
+      if tmpS <> 'OLD' then
+      begin
+        if tmpS <> '' then
+          tmpS := Statement.IB_Connection.mkVarIdent( tmpS ) + '.';
+        tmpS := tmpS + Statement.IB_Connection.mkVarIdent(
+                         Copy( FPSQLDA.sqlvar[ii].aliasname, 1,
+                               FPSQLDA.sqlvar[ii].aliasname_length ));
+        lastColumnIndex := -1;
+        if GetByName( tmpS, tmpCol ) and
+           SQLTypesEqual( tmpCol.PSQLVAR.SQLType,
+                          PSQLDA.sqlvar[ii].SQLType ) then
+          Continue;
+      end;
+    end;
+    DoCreateVAR( ii, @FPSQLDA.sqlvar[ii] );
+  end;
+  for ii := FPSQLDA.sqld to FPSQLDA.sqln - 1 do
+  begin
+    jj := ii - FPSQLDA.sqld;
+    SetXSQLVAR( Statement.CalculatedFields[jj],
+                Statement.SQLDialect,
+                FPSQLDA.sqlvar[ii] );
+    DoCreateVAR( -jj - 1, @FPSQLDA.sqlvar[ii] );
+  end;
+  { Maintain a list of relations joined in the query }
+  for ii := 0 to FColumnList.Count - 1 do
+    with Columns[ ii ] do
+      if RelName <> '' then
+        FRelationList.Add( RelName );
+end;
+
+procedure TIB_Row.NameVARListForBDE;
+var
+  ii, jj: integer;
+  AName: string;
+  ADBFName: string;
+  ACnt: integer;
+  ADBFCnt: integer;
+  Len: integer;
+  tmpStr: string;
+begin
+  for ii := 0 to ColumnCount - 1 do
+  begin
+    tmpStr := stLitCriteria( Columns[ ii ].FieldName );
+    if tmpStr = '' then
+      tmpStr := 'COLUMN' + IntToStr( ii );
+    Columns[ ii ].FBDEFieldName := tmpStr;
+    Columns[ ii ].FDBFFieldName := Copy( tmpStr, 1, 10 );
+  end;
+  for ii := 0 to ColumnCount - 2 do
+  begin
+    AName := Columns[ ii ].FBDEFieldName;
+    ADBFName := Columns[ ii ].FDBFFieldName;
+    ACnt := 1;
+    ADBFCnt := 1;
+    for jj := ii + 1 to ColumnCount - 1 do
+      with Columns[ jj ] do
+      begin
+        if CompareText( AName, FBDEFieldName ) = 0 then
+        begin
+          FBDEFieldName := FieldName + '_' + IntToStr( ACnt );
+          Len := Length( FBDEFieldName );
+          if Len > 31 then
+            System.Delete( FBDEFieldName,
+                           31 - Length( IntToStr( ACnt )),
+                           31 - Len );
+          Inc( ACnt );
+        end;
+        if CompareText( AName, FDBFFieldName ) = 0 then
+        begin
+          FDBFFieldName := FieldName + '_' + IntToStr( ADBFCnt );
+          Len := Length( FDBFFieldName );
+          if Len > 10 then
+            System.Delete( FDBFFieldName,
+                           10 - Length( IntToStr( ADBFCnt )),
+                           10 - Len );
+          Inc( ADBFCnt );
+        end;
+      end;
+  end;
+  FBDENamesValid := true;
+end;
+
+procedure TIB_Row.PrepDuplicateParamList;
+var
+  ii, jj: integer;
+begin
+// Cause parameters of the same name and type to be coersed into the
+// largest of the duplicate entries. This way when they are bound to the same
+// point in memory there will be compatible references to the column buffer
+// for all members.
+// Smallints will cast up to integers if they are duplicate too.
+  if Statement.FCombineDuplicateParams and ( RowType = rtParam ) then
+    with PSQLDA^ do
+      for ii := 0 to SQLd - 2 do
+        for jj := ii + 1 to SQLd - 1 do
+          if ( CompareText( SQLVAR[ ii ].relname,
+                            SQLVAR[ jj ].relname ) = 0 ) and
+             ( CompareText( SQLVAR[ ii ].aliasname,
+                            SQLVAR[ jj ].aliasname ) = 0 ) then
+            if SQLTypesEqual( PSQLDA.SQLVAR[ ii ].SqlType,
+                              PSQLDA.SQLVAR[ jj ].SqlType ) then
+              if SQLVAR[ jj ].SqlLen > SQLVAR[ ii ].SqlLen then
+                SQLVAR[ ii ] := SQLVAR[ jj ]
+              else
+              if SQLVAR[ ii ].SqlLen > SQLVAR[ jj ].SqlLen then
+                SQLVAR[ jj ] := SQLVAR[ ii ];
+end;
+
+procedure TIB_Row.AllocateVARList;
+var
+  ii: integer;
+begin
+  FBufferLength := 0;
+  for ii := 0 to ColumnCount - 1 do
+    Inc( FBufferLength, SizeOf( smallint ) + Columns[ ii ].DataSize );
+  if BufferLength > 0 then
+  begin
+    FOldBuffer := AllocMem( FBufferLength );
+    FRowBuffer := AllocMem( FBufferLength );
+  end;
+end;
+
+procedure TIB_Row.UpdateBufferPointers;
+var
+  ii: integer;
+  tempOld: pointer;
+  tempNew: pointer;
+  tmpCol: TIB_Column;
+  procedure SetPointers;
+  begin
+    with tmpCol do
+    begin
+      FOldColumnInd := tempOld;
+      FNewColumnInd := tempNew;
+      FPXSQLVAR.SqlInd := tempNew;
+      Inc( longint(tempOld), SizeOf( smallint ));
+      Inc( longint(tempNew), SizeOf( smallint ));
+      FOldColumnBuffer := tempOld;
+      FNewColumnBuffer := tempNew;
+      FPXSQLVAR.SqlData := tempNew;
+      Inc( longint(tempOld), DataSize );
+      Inc( longint(tempNew), DataSize );
+    end;
+  end;
+begin
+  tempOld := FOldBuffer;
+  tempNew := FRowBuffer;
+  if Assigned( FPSQLDA ) then
+  begin
+    for ii := 0 to FPSQLDA.sqld - 1 do
+      if GetBySQLNo( ii, tmpCol ) then
+        SetPointers;
+    for ii := 0 to FCalcList.Count - 1 do
+    begin
+      tmpCol := FCalcList.Items[ ii ];
+      SetPointers;
+    end;
+    SetDuplicateBufferPointers;
+  end;
+end;
+
+procedure TIB_Row.SetDuplicateBufferPointers;
+var
+  ii: integer;
+  tmpCol: TIB_Column;
+  tmpS: string;
+begin
+// This makes duplicate parameters of same data size bind to the same place.
+  if Statement.FCombineDuplicateParams and ( RowType = rtParam ) then
+    for ii := 0 to FPSQLDA.sqld - 1 do
+    begin
+      tmpS := Copy( FPSQLDA.sqlvar[ii].relname, 1,
+                    FPSQLDA.sqlvar[ii].relname_length );
+      if tmpS <> '' then
+        tmpS := Statement.IB_Connection.mkVarIdent( tmpS ) + '.';
+      tmpS := tmpS + Statement.IB_Connection.mkVarIdent(
+                       Copy( FPSQLDA.sqlvar[ii].aliasname, 1,
+                             FPSQLDA.sqlvar[ii].aliasname_length ));
+      lastColumnIndex := -1;
+      if GetByName( tmpS, tmpCol ) then
+        if Addr( tmpCol.PSQLVAR^ ) <> Addr( PSQLDA.sqlvar[ii] ) then
+          if SQLTypesEqual( tmpCol.PSQLVAR.SQLType,
+                            PSQLDA.sqlvar[ii].sqltype ) then
+          begin
+            FPSQLDA.sqlvar[ii].SQLInd := tmpCol.FPXSQLVAR.SQLInd;
+            FPSQLDA.sqlvar[ii].SQLData := tmpCol.FPXSQLVAR.SQLData;
+          end;
+    end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Row.DefaultColumnCreation( const NewIndex: smallint;
+                                         const PSQLVAR: PXSQLVAR;
+                                         var NewIB_Column: TIB_Column );
+begin
+  with PSQLVAR^ do
+  begin
+    if ( SQLScale <> 0 ) and (( SQLType = SQL_DOUBLE  ) or
+                              ( SQLType = SQL_DOUBLE_ ) or
+                              ( SQLType = SQL_SHORT   ) or
+                              ( SQLType = SQL_SHORT_  ) or
+                              ( SQLType = SQL_LONG    ) or
+                              ( SQLType = SQL_LONG_   ) or
+                              ( SQLType = SQL_QUAD    ) or
+                              ( SQLType = SQL_QUAD_   ) or
+                              ( SQLType = SQL_INT64   ) or
+                              ( SQLType = SQL_INT64_  )) then
+      NewIB_Column := TIB_ColumnNumeric.Create( Self, PSQLVAR, NewIndex )
+    else
+    case SQLtype of
+      SQL_BOOLEAN,
+      SQL_BOOLEAN_:
+        NewIB_Column := TIB_ColumnBoolean.Create( Self, PSQLVAR, NewIndex );
+      SQL_FLOAT,
+      SQL_FLOAT_:
+        NewIB_Column := TIB_ColumnFloat.Create( Self, PSQLVAR, NewIndex );
+      SQL_DOUBLE,
+      SQL_DOUBLE_:
+        NewIB_Column := TIB_ColumnDouble.Create( Self, PSQLVAR, NewIndex );
+      SQL_SHORT,
+      SQL_SHORT_:
+        NewIB_Column := TIB_ColumnSmallInt.Create( Self, PSQLVAR, NewIndex );
+      SQL_LONG,
+      SQL_LONG_:
+        NewIB_Column := TIB_ColumnInteger.Create( Self, PSQLVAR, NewIndex );
+      SQL_QUAD,
+      SQL_QUAD_:
+        NewIB_Column := TIB_ColumnQuad.Create( Self, PSQLVAR, NewIndex );
+      SQL_INT64,
+      SQL_INT64_:
+        NewIB_Column := TIB_ColumnInt64.Create( Self, PSQLVAR, NewIndex );
+      SQL_TYPE_DATE,
+      SQL_TYPE_DATE_:
+        NewIB_Column := TIB_ColumnDate.Create( Self, PSQLVAR, NewIndex );
+      SQL_TYPE_TIME,
+      SQL_TYPE_TIME_:
+        NewIB_Column := TIB_ColumnTime.Create( Self, PSQLVAR, NewIndex );
+      SQL_TIMESTAMP,
+      SQL_TIMESTAMP_:
+        NewIB_Column := TIB_ColumnTimeStamp.Create( Self, PSQLVAR, NewIndex );
+      SQL_TEXT,
+      SQL_TEXT_:
+        if ( SQLName = IB_DB_KEY ) or
+           ( SQLName = IB_RDB + IB_DB_KEY ) or
+           ((( AliasName = IB_DB_KEY ) or
+             ( AliasName = IB_RDB + IB_DB_KEY )) and
+            (( SQLLen mod 8 ) = 0 )) then
+          NewIB_Column := TIB_ColumnDB_KEY.Create( Self, PSQLVAR, NewIndex )
+        else
+          NewIB_Column := TIB_ColumnText.Create( Self, PSQLVAR, NewIndex );
+      SQL_VARYING,
+      SQL_VARYING_: NewIB_Column := TIB_ColumnVarText.Create( Self,
+                                                              PSQLVAR,
+                                                              NewIndex );
+      SQL_BLOB,
+      SQL_BLOB_:
+      begin
+        if sqlsubtype = ISC_BLOB_TEXT then
+          NewIB_Column := TIB_ColumnMemo.Create( Self, PSQLVAR, NewIndex )
+        else
+        if sqlsubtype = ISC_BLOB_BLR then
+          NewIB_Column := TIB_ColumnBLR.Create( Self, PSQLVAR, NewIndex )
+        else
+          NewIB_Column := TIB_ColumnBinary.Create( Self, PSQLVAR, NewIndex );
+      end;
+      SQL_ARRAY,
+      SQL_ARRAY_: NewIB_Column := TIB_ColumnArray.Create( Self,
+                                                          PSQLVAR,
+                                                          NewIndex );
+      else
+        raise EIB_StatementError.Create( Format( E_UNSUPPORTED_COLUMN_TYPE,
+                                                 [ SQLType ] ));
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Row.GetBySQLNo(     ASQLNo: smallint;
+                             var AColumn: TIB_Column ): boolean;
+var
+  ii: integer;
+begin
+  AColumn := nil;
+  Result := false;
+  for ii := 0 to ColumnCount - 1 do
+  begin
+    if ASQLNo = Columns[ ii ].FieldNo then
+    begin
+      AColumn := Columns[ ii ];
+      Result := true;
+      Break;
+    end;
+  end;
+end;
+
+function TIB_Row.BySQLNo( ASQLNo: smallint ): TIB_Column;
+begin
+  if not GetBySQLNo( ASQLNo, Result ) then
+    raise EIB_Error.Create( Format( E_FieldNo_NOT_FOUND, [ASQLNo] ));
+end;
+
+function TIB_Row.GetByName(     AFieldName: string;
+                            var AIB_Field: TIB_Column ): boolean;
+var
+  ii: integer;
+  RelPos: integer;
+  ARelName: string;
+  AColName: string;
+  AnsiStrCmp: function ( const S1, S2: string ): integer;
+  tmpRelName: string;
+  tmpFldName: string;
+  lookupColumn : TIB_Column;
+begin
+  AIB_Field := nil;
+  Result := false;
+  if ColumnCount = 0 then Exit;
+  AFieldName := Trim( AFieldName );
+  if AFieldName = '' then Exit;
+  if ( Statement.SQLDialect < 3 ) then AnsiStrCmp := AnsiCompareText
+                                  else AnsiStrCmp := AnsiCompareStr;
+  RelPos := getLitSafePos( '.', AFieldName, 1 );
+  if lastColumnIndex <> -1 then
+    lookupColumn := GetColumns(lastColumnIndex+1)
+  else
+    lookupColumn := nil;
+  if RelPos > 0 then
+  begin
+    tmpRelName := Copy( AFieldName, 1, RelPos - 1 );
+    tmpFldName := Copy( AFieldName, RelPos + 1, MaxInt );
+    ARelName := tmpRelName;
+    AColName := tmpFldName;
+    if isLitCriteria( ARelName, '"' ) then    {!!v4}
+      ARelName := Statement.IB_Connection.mkVarIdent( stLitCriteria( ARelName ))
+    else
+      ARelName := AnsiUpperCase( ARelName );
+    if isLitCriteria( AColName, '"' ) then
+      AColName := Statement.IB_Connection.mkVarIdent( stLitCriteria( AColName ))
+    else
+      AColName := AnsiUpperCase( AColName );
+    if ARelName = '""' then
+      ARelName := '';
+    if AColName = '""' then
+      AColName := '';
+    if ( lookupColumn <> nil ) and ( AnsiStrCmp( ARelName, lookupColumn.RelName ) = 0 ) and
+                                   ( AnsiStrCmp( AColName, lookupColumn.FieldName ) = 0 ) then
+    begin
+      AIB_Field := lookupColumn;
+      Inc(lastColumnIndex);
+      Result := true;
+    end else
+    begin
+      for ii := 0 to FColumnList.Count - 1 do
+      begin
+        if ( AnsiStrCmp( ARelName, Columns[ ii ].RelName ) = 0 ) and
+           ( AnsiStrCmp( AColName, Columns[ ii ].FieldName ) = 0 ) then
+        begin
+          AIB_Field := Columns[ ii ];
+          lastColumnIndex := ii;
+          Result := true;
+          Break;
+        end;
+      end;
+    end;
+    if not Result then
+    begin
+      if ( lookupColumn <> nil ) and ( AnsiStrCmp( ARelName, lookupColumn.RelName ) = 0 ) and
+                                     ( AnsiStrCmp( AColName, lookupColumn.SQLName ) = 0 ) then
+      begin
+        AIB_Field := lookupColumn;
+        Inc(lastColumnIndex);
+        Result := true;
+      end else
+      begin
+        for ii := 0 to FColumnList.Count - 1 do
+        begin
+          if ( AnsiStrCmp( ARelName, Columns[ ii ].RelName ) = 0 ) and
+             ( AnsiStrCmp( AColName, Columns[ ii ].SQLName ) = 0 ) then
+          begin
+            AIB_Field := Columns[ ii ];
+            lastColumnIndex := ii;
+            Result := true;
+            Break;
+          end;
+        end;
+      end;
+    end;
+    // Because Borland didn't do a good job with handling field names
+    // in regard to treating the double-quote character as having any
+    // significance on the name of the identifier I now have to assume it is
+    // possible to receive in an indentifier a quoted type identifier without
+    // the quotes being on it.
+    if not Result and ( not isLitCriteria( tmpRelName, '"' ) or
+                        not isLitCriteria( tmpFldName, '"' )) then
+    begin
+      if not isLitCriteria( tmpRelName, '"' ) then
+        tmpRelName := mkLitCriteria( tmpRelName, '"' );
+      if not isLitCriteria( tmpFldName, '"' ) then
+        tmpFldName := mkLitCriteria( tmpFldName, '"' );
+      Result := GetByName( tmpRelName + '.' + tmpFldName, AIB_Field );
+    end;
+  end
+  else
+  begin
+    // Store aside the original value to prevent infinite recursion.
+    tmpFldName := AFieldName;
+    if not isLitCriteria( AFieldName, '"' ) then
+      AFieldName := AnsiUpperCase( AFieldName );
+    if AFieldName = '""' then
+      AFieldName := '';
+    if ( lookupColumn <> nil ) and ( AnsiStrCmp( AFieldName, lookupColumn.FieldName ) = 0 ) then
+    begin
+      AIB_Field := lookupColumn;
+      Inc(lastColumnIndex);
+      Result := true;
+    end else
+    begin
+      for ii := 0 to ColumnCount - 1 do
+      begin
+        if AnsiStrCmp( AFieldName, Columns[ ii ].FieldName ) = 0 then
+        begin
+          AIB_Field := Columns[ ii ];
+          lastColumnIndex := ii;
+          Result := true;
+          Break;
+        end;
+      end;
+    end;
+    if not Result and ( AFieldName <> '' ) then
+    begin
+      if ( lookupColumn <> nil ) and ( AnsiStrCmp( AFieldName, lookupColumn.SQLName ) = 0 ) then
+      begin
+        AIB_Field := lookupColumn;
+        Inc(lastColumnIndex);
+        Result := true;
+      end else
+      begin
+        for ii := 0 to FColumnList.Count - 1 do
+        begin
+          if ( AnsiStrCmp( AFieldName, Columns[ ii ].SQLName ) = 0 ) then
+          begin
+            AIB_Field := Columns[ ii ];
+            lastColumnIndex := ii;
+            Result := true;
+            Break;
+          end;
+        end;
+      end;
+    end;
+    // Because Borland didn't do a good job with handling field names
+    // in regard to treating the double-quote character as having any
+    // significance on the name of the identifier I now have to assume it is
+    // possible to receive in an indentifier a quoted type identifier without
+    // the quotes being on it.
+    if not Result and not isLitCriteria( tmpFldName, '"' ) then
+      Result := GetByName( mkLitCriteria( tmpFldName, '"' ), AIB_Field );
+  end;
+end;
+
+function TIB_Row.ByName( const AFieldName: string ): TIB_Column;
+begin
+  if not GetByName( AFieldName, Result ) then 
+    raise EIB_StatementError.Create( Format( E_FIELDNAME_NOT_FOUND,
+                                                                [AFieldName] ));
+end;
+
+function TIB_Row.ParamByName( const AFieldName: string ): TIB_Column;
+begin
+  Result := ByName( AFieldName );
+end;
+
+function TIB_Row.GetColumns( Index: word ): TIB_Column;
+begin
+  if Index < FColumnList.Count then
+    Result := FColumnList.Items[ Index ]
+  else
+    Result := nil;
+end;
+
+function TIB_Row.GetRelationCount: word;
+begin
+  if FRelationList <> nil then
+    Result := FRelationList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Row.GetRelationName( Index: word ): string;
+begin
+  if ( FRelationList <> nil ) and
+     ( Index < RelationCount ) then
+    Result := FRelationList[ Index ]
+  else
+    Result := '';
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Row.GetPBlobHead: PPIB_BlobNode;
+begin
+  if Assigned( RowNode ) then
+    Result := @RowNode.BlobHead
+  else
+    Result := @FSysBlobHead;
+end;
+
+procedure TIB_Row.PostBlobBuffers;
+var
+  ii: integer;
+  tmpBlobNode: PIB_BlobNode;
+  tmpArrayDesc: PISC_ARRAY_DESC;
+begin
+  FTempBlobIDCount := 0;
+  if ( BlobCount + ArrayCount > 0 ) and
+     not IsKeyFields and not IsBufferFields then
+    for ii := 0 to PSQLDA.SQLd - 1 do
+    begin
+      tmpBlobNode := GetBlobNode( ii );
+      if Assigned( tmpBlobNode ) and tmpBlobNode.BlobChanged then
+      begin
+        if ( isc_quad_is_zero( pisc_quad(PSQLDA.SQLVAR[ ii ].SQLData)^ )) and
+           ( PSQLDA.SQLVAR[ ii ].SQLInd^ <> IB_Null ) then
+        begin
+          tmpArrayDesc := nil;
+          case PSQLDA.SQLVAR[ ii ].SQLType of
+            SQL_ARRAY,
+            SQL_ARRAY_:
+              tmpArrayDesc := @(BySQLNo( ii ) as TIB_ColumnArray).ArrayDesc;
+          end;
+          Statement.PutBlobNodeData( @PSQLDA.SQLVAR[ ii ],
+                                     tmpArrayDesc,
+                                     tmpBlobNode );
+          pisc_quad(PSQLDA.SQLVAR[ ii ].SQLData)^ := tmpBlobNode.BlobID;
+        end;
+        with pisc_quad(PSQLDA.SQLVAR[ ii ].SQLData)^ do
+          if ( isc_quad_high = 0 ) and
+             ( isc_quad_low <> 0 ) then
+            Inc( FTempBlobIDCount )
+      end;
+    end;
+end;
+
+procedure TIB_Row.CancelBlobBuffers;
+var
+  ii: integer;
+  tmpBlobNode: PIB_BlobNode;
+  tmpNeedTrim: boolean;
+begin
+  if ( BlobCount + ArrayCount > 0 ) and
+     not IsKeyFields and not IsBufferFields then
+  begin
+    for ii := 0 to PSQLDA.SQLd - 1 do
+    begin
+      tmpBlobNode := GetBlobNode( ii );
+      if Assigned( tmpBlobNode ) and tmpBlobNode.BlobChanged then
+        ClearBlobNodeData( tmpBlobNode );
+    end;
+    if ( RowType = rtField ) then
+      if Assigned( FRowNode ) then
+      begin
+        tmpBlobNode := FRowNode.BlobHead;
+        tmpNeedTrim := false;
+        while Assigned( tmpBlobNode ) do
+        begin
+          if ( tmpBlobNode.BlobID.isc_quad_high = 0 ) and
+             ( tmpBlobNode.BlobID.isc_quad_low = 0 ) and
+             ( tmpBlobNode.BlobFieldNo <> 0 ) then
+          begin
+            ClearBlobNodeData( tmpBlobNode );
+            tmpNeedTrim := true;
+          end
+          else
+            tmpBlobNode := tmpBlobNode.Next;
+        end;
+        if tmpNeedTrim then
+          TrimBlobsFromList;
+      end;
+  end;
+end;
+
+procedure TIB_Row.AfterPostBuffers( Posted: boolean );
+var
+  ii: integer;
+  tmpBlobNode: PIB_BlobNode;
+begin
+  if ( BlobCount + ArrayCount > 0 ) and
+     not IsKeyFields and not IsBufferFields then
+    for ii := 0 to PSQLDA.SQLd - 1 do 
+    begin
+      tmpBlobNode := GetBlobNode( ii );
+      if Assigned( tmpBlobNode ) and tmpBlobNode.BlobChanged then
+      begin
+        if Posted and ( RowType = rtField ) then
+        begin
+          tmpBlobNode.BlobChanged := false;
+          if not isc_quad_is_zero( pisc_quad(PSQLDA.SQLVAR[ ii ].SQLData)^ ) and
+             ( PSQLDA.SQLVAR[ ii ].SQLInd^ <> IB_Null ) then
+          begin
+            tmpBlobNode.BlobID := pisc_quad( PSQLDA.SQLVAR[ ii ].SQLData )^;
+            tmpBlobNode.BlobFieldNo := ii;
+            PutBlobNodeIntoList( PBlobHead, tmpBlobNode, true );
+          end;
+        end
+        else
+        begin
+          pisc_quad( PSQLDA.SQLVAR[ ii ].SQLData )^ := BlankQuad;
+          tmpBlobNode.BlobID := BlankQuad;
+        end;
+      end;
+    end;
+  if Posted then
+    TrimBlobNodeCache;
+end;
+
+procedure TIB_Row.TrimBlobNodeCache;
+var
+  ii: integer;
+  tmpNode: PIB_BlobNode;
+  tmpQuad: isc_quad;
+  tmpBool: boolean;
+  OldHead: PIB_BlobNode;
+  tmpHead: PIB_BlobNode;
+begin
+  tmpHead := PBlobHead^;
+  OldHead := tmpHead;
+  while Assigned( tmpHead ) do
+  begin
+    tmpBool := false;
+    for ii := 0 to PSQLDA.SQLn - 1 do
+    begin
+      case PSQLDA.SQLVAR[ii].SQLType of
+        SQL_BLOB,
+        SQL_BLOB_: begin
+          tmpQuad := isc_quad( PSQLDA.SQLVAR[ii].SQLData^ );
+          if isc_quad_equal( tmpHead.BlobID, tmpQuad ) then
+          begin
+            tmpBool := true;
+            Break;
+          end;
+        end;
+      end;
+    end;
+    tmpNode := tmpHead.Next;
+    if tmpBool then
+      OldHead := tmpHead
+    else
+    begin
+      if tmpHead = PBlobHead^ then
+        PBlobHead^ := PBlobHead^.Next
+      else
+      if Assigned( OldHead.Next ) then
+        OldHead.Next := OldHead.Next.Next;
+      FreeBlobNodeData( tmpHead );
+      FreeMem( tmpHead );
+    end;
+    tmpHead := tmpNode;
+  end;
+end;
+
+procedure TIB_Row.CancelBuffers;
+begin
+  if not IsKeyFields then
+  begin
+    Move( FOldBuffer^, FRowBuffer^, FBufferLength );
+    if BlobCount + ArrayCount > 0 then
+      ClearBlobNodes( false );
+    FIsRowNumChanged := false;
+    SetRowState( rsUnmodified );
+    SysAfterModify( nil );
+  end;
+end;
+
+procedure TIB_Row.SysClearBuffers;
+var
+  ii: integer;
+begin
+  if not IsKeyFields and ( BufferLength > 0 ) then
+  begin
+    FillChar( FRowBuffer^, BufferLength, #0 );
+    if Assigned( PSQLDA ) then
+      for ii := 0 to PSQLDA.sqln - 1 do
+        PSQLDA.SQLVAR[ ii ].sqlind^ := IB_NULL;
+    Move( FRowBuffer^, FOldBuffer^, BufferLength );
+  end;
+end;
+
+procedure TIB_Row.ClearBuffers( NewRowState: TIB_RowState );
+begin
+  if RowType = rtParam then
+    NewRowState := rsUnmodified;
+  if not IsKeyFields then
+  begin
+    SysClearBuffers;
+    if BlobCount + ArrayCount > 0 then
+      ClearBlobNodes( false );
+    FIsRowNumChanged := NewRowState <> RowState;
+    SetRowState( NewRowState );
+    SysAfterModify( nil );
+  end;
+end;
+
+procedure TIB_Row.RefreshBuffers( NewRecord, ClearBlobs, NeedCalc: boolean );
+begin
+  if NewRecord then
+    CleanBuffers( true );
+  if ClearBlobs and ( BlobCount + ArrayCount > 0 ) then
+    ClearBlobNodes( NewRecord );
+  if not IsKeyFields then
+  begin
+    Move( FRowBuffer^, FOldBuffer^, FBufferLength );
+    FIsRowNumChanged := NewRecord;
+  end;
+  if RowState <> rsUnmodified then
+    SetRowState( rsUnmodified );
+  if NeedCalc and ( CalcList.Count > 0 ) then
+    CalculateFields;
+  SysAfterModify( nil );
+end;
+
+procedure TIB_Row.ClearBlobNodes( ClearCache: boolean );
+var
+  ii: integer;
+  tmpBlobNode: PIB_BlobNode;
+begin
+  for ii := 0 to BlobCount + ArrayCount - 1 do
+  begin
+    tmpBlobNode := PIB_BlobNode( longint(FBlobNodeList) +
+                                 ii * SizeOf(TIB_BlobNode));
+    if RowType = rtParam then
+    begin
+      tmpBlobNode.BlobID.isc_quad_high := 0;
+      tmpBlobNode.BlobID.isc_quad_low := 0;
+    end
+    else
+      ClearBlobNodeData( tmpBlobNode );
+  end;
+  if ClearCache then
+    FreeBlobRefList( PBlobHead );
+end;
+
+procedure TIB_Row.CleanBuffers( ResetNullInd: boolean );
+var
+  ii: integer;
+  VarLength: integer;
+begin
+  for ii := 0 to ColumnCount - 1 do
+    with Columns[ ii ] do
+    begin
+      if ResetNullInd and not Odd( SQLType ) then
+        PSQLVAR.sqlind^ := IB_NOTNULL;
+      case SQLType of
+        SQL_VARYING, SQL_VARYING_:
+        begin
+          if PSQLVAR.sqlind^ = IB_NULL then
+            FillChar( PSQLVAR.sqldata^, sqllen + 2, FPadChar )
+          else
+          with PSQL_VARCHAR( PSQLVAR.sqldata )^ do
+          begin
+            VarLength := 256 * vary_len_high + vary_len_low;
+            FillChar( vary_string[VarLength], sqllen - VarLength, FPadChar );
+          end;
+        end
+        else
+        if PSQLVAR.sqlind^ = IB_NULL then
+          FillChar( PSQLVAR.sqldata^, sqllen, FPadChar );
+      end;
+    end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Row.SetRowState( AValue: TIB_RowState );
+begin
+  if RowState <> AValue then
+  begin
+    FRowState := AValue;
+    SysRowStateChanged;
+  end;
+end;
+
+procedure TIB_Row.SysRowStateChanged;
+begin
+  if Assigned( FOnRowStateChanged ) then
+    FOnRowStateChanged( Self );
+end;
+
+procedure TIB_Row.SysBeforeColumnModify( IB_Field: TIB_Column );
+begin
+  SysBeforeModify( IB_Field );
+end;
+
+procedure TIB_Row.SysAfterColumnModify( IB_Field: TIB_Column );
+begin
+  FIsRowNumChanged := false;
+  if not FCalculatingFields then
+    if RowState <> rsModified then
+      SetRowState( rsModified );
+  SysAfterModify( IB_Field );
+end;
+
+procedure TIB_Row.SysBeforeModify( IB_Field: TIB_Column );
+begin
+  DoBeforeModify( IB_Field );
+end;
+
+procedure TIB_Row.SysAfterModify( IB_Field: TIB_Column );
+begin
+  if FUpdatingCounter = 0 then
+  begin
+    DoAfterModify( IB_Field );
+    if RowType = rtParam then
+      SetRowState( rsUnmodified );
+  end
+  else
+  if IB_Field = nil then
+  begin
+    FUpdatedWholeRow := true;
+    if IsRowNumChanged then
+      FIsUpdatedRowNumChanged := true;
+  end
+  else
+  if FUpdatedColumns.IndexOf( IB_Field ) = -1 then
+    FUpdatedColumns.Add( IB_Field );
+end;
+
+function TIB_Row.GetUpdatedColumnCount: word;
+begin
+  Result := FUpdatedColumns.Count;
+end;
+
+function TIB_Row.GetUpdatedWholeRow: boolean;
+begin
+  Result := FUpdatedWholeRow;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Row.DoBeforeModify( IB_Field: TIB_Column );
+begin
+  if Assigned( FBeforeModify ) then
+    FBeforeModify( Self, IB_Field );
+end;
+
+procedure TIB_Row.DoAfterModify( IB_Field: TIB_Column );
+begin
+  if Assigned( FAfterModify ) then
+    FAfterModify( Self, IB_Field );
+end;
+
+procedure TIB_Row.BeginUpdate;
+begin
+  Inc( FUpdatingCounter );
+end;
+
+procedure TIB_Row.EndUpdate( SingleEventOnly: boolean );
+begin
+  if FUpdatingCounter > 0 then
+  begin
+    Dec( FUpdatingCounter );
+    if FUpdatingCounter = 0 then
+      SysApplyUpdates( SingleEventOnly );
+  end;
+end;
+
+procedure TIB_Row.SysApplyUpdates( SingleEventOnly: boolean );
+var
+  ii: integer;
+begin
+  if FUpdatedWholeRow or
+     ( SingleEventOnly and ( FUpdatedColumns.Count > 1 )) then
+  begin
+    if FUpdatedWholeRow and not FIsRowNumChanged then
+    begin
+      FIsRowNumChanged := FIsUpdatedRowNumChanged;
+      FIsUpdatedRowNumChanged := false;
+    end;
+    DoAfterModify( nil );
+    FIsRowNumChanged := false;
+  end
+  else
+  for ii := 0 to FUpdatedColumns.Count - 1 do
+    DoAfterModify( TIB_Column(FUpdatedColumns[ ii ]));
+  FUpdatedColumns.Clear;
+  FUpdatedWholeRow := false;
+  if RowType = rtParam then
+    SetRowState( rsUnmodified );
+end;
+
+function TIB_Row.GetRowData: string;
+begin
+  if IsKeyFields or ( RowState <> rsNone ) then
+    Result := BinaryToHexText( RowBuffer, BufferLength )
+  else
+    Result := '';
+end;
+
+procedure TIB_Row.SetRowData( const AValue: string );
+begin
+  if AValue <> '' then
+    try
+      HexTextToBinary( AValue, RowBuffer, BufferLength );
+    except
+      raise EIB_StatementError.Create( E_Invalid_Bookmark );
+    end;
+end;
+
+function TIB_Row.GetOldRowData: string;
+begin
+  if IsKeyFields or ( RowState <> rsNone ) then
+    Result := BinaryToHexText( OldBuffer, BufferLength )
+  else
+    Result := '';
+end;
+
+procedure TIB_Row.SetOldRowData( const AValue: string );
+begin
+  if AValue <> '' then
+    try
+      HexTextToBinary( AValue, OldBuffer, BufferLength );
+    except
+      raise EIB_StatementError.Create( E_Invalid_Bookmark );
+    end;
+end;
+
+procedure TIB_Row.CalculateFields;
+var
+  ii: integer;
+begin
+  if not FCalculatingFields then
+  begin
+    FCalculatingFields := true;
+    try
+      if Statement.CalculateAllFields then
+        Statement.DoCalculateField( Self, nil )
+      else
+      begin
+        with CalcList do
+          for ii := 0 to Count - 1 do
+            Statement.DoCalculateField( Self, TIB_Column( Items[ ii ] ));
+      end;
+    finally
+      FCalculatingFields := false;
+    end;
+  end;
+end;
+
+function TIB_Row.GetBlobNode( SQLNo: integer ): PIB_BlobNode;
+var
+  tmpInteger: integer;
+begin
+  Result := nil;
+  if Assigned( FBlobFieldMap ) and ( SQLNo < PSQLDA.SQLn ) then
+  begin
+    tmpInteger := FBlobFieldMap.BlobIndex[ SQLNo ];
+    if tmpInteger >= 0 then
+      Result := PIB_BlobNode( longint(FBlobNodeList) +
+                              tmpInteger * SizeOf(TIB_BlobNode));
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TIB_Row.GetColumnValue( const ColumnName: string ): Variant;
+var
+  I: Integer;
+  tmpColumns: TList;
+begin
+  if not Statement.Prepared then
+    Statement.Prepare;
+  if RowState = rsNone then
+    Result := Unassigned
+  else
+  if ( getLitSafePos( ';', ColumnName, 1 ) <> 0 ) or ( ColumnName = '*' ) then
+  begin
+    tmpColumns := TList.Create;
+    try
+      GetColumnList( tmpColumns, ColumnName );
+      Result := VarArrayCreate( [0, tmpColumns.Count - 1], varVariant );
+      for I := 0 to tmpColumns.Count - 1 do
+        if TIB_Column( tmpColumns[I] ).IsNull then
+          Result[I] := Null
+        else
+          Result[I] := TIB_Column( tmpColumns[I] ).AsVariant;
+    finally
+      tmpColumns.Free;
+    end;
+  end
+  else
+    with ByName( ColumnName ) do
+      if IsNull then
+        Result := Null
+      else
+        Result := AsVariant;
+end;
+
+procedure TIB_Row.SetColumnValue( const ColumnName: string;
+                                  const AValue: Variant );
+var
+  ii: Integer;
+  tmpColumns: TList;
+begin
+  if not Statement.Prepared then
+    Statement.Prepare;
+  if ( getLitSafePos( ';', ColumnName, 1 ) <> 0 ) or ( ColumnName = '*' ) then
+  begin
+    BeginUpdate;
+    try
+      tmpColumns := TList.Create;
+      try
+        GetColumnList( tmpColumns, ColumnName );
+        for ii := 0 to tmpColumns.Count - 1 do
+        begin
+          if VarIsArray( AValue ) then
+            TIB_Column( tmpColumns[ ii ] ).AsVariant := AValue[ ii ]
+         else
+            TIB_Column( tmpColumns[ ii ] ).AsVariant := AValue;
+        end;
+      finally
+        tmpColumns.Free;
+      end;
+    finally
+      EndUpdate( true );
+    end;
+  end
+  else
+  with ByName( ColumnName ) do
+    if not IsArray and VarIsArray( AValue ) then
+    begin
+      ii := VarArrayLowBound( AValue, 1 );
+      AsVariant := AValue[ ii ];
+    end
+    else
+      AsVariant := AValue;
+end;
+
+function TIB_Row.GetColumnOldValue( const ColumnName: string ): Variant;
+var
+  I: Integer;
+  tmpColumns: TList;
+begin
+  if not Statement.Prepared then
+    Statement.Prepare;
+  if ( getLitSafePos( ';', ColumnName, 1 ) <> 0 ) or ( ColumnName = '*' ) then
+  begin
+    tmpColumns := TList.Create;
+    try
+      GetColumnList( tmpColumns, ColumnName );
+      Result := VarArrayCreate( [0, tmpColumns.Count - 1], varVariant );
+      for I := 0 to tmpColumns.Count - 1 do
+        Result[I] := TIB_Column( tmpColumns[I] ).OldAsVariant;
+    finally
+      tmpColumns.Free;
+    end;
+  end
+  else
+    Result := ByName( ColumnName ).OldAsVariant;
+end;
+
+procedure TIB_Row.GetColumnList( AList: TList; const ColumnNames: string );
+var
+  Pos: integer;
+begin
+  AList.Clear;
+  if ( ColumnNames = '' ) or ( ColumnNames = '*' ) then
+    for Pos := 0 to ColumnCount - 1 do
+      AList.Add( Columns[ Pos ] )
+  else
+  begin
+    Pos := 1;
+    while Pos <= Length( ColumnNames ) do
+      AList.Add( ByName( ExtractFieldName( ColumnNames, Pos )));
+  end;
+end;
+
+procedure TIB_Row.LoadFromNode( Notify, LoadBlobs: boolean );
+var
+  tmpPtr: pointer;
+  tmpLen: longint;
+begin
+  if not Assigned( FRowNode.RecordData ) then
+    raise Exception.Create( 'No record data to load' );
+  if Assigned( FRowNode.OldRecData ) then
+  begin
+    tmpPtr := FRowNode.RecordData;
+    tmpLen := FRowNode.RecordLen;
+    try
+      FRowNode.RecordData := FRowNode.OldRecData;
+      FRowNode.RecordLen := FRowNode.OldRecLen;
+      GetRecord( FRowNode, Self );
+      Move( FRowBuffer^, FOldBuffer^, FBufferLength );
+    finally
+      FRowNode.RecordData := tmpPtr;
+      FRowNode.RecordLen := tmpLen;
+    end;
+  end;
+  GetRecord( FRowNode, Self );
+// Removed from here because the node should cache the values for the
+// calculated columns as well as the data columns. This is based on the
+// assumption that people may do some fairly "expensive" operations in the
+// OnCalc event that shouldn't be oft repeated if not necessary.
+//  if PSQLDA.SQLn > PSQLDA.SQLd then CalculateFields;
+  if not Assigned( FRowNode.OldRecData ) then
+    Move( FRowBuffer^, FOldBuffer^, FBufferLength );
+  if LoadBlobs then
+    LoadBlobsFromNode;
+  if Notify then
+  begin
+    // Not sure about FIsRowNumChanged - its definitely true on some calls
+    // because it was missing after TIB_BindingCursor.QuickFetch was changed
+    // to use this function in v3_5_B (from v3_5_Ai).
+    FIsRowNumChanged := true;
+    if RowState <> rsUnmodified then
+     SetRowState( rsUnmodified );
+    SysAfterModify( nil );
+  end;
+end;
+
+procedure TIB_Row.LoadBlobsFromNode;
+var
+  tmpBlobNode: PIB_BlobNode;
+  newBlobNode: PIB_BlobNode;
+  tmpNeedTrim: boolean;
+begin
+  if ( RowType = rtField ) and not IsKeyFields and not IsBufferFields then
+  begin
+    tmpNeedTrim := false;
+    tmpBlobNode := FRowNode.BlobHead;
+    while Assigned( tmpBlobNode ) do
+    begin
+      if ( tmpBlobNode.BlobID.isc_quad_high = 0 ) and
+         ( tmpBlobNode.BlobID.isc_quad_low = 0 ) and
+         ( tmpBlobNode.BlobFieldNo <> 0 ) then
+      begin
+        newBlobNode := GetBlobNode( tmpBlobNode.BlobFieldNo );
+        TransferBlobNodeData( tmpBlobNode, newBlobNode, true );
+        tmpNeedTrim := true;
+      end
+      else
+        tmpBlobNode := tmpBlobNode.Next;
+    end;
+    if tmpNeedTrim then
+      TrimBlobsFromList;
+  end;
+end;
+
+procedure TIB_Row.TrimBlobsFromList;
+var
+  tmpBlobNode: PIB_BlobNode;
+  newBlobNode: PIB_BlobNode;
+begin
+  while Assigned( FRowNode.BlobHead ) and
+        ( FRowNode.BlobHead.BlobID.isc_quad_high = 0 ) and
+        ( FRowNode.BlobHead.BlobID.isc_quad_low = 0 ) and
+        ( FRowNode.BlobHead.BlobFieldNo = 0 ) do
+  begin
+    tmpBlobNode := FRowNode.BlobHead.Next;
+    if Assigned( FRowNode.BlobHead.BlobBuffer ) then
+      FreeMem( FRowNode.BlobHead.BlobBuffer );
+    FreeMem( FRowNode.BlobHead );
+    FRowNode.BlobHead := tmpBlobNode;
+  end;
+  tmpBlobNode := FRowNode.BlobHead;
+  if Assigned( tmpBlobNode ) then
+    while Assigned( tmpBlobNode.Next ) do
+      if ( tmpBlobNode.Next.BlobID.isc_quad_high = 0 ) and
+         ( tmpBlobNode.Next.BlobID.isc_quad_low = 0 ) and
+         ( tmpBlobNode.Next.BlobFieldNo = 0 ) then
+      begin
+        newBlobNode := tmpBlobNode.Next.Next;
+        if Assigned( tmpBlobNode.Next.BlobBuffer ) then
+          FreeMem( tmpBlobNode.Next.BlobBuffer );
+        FreeMem( tmpBlobNode.Next );
+        tmpBlobNode.Next := newBlobNode;
+      end
+      else
+        tmpBlobNode := tmpBlobNode.Next;
+end;
+
+procedure TIB_Row.StoreBlobsToNode;
+var
+  ii: integer;
+  tmpBlobNode: PIB_BlobNode;
+begin
+  PutRecord( RowNode, Self );
+  if ( RowType = rtField ) and not IsKeyFields and not IsBufferFields then
+    for ii := 0 to PSQLDA.SQLd - 1 do
+    begin
+      tmpBlobNode := GetBlobNode( ii );
+      if Assigned( tmpBlobNode ) and tmpBlobNode.BlobChanged and
+         (( tmpBlobNode.BlobSize > 0 ) or
+           not Odd( PSQLDA.SQLVAR[ii].SQLType )) then
+      begin
+        tmpBlobNode.BlobID.isc_quad_high := 0;
+        tmpBlobNode.BlobID.isc_quad_low := 0;
+        tmpBlobNode.BlobFieldNo := ii;
+        PutBlobNodeIntoList( PBlobHead, tmpBlobNode, true );
+      end;
+    end;
+end;
+
+//IB_Utils
+//IB_Parse

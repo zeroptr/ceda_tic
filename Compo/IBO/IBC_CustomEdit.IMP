@@ -1,0 +1,29 @@
+//IB_CustomEdit.INT
+
+{$DEFINE IB_CustomEdit}
+{$I IB_WinControl.IMP}
+{$UNDEF IB_CustomEdit}
+
+procedure {$I IB_Classes.INC} EditingChanged( Sender: TIB_DataLink;
+                                              IB_DataSource: TIB_DataSource );
+var
+  NewRO: boolean;                                              
+begin
+  if Assigned( Field ) then
+  begin
+    NewRO := DataLink.ReadOnly;
+    if not NewRO then
+      with DataLink do
+        if not ((State in [dssInsert, dssEdit, dssSearch]) or IsParamEdit) then
+          NewRO := not SearchAlways;
+  end
+  else
+{$IFDEF IBC_Edit}  
+    NewRO := not FAllowUnboundEdits;
+{$ELSE}
+    NewRO := true;
+{$ENDIF}
+  inherited ReadOnly := NewRO;
+end;
+
+

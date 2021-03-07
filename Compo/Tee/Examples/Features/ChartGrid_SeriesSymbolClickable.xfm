@@ -1,0 +1,120 @@
+inherited ChartGridSeriesSymbolClickable: TChartGridSeriesSymbolClickable
+  Left = 314
+  Top = 170
+  Width = 677
+  Height = 496
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 669
+  end
+  inherited Memo1: TMemo
+    Width = 669
+    Lines.Strings = (
+      
+        'SeriesSymbolClickable only takes effect when ShowColors is set t' +
+        'o False.')
+  end
+  inherited Chart1: TChart
+    Left = 169
+    Width = 500
+    Height = 353
+    BackWall.Pen.Visible = False
+    BottomWall.Pen.Visible = False
+    BottomWall.Size = 4
+    LeftWall.Pen.Visible = False
+    LeftWall.Size = 4
+    Legend.Color = clInfoBk
+    Legend.Frame.Color = clGray
+    Legend.Frame.Visible = False
+    Legend.Shadow.Color = 13421772
+    Title.Alignment = taLeftJustify
+    Title.Color = clInfoBk
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    Title.Frame.Color = clGray
+    Title.Shadow.HorizSize = 0
+    Title.Shadow.VertSize = 0
+    Title.Transparent = False
+    BottomAxis.Axis.Color = 4210752
+    BottomAxis.Grid.Color = 13421772
+    BottomAxis.Grid.Visible = False
+    Frame.Visible = False
+    LeftAxis.Axis.Color = 4210752
+    LeftAxis.Grid.Visible = False
+    View3D = False
+    Color = clWhite
+    ColorPaletteIndex = 9
+    object Series1: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Color = clGray
+      Marks.Shadow.Color = 13421772
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Visible = True
+      BarStyle = bsBevel
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000008616D9CE67357A40CAA145B653B9794047E17A141ECE7A405B8FC2
+        F5485D7B4094438B6C27EE7C40012B871669907D40}
+    end
+    object Series2: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Color = clGray
+      Marks.Shadow.Color = 13421772
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Pen.SmallDots = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0006000000B60BCD75FED96040A3AA09A2C81C6040C2120F28854B61404160E5
+        D04E2C5640AFB14B544F8E5040BE654E97AD255140}
+    end
+    object GridBandTool1: TGridBandTool
+      Band1.Color = 15329769
+      Band2.Color = clWhite
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 669
+    object cbSeriesSymbolClickable: TCheckBox
+      Left = 12
+      Top = 14
+      Width = 151
+      Height = 17
+      Caption = '&Series Symbol clickable'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbSeriesSymbolClickableClick
+    end
+  end
+  object ChartGrid1: TChartGrid
+    Left = 0
+    Top = 116
+    Width = 169
+    Height = 353
+    Align = alLeft
+    Options = [goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing, goColSizing, goEditing, goTabs, goThumbTracking]
+    TabOrder = 3
+    Chart = Chart1
+    ShowLabels = False
+  end
+end

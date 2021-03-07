@@ -1,0 +1,240 @@
+inherited LegendPaletteEditor: TLegendPaletteEditor
+  Left = 438
+  Top = 208
+  ClientHeight = 257
+  ClientWidth = 347
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    Width = 347
+    TabOrder = 1
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 29
+    Width = 347
+    Height = 228
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 0
+    OnChange = PageControl1Change
+    object TabSheet1: TTabSheet
+      Caption = 'Options'
+      object ButtonPen1: TButtonPen
+        Left = 8
+        Top = 8
+        Caption = '&Pen...'
+        TabOrder = 0
+      end
+      object RGAxis: TRadioGroup
+        Left = 128
+        Top = 8
+        Width = 113
+        Height = 73
+        Caption = 'Axis:'
+        Items.Strings = (
+          '&Default'
+          'Oth&er'
+          'Bo&th')
+        TabOrder = 1
+        OnClick = RGAxisClick
+      end
+      object CBTransp: TCheckBox
+        Left = 8
+        Top = 89
+        Width = 107
+        Height = 17
+        Caption = '&Transparent'
+        TabOrder = 2
+        OnClick = CBTranspClick
+      end
+      object CBSmooth: TCheckBox
+        Left = 8
+        Top = 112
+        Width = 107
+        Height = 17
+        Caption = 'Sm&ooth'
+        TabOrder = 3
+        OnClick = CBSmoothClick
+      end
+      object CBVertical: TCheckBox
+        Left = 8
+        Top = 44
+        Width = 107
+        Height = 17
+        Caption = '&Vertical'
+        TabOrder = 4
+        OnClick = CBVerticalClick
+      end
+      object CBInverted: TCheckBox
+        Left = 8
+        Top = 66
+        Width = 107
+        Height = 17
+        Caption = '&Inverted'
+        TabOrder = 5
+        OnClick = CBInvertedClick
+      end
+      object BBorder: TButtonPen
+        Left = 8
+        Top = 144
+        Caption = '&Border...'
+        TabOrder = 6
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'Position'
+      ImageIndex = 3
+      object Label4: TLabel
+        Left = 44
+        Top = 39
+        Width = 21
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'L&eft:'
+        FocusControl = ECustLeft
+      end
+      object Label5: TLabel
+        Left = 43
+        Top = 63
+        Width = 22
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'T&op:'
+        FocusControl = ECustTop
+      end
+      object Label13: TLabel
+        Left = 38
+        Top = 13
+        Width = 27
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&Units:'
+        FocusControl = CBUnits
+      end
+      object ECustLeft: TEdit
+        Left = 69
+        Top = 36
+        Width = 41
+        Height = 21
+        HelpContext = 1461
+        TabOrder = 0
+        Text = '0'
+        OnChange = ECustLeftChange
+      end
+      object UDLeft: TUpDown
+        Left = 110
+        Top = 36
+        Width = 15
+        Height = 21
+        HelpContext = 1461
+        Associate = ECustLeft
+        Min = -32000
+        Max = 32000
+        Increment = 5
+        TabOrder = 1
+      end
+      object ECustTop: TEdit
+        Left = 69
+        Top = 60
+        Width = 41
+        Height = 21
+        HelpContext = 1462
+        TabOrder = 2
+        Text = '0'
+        OnChange = ECustTopChange
+      end
+      object UDTop: TUpDown
+        Left = 110
+        Top = 60
+        Width = 15
+        Height = 21
+        HelpContext = 1462
+        Associate = ECustTop
+        Min = -32000
+        Max = 32000
+        Increment = 5
+        TabOrder = 3
+      end
+      object CBUnits: TComboFlat
+        Left = 69
+        Top = 10
+        Width = 145
+        TabOrder = 4
+        OnChange = CBUnitsChange
+        Items.Strings = (
+          'Percent'
+          'Pixels')
+      end
+    end
+    object TabSheet5: TTabSheet
+      Caption = 'Size'
+      object Label14: TLabel
+        Left = 58
+        Top = 18
+        Width = 31
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&Width:'
+        FocusControl = ECustWidth
+      end
+      object Label15: TLabel
+        Left = 55
+        Top = 42
+        Width = 34
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&Height:'
+        FocusControl = ECustHeight
+      end
+      object ECustWidth: TEdit
+        Left = 93
+        Top = 14
+        Width = 41
+        Height = 21
+        HelpContext = 1461
+        TabOrder = 0
+        Text = '0'
+        OnChange = ECustWidthChange
+      end
+      object ECustHeight: TEdit
+        Left = 93
+        Top = 38
+        Width = 41
+        Height = 21
+        HelpContext = 1462
+        TabOrder = 1
+        Text = '0'
+        OnChange = ECustHeightChange
+      end
+      object UDWidth: TUpDown
+        Left = 134
+        Top = 14
+        Width = 15
+        Height = 21
+        HelpContext = 1461
+        Associate = ECustWidth
+        Max = 32000
+        TabOrder = 2
+        Thousands = False
+      end
+      object UDHeight: TUpDown
+        Left = 134
+        Top = 38
+        Width = 15
+        Height = 21
+        HelpContext = 1462
+        Associate = ECustHeight
+        Max = 32000
+        TabOrder = 3
+        Thousands = False
+      end
+    end
+    object TabPanel: TTabSheet
+      Caption = 'Panel'
+    end
+    object TabAxes: TTabSheet
+      Caption = 'Axes'
+    end
+  end
+end

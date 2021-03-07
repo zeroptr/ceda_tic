@@ -1,0 +1,73 @@
+inherited PieMarksLegSize: TPieMarksLegSize
+  Width = 662
+  Height = 559
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 654
+  end
+  inherited Memo1: TMemo
+    Width = 654
+    Lines.Strings = (
+      
+        'Pie series marks can optionally display lines from the mark rect' +
+        'angle'
+      'to the Pie slice with a "L" shape of predefined size:'
+      ''
+      'Series1.PieMarks.LegSize := 25;'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 654
+    Height = 376
+    Title.Text.Strings = (
+      'Pie series marks "Leg Size"'
+      '')
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    ColorPaletteIndex = 10
+    object Series1: TPieSeries
+      Marks.Arrow.Width = 2
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Width = 2
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.Length = 23
+      Marks.Visible = True
+      Circled = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieMarks.VertCenter = True
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        0406000000000000000090874004436172730000000000C886400650686F6E65
+        730000000000D88C40065461626C65730000000000405B40084D6F6E69746F72
+        730000000000707640054C616D70730000000000908540094B6579626F617264
+        73}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 654
+    object Label1: TLabel
+      Left = 15
+      Top = 15
+      Width = 45
+      Height = 13
+      Caption = '&Leg size :'
+    end
+    object ScrollBar1: TScrollBar
+      Left = 75
+      Top = 14
+      Width = 121
+      Height = 16
+
+      Position = 45
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+  end
+end

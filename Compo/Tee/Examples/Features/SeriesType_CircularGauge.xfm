@@ -1,0 +1,201 @@
+inherited SeriesCircularGauge: TSeriesCircularGauge
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 41
+  end
+  inherited Memo1: TMemo
+    Height = 41
+    Lines.Strings = (
+      'Circular Gauges offer a variety of styles and modes.')
+  end
+  inherited Chart1: TChart
+    Top = 84
+    Height = 462
+    Gradient.EndColor = clWhite
+    Gradient.StartColor = 4227200
+    Gradient.Visible = True
+    MarginTop = 1
+    Title.Font.Height = -24
+    Title.Font.Style = [fsBold]
+    Title.Font.Shadow.Color = 6381921
+    Title.Font.Shadow.HorizSize = 3
+    Title.Font.Shadow.SmoothBlur = 10
+    Title.Font.Shadow.VertSize = 3
+    Title.Text.Strings = (
+      'TeeChart'
+      'Circular Gauges')
+    BottomAxis.Increment = 10.000000000000000000
+    BottomAxis.LabelsFont.Color = 6579300
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.LabelsFont.Style = [fsBold]
+    BottomAxis.MinorTickLength = 1
+    BottomAxis.MinorTicks.Color = 6579300
+    BottomAxis.TickLength = 20
+    BottomAxis.Ticks.Color = 6579300
+    BottomAxis.Title.Font.Color = 6579300
+    View3D = False
+    object Series1: TCircularGauge
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Center.Gradient.Angle = 2835
+      Center.Gradient.EndColor = clDefault
+      Center.Gradient.Visible = True
+      Center.HorizSize = 16
+      Center.InflateMargins = True
+      Center.Pen.Visible = False
+      Center.Shadow.HorizSize = 2
+      Center.Shadow.VertSize = 2
+      Center.Shadow.Visible = True
+      Center.Style = psCircle
+      Center.VertSize = 16
+      Center.Visible = True
+      Center.GaugeStyle = gpCenter
+      EndPoint.Brush.Color = clWhite
+      EndPoint.InflateMargins = True
+      EndPoint.Style = psCircle
+      EndPoint.Visible = True
+      Face.Gradient.Direction = gdBottomTop
+      Face.Gradient.EndColor = 986895
+      Face.Gradient.MidColor = 4737096
+      Face.Gradient.StartColor = 986895
+      Face.Gradient.Visible = True
+      Face.ShapeStyle = fosEllipse
+      Face.Visible = True
+      Frame.InnerBrush.BackColor = 6579300
+      Frame.MiddleBrush.BackColor = 3289650
+      Frame.OuterBrush.BackColor = 2631720
+      GreenLine.Brush.Color = clRed
+      GreenLine.Gradient.Angle = -60
+      GreenLine.Gradient.Direction = gdLeftRight
+      GreenLine.Gradient.EndColor = 2017310
+      GreenLine.Gradient.StartColor = 6579300
+      GreenLine.Gradient.Visible = True
+      GreenLine.InflateMargins = True
+      GreenLine.Style = psRectangle
+      GreenLine.VertSize = 5
+      GreenLine.Visible = True
+      GreenLine.GaugeStyle = gpColorLine
+      GreenLine.EndValue = 70.000000000000000000
+      Hand.Brush.Color = clBlack
+      Hand.Gradient.Direction = gdLeftRight
+      Hand.Gradient.EndColor = clRed
+      Hand.Gradient.MidColor = 3961800
+      Hand.Gradient.StartColor = 668310
+      Hand.Gradient.Visible = True
+      Hand.HorizSize = 5
+      Hand.InflateMargins = True
+      Hand.Pen.Color = 3961800
+      Hand.Pen.Visible = False
+      Hand.Shadow.Color = clBlack
+      Hand.Shadow.HorizSize = 5
+      Hand.Shadow.VertSize = 5
+      Hand.Shadow.Visible = True
+      Hand.Style = psRectangle
+      Hand.VertSize = 88
+      Hand.Visible = True
+      Hand.GaugeStyle = gpHand
+      Hand.Distance = 30
+      Hand.Offset = 80
+      Maximum = 100.000000000000000000
+      MinorTicks.Brush.Color = clNone
+      MinorTicks.HorizSize = 1
+      MinorTicks.InflateMargins = True
+      MinorTicks.Pen.Color = 6579300
+      MinorTicks.Style = psRectangle
+      MinorTicks.VertSize = 1
+      MinorTicks.Visible = True
+      MinorTicks.GaugeStyle = gpMinorTick
+      RedLine.Brush.Color = clRed
+      RedLine.Gradient.Angle = 180
+      RedLine.Gradient.Direction = gdLeftRight
+      RedLine.Gradient.EndColor = 6579300
+      RedLine.Gradient.StartColor = 2631780
+      RedLine.Gradient.Visible = True
+      RedLine.InflateMargins = True
+      RedLine.Style = psRectangle
+      RedLine.VertSize = 5
+      RedLine.Visible = True
+      RedLine.GaugeStyle = gpColorLine
+      RedLine.EndValue = 100.000000000000000000
+      RedLine.StartValue = 80.000000000000000000
+      Ticks.Brush.Color = clWhite
+      Ticks.Brush.Style = bsClear
+      Ticks.InflateMargins = True
+      Ticks.Pen.Color = 6579300
+      Ticks.Style = psRectangle
+      Ticks.VertSize = 20
+      Ticks.Visible = True
+      Ticks.GaugeStyle = gpTick
+      TotalAngle = 300.000000000000000000
+      Value = 905.000000000000000000
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 43
+    object Label1: TLabel
+      Left = 240
+      Top = 16
+      Width = 32
+      Height = 13
+      Caption = 'Label1'
+    end
+    object Label2: TLabel
+      Left = 296
+      Top = 16
+      Width = 43
+      Height = 13
+      Caption = '&Rotation:'
+      FocusControl = ScrollBar2
+    end
+    object Label3: TLabel
+      Left = 456
+      Top = 16
+      Width = 30
+      Height = 13
+      Caption = '&Angle:'
+      FocusControl = ScrollBar3
+    end
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ScrollBar1: TScrollBar
+      Left = 104
+      Top = 14
+      Width = 129
+      Height = 16
+
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+    object ScrollBar2: TScrollBar
+      Left = 343
+      Top = 15
+      Width = 89
+      Height = 16
+      Max = 360
+
+      TabOrder = 2
+      OnChange = ScrollBar2Change
+    end
+    object ScrollBar3: TScrollBar
+      Left = 495
+      Top = 15
+      Width = 89
+      Height = 16
+      Max = 360
+
+      Position = 300
+      TabOrder = 3
+      OnChange = ScrollBar3Change
+    end
+  end
+end

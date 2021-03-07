@@ -1,0 +1,49 @@
+package dxBarD10;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressBars by Developer Express Inc.'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  dxCoreD10,
+  dxComnD10,
+  cxLibraryD10;
+
+contains
+  dxBarStrs,
+  dxBarAddGroupItemsEd,
+  dxBarCommon,
+  dxBarCustomCustomizationForm,
+  dxBarCustForm,
+  dxBarItemEd,
+  dxBarNameEd,
+  dxBarPopupMenuEd,
+  dxStatusBar,
+  dxBar,
+  dxBarSkinConsts,
+  dxBarSkin,
+  dxBarAccessibility;
+
+end.

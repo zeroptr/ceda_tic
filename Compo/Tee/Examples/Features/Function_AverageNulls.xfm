@@ -1,0 +1,71 @@
+inherited AverageFunctionNulls: TAverageFunctionNulls
+  Left = 297
+  Top = 199
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Average Function supports Nulll values.'
+      'By default null points are included in the average calculation.'
+      ''
+      'Example: TeeFunction1.IncludeNulls := False ;')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'Average function and NULL points.')
+    Chart3DPercent = 5
+    object Series1: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clLime
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TAverageTeeFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 131
+      Top = 12
+      Width = 56
+      Height = 13
+      Caption = 'Average is: '
+    end
+    object LabelAverage: TLabel
+      Left = 192
+      Top = 12
+      Width = 23
+      Height = 13
+      Caption = '1 / 1'
+    end
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = 'Include &NULLS'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

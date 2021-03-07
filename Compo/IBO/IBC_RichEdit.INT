@@ -1,0 +1,33 @@
+
+{                                                                               }
+{ TIB_RichEdit                                                                  }
+{                                                                               }
+
+{: This control allows the storage of rich text formatted data.}
+TIB_CustomRichEdit = class(TCustomRichEdit)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomMemo.INT}
+{$UNDEF IB_AutoLabel}
+end;
+
+TIB_RichEdit = class(TIB_CustomRichEdit)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomMemo.PBL}
+{$UNDEF IB_AutoLabel}
+
+{$IFNDEF HELPSCAN}
+
+published
+
+property HideScrollBars;
+property PlainText;
+property OnProtectChange;
+property OnResizeRequest;
+property OnSaveClipboard;
+property OnSelectionChange;
+
+{$ENDIF}
+
+end;
+
+// IBC_RichEdit.IMP

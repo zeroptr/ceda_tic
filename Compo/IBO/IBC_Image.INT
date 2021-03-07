@@ -1,0 +1,110 @@
+
+{                                                                              }
+{ TIB_Image                                                                    }
+{                                                                              }
+
+{: This control has been designed to display images from a BLOB column.
+<br><br>
+It is possible to change the image by assigning a new image to the Picture
+property of the control. The clipboard has also been enabled to transfer
+images in and out of the control.}
+TIB_CustomImage = class(TCustomControl)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.INT}
+{$UNDEF IB_AutoLabel}
+private
+  FAutoSize: Boolean;
+  FPicture: TPicture;
+  FAutoDisplay: boolean;
+  FStretch: boolean;
+  FCenter: boolean;
+  FKeepScale: boolean;
+  FPictureLoaded: boolean;
+  FQuickDraw: boolean;
+  FIsUpdating: boolean;
+  FIgnorePictureChange: boolean;
+  procedure PictureChanged(Sender: TObject);
+  procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+  procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+  procedure WMCut(var Message: TMessage); message WM_CUT;
+  procedure WMCopy(var Message: TMessage); message WM_COPY;
+  procedure WMPaste(var Message: TMessage); message WM_PASTE;
+  procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+protected
+  procedure CreateParams(var Params: TCreateParams); override;
+  function GetPalette: HPALETTE; override;
+  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  procedure KeyPress(var Key: Char); override;
+  procedure Paint; override;
+  procedure Loaded; override;
+  procedure SetName( const AValue: TComponentName ); override;
+{$IFDEF IBO_VCL60_OR_GREATER}
+  procedure SetAutoSize( AValue: boolean ); override;
+{$ELSE}
+  procedure SetAutoSize( AValue: boolean );
+{$ENDIF}
+  procedure SetAutoDisplay( AValue: boolean );
+  procedure SetCenter( AValue: boolean );
+  procedure SetPicture( AValue: TPicture );
+  procedure SetStretch( AValue: boolean );
+  procedure SetKeepScale( AValue: boolean );
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+{: Place a copy the contents of the image onto the clipboard.}
+  procedure CopyToClipboard;
+{: Move the contents of the image onto the clipboard.}
+  procedure CutToClipboard;
+{: Make sure that the image is loaded from the BLOB column.
+<br><br>
+This should not need to be called if AutoDisplay is true. }
+  procedure LoadPicture;
+{: Copy the image data from the clipboard into the control.}
+  procedure PasteFromClipboard;
+{: This property gives access to the image data for runtime manipulation.}
+  property Picture: TPicture read FPicture write SetPicture;
+
+public
+
+{: This property allows the choice of loading BLOB contents into the control
+automatically or keeping them to be loaded until the user double-clicks on the
+control or presses ENTER while the control has focus.}
+  property AutoDisplay: Boolean read FAutoDisplay
+                                write SetAutoDisplay
+                                default True;
+{: Automatically adjust the borders of the control in order to display the
+image at its native dimensions and scale.}
+  property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+{: Paint the image centered within the borders of the control.}
+  property Center: Boolean read FCenter write SetCenter default true;
+{: Use a quicker method of painting the image on the screen.}
+  property QuickDraw: Boolean read FQuickDraw write FQuickDraw default true;
+{: Stretch the contents of the image to fully occupy the bounds of the
+control.}
+  property Stretch: Boolean read FStretch write SetStretch default false;
+{: NOT FULLY IMPLEMENTED YET!}
+  property KeepScale: Boolean read FKeepScale write SetKeepScale default true;
+
+end;
+
+TIB_Image = class(TIB_CustomImage)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.PBL}
+{$UNDEF IB_AutoLabel}
+
+{$IFNDEF HELPSCAN}
+
+published
+
+  property AutoDisplay;
+  property AutoSize;
+  property Center;
+  property QuickDraw;
+  property Stretch;
+//property KeepScale;
+
+{$ENDIF}
+
+end;
+
+// IBC_Image.IMP

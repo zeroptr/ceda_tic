@@ -1,0 +1,127 @@
+inherited Point3DSeriesForm: TPoint3DSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Point 3D series draws points at any XYZ position, using a st' +
+        'andard '
+      '"Pointer" object.  Lines between points can also be displayed.'
+      ''
+      'Zoom, rotation, elevation and scrolling are also supported.')
+  end
+  inherited Chart1: TChart
+    BackWall.Brush.Color = clWhite
+    BackWall.Color = clWhite
+    BackWall.Size = 10
+    BottomWall.Brush.Color = clWhite
+    BottomWall.Color = clSilver
+    BottomWall.Size = 10
+    LeftWall.Brush.Color = clWhite
+    LeftWall.Size = 10
+    Legend.Visible = False
+    MarginBottom = 9
+    MarginTop = 9
+    Title.Visible = False
+    Chart3DPercent = 100
+    DepthAxis.Visible = True
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 45
+    View3DOptions.Zoom = 81
+    object Series1: TPoint3DSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      BaseLine.Visible = True
+      DepthSize = 3.000000000000000000
+      LinePen.Color = clBlue
+      LinePen.Style = psDot
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 14
+      Top = 12
+      Width = 51
+      Height = 17
+      Caption = '&Lines'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 182
+      Top = 12
+      Width = 59
+      Height = 17
+      Caption = '&Points'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 262
+      Top = 12
+      Width = 81
+      Height = 17
+      Caption = '&Color Each'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+    object CheckBox5: TCheckBox
+      Left = 70
+      Top = 12
+      Width = 51
+      Height = 17
+      Caption = '&Walls'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox5Click
+    end
+    object CheckBox4: TCheckBox
+      Left = 374
+      Top = 12
+      Width = 67
+      Height = 17
+      Caption = '&Animate '
+      TabOrder = 4
+      OnClick = CheckBox4Click
+    end
+    object CheckBox6: TCheckBox
+      Left = 128
+      Top = 12
+      Width = 49
+      Height = 17
+      Caption = 'A&xes'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+      OnClick = CheckBox6Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 352
+    Top = 16
+  end
+end

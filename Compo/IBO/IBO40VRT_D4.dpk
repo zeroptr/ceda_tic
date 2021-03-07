@@ -1,0 +1,68 @@
+package IBO40VRT_D4;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $00400000}
+{$DESCRIPTION 'IB Objects Visual Controls Runtime'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl40,
+  vclx40,
+  IBO40CRT_D4;
+
+contains
+  IB_Controls in 'IB_Controls.pas',
+  DatePick in 'DatePick.pas',
+  IB_FieldDataLink in 'IB_FieldDataLink.pas',
+  IB_SearchPanel in 'IB_SearchPanel.pas',
+  IB_ActionNavigate in 'IB_ActionNavigate.pas',
+  IB_ActionTransaction in 'IB_ActionTransaction.pas',
+  IB_ActionUpdate in 'IB_ActionUpdate.pas',
+  IB_ArrayGrid in 'IB_ArrayGrid.pas',
+  IB_CGrid in 'IB_CGrid.pas',
+  IB_ConnectionBar in 'IB_ConnectionBar.pas',
+  IB_CursorGrid in 'IB_CursorGrid.pas',
+  IB_DatasetBar in 'IB_DatasetBar.pas',
+  IB_Grid in 'IB_Grid.pas',
+  IB_IncSearch in 'IB_IncSearch.pas',
+  IB_Ledger in 'IB_Ledger.pas',
+  IB_LocateEdit in 'IB_LocateEdit.pas',
+  IB_NavigationBar in 'IB_NavigationBar.pas',
+  IB_SearchBar in 'IB_SearchBar.pas',
+  IB_SearchEdit in 'IB_SearchEdit.pas',
+  IB_StatementBar in 'IB_StatementBar.pas',
+  IB_StatementGrid in 'IB_StatementGrid.pas',
+  IB_UpdateBar in 'IB_UpdateBar.pas',
+  IB_ParamEdit in 'IB_ParamEdit.pas',
+  IB_TransactionBar in 'IB_TransactionBar.pas',
+  IBD_Ordering in 'IBD_Ordering.pas' {dlgOrdering},
+  IBD_IBMemoEdit in 'IBD_IBMemoEdit.pas' {dlgIBMemoEdit},
+  IBC_Label in 'IBC_Label.pas',
+  IBC_CustomLabel in 'IBC_Customlabel.pas',
+  IB_ControlInterface in 'IB_ControlInterface.pas',
+  XSpin in 'XSpin.pas',
+  IB_ActionModule in 'IB_ActionModule.pas',
+  IBD_Restructure in 'IBD_Restructure.pas' {dlgRestructure};
+
+end.

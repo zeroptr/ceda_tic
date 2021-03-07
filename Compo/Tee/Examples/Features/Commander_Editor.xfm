@@ -1,0 +1,39 @@
+inherited CommanderEditorExample: TCommanderEditorExample
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 51
+    Lines.Strings = (
+      'The TeeCommander component can now be configured at runtime.'
+      'Click the "Configure" button below...')
+  end
+  inherited Chart1: TChart
+    Top = 85
+    Height = 252
+  end
+  inherited Panel1: TPanel
+    Top = 51
+    Height = 34
+    BevelOuter = bvNone
+    object TeeCommander1: TTeeCommander
+      Left = 0
+      Top = 0
+      Width = 479
+      Height = 33
+      Panel = Chart1
+      Align = alTop
+      ParentShowHint = False
+      TabOrder = 0
+      LabelValues = False
+      object Button1: TButton
+        Left = 349
+        Top = 4
+        Width = 75
+        Height = 25
+        Caption = '&Configure...'
+        TabOrder = 0
+        OnClick = Button1Click
+      end
+    end
+  end
+end

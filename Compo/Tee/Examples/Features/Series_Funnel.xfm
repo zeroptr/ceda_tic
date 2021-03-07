@@ -1,0 +1,71 @@
+inherited FunnelSeriesForm: TFunnelSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 106
+  end
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      'Funnel ( Pipeline ) Series.  '
+      'Developed by Marjan Slatinek (marjan@steema.com)'
+      ''
+      'Click on a Funnel segment to display its values.')
+  end
+  inherited Chart1: TChart
+    Top = 108
+    Height = 222
+    Title.Text.Strings = (
+      'Funnel (Pipeline) series')
+    OnClickSeries = Chart1ClickSeries
+    LeftAxis.Visible = False
+    object Funnel: TFunnelSeries
+      DifferenceLimit = 30.000000000000000000
+      OpportunityValues.Name = 'OpportunityValues'
+      OpportunityValues.Order = loNone
+      QuoteValues.Name = 'QuoteValues'
+      QuoteValues.Order = loDescending
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    object Label1: TLabel
+      Left = 115
+      Top = 7
+      Width = 86
+      Height = 26
+      Caption = 'Desired tolerance '#13#10'for acceptance : '
+    end
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Edit1: TEdit
+      Left = 208
+      Top = 12
+      Width = 49
+      Height = 21
+      TabOrder = 1
+      Text = '30'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 257
+      Top = 12
+      Width = 16
+      Height = 21
+      Associate = Edit1
+      Min = 1
+      Max = 50
+      Position = 30
+      TabOrder = 2
+      Wrap = False
+    end
+  end
+end

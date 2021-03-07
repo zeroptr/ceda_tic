@@ -1,0 +1,45 @@
+inherited Point3DBaseLine: TPoint3DBaseLine
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Point3D BaseLine property is a TChartPen to draw lines from ever' +
+        'y point to '
+      'the base floor specified by the series vertical axis.'
+      ''
+      'Series1.BaseLine.Visible := True ')
+  end
+  inherited Chart1: TChart
+    BackWall.Transparent = False
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Point3D BaseLine')
+    Chart3DPercent = 30
+    object Series1: TPoint3DSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      BaseLine.Visible = True
+      LinePen.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object ButtonPen1: TButtonPen
+      Left = 16
+      Top = 8
+      Width = 105
+      Caption = '&Baseline...'
+      TabOrder = 0
+    end
+  end
+end

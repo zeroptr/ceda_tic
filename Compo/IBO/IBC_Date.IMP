@@ -1,0 +1,442 @@
+// IBC_Date.INT
+// Datepick
+
+constructor TIB_CustomDate.Create( AOwner: TComponent );
+begin
+  FDatePick := TDatePick.Create( Self );
+  FDatePick.Hidden := True;
+  FDatePick.OnChange := DatePickChange;
+  FDatePick.OnStrike := DatePickStrike; //AF 2001-04-25
+  inherited Create( AOwner );
+  inherited AlwaysShowButton := True;
+  inherited ButtonStyle := ebsDropDown;
+  inherited Width := 100;
+  FirstWeek := fwFirstJanuary;
+  Options := [ doClearButton, doTodayButton, doShowOverlap ];
+  StartDay := sdMon;
+  FAllowUnboundEdits := True;
+  FAutoFill := False;
+  IncCellHeight := 1; //ML  2001-03-23
+  IncCellWidth := 2; //ML  2001-03-23
+end;
+
+function TIB_CustomDate.GetNormalCellLineColor: TColor;
+begin
+  Result := FDatePick.NormalCellLineColor;
+end;
+function TIB_CustomDate.GetSelectedCellColor: TColor;
+begin
+  Result := FDatePick.SelectedCellColor;
+end;
+function TIB_CustomDate.GetSelectedCellFontColor: TColor;
+begin
+  Result := FDatePick.SelectedCellFontColor;
+end;
+function TIB_CustomDate.GetNormalCellColor: TColor;
+begin
+  Result := FDatePick.NormalCellColor;
+end;
+function TIB_CustomDate.GetDifMonthFontColor: TColor;
+begin
+  Result := FDatePick.DifMonthFontColor;
+end;
+function TIB_CustomDate.GetNormalCellFontColor: TColor;
+begin
+  Result := FDatePick.NormalCellFontColor;
+end;
+function TIB_CustomDate.GetTodayCellColor: TColor;
+begin
+  Result := FDatePick.TodayCellColor;
+end;
+function TIB_CustomDate.GetDayOfWeekStrLen: integer;
+begin
+  Result := FDatePick.DayOfWeekStrLen;
+end;
+procedure TIB_CustomDate.SetNormalCellLineColor( AValue: TColor );
+begin
+  FDatePick.NormalCellLineColor := AValue;
+end;
+procedure TIB_CustomDate.SetSelectedCellColor( AValue: TColor );
+begin
+  FDatePick.SelectedCellColor := AValue;
+end;
+procedure TIB_CustomDate.SetSelectedCellFontColor( AValue: TColor );
+begin
+  FDatePick.SelectedCellFontColor := AValue;
+end;
+procedure TIB_CustomDate.SetNormalCellColor( AValue: TColor );
+begin
+  FDatePick.NormalCellColor := AValue;
+end;
+procedure TIB_CustomDate.SetDifMonthFontColor( AValue: TColor );
+begin
+  FDatePick.DifMonthFontColor := AValue;
+end;
+procedure TIB_CustomDate.SetNormalCellFontColor( AValue: TColor );
+begin
+  FDatePick.NormalCellFontColor := AValue;
+end;
+procedure TIB_CustomDate.SetTodayCellColor( AValue: TColor );
+begin
+  FDatePick.TodayCellColor := AValue;
+end;
+procedure TIB_CustomDate.SetDayOfWeekStrLen( AValue: integer );
+begin
+  FDatePick.DayOfWeekStrLen := AValue;
+end;
+
+procedure TIB_CustomDate.SetTopPanelColor( AValue: TColor ); //GK 2002-05-03
+begin
+  FDatePick.TopPanelColor := AValue;
+end;
+
+function TIB_CustomDate.GetTopPanelColor: TColor; //GK 2002-05-03
+begin
+  Result := FDatePick.TopPanelColor;
+end;
+
+procedure TIB_CustomDate.SetTopPanelFontColor( AValue: TColor ); //GK 2002-05-03
+begin
+  FDatePick.TopPanelFontColor := AValue;
+end;
+
+function TIB_CustomDate.GetTopPanelFontColor: TColor; //GK 2002-05-03
+begin
+  Result := FDatePick.TopPanelFontColor;
+end;
+
+procedure TIB_CustomDate.SetArrowColor( AValue: TColor ); //GK 2002-05-03
+begin
+  FDatePick.ArrowColor := AValue;
+end;
+
+function TIB_CustomDate.GetArrowColor: TColor; //GK 2002-05-03
+begin
+  Result := FDatePick.ArrowColor;
+end;
+
+//AF 2001-04-25 BEGIN
+procedure TIB_CustomDate.DatePickStrike( Sender: TDatePick; CheckThisDate : TDateTime; var CrossColor : TColor);
+begin
+ DoStrike(CheckThisDate,CrossColor);
+end;
+
+procedure TIB_CustomDate.DoStrike(CheckThisDate : TDateTime; var CrossColor : TColor);
+begin
+ if assigned(FonStrike) then
+  FonStrike(self,CheckThisDate,CrossColor);
+end;
+//AF 2001-04-25 END
+
+procedure TIB_CustomDate.CreateWnd;
+begin
+  inherited CreateWnd;
+  FDatePick.Parent := Self;
+  // This avoids a painting glitch in the TIB_CtrlGrid control.
+  FDatePick.SetBounds( Height, Width, FDatePick.Height, FDatePick.Width );
+end;
+
+procedure TIB_CustomDate.DatePickChange( Sender: TDatePick;
+  Value: TDatePickResult );
+begin
+  // hide calendar first
+  FDatePick.HideCalendar;
+  if Value = dpNoChanges then Exit;
+  // check return value and do corresponding action
+  if Assigned( Field ) then
+  begin
+    // check if update possible
+    if not DataLink.Modify then
+      Exit;
+    case Value of
+      dpClear:
+      if ( DataLink.State = dssSearch ) or SearchAlways then
+        DataLink.FieldText := ''
+      else
+      begin
+        Field.Clear;
+        Text := '';  //<=-make sure control gets cleared
+      end;
+      dpOk:
+      if ( DataLink.State = dssSearch ) or SearchAlways then
+        DataLink.FieldText := DateToStr( FDatePick.Date )
+      else
+        Field.AsDateTime := FDatePick.Date;
+    end;
+  end
+  else
+  begin
+    case Value of
+      dpClear: Text := '';
+      dpOk: if EditCanModify then
+        Text := DateToStr( FDatePick.Date )
+      else
+        Exit;
+      else Exit;
+    end;
+    // reflect changes
+    Modified := true;
+    DataLink.ControlIsModified := true;
+    SysUpdateData( Field );
+  end;
+end;
+
+procedure TIB_CustomDate.DoEditButtonClick;
+begin
+  inherited DoEditButtonClick;
+  if FDatePick.IsActive then
+    FDatePick.HideCalendar
+  else
+  begin
+    FDatePick.Date := SysUtils.Date;
+    try
+      if DataLink.State = dssSearch then
+      begin
+        if SearchBuffer <> '' then
+          FDatePick.Date := Trunc( StrToDateTime( SearchBuffer ));
+      end
+      else
+      begin
+        if Assigned( Field ) and Field.IsNotNull then
+          FDatePick.Date := Field.AsDate
+        else if (Text <> FormatMaskText( EditMask, '' )) then
+          FDatePick.Date := StrToDate( Text );
+      end;
+    except
+    // Ignore any exceptions above.
+    end;
+    FDatePick.ShowCalendar( Parent.ClientToScreen(Point( Left, Top + Height )));
+  end;
+end;
+
+function TIB_CustomDate.GetFirstWeek: TDatePickFirstWeek;
+begin Result := FDatePick.FirstWeek; end;
+function TIB_CustomDate.GetOptions: TDatePickOptions;
+begin Result := FDatePick.Options; end;
+function TIB_CustomDate.GetStartDay: TDatePickStartDay;
+begin Result := FDatePick.StartDay; end;
+procedure TIB_CustomDate.SetFirstWeek( const Value: TDatePickFirstWeek );
+begin FDatePick.FirstWeek := Value; end;
+procedure TIB_CustomDate.SetOptions( const Value: TDatePickOptions );
+begin FDatePick.Options := Value; end;
+procedure TIB_CustomDate.SetStartDay( const Value: TDatePickStartDay );
+begin FDatePick.StartDay := Value; end;
+function TIB_CustomDate.GetTodayButtonCaption: string;
+begin Result := FDatePick.TodayButtonCaption; end;
+function TIB_CustomDate.GetClearButtonCaption: string;
+begin Result := FDatePick.ClearButtonCaption; end;
+procedure TIB_CustomDate.SetTodayButtonCaption( AValue : string );
+begin FDatePick.TodayButtonCaption := AValue; end;
+procedure TIB_CustomDate.SetClearButtonCaption( AValue : string );
+begin FDatePick.ClearButtonCaption := AValue; end;
+
+function  TIB_CustomDate.GetIncCellHeight: Integer; //ML  2001-03-23
+begin
+  Result := FDatePick.IncCellHeight;
+end;
+
+function  TIB_CustomDate.GetIncCellWidth: Integer; //ML  2001-03-23
+begin
+  Result := FDatePick.IncCellWidth;
+end;
+
+procedure TIB_CustomDate.SetIncCellHeight(AValue: Integer); //ML  2001-03-23
+begin
+  FDatePick.IncCellHeight := AValue;
+end;
+
+procedure TIB_CustomDate.SetIncCellWidth(AValue: Integer); //ML  2001-03-23
+begin
+  FDatePick.IncCellWidth := AValue;
+end;
+
+function  TIB_CustomDate.GetDrawYearArrow: boolean; //ML 2001-03-23
+begin
+  result := FDatePick.DrawYearArrow;
+end;
+
+procedure TIB_CustomDate.SetDrawYearArrow(AValue: boolean); //ML 2001-03-23
+begin
+  FDatePick.DrawYearArrow := AValue;
+end;
+
+procedure TIB_CustomDate.WMKillFocus( var Message: TWMKillFocus );
+begin
+  // hide the dropdown (control has lost focus)
+  if FDatePick.IsActive then
+    FDatePick.HideCalendar;
+  inherited;
+end;
+
+procedure TIB_CustomDate.WMKeyDown( var Message: TWMKeyDown );
+begin
+  // allow keydown message to be processed by FDatePick
+  FDatePick.ProcessKeyDown( Message );
+  // allow default keydown handling to proceed if needed
+  if ( Message.CharCode <> 0 ) then
+    inherited;
+end;
+
+procedure TIB_CustomDate.WndProc( var Message: TMessage );
+var
+  ShiftState: TShiftState;
+begin
+  if not (csDesigning in ComponentState) then
+  begin
+    case Message.Msg of
+      WM_CHAR: begin
+        with TWMKey(Message) do
+        begin
+          ShiftState := KeyDataToShiftState(KeyData);
+          // trap WM_CHAR messages when the datepick is active to
+          //   prevent characters going into the edit text
+          if FDatePick.IsActive then
+            if (ShiftState = []) or (ShiftState = [ssShift]) then
+              Exit;
+          // trap CTRL+SPACE (a space was somehow leaking thru for this msg)
+          if CharCode = VK_SPACE then
+            if ShiftState = [ssCtrl] then
+              Exit;
+          // handle TAB and SHIFT+TAB
+          if CharCode = VK_TAB then
+          begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+            ValidateEdit;
+{$ENDIF}
+            if (ShiftState = []) or (ShiftState = [ssShift]) then
+            begin
+              // move to next/prior control in tab order
+              if ssShift in ShiftState then
+                PostMessage( GetParentForm(Self).Handle, WM_NEXTDLGCTL, 1, 0 )
+              else
+                PostMessage( GetParentForm(Self).Handle, WM_NEXTDLGCTL, 0, 0 );
+              // trap TAB and SHIFT+TAB to prevent a TAB going into edit text
+              Exit;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  inherited WndProc( Message );
+end;
+
+function TIB_CustomDate.EditCanModify: Boolean;
+begin
+  Result := ( not Assigned( Field ) and not ReadOnly ) or
+            inherited EditCanModify;
+end;
+
+{$IFDEF IBO_VCL40_OR_GREATER}
+procedure TIB_CustomDate.ValidateEdit;
+var
+  tmpStr: string;
+begin
+  if not Assigned( Field ) then
+  begin
+    tmpStr := FormatMaskText( EditMask, '' );
+    if Text <> tmpStr then
+      try
+        StrToDate( Text );
+      except
+        if CanFocus then
+          SetFocus;
+        raise;
+      end;
+  end;
+  inherited ValidateEdit;
+end;
+{$ENDIF}
+
+procedure TIB_CustomDate.CMExit(var Message: TCMExit);
+begin
+{$IFDEF IBO_VCL40_OR_GREATER}
+  if not Assigned( Field ) then
+    ValidateEdit;
+{$ENDIF}
+  inherited;
+end;
+
+procedure TIB_CustomDate.KeyPress(var Key: Char);
+var
+  strTmp, T: string;
+begin
+  // special keys for simplified date entry
+  if (not Assigned( Field )) or (EditCanModify) then // check if update possible
+  begin
+    if (((Key = char(VK_SPACE))) and ((Text = FormatMaskText( EditMask, '' )) or (EditText = SelText))) or
+       (AutoFill and ((Text = FormatMaskText( EditMask, '' )) or (EditText = SelText)) and (Key in [ '0'..'9' ])) then
+    begin
+      strTmp := AnsiLowerCase(ShortDateFormat);
+      // check if short date format has final 4 year digits, if so assign 2 year digits and avoid blanks
+      if (length(strTmp)>=4) and (copy(strTmp, length(strTmp)-3, 4)='yyyy') then // try to convert to a 2 digit year
+      begin
+        replace_string( strTmp, 'yyyy', 'yy' );
+        DateTimeToString( T, strTmp, Date );
+        Text := T;
+        if (length(Text)>4) and (copy(Text, length(Text)-3, 2)= '  ') then // like: xx/xx/__yy
+          Text := T + '  ';  // becomes xx/xx/yy__
+      end
+      else
+        Text := DateToStr( Date );
+      // assigning text makes unnecessary to explicitly reflect changes
+      // i.e. Modified:=True; DataLink.ControlIsModified:=True; Avoid if Key = char(VK_SPACE) then SysUpdateData( Field );
+
+      if Key = char(VK_SPACE) then
+        Key := #0;
+    end;
+  end;
+
+  if not Assigned( Field ) then
+  begin
+    if not (Key in [ #0..#32, '0'..'9', DateSeparator ]) then
+    begin
+      MessageBeep(0);
+      Key := #0;
+    end;
+  end;
+  inherited KeyPress(Key);
+end;
+
+procedure TIB_CustomDate.UpdateMask( UnboundMask: string );
+begin
+  if UnboundMask = '' then
+    UnboundMask := '!99' + DateSeparator + '99' + DateSeparator + '9999;1; ';
+  inherited UpdateMask( UnboundMask );
+end;
+
+function TIB_CustomDate.GetValue: TDate;
+var
+  x: integer;
+begin
+  if Assigned( Field ) then
+    Result := Field.AsDate
+  else
+  begin
+    Result := 0;
+    for x := 1 to length(Text) do
+    begin
+      if (Text[x] in [ '0'..'9' ]) then
+      begin
+        Result := StrToDate( Text );
+        break;
+      end
+      else if Text[x] = DateSeparator then
+        break;
+    end;
+  end;
+end;
+
+procedure TIB_CustomDate.SetValue( AValue : TDate );
+begin
+  if Assigned( Field ) then
+  begin
+    Field.AsDate := AValue; // enters in edit state, if in browse
+    Modified := true;
+    DataLink.ControlIsModified := true;
+    // SysUpdateData( Field ); // calls OnSetEdit // removed: conversion error with sophisticated display formats (i.e. with day of the week)
+  end
+  else
+    Text := DateToStr( AValue );
+end;
+

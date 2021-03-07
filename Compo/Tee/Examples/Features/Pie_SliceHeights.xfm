@@ -1,0 +1,106 @@
+inherited PieSliceHeights: TPieSliceHeights
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Each pie or donut series slice can be displayed using a differen' +
+        't height, '
+      'as percentage of Chart1.Chart3DPercent.  Default is 100 %.'
+      ''
+      
+        'Series1.SliceHeight[ 3 ] := 50;   // slice index 3, using a 50% ' +
+        'of 3D height.'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 463
+    Border.Color = clGray
+    Border.Visible = True
+    Gradient.EndColor = clGray
+    Gradient.MidColor = clWhite
+    Gradient.StartColor = clSilver
+    Gradient.Visible = True
+    Legend.Visible = False
+    Title.Visible = False
+    Chart3DPercent = 100
+    Shadow.HorizSize = 5
+    Shadow.VertSize = 5
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    BevelInner = bvRaised
+    object Series1: TDonutSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Font.InterCharSize = 1
+      Marks.Gradient.Visible = True
+      Marks.Shadow.Color = clBlack
+      Marks.Shadow.HorizSize = 4
+      Marks.Shadow.Transparency = 50
+      Marks.Shadow.VertSize = 4
+      Marks.Style = smsPercent
+      Marks.Symbol.Frame.Color = clGray
+      Marks.Symbol.Pen.Color = clGray
+      Marks.Symbol.Shadow.Color = clGray
+      Marks.Symbol.Shadow.HorizSize = 2
+      Marks.Symbol.Shadow.VertSize = 2
+      Marks.Symbol.Visible = True
+      Marks.Visible = True
+      DarkPen = 180
+      Gradient.Balance = 4
+      Gradient.Direction = gdRadial
+      Gradient.EndColor = clFuchsia
+      Gradient.Visible = True
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 200
+      Top = 14
+      Width = 35
+      Height = 13
+      Caption = '&Rotate:'
+      FocusControl = ScrollBar1
+    end
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 13
+      Width = 153
+      Height = 17
+      Caption = 'Vary slice heights'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object ScrollBar1: TScrollBar
+      Left = 243
+      Top = 13
+      Width = 121
+      Height = 16
+      Max = 360
+
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+  end
+  object ScrollBar2: TScrollBar
+    Left = 463
+    Top = 116
+    Width = 16
+    Height = 221
+    Align = alRight
+    Kind = sbVertical
+    Max = 360
+    Min = 270
+
+    Position = 315
+    TabOrder = 3
+    OnChange = ScrollBar2Change
+  end
+end

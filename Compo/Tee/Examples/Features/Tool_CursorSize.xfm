@@ -1,0 +1,170 @@
+inherited CursorSizeForm: TCursorSizeForm
+  Left = 347
+  Top = 136
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 445
+  ClientWidth = 525
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 525
+  end
+  inherited Memo1: TMemo
+    Width = 525
+    Lines.Strings = (
+      
+        'Use the Cursor size, vertical or horizontal, to set the length i' +
+        'n pixels of the horizontal or Vertical leg  of the '
+      'Cross-cursor.'
+      ''
+      
+        'Setting values to 0 will cause the Cursor length to take up the ' +
+        'full Axis length associated with the Series '
+      'region.')
+  end
+  inherited Chart1: TChart
+    Width = 525
+    Height = 289
+    BackWall.Gradient.EndColor = clSilver
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Legend.Transparent = True
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = clSilver
+    CustomAxes = <
+      item
+        Axis.Width = 1
+        Grid.Color = clSilver
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 60.000000000000000000
+      end>
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clSilver
+    LeftAxis.EndPosition = 60.000000000000000000
+    View3D = False
+    TabOrder = 2
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 383994
+      LinePen.Width = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0019000000000000000040854000000000000084400000000000688540000000
+        000014894000000000000089400000000000408A400000000000E88C40000000
+        00000C8C400000000000E08A4000000000003C89400000000000B88A40000000
+        0000288E400000000000788E400000000000D88D400000000000189040000000
+        0000288E400000000000B88A400000000000D086400000000000B08340000000
+        00009C834000000000005480400000000000E080400000000000888340000000
+        000040854000000000005C8740}
+    end
+    object Series2: TVolumeSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = clNavy
+      VertAxis = aCustomVertAxis
+      LinePen.Color = clNavy
+      VolumeValues.Name = 'Y'
+      VolumeValues.Order = loNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      CustomVertAxis = 0
+      Data = {
+        012800000000000000000000000000000000002040143BB1133BB1E33F000000
+        0000003A40143BB1133BB1F33F00000000000024409ED8899DD889FD3F000000
+        0000003640143BB1133BB103400000000000003740D9899DD8899D0840000000
+        00000008409ED8899DD8890D400000000000003840B2133BB1133B1140000000
+        0000001C40143BB1133BB113400000000000003D407662277662271640000000
+        0000002A40D8899DD8899D18400000000000002A403AB1133BB1131B40000000
+        0000002C409CD8899DD8891D400000000000000040FEFFFFFFFFFF1F40000000
+        0000001040B0133BB1133B214000000000000026406127766227762240000000
+        0000001040123BB1133BB123400000000000003940C34EECC44EEC2440000000
+        0000003040746227766227264000000000000026402576622776622740000000
+        0000003740D6899DD8899D28400000000000004040879DD8899DD82940000000
+        000000204038B1133BB1132B400000000000003340E9C44EECC44E2C40000000
+        0000003B409AD8899DD8892D400000000000002E404BECC44EECC42E40000000
+        0000003C40FCFFFFFFFFFF2F400000000000003C40D7899DD8899D3040000000
+        0000001C40B0133BB1133B31400000000000001C40899DD8899DD83140000000
+        0000003740622776622776324000000000000040403BB1133BB1133340000000
+        0000000000143BB1133BB133400000000000002E40EDC44EECC44E3440000000
+        0000002A40C64EECC44EEC344000000000000033409FD8899DD8893540000000
+        00000038407862277662273640000000000000354051ECC44EECC43640000000
+        00000039402A7662277662374000000000000026400300000000003840000000
+        000000F03F}
+    end
+    object ChartTool1: TCursorTool
+      Pen.Color = 4934475
+      Pen.Width = 2
+      Series = Series1
+      VertSize = 10
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 525
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 16
+      Top = 16
+      Width = 51
+      Height = 13
+      Caption = '&Vert. Size :'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 160
+      Top = 16
+      Width = 56
+      Height = 13
+      Caption = '&Horiz. Size :'
+      FocusControl = Edit2
+    end
+    object Edit1: TEdit
+      Left = 75
+      Top = 13
+      Width = 30
+      Height = 21
+      TabOrder = 0
+      Text = '10'
+      OnChange = Edit1Change
+    end
+    object Edit2: TEdit
+      Left = 224
+      Top = 13
+      Width = 30
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+      OnChange = Edit2Change
+    end
+    object UpDown1: TUpDown
+      Left = 105
+      Top = 13
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Position = 10
+      TabOrder = 2
+    end
+    object UpDown2: TUpDown
+      Left = 254
+      Top = 13
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      TabOrder = 3
+    end
+  end
+end

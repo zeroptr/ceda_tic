@@ -1,0 +1,69 @@
+package IBO40FRT_D5;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'IB Objects Forms & Dialogs Runtime'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50,
+  vclx50,
+  VclSmp50,
+  IBO40CRT_D5,
+  IBO40TRT_D5,
+  IBO40VRT_D5;
+
+contains
+  IBF_Base in 'IBF_Base.pas' {frmBase},
+  IBF_Browse in 'IBF_Browse.pas' {frmBrowse},
+  IBF_DataDump in 'IBF_DataDump.pas' {frmDataDump},
+  IBF_DataPump in 'IBF_DataPump.pas' {frmDataPump},
+  IBF_DSQL in 'IBF_DSQL.pas' {frmDSQL},
+  IBF_Events in 'IBF_Events.pas' {frmEvents},
+  IBF_Export in 'IBF_Export.pas' {frmExport},
+  IBF_Lookup in 'IBF_Lookup.pas' {frmLookup},
+  IBF_Monitor in 'IBF_Monitor.pas' {frmMonitor},
+  IBF_Parameters in 'IBF_Parameters.pas' {frmParameters},
+  IBF_Profiler in 'IBF_Profiler.pas' {frmProfiler},
+  IBF_Query in 'IBF_Query.pas' {frmQuery},
+  IBF_Script in 'IBF_Script.pas' {frmScript},
+  IBF_Users in 'IBF_Users.pas' {frmUsers},
+  IBF_Who in 'IBF_Who.pas' {frmWho},
+  IBF_SQL in 'IBF_SQL.pas' {frmSQL},
+  IBF_WorkUnit in 'IBF_WorkUnit.pas' {frmWorkUnit},
+  IB_Dialogs in 'IB_Dialogs.pas',
+  IBD_About in 'IBD_About.pas' {dlgAbout},
+  IBD_Loading in 'IBD_Loading.pas' {dlgLoading},
+  IBD_Credits in 'IBD_Credits.pas' {dlgCredits},
+  IBD_USearch in 'IBD_USearch.pas' {frmUSearch},
+  IB_UtilityBar in 'IB_UtilityBar.pas',
+  IBD_MemoEdit in 'IBD_MemoEdit.pas' {dlgMemoEdit},
+  IBF_GenCustomSQL in 'IBF_GenCustomSQL.pas' {frmGenCustomSQL},
+  IBF_GenCalcFields in 'IBF_GenCalcFields.pas' {frmGenCalcFields},
+  IBF_Status in 'IBF_Status.pas' {frmStatus},
+  IBF_DDL_Extract in 'IBF_DDL_Extract.pas' {frmDDLExtract},
+  IBF_Metadata in 'IBF_Metadata.pas' {frmMetadataExtract},
+  IBD_CreateOrdering in 'IBD_CreateOrdering.pas' {dlgCLBoxEdit};
+
+end.

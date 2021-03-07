@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008.04.01 19:29:03.562.pas,C:\CedaLite\Prog\Arac\ufrmGRABBER_WINDOW.pas=</Transaction>
+    <Transaction>2008.04.01 19:29:03.562.dfm,C:\CedaLite\Prog\Arac\ufrmGRABBER_WINDOW.dfm=</Transaction>
+    <Transaction>2008.04.01 19:33:52.671.pas,C:\CedaLite\Prog\Arac\ufrmSETTINGS.pas=</Transaction>
+    <Transaction>2008.04.01 19:33:52.671.dfm,C:\CedaLite\Prog\Arac\ufrmSETTINGS.dfm=</Transaction>
+    <Transaction>2008.04.01 19:37:54.656.pas,C:\CedaLite\Prog\Arac\unGLOBALS.pas=</Transaction>
+    <Transaction>2008.08.26 11:56:46.375.dproj,C:\CedaLite\Prog\PRJ2001.dproj=C:\CedaLite\Prog\CedaLite.dproj</Transaction>
+    <Transaction>2009.03.03 10:25:46.671.dproj,C:\CedaLite\Prog\CedaLite.dproj=C:\CedaLite\Prog\Antrepo\Antrepo.dproj</Transaction>
+    <Transaction>2009.03.03 10:28:37.937.pas,C:\CedaLite\Prog\main.pas=C:\CedaLite\Prog\Antrepo\main.pas</Transaction>
+    <Transaction>2009.03.03 10:28:37.937.dfm,C:\CedaLite\Prog\main.dfm=C:\CedaLite\Prog\Antrepo\main.dfm</Transaction>
+    <Transaction>2009.03.03 10:29:57.953.pas,C:\CedaLite\Prog\ufrmCariKart.pas=C:\CedaLite\Prog\Antrepo\ufrmCariKart.pas</Transaction>
+    <Transaction>2009.03.03 10:29:57.953.dfm,C:\CedaLite\Prog\ufrmCariKart.dfm=C:\CedaLite\Prog\Antrepo\ufrmCariKart.dfm</Transaction>
+    <Transaction>2009.03.03 10:33:15.703.pas,C:\CedaLite\Prog\Arac\ufrmFAT_Tran.pas=</Transaction>
+    <Transaction>2009.03.03 10:33:15.703.dfm,C:\CedaLite\Prog\Arac\ufrmFAT_Tran.dfm=</Transaction>
+  </Transactions>
+</BorlandProject>

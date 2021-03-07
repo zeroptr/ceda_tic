@@ -1,0 +1,20 @@
+
+{                                                                              }
+{  IB_CustomMemo.PBL                                                           }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+{$I IBC_CustomEdit.PBL}
+
+published
+
+property AllowCRLF;
+property AutoDisplay;
+property MaxLength;
+property ScrollBars;
+property WantReturns;
+property WantTabs;
+property WordWrap;
+
+{$ENDIF}

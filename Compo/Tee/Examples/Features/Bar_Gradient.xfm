@@ -1,0 +1,45 @@
+inherited BarGradient: TBarGradient
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Bar and Horiz.Bar series can now display gradients, with "middle' +
+        '" color.'
+      ''
+      'Example: Series1.Gradient.MidColor := clYellow ;'
+      '               Series1.Gradient.StartColor := clDkGray ;')
+  end
+  inherited Chart1: TChart
+    View3D = False
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      BarStyle = bsRectGradient
+      Gradient.Direction = gdTopBottom
+      Gradient.MidColor = clInfoBk
+      Gradient.StartColor = clGray
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 24
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = '&Edit Gradient...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

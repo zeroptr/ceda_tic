@@ -1,0 +1,427 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Simple Vertical [Default]</Name>
+<Properties>
+<AutoCenter>0</AutoCenter>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<EndsMargin>5</EndsMargin>
+<KeyArrowStepSize>1</KeyArrowStepSize>
+<KeyPageStepSize>2</KeyPageStepSize>
+<Orientation>0</Orientation>
+<OrientationLabels>0</OrientationLabels>
+<PointerColor>-2147483633</PointerColor>
+<PointerHeight>8</PointerHeight>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>255</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PointerStyle>1</PointerStyle>
+<PointerWidth>13</PointerWidth>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorColor>16776960</PositionIndicatorColor>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<PositionLabelActiveFont.Style>0</PositionLabelActiveFont.Style>
+<PositionLabelActiveFont.Color>-2147483640</PositionLabelActiveFont.Color>
+<PositionLabelActiveFont.Name>MS Sans Serif</PositionLabelActiveFont.Name>
+<PositionLabelActiveFont.Size>8</PositionLabelActiveFont.Size>
+<PositionLabelInactiveFont.Style>0</PositionLabelInactiveFont.Style>
+<PositionLabelInactiveFont.Color>-2147483640</PositionLabelInactiveFont.Color>
+<PositionLabelInactiveFont.Name>MS Sans Serif</PositionLabelInactiveFont.Name>
+<PositionLabelInactiveFont.Size>8</PositionLabelInactiveFont.Size>
+<PositionLabelMargin>5</PositionLabelMargin>
+<PositionLabels>Low, Medium, High</PositionLabels>
+<ShowFocusRect>1</ShowFocusRect>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<ShowPositionLabels>1</ShowPositionLabels>
+<TrackColor>16777215</TrackColor>
+<TrackStyle>0</TrackStyle>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Simple Vertical Program Switch</Name>
+<Properties>
+<AutoCenter>0</AutoCenter>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<EndsMargin>5</EndsMargin>
+<KeyArrowStepSize>1</KeyArrowStepSize>
+<KeyPageStepSize>2</KeyPageStepSize>
+<Orientation>0</Orientation>
+<OrientationLabels>0</OrientationLabels>
+<PointerColor>-2147483633</PointerColor>
+<PointerHeight>8</PointerHeight>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>255</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PointerStyle>2</PointerStyle>
+<PointerWidth>13</PointerWidth>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorColor>0</PositionIndicatorColor>
+<PositionIndicatorMargin>8</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<PositionLabelActiveFont.Style>1</PositionLabelActiveFont.Style>
+<PositionLabelActiveFont.Color>16711680</PositionLabelActiveFont.Color>
+<PositionLabelActiveFont.Name>MS Sans Serif</PositionLabelActiveFont.Name>
+<PositionLabelActiveFont.Size>8</PositionLabelActiveFont.Size>
+<PositionLabelInactiveFont.Style>0</PositionLabelInactiveFont.Style>
+<PositionLabelInactiveFont.Color>-2147483640</PositionLabelInactiveFont.Color>
+<PositionLabelInactiveFont.Name>MS Sans Serif</PositionLabelInactiveFont.Name>
+<PositionLabelInactiveFont.Size>8</PositionLabelInactiveFont.Size>
+<PositionLabelMargin>10</PositionLabelMargin>
+<PositionLabels>Off, Standby, Manual, Auto, Program, Test</PositionLabels>
+<ShowFocusRect>1</ShowFocusRect>
+<ShowPositionIndicators>0</ShowPositionIndicators>
+<ShowPositionLabels>1</ShowPositionLabels>
+<TrackColor>16777215</TrackColor>
+<TrackStyle>2</TrackStyle>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Simple Horizontal</Name>
+<Properties>
+<AutoCenter>0</AutoCenter>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<EndsMargin>10</EndsMargin>
+<KeyArrowStepSize>1</KeyArrowStepSize>
+<KeyPageStepSize>2</KeyPageStepSize>
+<Orientation>1</Orientation>
+<OrientationLabels>0</OrientationLabels>
+<PointerColor>-2147483633</PointerColor>
+<PointerHeight>8</PointerHeight>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>255</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PointerStyle>1</PointerStyle>
+<PointerWidth>13</PointerWidth>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorColor>16776960</PositionIndicatorColor>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<PositionLabelActiveFont.Style>0</PositionLabelActiveFont.Style>
+<PositionLabelActiveFont.Color>-2147483640</PositionLabelActiveFont.Color>
+<PositionLabelActiveFont.Name>MS Sans Serif</PositionLabelActiveFont.Name>
+<PositionLabelActiveFont.Size>8</PositionLabelActiveFont.Size>
+<PositionLabelInactiveFont.Style>0</PositionLabelInactiveFont.Style>
+<PositionLabelInactiveFont.Color>-2147483640</PositionLabelInactiveFont.Color>
+<PositionLabelInactiveFont.Name>MS Sans Serif</PositionLabelInactiveFont.Name>
+<PositionLabelInactiveFont.Size>8</PositionLabelInactiveFont.Size>
+<PositionLabelMargin>5</PositionLabelMargin>
+<PositionLabels>Low, Medium, High</PositionLabels>
+<ShowFocusRect>1</ShowFocusRect>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<ShowPositionLabels>1</ShowPositionLabels>
+<TrackColor>16777215</TrackColor>
+<TrackStyle>0</TrackStyle>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Vertical Program Switch</Name>
+<Properties>
+<AutoCenter>0</AutoCenter>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<EndsMargin>5</EndsMargin>
+<KeyArrowStepSize>1</KeyArrowStepSize>
+<KeyPageStepSize>2</KeyPageStepSize>
+<Orientation>0</Orientation>
+<OrientationLabels>0</OrientationLabels>
+<PointerColor>-2147483633</PointerColor>
+<PointerHeight>8</PointerHeight>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>255</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PointerStyle>3</PointerStyle>
+<PointerWidth>13</PointerWidth>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorColor>16744448</PositionIndicatorColor>
+<PositionIndicatorMargin>8</PositionIndicatorMargin>
+<PositionIndicatorSize>2</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<PositionLabelActiveFont.Style>1</PositionLabelActiveFont.Style>
+<PositionLabelActiveFont.Color>-2147483640</PositionLabelActiveFont.Color>
+<PositionLabelActiveFont.Name>MS Sans Serif</PositionLabelActiveFont.Name>
+<PositionLabelActiveFont.Size>8</PositionLabelActiveFont.Size>
+<PositionLabelInactiveFont.Style>0</PositionLabelInactiveFont.Style>
+<PositionLabelInactiveFont.Color>-2147483640</PositionLabelInactiveFont.Color>
+<PositionLabelInactiveFont.Name>MS Sans Serif</PositionLabelInactiveFont.Name>
+<PositionLabelInactiveFont.Size>8</PositionLabelInactiveFont.Size>
+<PositionLabelMargin>7</PositionLabelMargin>
+<PositionLabels>Off, Standby, Manual, Auto, Program, Test</PositionLabels>
+<ShowFocusRect>1</ShowFocusRect>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<ShowPositionLabels>1</ShowPositionLabels>
+<TrackColor>16777215</TrackColor>
+<TrackStyle>0</TrackStyle>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Semi-Transparent [Default]</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<PointerColor>-2147483633</PointerColor>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>255</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PositionIndicatorColor>16776960</PositionIndicatorColor>
+<PositionLabelActiveFont.Color>-2147483640</PositionLabelActiveFont.Color>
+<PositionLabelInactiveFont.Color>-2147483640</PositionLabelInactiveFont.Color>
+<TrackColor>16777215</TrackColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<PointerColor>-2147483633</PointerColor>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>255</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PositionIndicatorColor>16776960</PositionIndicatorColor>
+<PositionLabelActiveFont.Color>65535</PositionLabelActiveFont.Color>
+<PositionLabelInactiveFont.Color>12632256</PositionLabelInactiveFont.Color>
+<TrackColor>12632256</TrackColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>GrayScale</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<PointerColor>-2147483633</PointerColor>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>16777215</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PositionIndicatorColor>16777215</PositionIndicatorColor>
+<PositionLabelActiveFont.Color>-2147483640</PositionLabelActiveFont.Color>
+<PositionLabelInactiveFont.Color>-2147483640</PositionLabelInactiveFont.Color>
+<TrackColor>16777215</TrackColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<PointerColor>-2147483633</PointerColor>
+<PointerHighLightColor>-2147483628</PointerHighLightColor>
+<PointerIndicatorActiveColor>255</PointerIndicatorActiveColor>
+<PointerIndicatorInactiveColor>0</PointerIndicatorInactiveColor>
+<PositionIndicatorColor>16776960</PositionIndicatorColor>
+<PositionLabelActiveFont.Color>16777215</PositionLabelActiveFont.Color>
+<PositionLabelInactiveFont.Color>12632256</PositionLabelInactiveFont.Color>
+<TrackColor>12632256</TrackColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Scale Scheme</Name>
+<Scheme>
+<Name>Simple Scale [Default]</Name>
+<Properties>
+<EndsMargin>5</EndsMargin>
+<OrientationLabels>0</OrientationLabels>
+<PositionLabelActiveFont.Style>0</PositionLabelActiveFont.Style>
+<PositionLabelActiveFont.Name>MS Sans Serif</PositionLabelActiveFont.Name>
+<PositionLabelActiveFont.Size>8</PositionLabelActiveFont.Size>
+<PositionLabelInactiveFont.Style>0</PositionLabelInactiveFont.Style>
+<PositionLabelInactiveFont.Name>MS Sans Serif</PositionLabelInactiveFont.Name>
+<PositionLabelInactiveFont.Size>8</PositionLabelInactiveFont.Size>
+<ShowPositionLabels>1</ShowPositionLabels>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Highlight Selected Position</Name>
+<Properties>
+<EndsMargin>5</EndsMargin>
+<OrientationLabels>0</OrientationLabels>
+<PositionLabelActiveFont.Style>1</PositionLabelActiveFont.Style>
+<PositionLabelActiveFont.Name>MS Sans Serif</PositionLabelActiveFont.Name>
+<PositionLabelActiveFont.Size>8</PositionLabelActiveFont.Size>
+<PositionLabelInactiveFont.Style>0</PositionLabelInactiveFont.Style>
+<PositionLabelInactiveFont.Name>MS Sans Serif</PositionLabelInactiveFont.Name>
+<PositionLabelInactiveFont.Size>8</PositionLabelInactiveFont.Size>
+<ShowPositionLabels>1</ShowPositionLabels>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>No Scale Labels</Name>
+<Properties>
+<EndsMargin>5</EndsMargin>
+<OrientationLabels>0</OrientationLabels>
+<PositionLabelActiveFont.Style>0</PositionLabelActiveFont.Style>
+<PositionLabelActiveFont.Name>MS Sans Serif</PositionLabelActiveFont.Name>
+<PositionLabelActiveFont.Size>8</PositionLabelActiveFont.Size>
+<PositionLabelInactiveFont.Style>0</PositionLabelInactiveFont.Style>
+<PositionLabelInactiveFont.Name>MS Sans Serif</PositionLabelInactiveFont.Name>
+<PositionLabelInactiveFont.Size>8</PositionLabelInactiveFont.Size>
+<ShowPositionLabels>0</ShowPositionLabels>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>User Interface Scheme</Name>
+<Scheme>
+<Name>Keyboard Enabled [Default]</Name>
+<Properties>
+<KeyArrowStepSize>1</KeyArrowStepSize>
+<KeyPageStepSize>2</KeyPageStepSize>
+<ShowFocusRect>1</ShowFocusRect>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Keyboard Disabled</Name>
+<Properties>
+<KeyArrowStepSize>0</KeyArrowStepSize>
+<KeyPageStepSize>0</KeyPageStepSize>
+<ShowFocusRect>1</ShowFocusRect>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>TouchScreen</Name>
+<Properties>
+<KeyArrowStepSize>1</KeyArrowStepSize>
+<KeyPageStepSize>2</KeyPageStepSize>
+<ShowFocusRect>0</ShowFocusRect>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Indicator Scheme</Name>
+<Scheme>
+<Name>Arrow Box Track [Default]</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>0</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>8</PointerHeight>
+<PointerStyle>1</PointerStyle>
+<PointerWidth>13</PointerWidth>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Arrow Bevel Track</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>2</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>8</PointerHeight>
+<PointerStyle>1</PointerStyle>
+<PointerWidth>13</PointerWidth>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>LED Box Track</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>0</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>8</PointerHeight>
+<PointerStyle>0</PointerStyle>
+<PointerWidth>13</PointerWidth>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>LED Bevel Track</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>2</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>10</PointerHeight>
+<PointerStyle>0</PointerStyle>
+<PointerWidth>18</PointerWidth>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Light-Bar Box Track</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>0</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>8</PointerHeight>
+<PointerStyle>3</PointerStyle>
+<PointerWidth>13</PointerWidth>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Light-Bar Bevel Track</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>2</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>8</PointerHeight>
+<PointerStyle>3</PointerStyle>
+<PointerWidth>13</PointerWidth>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Bar Box Track</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>0</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>8</PointerHeight>
+<PointerStyle>2</PointerStyle>
+<PointerWidth>13</PointerWidth>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Bar Bevel Track</Name>
+<Properties>
+<PositionIndicatorBevelStyle>2</PositionIndicatorBevelStyle>
+<PositionIndicatorMargin>10</PositionIndicatorMargin>
+<PositionIndicatorSize>3</PositionIndicatorSize>
+<PositionIndicatorStyle>0</PositionIndicatorStyle>
+<TrackStyle>2</TrackStyle>
+<ShowPositionIndicators>1</ShowPositionIndicators>
+<PointerHeight>8</PointerHeight>
+<PointerStyle>2</PointerStyle>
+<PointerWidth>13</PointerWidth>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

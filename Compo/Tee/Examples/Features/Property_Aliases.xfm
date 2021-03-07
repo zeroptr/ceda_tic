@@ -1,0 +1,46 @@
+object PropertyAliases: TPropertyAliases
+  Left = 297
+  Top = 117
+  Width = 511
+  Height = 462
+  Caption = 'PropertyAliases'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 503
+    Height = 435
+    Align = alClient
+    Lines.Strings = (
+      'New property aliases.'
+      '====================='
+      ''
+      
+        'You can still use the "old" properties, although it'#39's recommende' +
+        'd'
+      'to start using the new properties.'
+      ''
+      'Old                               '#9#9'New'
+      
+        '--------------------------------------------------------'#9'-------' +
+        '------------------------------'
+      'Series1.Active:=True              '#9#9'Series1.Visible:=True'
+      'Series1.SeriesColor:=clRed'#9#9'Series1.Color:=clRed'
+      'Series1.ValueColor[123]:=clNone   '#9'Series1.SetNull(123)'
+      'Chart1.LeftAxis                   '#9#9'Chart1.Axes.Left'
+      'Chart1.LeftWall                   '#9#9'Chart1.Walls.Left'
+      '')
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+end

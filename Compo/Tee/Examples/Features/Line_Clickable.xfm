@@ -1,0 +1,62 @@
+inherited LineClickableForm: TLineClickableForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Line, Point and Area series have a new property: ClickableLine t' +
+        'hat controls'
+      
+        'if the mouse cursor and mouse clicks apply to the line or to the' +
+        ' points only.'
+      ''
+      
+        'Move the mouse over lines and points, with and without "clickabl' +
+        'e line".'
+      ''
+      'Example: Series1.ClickableLine:=False;')
+  end
+  inherited Chart1: TChart
+    Top = 106
+    Height = 231
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    OnMouseMove = Chart1MouseMove
+    object Series1: TLineSeries
+      Cursor = crHandPoint
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 33
+    object Label1: TLabel
+      Left = 184
+      Top = 8
+      Width = 36
+      Height = 13
+      Caption = 'Point: ?'
+    end
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = '&Clickable line'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

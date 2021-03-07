@@ -1,0 +1,17 @@
+inherited RichTextDrawing: TRichTextDrawing
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'RichText controls (RTF) can be used with Chart.Canvas to'
+      'draw text with extended formatting.')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'RichText Drawing Example')
+    OnAfterDraw = Chart1AfterDraw
+  end
+  inherited Panel1: TPanel
+    Visible = False
+  end
+end

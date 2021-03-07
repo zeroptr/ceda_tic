@@ -1,0 +1,14 @@
+inherited IsoSurfaceEditor: TIsoSurfaceEditor
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited CBSmooth: TCheckBox
+    Visible = False
+  end
+  object BBandsPen: TButtonPen
+    Left = 158
+    Top = 128
+    Width = 105
+    Caption = '&Bands Pen...'
+    TabOrder = 10
+  end
+end

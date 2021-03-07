@@ -1,0 +1,134 @@
+inherited ContourFoot: TContourFoot
+  Left = 145
+  Top = 207
+  Height = 408
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 65
+  end
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      
+        'This example demonstrates alternative way to load data from bina' +
+        'ry file'
+      'and display it in Contour or ColorGrid series.'
+      'This example was kindly provided by Lee Grissom.')
+  end
+  inherited Chart1: TChart
+    Top = 145
+    Height = 236
+    BackWall.Color = 13626620
+    BackWall.Pen.Visible = False
+    BackWall.Size = 5
+    BackWall.Transparent = False
+    Border.Color = 9423874
+    Border.Width = 7
+    Border.Visible = True
+    BottomWall.Color = 16550915
+    BottomWall.Pen.Visible = False
+    BottomWall.Size = 5
+    Gradient.Direction = gdFromCenter
+    Gradient.EndColor = clWhite
+    Gradient.MidColor = 16777088
+    Gradient.StartColor = 10814240
+    Gradient.Visible = True
+    LeftWall.Color = 16744576
+    LeftWall.Pen.Visible = False
+    LeftWall.Size = 5
+    Legend.DividingLines.Color = clSilver
+    Legend.DividingLines.Visible = True
+    Legend.Font.Color = 6553600
+    Legend.Frame.Visible = False
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = 13556735
+    Legend.Gradient.MidColor = 14739177
+    Legend.Gradient.StartColor = 16774122
+    Legend.Gradient.Visible = True
+    Legend.Shadow.HorizSize = 4
+    Legend.Shadow.Transparency = 50
+    Legend.Shadow.VertSize = 5
+    Legend.Symbol.Squared = True
+    RightWall.Size = 5
+    Title.Color = clBlack
+    Title.Font.Color = clNavy
+    Title.Font.Height = -16
+    Title.Frame.Color = 10083835
+    Title.Frame.Width = 2
+    Title.Gradient.Balance = 40
+    Title.Gradient.Direction = gdRightLeft
+    Title.Gradient.EndColor = clBlack
+    Title.Gradient.MidColor = 8388672
+    Title.Gradient.StartColor = clGray
+    Title.Gradient.Visible = True
+    Title.Shadow.HorizSize = 4
+    Title.Shadow.Transparency = 70
+    Title.Shadow.VertSize = 4
+    Title.Text.Strings = (
+      'Showing foot data')
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = 16759225
+    BottomAxis.Grid.SmallDots = True
+    BottomAxis.LabelsFont.Color = clNavy
+    BottomAxis.LabelsFont.Name = 'Tahoma'
+    BottomAxis.LabelsFont.Style = [fsBold]
+    BottomAxis.MinorGrid.Color = 15066597
+    BottomAxis.MinorGrid.Visible = True
+    BottomAxis.MinorTickCount = 7
+    BottomAxis.TickLength = 5
+    Frame.Visible = False
+    LeftAxis.Axis.Color = clNavy
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clBlue
+    LeftAxis.Grid.SmallDots = True
+    LeftAxis.LabelsFont.Color = clNavy
+    LeftAxis.LabelsFont.Name = 'Tahoma'
+    LeftAxis.LabelsFont.Style = [fsBold]
+    Shadow.Color = clBlack
+    Shadow.HorizSize = 7
+    Shadow.VertSize = 7
+    View3D = False
+    BevelInner = bvLowered
+    BevelOuter = bvNone
+    BevelWidth = 2
+    ColorPaletteIndex = 3
+    object Series1: TContourSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Transparent = True
+      Marks.Visible = False
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YPosition = 0.189598284286995300
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 67
+    Height = 78
+    object RadioGroup1: TRadioGroup
+      Left = 8
+      Top = 8
+      Width = 185
+      Height = 57
+      Caption = 'Show as:'
+      ItemIndex = 0
+      Items.Strings = (
+        'Contour series'
+        'Colorgrid series')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+  end
+end

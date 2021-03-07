@@ -1,0 +1,20 @@
+
+{                                                                              }
+{  IB_Process.PBL                                                              }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+published
+
+  property Yield;
+
+  property BeforeExecute;
+  property AfterExecute;
+  property AfterPrepare;
+  property BeforePrepare;
+  property AfterUnprepare;
+
+{$I IB_Component.PBL}
+
+{$ENDIF}

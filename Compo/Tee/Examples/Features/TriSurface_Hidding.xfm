@@ -1,0 +1,108 @@
+inherited TriSurfaceHidding: TTriSurfaceHidding
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 97
+  end
+  inherited Memo1: TMemo
+    Height = 97
+    Lines.Strings = (
+      'Tri-Surface series now includes two new boolean properties:'
+      'Series1.HideTriangles ( default True )'
+      
+        '  Constructed triangles behind other triangles are hidden before' +
+        ' displaying them.'
+      'Series1.CacheTriangles ( default False )'
+      
+        '  When True, Triangles are preserved on consecutive displays (ie' +
+        ': rotating or zooming)'
+      
+        ' (this gives much better speed when repainting the series withou' +
+        't modifying values)')
+  end
+  inherited Chart1: TChart
+    Top = 140
+    Height = 197
+    BottomWall.Transparent = True
+    Gradient.Direction = gdRightLeft
+    Gradient.EndColor = clGray
+    Gradient.Visible = True
+    LeftWall.Transparent = True
+    Legend.Visible = False
+    Title.Visible = False
+    Chart3DPercent = 75
+    DepthAxis.Visible = True
+    View3DOptions.Elevation = 339
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 72
+    View3DOptions.Rotation = 319
+    View3DOptions.Zoom = 70
+    object Series1: TTriSurfaceSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Border.Color = clWhite
+      EndColor = 10485760
+      MidColor = clSilver
+      Pen.Visible = False
+      PaletteStyle = psStrong
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 99
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 16
+      Width = 97
+      Height = 17
+      Caption = '&Hide Triangles'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 128
+      Top = 16
+      Width = 105
+      Height = 17
+      Caption = '&Cache Triangles'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 252
+      Top = 16
+      Width = 97
+      Height = 17
+      Caption = 'Open &GL'
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    AmbientLight = 8
+    Light.Color = clGray
+    Light.Position.X = -100.000000000000000000
+    Light.Position.Y = -100.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Shininess = 0.500000000000000000
+    TeePanel = Chart1
+    Left = 344
+    Top = 178
+  end
+end

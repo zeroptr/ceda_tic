@@ -1,0 +1,26 @@
+inherited TeeExportForm: TTeeExportForm
+  Left = 274
+  Top = 284
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited PageControl1: TPageControl
+    inherited TabPicture: TTabSheet
+      inherited SplitPic: TSplitter
+        Left = 145
+        Align = alLeft
+      end
+      inherited RGFormat: TGroupBox
+        Width = 145
+        Align = alLeft
+        inherited LBFormat: TListBox
+          Width = 141
+        end
+      end
+      inherited PageOptions: TPageControl
+        Left = 148
+        Width = 281
+        Align = alClient
+      end
+    end
+  end
+end

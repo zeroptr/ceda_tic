@@ -1,0 +1,297 @@
+inherited OpenGLLightDirection: TOpenGLLightDirection
+  Left = 304
+  Top = 293
+  Width = 717
+  Height = 476
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 709
+  end
+  inherited Memo1: TMemo
+    Width = 709
+    Lines.Strings = (
+      
+        'Added Direction and SpotDegrees properties for all the OpenGL li' +
+        'ghts. The first allows to define the direction of the light assi' +
+        'gning its X,Y and Z '
+      'value. The SoptDegrees will set the spot degres for each light.'
+      ''
+      'Example :'
+      'with TeeOpenGL1.Light0 do'
+      'begin'
+      ' Direction.X:=50;'
+      ' Direction.Y:=25;'
+      ' Direction. Z:=0;'
+      ' SpotDegrees:=60;'
+      'end;'
+      ''
+      '')
+  end
+  inherited Chart1: TChart
+    Left = 169
+    Top = 115
+    Width = 540
+    Height = 334
+    BackWall.Size = 6
+    BottomWall.Size = 6
+    LeftWall.Size = 6
+    LeftWall.Transparent = True
+    Legend.Visible = False
+    RightWall.Size = 6
+    Title.Visible = False
+    Chart3DPercent = 90
+    View3DOptions.Elevation = 307
+    View3DOptions.HorizOffset = -10
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 117
+    View3DOptions.Rotation = 330
+    View3DOptions.VertOffset = -5
+    View3DOptions.Zoom = 85
+    object Series1: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbStacked
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        0006000000F2BF95EC58067C402775029AC8A67740212922C3AAF475405B2A6F
+        4738477340C28BBE82B42A6E400F45813E51DE7040}
+    end
+    object Series2: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      BarStyle = bsCilinder
+      Gradient.Direction = gdTopBottom
+      MultiBar = mbStacked
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000EC714033333333339371406666666666866E40999999
+        9999716C403333333333B570403333333333217040}
+    end
+    object Series3: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.ArrowHeadSize = 6
+      Marks.Visible = False
+      LineHeight = 12
+      LinePen.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0119000000000000000000000030DD240681E16540ABAAAAAAAAAACA3F78BE9F
+        1A2FD76640ABAAAAAAAAAADA3FC09F1A2FDDCC6740000000000000E43F61E5D0
+        22DB067040ABAAAAAAAAAAEA3F5939B4C876007340ABAAAAAAAAAAF03FF5FDD4
+        78E9747640000000000000F43F64105839B4477840555555555555F73FA89BC4
+        20B0BA7440AAAAAAAAAAAAFA3F06560E2DB2817040FFFFFFFFFFFFFD3F951804
+        560E6D7240AAAAAAAAAAAA0040996E1283C0EF7640555555555555024097438B
+        6CE7AD7A40000000000000044053B81E85EB3A7E40ABAAAAAAAAAA0540DE2406
+        8195A37B405655555555550740DCF97E6ABC617F4001000000000009405939B4
+        C876FF7E40ACAAAAAAAAAA0A4005560E2DB28180405755555555550C40816ABC
+        7493DC7F400200000000000E40A9C64B3789FC8040ADAAAAAAAAAA0F409C9999
+        9999307F40ACAAAAAAAAAA1040816ABC7493DC7F400100000000801140D0F753
+        E3A5D981405655555555551240A345B6F3FD378040ABAAAAAAAA2A134048B6F3
+        FDD4B17C4000000000000014403CB4C876BE287B40}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 169
+    Height = 334
+    Align = alLeft
+    object Label1: TLabel
+      Left = 14
+      Top = 52
+      Width = 26
+      Height = 13
+      Caption = '&Light:'
+    end
+    object Label9: TLabel
+      Left = 8
+      Top = 204
+      Width = 25
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Sp&ot:'
+      FocusControl = Edit2
+    end
+    object bEdit: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = bEditClick
+    end
+    object cbLight: TComboFlat
+      Left = 52
+      Top = 49
+      Width = 73
+      TabOrder = 1
+      OnChange = cbLightChange
+      Items.Strings = (
+        'Light1'
+        'Light2'
+        'Light3')
+    end
+    object GroupBox1: TGroupBox
+      Left = 6
+      Top = 77
+      Width = 147
+      Height = 113
+      Caption = 'Direction'
+      TabOrder = 2
+      object Label11: TLabel
+        Left = 9
+        Top = 33
+        Width = 10
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&X:'
+        FocusControl = TBXDirection
+      end
+      object Label12: TLabel
+        Left = 9
+        Top = 56
+        Width = 10
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&Y:'
+        FocusControl = TBYDirection
+      end
+      object Label13: TLabel
+        Left = 9
+        Top = 80
+        Width = 10
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '&Z:'
+        FocusControl = TBZDirection
+      end
+      object TBXDirection: TTrackBar
+        Left = 23
+        Top = 28
+        Width = 121
+        Height = 26
+        HelpContext = 843
+        Max = 500
+        Min = -500
+        TabOrder = 0
+        TickMarks = tmBoth
+        TickStyle = tsNone
+        OnChange = TBXDirectionChange
+      end
+      object TBYDirection: TTrackBar
+        Left = 23
+        Top = 51
+        Width = 121
+        Height = 26
+        HelpContext = 844
+        Max = 500
+        Min = -500
+        TabOrder = 1
+        TickMarks = tmBoth
+        TickStyle = tsNone
+        OnChange = TBYDirectionChange
+      end
+      object TBZDirection: TTrackBar
+        Left = 23
+        Top = 75
+        Width = 121
+        Height = 26
+        HelpContext = 983
+        Max = 500
+        Min = -500
+        TabOrder = 2
+        TickMarks = tmBoth
+        TickStyle = tsNone
+        OnChange = TBZDirectionChange
+      end
+    end
+    object Edit2: TEdit
+      Left = 38
+      Top = 201
+      Width = 34
+      Height = 21
+      TabOrder = 3
+      Text = '50'
+      OnChange = Edit2Change
+    end
+    object UDSpot: TUpDown
+      Left = 72
+      Top = 201
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Max = 90
+      Increment = 5
+      Position = 50
+      TabOrder = 4
+    end
+    object CBDefaultSpot: TCheckBox
+      Left = 92
+      Top = 204
+      Width = 63
+      Height = 17
+      Caption = 'Default'
+      TabOrder = 5
+      OnClick = CBDefaultSpotClick
+    end
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    Active = True
+    AmbientLight = 54
+    Antialias = True
+    Light.Color = 3750201
+    Light.Visible = True
+    Light.Direction.X = 296.000000000000000000
+    Light.Direction.Y = 61.000000000000000000
+    Light.Direction.Z = 163.000000000000000000
+    Light.FixedPosition = True
+    Light.Position.X = -51.000000000000000000
+    Light.Position.Y = 122.000000000000000000
+    Light.Position.Z = 439.000000000000000000
+    Light.SpotDegrees = 180.000000000000000000
+    Light.UseDirection = True
+    Light1.Color = 3487029
+    Light1.Visible = True
+    Light1.Direction.Z = -1.000000000000000000
+    Light1.FixedPosition = True
+    Light1.Position.X = -255.000000000000000000
+    Light1.Position.Y = -500.000000000000000000
+    Light1.Position.Z = 500.000000000000000000
+    Light1.SpotDegrees = 180.000000000000000000
+    Light1.UseDirection = True
+    Light2.Color = 1250067
+    Light2.Visible = True
+    Light2.Direction.Z = -1.000000000000000000
+    Light2.FixedPosition = True
+    Light2.Position.X = -143.000000000000000000
+    Light2.Position.Y = 327.000000000000000000
+    Light2.Position.Z = 500.000000000000000000
+    Light2.SpotDegrees = 180.000000000000000000
+    Light2.UseDirection = True
+    Shininess = 0.600000000000000000
+    TeePanel = Chart1
+    Left = 112
+    Top = 83
+  end
+end

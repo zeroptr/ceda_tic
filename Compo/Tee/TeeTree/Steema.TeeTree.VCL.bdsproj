@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">DelphiDotNet.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{3062DC29-3B53-4074-B146-24D0767F5039}</Option>
+    </Option>
+  </PersonalityInfo>
+  <DelphiDotNet.Personality>
+    <Source>
+      <Source Name="MainSource">Steema.TeeTree.VCL.dpk</Source>
+    </Source>
+    
+    
+    <FileList>
+      <File FileName="e:\program files\common files\borland shared\bds\shared assemblies\3.0\Borland.Delphi.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Delphi" AssemblyName="Borland.Delphi" Version="9.0.1761.24408" LinkUnits="False"/>
+      <File FileName="e:\program files\common files\borland shared\bds\shared assemblies\3.0\Borland.Vcl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Vcl" AssemblyName="Borland.Vcl" Version="9.0.1761.24408" LinkUnits="False"/>
+      <File FileName="e:\program files\common files\borland shared\bds\shared assemblies\3.0\Borland.VclX.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.VclX" AssemblyName="Borland.VclX" Version="9.0.1761.24408" LinkUnits="False"/>
+      <File FileName="e:\program files\common files\borland shared\bds\shared assemblies\3.0\Borland.VclDbRtl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.VclDbRtl" AssemblyName="Borland.VclDbRtl" Version="9.0.1761.24408" LinkUnits="False"/>
+      <File FileName="e:\program files\common files\borland shared\bds\shared assemblies\3.0\Borland.VclDbCtrls.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.VclDbCtrls" AssemblyName="Borland.VclDbCtrls" Version="9.0.1761.24408" LinkUnits="False"/>
+      <File FileName="e:\tt2005\delphi9\assemblies\Steema.TeeChart.Vcl.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Steema.TeeChart.VCL" AssemblyName="Steema.TeeChart.VCL" Version="8.0.1830.22045" LinkUnits="False"/>
+      <File FileName="e:\tt2005\delphi9\assemblies\Steema.TeeChart.VCL.Languages.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Steema.TeeChart.VCL.Languages" AssemblyName="Steema.TeeChart.VCL.Languages" Version="8.0.1830.22052" LinkUnits="False"/>
+      <File FileName="TreeTeEd.pas" ContainerId="" ModuleName="TreeTeEd"/>
+      <File FileName="TeeTree.pas" ContainerId="" ModuleName="TeeTree"/>
+      <File FileName="TreeCoEd.pas" ContainerId="" ModuleName="TreeCoEd"/>
+      <File FileName="TreeFlow.pas" ContainerId="" ModuleName="TreeFlow"/>
+      <File FileName="TreeShed.pas" ContainerId="" ModuleName="TreeShed"/>
+      <File FileName="TeeDBTre.pas" ContainerId="" ModuleName="TeeDBTre"/>
+      <File FileName="TreeEd.pas" ContainerId="" ModuleName="TreeEd"/>
+      <File FileName="TreeDBEd.pas" ContainerId="" ModuleName="TreeDBEd"/>
+      <File FileName="TreeConst.pas" ContainerId="" ModuleName="TreeConst"/>
+      <File FileName="TreeUML.pas" ContainerId="" ModuleName="TreeUML"/>
+      <File FileName="TreeElectric.pas" ContainerId="" ModuleName="TreeElectric"/>
+      <File FileName="TreeExport.pas" ContainerId="" ModuleName="TreeExport"/>
+      <File FileName="TeeOfficeConstants.pas" ContainerId="" ModuleName="TeeOfficeConstants"/>
+      <File FileName="TeeRecentFiles.pas" ContainerId="" ModuleName="TeeRecentFiles"/>
+      <File FileName="TreeTransit.pas" ContainerId="" ModuleName="TreeTransit"/>
+      <File FileName="TreeAnimate.pas" ContainerId="" ModuleName="TreeAnimate"/>
+      <File FileName="TreeAnimationGallery.pas" ContainerId="" ModuleName="TreeAnimationGallery"/>
+      <File FileName="TreeNavigator.pas" ContainerId="" ModuleName="TreeNavigator"/>
+      <File FileName="TreeAnimateEditor.pas" ContainerId="" ModuleName="TreeAnimateEditor"/>
+      <File FileName="TreeChildManagers.pas" ContainerId="" ModuleName="TreeChildManagers"/>
+    </FileList>
+    <FileVersion>
+      <FileVersion Name="Version">8.0</FileVersion>
+    </FileVersion>
+    <Compiler>
+      <Compiler Name="A">0</Compiler>
+      <Compiler Name="B">0</Compiler>
+      <Compiler Name="C">1</Compiler>
+      <Compiler Name="D">1</Compiler>
+      <Compiler Name="E">0</Compiler>
+      <Compiler Name="F">0</Compiler>
+      <Compiler Name="G">1</Compiler>
+      <Compiler Name="H">1</Compiler>
+      <Compiler Name="I">1</Compiler>
+      <Compiler Name="J">0</Compiler>
+      <Compiler Name="K">0</Compiler>
+      <Compiler Name="L">1</Compiler>
+      <Compiler Name="M">0</Compiler>
+      <Compiler Name="N">1</Compiler>
+      <Compiler Name="O">1</Compiler>
+      <Compiler Name="P">1</Compiler>
+      <Compiler Name="Q">0</Compiler>
+      <Compiler Name="R">0</Compiler>
+      <Compiler Name="S">0</Compiler>
+      <Compiler Name="T">0</Compiler>
+      <Compiler Name="U">0</Compiler>
+      <Compiler Name="V">1</Compiler>
+      <Compiler Name="W">0</Compiler>
+      <Compiler Name="X">1</Compiler>
+      <Compiler Name="Y">0</Compiler>
+      <Compiler Name="Z">1</Compiler>
+      <Compiler Name="ShowHints">True</Compiler>
+      <Compiler Name="ShowWarnings">True</Compiler>
+      <Compiler Name="UnitAliases">WinTypes=Borland.Vcl.Windows;WinProcs=Borland.Vcl.Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;</Compiler>
+      <Compiler Name="NamespacePrefix"></Compiler>
+      <Compiler Name="GenerateDocumentation">False</Compiler>
+      <Compiler Name="DefaultNamespace"></Compiler>
+      <Compiler Name="SymbolDeprecated">True</Compiler>
+      <Compiler Name="SymbolLibrary">True</Compiler>
+      <Compiler Name="SymbolPlatform">True</Compiler>
+      <Compiler Name="SymbolExperimental">True</Compiler>
+      <Compiler Name="UnitLibrary">True</Compiler>
+      <Compiler Name="UnitPlatform">False</Compiler>
+      <Compiler Name="UnitDeprecated">True</Compiler>
+      <Compiler Name="UnitExperimental">True</Compiler>
+      <Compiler Name="HResultCompat">True</Compiler>
+      <Compiler Name="HidingMember">True</Compiler>
+      <Compiler Name="HiddenVirtual">True</Compiler>
+      <Compiler Name="Garbage">True</Compiler>
+      <Compiler Name="BoundsError">True</Compiler>
+      <Compiler Name="ZeroNilCompat">True</Compiler>
+      <Compiler Name="StringConstTruncated">True</Compiler>
+      <Compiler Name="ForLoopVarVarPar">True</Compiler>
+      <Compiler Name="TypedConstVarPar">True</Compiler>
+      <Compiler Name="AsgToTypedConst">True</Compiler>
+      <Compiler Name="CaseLabelRange">True</Compiler>
+      <Compiler Name="ForVariable">True</Compiler>
+      <Compiler Name="ConstructingAbstract">True</Compiler>
+      <Compiler Name="ComparisonFalse">True</Compiler>
+      <Compiler Name="ComparisonTrue">True</Compiler>
+      <Compiler Name="ComparingSignedUnsigned">True</Compiler>
+      <Compiler Name="CombiningSignedUnsigned">True</Compiler>
+      <Compiler Name="UnsupportedConstruct">True</Compiler>
+      <Compiler Name="FileOpen">True</Compiler>
+      <Compiler Name="FileOpenUnitSrc">True</Compiler>
+      <Compiler Name="BadGlobalSymbol">True</Compiler>
+      <Compiler Name="DuplicateConstructorDestructor">True</Compiler>
+      <Compiler Name="InvalidDirective">True</Compiler>
+      <Compiler Name="PackageNoLink">True</Compiler>
+      <Compiler Name="PackageThreadVar">True</Compiler>
+      <Compiler Name="ImplicitImport">True</Compiler>
+      <Compiler Name="HPPEMITIgnored">True</Compiler>
+      <Compiler Name="NoRetVal">True</Compiler>
+      <Compiler Name="UseBeforeDef">True</Compiler>
+      <Compiler Name="ForLoopVarUndef">True</Compiler>
+      <Compiler Name="UnitNameMismatch">True</Compiler>
+      <Compiler Name="NoCFGFileFound">True</Compiler>
+      <Compiler Name="MessageDirective">True</Compiler>
+      <Compiler Name="ImplicitVariants">True</Compiler>
+      <Compiler Name="UnicodeToLocale">True</Compiler>
+      <Compiler Name="LocaleToUnicode">True</Compiler>
+      <Compiler Name="ImagebaseMultiple">True</Compiler>
+      <Compiler Name="SuspiciousTypecast">True</Compiler>
+      <Compiler Name="PrivatePropAccessor">True</Compiler>
+      <Compiler Name="UnsafeType">True</Compiler>
+      <Compiler Name="UnsafeCode">True</Compiler>
+      <Compiler Name="UnsafeCast">True</Compiler>
+      <Compiler Name="OptionTruncated">True</Compiler>
+      <Compiler Name="WideCharReduced">True</Compiler>
+      <Compiler Name="DuplicatesIgnored">True</Compiler>
+    </Compiler>
+    <Linker>
+      <Linker Name="MapFile">0</Linker>
+      <Linker Name="OutputObjs">0</Linker>
+      <Linker Name="ConsoleApp">1</Linker>
+      <Linker Name="DebugInfo">True</Linker>
+      <Linker Name="RemoteSymbols">False</Linker>
+      <Linker Name="GenerateDRC">False</Linker>
+      <Linker Name="MinStackSize">4096</Linker>
+      <Linker Name="MaxStackSize">1048576</Linker>
+      <Linker Name="ImageBase">1109393408</Linker>
+      <Linker Name="ExeDescription">TeeTree 2 for VCL.NET</Linker>
+    </Linker>
+    <Directories>
+      <Directories Name="OutputDir"></Directories>
+      <Directories Name="UnitOutputDir"></Directories>
+      <Directories Name="PackageDLLOutputDir"></Directories>
+      <Directories Name="PackageDCPOutputDir"></Directories>
+      <Directories Name="SearchPath"></Directories>
+      <Directories Name="Packages"></Directories>
+      <Directories Name="Conditionals"></Directories>
+      <Directories Name="DebugSourceDirs"></Directories>
+      <Directories Name="UsePackages">False</Directories>
+    </Directories>
+    <Parameters>
+      <Parameters Name="RunParams"></Parameters>
+      <Parameters Name="HostApplication"></Parameters>
+      <Parameters Name="Launcher"></Parameters>
+      <Parameters Name="UseLauncher">False</Parameters>
+      <Parameters Name="DebugCWD"></Parameters>
+      <Parameters Name="RemoteHost"></Parameters>
+      <Parameters Name="RemotePath"></Parameters>
+      <Parameters Name="RemoteLauncher"></Parameters>
+      <Parameters Name="RemoteCWD"></Parameters>
+      <Parameters Name="RemoteDebug">False</Parameters>
+    </Parameters>
+    <Language>
+      <Language Name="ActiveLang"></Language>
+      <Language Name="ProjectLang">$00000000</Language>
+      <Language Name="RootDir"></Language>
+    </Language>
+    <VersionInfo>
+      <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+      <VersionInfo Name="MajorVer">2</VersionInfo>
+      <VersionInfo Name="MinorVer">0</VersionInfo>
+      <VersionInfo Name="Release">0</VersionInfo>
+      <VersionInfo Name="Build">0</VersionInfo>
+      <VersionInfo Name="Debug">False</VersionInfo>
+      <VersionInfo Name="PreRelease">False</VersionInfo>
+      <VersionInfo Name="Special">False</VersionInfo>
+      <VersionInfo Name="Private">False</VersionInfo>
+      <VersionInfo Name="DLL">False</VersionInfo>
+      <VersionInfo Name="Locale">1027</VersionInfo>
+      <VersionInfo Name="CodePage">1252</VersionInfo>
+    </VersionInfo>
+    <VersionInfoKeys>
+      <VersionInfoKeys Name="CompanyName">Steema Software</VersionInfoKeys>
+      <VersionInfoKeys Name="FileDescription">TeeTree</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">2.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="InternalName"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (c) 2000-2006 by Steema Software</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductName">TeeTree</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">2.0.0.0</VersionInfoKeys>
+      <VersionInfoKeys Name="Comments"></VersionInfoKeys>
+    </VersionInfoKeys>
+  </DelphiDotNet.Personality>
+</BorlandProject>

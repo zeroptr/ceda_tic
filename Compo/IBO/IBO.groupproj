@@ -1,0 +1,211 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{181ef3cd-6a14-44c9-94a8-3c0c7f5dd8c9}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="IB_SQL">
+    <MSBuild Projects="IB_SQL.dproj" Targets="" />
+  </Target>
+  <Target Name="IB_SQL:Clean">
+    <MSBuild Projects="IB_SQL.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IB_SQL:Make">
+    <MSBuild Projects="IB_SQL.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IB_FTS">
+    <MSBuild Projects="IB_FTS.dproj" Targets="" />
+  </Target>
+  <Target Name="IB_FTS:Clean">
+    <MSBuild Projects="IB_FTS.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IB_FTS:Make">
+    <MSBuild Projects="IB_FTS.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IB_RPL">
+    <MSBuild Projects="IB_RPL.dproj" Targets="" />
+  </Target>
+  <Target Name="IB_RPL:Clean">
+    <MSBuild Projects="IB_RPL.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IB_RPL:Make">
+    <MSBuild Projects="IB_RPL.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Arrays">
+    <MSBuild Projects="Samples\Arrays\Arrays.dproj" Targets="" />
+  </Target>
+  <Target Name="Arrays:Clean">
+    <MSBuild Projects="Samples\Arrays\Arrays.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Arrays:Make">
+    <MSBuild Projects="Samples\Arrays\Arrays.dproj" Targets="Make" />
+  </Target>
+  <Target Name="BlobInserts">
+    <MSBuild Projects="Samples\BlobInserts\BlobInserts.dproj" Targets="" />
+  </Target>
+  <Target Name="BlobInserts:Clean">
+    <MSBuild Projects="Samples\BlobInserts\BlobInserts.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BlobInserts:Make">
+    <MSBuild Projects="Samples\BlobInserts\BlobInserts.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Blr">
+    <MSBuild Projects="Samples\BLR\Blr.dproj" Targets="" />
+  </Target>
+  <Target Name="Blr:Clean">
+    <MSBuild Projects="Samples\BLR\Blr.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Blr:Make">
+    <MSBuild Projects="Samples\BLR\Blr.dproj" Targets="Make" />
+  </Target>
+  <Target Name="BrowseItems">
+    <MSBuild Projects="Samples\BrowseItems\BrowseItems.dproj" Targets="" />
+  </Target>
+  <Target Name="BrowseItems:Clean">
+    <MSBuild Projects="Samples\BrowseItems\BrowseItems.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BrowseItems:Make">
+    <MSBuild Projects="Samples\BrowseItems\BrowseItems.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Company">
+    <MSBuild Projects="Samples\Company\Company.dproj" Targets="" />
+  </Target>
+  <Target Name="Company:Clean">
+    <MSBuild Projects="Samples\Company\Company.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Company:Make">
+    <MSBuild Projects="Samples\Company\Company.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Contact">
+    <MSBuild Projects="Samples\Contact\Contact.dproj" Targets="" />
+  </Target>
+  <Target Name="Contact:Clean">
+    <MSBuild Projects="Samples\Contact\Contact.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Contact:Make">
+    <MSBuild Projects="Samples\Contact\Contact.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Csdemos">
+    <MSBuild Projects="Samples\CSDemo\Csdemos.dproj" Targets="" />
+  </Target>
+  <Target Name="Csdemos:Clean">
+    <MSBuild Projects="Samples\CSDemo\Csdemos.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Csdemos:Make">
+    <MSBuild Projects="Samples\CSDemo\Csdemos.dproj" Targets="Make" />
+  </Target>
+  <Target Name="CtrlGrid">
+    <MSBuild Projects="Samples\CtrlGrid\CtrlGrid.dproj" Targets="" />
+  </Target>
+  <Target Name="CtrlGrid:Clean">
+    <MSBuild Projects="Samples\CtrlGrid\CtrlGrid.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="CtrlGrid:Make">
+    <MSBuild Projects="Samples\CtrlGrid\CtrlGrid.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Events">
+    <MSBuild Projects="Samples\Events\Events.dproj" Targets="" />
+  </Target>
+  <Target Name="Events:Clean">
+    <MSBuild Projects="Samples\Events\Events.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Events:Make">
+    <MSBuild Projects="Samples\Events\Events.dproj" Targets="Make" />
+  </Target>
+  <Target Name="KeyLinks">
+    <MSBuild Projects="Samples\KeyLinks\KeyLinks.dproj" Targets="" />
+  </Target>
+  <Target Name="KeyLinks:Clean">
+    <MSBuild Projects="Samples\KeyLinks\KeyLinks.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="KeyLinks:Make">
+    <MSBuild Projects="Samples\KeyLinks\KeyLinks.dproj" Targets="Make" />
+  </Target>
+  <Target Name="LookupCombo">
+    <MSBuild Projects="Samples\LookupCombo\LookupCombo.dproj" Targets="" />
+  </Target>
+  <Target Name="LookupCombo:Clean">
+    <MSBuild Projects="Samples\LookupCombo\LookupCombo.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="LookupCombo:Make">
+    <MSBuild Projects="Samples\LookupCombo\LookupCombo.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MasterLinks">
+    <MSBuild Projects="Samples\MasterLinks\MasterLinks.dproj" Targets="" />
+  </Target>
+  <Target Name="MasterLinks:Clean">
+    <MSBuild Projects="Samples\MasterLinks\MasterLinks.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MasterLinks:Make">
+    <MSBuild Projects="Samples\MasterLinks\MasterLinks.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Mdiapp">
+    <MSBuild Projects="Samples\MDIApp\Mdiapp.dproj" Targets="" />
+  </Target>
+  <Target Name="Mdiapp:Clean">
+    <MSBuild Projects="Samples\MDIApp\Mdiapp.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Mdiapp:Make">
+    <MSBuild Projects="Samples\MDIApp\Mdiapp.dproj" Targets="Make" />
+  </Target>
+  <Target Name="PriceList">
+    <MSBuild Projects="Samples\PriceList\PriceList.dproj" Targets="" />
+  </Target>
+  <Target Name="PriceList:Clean">
+    <MSBuild Projects="Samples\PriceList\PriceList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="PriceList:Make">
+    <MSBuild Projects="Samples\PriceList\PriceList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SearchingLinks">
+    <MSBuild Projects="Samples\SearchingLinks\SearchingLinks.dproj" Targets="" />
+  </Target>
+  <Target Name="SearchingLinks:Clean">
+    <MSBuild Projects="Samples\SearchingLinks\SearchingLinks.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SearchingLinks:Make">
+    <MSBuild Projects="Samples\SearchingLinks\SearchingLinks.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Survey">
+    <MSBuild Projects="Samples\Survey\Survey.dproj" Targets="" />
+  </Target>
+  <Target Name="Survey:Clean">
+    <MSBuild Projects="Samples\Survey\Survey.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Survey:Make">
+    <MSBuild Projects="Samples\Survey\Survey.dproj" Targets="Make" />
+  </Target>
+  <Target Name="TestScan">
+    <MSBuild Projects="Samples\TestScan\TestScan.dproj" Targets="" />
+  </Target>
+  <Target Name="TestScan:Clean">
+    <MSBuild Projects="Samples\TestScan\TestScan.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="TestScan:Make">
+    <MSBuild Projects="Samples\TestScan\TestScan.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Threads">
+    <MSBuild Projects="Samples\Threads\Threads.dproj" Targets="" />
+  </Target>
+  <Target Name="Threads:Clean">
+    <MSBuild Projects="Samples\Threads\Threads.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Threads:Make">
+    <MSBuild Projects="Samples\Threads\Threads.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="IB_SQL;IB_FTS;IB_RPL;Arrays;BlobInserts;Blr;BrowseItems;Company;Contact;Csdemos;CtrlGrid;Events;KeyLinks;LookupCombo;MasterLinks;Mdiapp;PriceList;SearchingLinks;Survey;TestScan;Threads" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="IB_SQL:Clean;IB_FTS:Clean;IB_RPL:Clean;Arrays:Clean;BlobInserts:Clean;Blr:Clean;BrowseItems:Clean;Company:Clean;Contact:Clean;Csdemos:Clean;CtrlGrid:Clean;Events:Clean;KeyLinks:Clean;LookupCombo:Clean;MasterLinks:Clean;Mdiapp:Clean;PriceList:Clean;SearchingLinks:Clean;Survey:Clean;TestScan:Clean;Threads:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="IB_SQL:Make;IB_FTS:Make;IB_RPL:Make;Arrays:Make;BlobInserts:Make;Blr:Make;BrowseItems:Make;Company:Make;Contact:Make;Csdemos:Make;CtrlGrid:Make;Events:Make;KeyLinks:Make;LookupCombo:Make;MasterLinks:Make;Mdiapp:Make;PriceList:Make;SearchingLinks:Make;Survey:Make;TestScan:Make;Threads:Make" />
+  </Target>
+</Project>

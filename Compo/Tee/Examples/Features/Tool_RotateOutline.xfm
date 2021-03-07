@@ -1,0 +1,68 @@
+inherited RotateOutline: TRotateOutline
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Rotate tool can now display a wireframe while rotating, instead ' +
+        'of'
+      're-painting the whole chart.'
+      ''
+      'Click and drag the chart to see the wireframe.')
+  end
+  inherited Chart1: TChart
+    BackWall.Transparent = False
+    Legend.Visible = False
+    RightWall.Visible = True
+    Title.Text.Strings = (
+      'Rotate tool outline')
+    Chart3DPercent = 95
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 89
+    View3DOptions.Zoom = 78
+    object Series1: THorizAreaSeries
+      Gradient.Direction = gdRightLeft
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      YValues.Order = loAscending
+      Data = {
+        000A0000000000000000405B4000000000000028400000000000005640000000
+        0000E06140000000000040654000000000004058400000000000005F40000000
+        00008053400000000000804D400000000000002640}
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+      Pen.Visible = False
+    end
+  end
+  inherited Panel1: TPanel
+    object ButtonPen1: TButtonPen
+      Left = 16
+      Top = 8
+      Caption = '&Outline...'
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      Left = 118
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Draw outline'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

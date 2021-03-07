@@ -1,0 +1,104 @@
+
+{                                                                              }
+{  IB_Bars.INT                                                                 }
+{                                                                              }
+
+// IB_NavigationBar
+// IB_SearchBar
+// IB_DatasetBar
+// IB_StatementBar
+// IB_UpdateBar
+// IB_UtilityBar
+
+private
+  ButtonWidth: Integer;
+  MinBtnSize: TPoint;
+{$IFDEF IBO_VCL30_OR_GREATER}
+  FFlat: boolean;
+{$ENDIF}
+  FBeforeAction: TNotifyEvent;
+  FAfterAction: TNotifyEvent;
+  FCustomGlyphs: TImageList;
+  FOnButtonsStateChanged: TNotifyEvent;   
+{$IFDEF IBO_VCL30_OR_GREATER}
+  procedure SetFlat( AValue: boolean );
+{$ENDIF}
+  procedure InitButtons;
+  procedure BtnMouseDown (Sender: TObject; Button: TMouseButton;
+    Shift: TShiftState; X, Y: Integer);
+
+  procedure WMSize(var Message: TWMSize);  message WM_SIZE;
+  procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
+  procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+  procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
+  procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+  procedure SetCustomGlyphs(Value: TImageList);
+  procedure CustomGlyphsChange(Sender: TObject);
+
+protected
+  procedure BarClick(Sender: TObject); virtual;
+  procedure SysStateChanged; virtual;
+  procedure Loaded; override;
+  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  procedure Notification( AComponent: TComponent;
+                          Operation: TOperation ); override;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+  procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+  procedure LoadCustomGlyphs;
+  procedure AdjSize( var W: Integer; var H: Integer ); virtual;
+  procedure InitHints;
+published
+{: This provides a list of customized glyphs for the toolbar.
+<br><br>
+Set the corresponding buttons to be customized in the CustomGlyphsSupplied
+property.}
+  property CustomGlyphs: TImageList read FCustomGlyphs write SetCustomGlyphs;
+{$IFDEF IBO_VCL30_OR_GREATER}
+{: Makes the buttons use the Flat button style.}
+  property Flat: boolean read FFlat write SetFlat default true;
+{$ENDIF}
+{: Define custom behavior before the action of the button click is executed.
+<br><br>
+Raise an exception if you would like to prevent the action from taking place.}
+  property BeforeAction: TNotifyEvent read FBeforeAction write FBeforeAction;
+{: Define custom behavior after the action of the button click is executed.
+<br><br>
+This event will not be triggered if an exception was raised.}
+  property AfterAction:  TNotifyEvent read FAfterAction write FAfterAction;
+
+{: Define custom behavior after buttons state changed.
+<br><br>
+This event will not be triggered if an exception was raised.}
+  property OnButtonsStateChanged: TNotifyEvent read FOnButtonsStateChanged
+                                               write FOnButtonsStateChanged;
+{$IFNDEF HELPSCAN}
+  property Align;
+{$IFDEF IBO_VCL40_OR_GREATER}
+  property Anchors;
+  property Constraints;
+{$ENDIF}
+  property Color;
+  property ParentColor;
+  property DragCursor;
+  property DragMode;
+  property Enabled;
+  property Ctl3D;
+  property ParentCtl3D;
+  property ParentShowHint;
+  property PopupMenu;
+  property ShowHint;
+  property TabOrder;
+  property TabStop;
+  property Visible;
+  property OnClick;
+  property OnDblClick;
+  property OnDragDrop;
+  property OnDragOver;
+  property OnEndDrag;
+  property OnEnter;
+  property OnExit;
+  property OnResize;
+{$ENDIF}
+

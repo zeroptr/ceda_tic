@@ -1,0 +1,72 @@
+object ChangesMisc: TChangesMisc
+  Left = 261
+  Top = 316
+  Width = 414
+  Height = 350
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 406
+    Height = 323
+    Align = alClient
+    Lines.Strings = (
+      'Most important internal changes are:'
+      ''
+      
+        '-Series data "Multiplier" property has been removed for speed re' +
+        'asons.'
+      
+        ' It can be enabled again by modifying the TeeDefs.inc file and r' +
+        'ecompiling'
+      ' the packages.'
+      ''
+      
+        '-Series now use Dynamic arrays to store points data. This increa' +
+        'ses speed '
+      ' and reduces memory consumption a lot.'
+      
+        ' If you compile using Range Checking (Options -> Compiler) then ' +
+        'TeeChart'
+      
+        ' will use additional code to validate access to the dynamic arra' +
+        'ys.'
+      ''
+      
+        '-Candle (and OHLC) series now default the Y values to Close valu' +
+        'es'
+      '(in version 4, the Y values were mapped to Open values).'
+      ''
+      '-All "Longint" variables converted to "Integer" for nicer 32bit.'
+      ''
+      
+        '-Series colors are not stored if not supplied (less memory used)' +
+        #39'.'
+      ''
+      '-Renamed units:'
+      
+        'To better identify TeeChart units, some of them have been rename' +
+        'd,'
+      
+        'prefixing them with "Tee".  These units are mostly internally, s' +
+        'o there'
+      'should be no conflict with your existing applications. '
+      ''
+      '  Example: '
+      ''
+      '  Uses BarEdit   ---->  Uses TeeBarEdit ;'
+      '  Uses EditPro   ---->  Uses TeeEditPro ;'
+      '         '
+      '-Source code is more documented ( TeEngine unit, etc ).')
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+  end
+end

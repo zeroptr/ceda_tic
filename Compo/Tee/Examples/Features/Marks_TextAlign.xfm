@@ -1,0 +1,123 @@
+inherited MarksTextAlign: TMarksTextAlign
+  Left = 464
+  Top = 291
+  Width = 505
+  Height = 437
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 497
+  end
+  inherited Memo1: TMemo
+    Width = 497
+    Lines.Strings = (
+      
+        'When Series Marks have multiple lines of text they can be displa' +
+        'yed aligned to'
+      'left, center or to the right edge of the Mark rectangle.'
+      ''
+      
+        'Multiple lines of text are added using the "TeeLineSeparator" co' +
+        'nstant'
+      '(equivalent to character #13, carriage return)'
+      ''
+      'Example:'
+      ''
+      'Series1.Add(123, '#39'Hello'#39' + TeeLineSeparator + '#39'World !'#39');'
+      'Series1.Add(456, '#39'This is a'#39' + #13 + '#39'multi-line mark.'#39');'
+      ''
+      'Series1.Marks.Visible:= True;'
+      ''
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 497
+    Height = 254
+    BackWall.Color = clGray
+    BackWall.Pen.Color = clGray
+    BackWall.Visible = False
+    Gradient.EndColor = 12255232
+    Gradient.MidColor = 15859712
+    Gradient.StartColor = clBlack
+    Gradient.SubGradient.Transparency = 58
+    Gradient.Visible = True
+    Legend.ColorWidth = 25
+    Legend.Font.Color = clSilver
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Pen.Visible = False
+    Legend.Symbol.Width = 25
+    Legend.Transparent = True
+    Legend.VertSpacing = 4
+    MarginTop = 8
+    Title.Visible = False
+    BottomAxis.Axis.Color = clSilver
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.SmallDots = True
+    BottomAxis.LabelsFont.Color = clSilver
+    BottomAxis.MaximumOffset = 30
+    BottomAxis.MinimumOffset = 30
+    Frame.Color = clGray
+    LeftAxis.Axis.Color = clSilver
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.SmallDots = True
+    LeftAxis.Grid.DrawEvery = 2
+    LeftAxis.LabelsFont.Color = clSilver
+    LeftAxis.LabelsSeparation = 100
+    LeftAxis.MaximumOffset = 45
+    LeftAxis.MinimumOffset = 9
+    View3D = False
+    ColorPaletteIndex = 8
+    object Series1: TPointSeries
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.Length = 27
+      Marks.Frame.Visible = False
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.Transparency = 40
+      Marks.Shadow.VertSize = 2
+      Marks.Visible = True
+      OnGetMarkText = Series1GetMarkText
+      ClickableLine = False
+      Pointer.Gradient.EndColor = 18175
+      Pointer.Gradient.Visible = True
+      Pointer.HorizSize = 10
+      Pointer.InflateMargins = True
+      Pointer.Pen.Color = clSilver
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 10
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0005000000000000000060734000000000008071400000000000F06E40000000
+        0000F871400000000000A07440}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 497
+    object Label1: TLabel
+      Left = 14
+      Top = 15
+      Width = 52
+      Height = 13
+      Caption = '&Alignment :'
+      FocusControl = cbAlign
+    end
+    object cbAlign: TComboFlat
+      Left = 70
+      Top = 11
+      Width = 93
+      TabOrder = 0
+      OnChange = cbAlignChange
+      Items.Strings = (
+        'Left'
+        'Right'
+        'Center')
+    end
+  end
+end

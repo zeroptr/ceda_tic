@@ -1,0 +1,79 @@
+inherited GrayScaleForm: TGrayScaleForm
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      'The Chart image can be displayed in levels of gray.'
+      
+        'This is done calling a small procedure in the chart AfterDraw ev' +
+        'ent.'
+      ''
+      'Example:   TeeGrayScale((Chart1.Canvas as TTeeCanvas3D).Bitmap);')
+  end
+  inherited Chart1: TChart
+    Top = 97
+    Height = 240
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    OnAfterDraw = Chart1AfterDraw
+    object Series1: TPieSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = True
+      SeriesColor = clRed
+      PieValues.DateTime = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 65
+    Height = 32
+    object Label1: TLabel
+      Left = 232
+      Top = 8
+      Width = 39
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Method:'
+      FocusControl = CBMethod
+    end
+    object CheckBox1: TCheckBox
+      Left = 24
+      Top = 9
+      Width = 97
+      Height = 17
+      Caption = '&Gray Scale'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 128
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = '&Inverted'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CBMethod: TComboBox
+      Left = 275
+      Top = 5
+      Width = 91
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 2
+      OnChange = CBMethodChange
+      Items.Strings = (
+        'Linear'
+        'Human eye')
+    end
+  end
+end

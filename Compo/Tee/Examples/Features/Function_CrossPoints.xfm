@@ -1,0 +1,98 @@
+inherited CrossPointsDemo: TCrossPointsDemo
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 49
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'CrossPoints function calculates coordinates for crossing points ' +
+        'of source line series.'
+      
+        'The yellow line Series3 shows points where Series1 and Series2 c' +
+        'ross.'
+      '')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 85
+    Height = 461
+    BackWall.Size = 10
+    BottomWall.Size = 10
+    LeftWall.Size = 10
+    RightWall.Size = 10
+    Title.Visible = False
+    Chart3DPercent = 35
+    View3D = False
+    View3DOptions.Perspective = 94
+    TabOrder = 0
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      DataSource = Series1
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      DataSources = (
+        'Series1'
+        'Series2')
+      object TeeFunction1: TCrossPointsFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 51
+    Height = 34
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 8
+      Width = 145
+      Height = 17
+      Caption = '&View CrossPoints line'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

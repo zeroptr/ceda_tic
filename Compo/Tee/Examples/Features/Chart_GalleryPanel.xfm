@@ -1,0 +1,37 @@
+inherited GalleryPanelForm: TGalleryPanelForm
+  Caption = 'GalleryPanelForm'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 185
+    Top = 114
+    Width = 3
+    Height = 223
+    Cursor = crHSplit
+  end
+  inherited Chart1: TChart
+    Left = 188
+    Width = 291
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+    end
+  end
+  object ChartGalleryPanel1: TChartGalleryPanel
+    Left = 0
+    Top = 114
+    Width = 185
+    Height = 223
+    OnChangeChart = ChartGalleryPanel1ChangeChart
+    Align = alLeft
+    TabOrder = 3
+  end
+end

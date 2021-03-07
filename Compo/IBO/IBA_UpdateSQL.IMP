@@ -1,0 +1,1227 @@
+// IBA_UpdateSQL.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_UpdateSQL.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  FDeleteSQL := TIB_StringList.Create;
+  FModifySQL := TIB_StringList.Create;
+  FLockSQL := TIB_StringList.Create;
+  FInsertSQL := TIB_StringList.Create;
+  FDeleteSQL.OnChange := SQLChanged;
+  FModifySQL.OnChange := SQLChanged;
+  FLockSQL.OnChange := SQLChanged;
+  FInsertSQL.OnChange := SQLChanged;
+  FPreparedInserts := true;
+  FNeedRecordResync := false;
+end;
+
+destructor TIB_UpdateSQL.Destroy;
+begin
+  FDeleteSQL.Free;
+  FModifySQL.Free;
+  FLockSQL.Free;
+  FInsertSQL.Free;
+  FDeleteSQL := nil;
+  FModifySQL := nil;
+  FLockSQL := nil;
+  FInsertSQL := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_UpdateSQL.SetPreparedEdits( AValue: boolean );
+begin
+  if PreparedEdits <> AValue then 
+    FPreparedEdits := AValue;
+end;
+
+procedure TIB_UpdateSQL.SetPreparedInserts( AValue: boolean );
+begin
+  if PreparedInserts <> AValue then
+    FPreparedInserts := AValue;
+end;
+
+procedure TIB_UpdateSQL.SetSearchedDeletes( AValue: boolean );
+begin
+  if SearchedDeletes <> AValue then
+  begin
+    FSearchedDeletes := AValue;
+    if Assigned( FDeleteDSQL ) then
+      FDeleteDSQL.SysUnprepare;
+  end;
+end;
+
+procedure TIB_UpdateSQL.SetSearchedEdits( AValue: boolean );
+begin
+  if SearchedEdits <> AValue then
+  begin
+    FSearchedEdits := AValue;
+    if Assigned( FEditDSQL ) then
+      FEditDSQL.SysUnprepare;
+    if Assigned( FLockDSQL ) then
+      FLockDSQL.SysUnprepare;
+  end;
+end;
+
+procedure TIB_UpdateSQL.SysUnprepare;
+begin
+  if Assigned( FEditDSQL ) then
+    FEditDSQL.SysUnprepare;
+  if Assigned( FLockDSQL ) then
+    FLockDSQL.SysUnprepare;
+  if Assigned( FInsertDSQL ) then
+    FInsertDSQL.SysUnprepare;
+  if Assigned( FDeleteDSQL ) then
+    FDeleteDSQL.SysUnprepare;
+end;
+
+procedure TIB_UpdateSQL.SysDeallocate;
+begin
+  if Assigned( FEditDSQL ) then
+    FEditDSQL.SysDeallocate( true );
+  if Assigned( FLockDSQL ) then
+    FLockDSQL.SysDeallocate( true );
+  if Assigned( FInsertDSQL ) then
+    FInsertDSQL.SysDeallocate( true );
+  if Assigned( FDeleteDSQL ) then
+    FDeleteDSQL.SysDeallocate( true );
+end;
+
+procedure TIB_UpdateSQL.CheckKeyRelation;
+var
+  ii, kk: integer;
+begin
+  if Dataset.KeyRelation <> '' then
+  begin
+    ii := -1;
+    for kk := 0 to Dataset.Fields.RelationCount - 1 do
+    begin
+      if CompareText( Dataset.KeyRelation,
+                      Dataset.Fields.Relationnames[ kk ] ) = 0 then
+      begin
+        ii := kk;
+        Break;
+      end;
+    end;
+    if ii = -1 then
+      raise EIB_DatasetError.Create( E_Invalid_KeyRelation );
+  end;
+end;
+
+function TIB_UpdateSQL.CheckDSQLNeedsInit( var ADSQL: TIB_Statement ): boolean;
+begin
+  if not Assigned( ADSQL ) then
+  begin
+    ADSQL := TIB_Statement.Create( Self );
+    ADSQL.OnError := DoHandleError;
+  end;
+  if Dataset.Prepared and not ADSQL.Prepared then
+    with ADSQL do
+    begin
+      FBindingCursor := Dataset;
+      IB_Connection := Dataset.IB_Connection;
+      IB_Transaction := Dataset.IB_Transaction;
+    end;
+  Result := Dataset.Prepared and not ADSQL.Prepared;
+end;
+
+procedure TIB_UpdateSQL.AssignKeyRefs( ADSQL: TIB_Statement );
+var
+  ii: integer;
+  jj: integer;
+  tmpAliasName: TIB_Identifier;
+begin
+// Adjust so that the columns of the KeyFields will move into the last
+// columns of the ADSQL.Params since the Where clause params will be last.
+  jj := ADSQL.Params.ColumnCount - Dataset.KeyFields.ColumnCount;
+  for ii := 0 to Dataset.KeyFields.ColumnCount - 1 do
+  begin
+    with ADSQL.Params[ ii + jj ] do
+    begin
+      tmpAliasName := PSQLVAR^.AliasName;
+      PSQLVAR^ := Dataset.KeyFields[ii].PSQLVAR^;
+      PSQLVAR^.SQLInd := pointer( Dataset.KeyFields[ii].FNewColumnInd );
+      PSQLVAR^.SQLData := Dataset.KeyFields[ii].FNewColumnBuffer;
+      PSQLVAR^.AliasName := tmpAliasName;
+      PSQLVAR^.AliasName_length := Length( tmpAliasName );
+      if PSQLVAR^.SQLname = IB_DB_KEY then
+      begin
+        PSQLVAR^.SQLname := IB_RDB + IB_DB_KEY;
+        PSQLVAR^.SQLname_length := Length( IB_RDB + IB_DB_KEY );
+      end;
+      if not Dataset.KeyFields.IsKeyFields then
+      begin
+      // This means that the data buffer is being used as the KeyFields
+      // So, in this case we want to look at the OLD values.
+        PSQLVAR^.SQLInd := pointer( Dataset.KeyFields[ii].FOldColumnInd );
+        PSQLVAR^.SQLData := Dataset.KeyFields[ii].FOldColumnBuffer;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_UpdateSQL.PrepareCustomDML(       ADSQL: TIB_Statement;
+                                          const ASQL: string );
+var
+  ii: smallint;
+  tmpParam: TIB_Column;
+  tmpCol: TIB_Column;
+  tmpName: string;
+  ucName: string;
+begin
+  with ADSQL do
+  begin
+    FCombineDuplicateParams := true;
+    SQL.Text := ASQL;
+    Prepare;
+    try
+      for ii := 0 to ParamCount - 1 do
+      begin
+        tmpParam := Params[ ii ];
+        tmpName := tmpParam.FullFieldName;
+        tmpCol := Dataset.FindField( tmpName );
+        if Assigned( tmpCol ) then
+        begin
+          tmpParam.PSQLVAR^.SQLtype := tmpCol.PSQLVAR^.SQLtype;
+          tmpParam.PSQLVAR^.SQLscale := tmpCol.PSQLVAR^.SQLscale;
+          tmpParam.PSQLVAR^.SQLsubtype := tmpCol.PSQLVAR^.SQLsubtype;
+          tmpParam.PSQLVAR^.SQLlen := tmpCol.PSQLVAR^.SQLlen;
+          tmpParam.PSQLVAR^.SQLInd := pointer( tmpCol.PSQLVAR^.SQLind );
+          tmpParam.PSQLVAR^.SQLData := tmpCol.PSQLVAR^.SQLdata;
+        end
+        else
+        begin
+          ucName := UpperCase( tmpName );
+          if ( Pos( '"OLD_', ucName ) = 1 ) or
+             ( Pos( '"OLD.', ucName ) = 1 ) then
+          begin
+            System.Delete( tmpName, 2, 4 );
+            tmpCol := Dataset.FindField( tmpName );
+            ucName := '';
+          end
+          else
+          if ( Pos( 'OLD_', ucName ) = 1 ) or
+             ( Pos( 'OLD.', ucName ) = 1 ) then
+          begin
+            System.Delete( tmpName, 1, 4 );
+            tmpCol := Dataset.FindField( tmpName );
+            ucName := '';
+          end;
+          if Assigned( tmpCol ) then
+          begin
+            tmpParam.PSQLVAR^.SQLtype := tmpCol.PSQLVAR^.SQLtype;
+            tmpParam.PSQLVAR^.SQLscale := tmpCol.PSQLVAR^.SQLscale;
+            tmpParam.PSQLVAR^.SQLsubtype := tmpCol.PSQLVAR^.SQLsubtype;
+            tmpParam.PSQLVAR^.SQLlen := tmpCol.PSQLVAR^.SQLlen;
+            tmpParam.PSQLVAR^.SQLInd := pointer( tmpCol.FOldColumnInd );
+            tmpParam.PSQLVAR^.SQLData := tmpCol.FOldColumnBuffer;
+          end
+          else
+          if ucName <> '' then
+          begin
+            tmpCol := Dataset.FindKeyField( tmpName );
+            if Assigned( tmpCol ) then
+            begin
+              tmpParam.PSQLVAR^.SQLtype := tmpCol.PSQLVAR^.SQLtype;
+              tmpParam.PSQLVAR^.SQLscale := tmpCol.PSQLVAR^.SQLscale;
+              tmpParam.PSQLVAR^.SQLsubtype := tmpCol.PSQLVAR^.SQLsubtype;
+              tmpParam.PSQLVAR^.SQLlen := tmpCol.PSQLVAR^.SQLlen;
+              tmpParam.PSQLVAR^.SQLInd := pointer( tmpCol.PSQLVAR^.SQLind );
+              tmpParam.PSQLVAR^.SQLData := tmpCol.PSQLVAR^.SQLdata;
+              if tmpParam.PSQLVAR^.SQLname = IB_DB_KEY then
+              begin
+                tmpParam.PSQLVAR^.SQLname := IB_RDB+IB_DB_KEY;
+                tmpParam.PSQLVAR^.SQLname_length := Length( IB_RDB+IB_DB_KEY );
+              end;
+              if not Dataset.KeyFields.IsKeyFields then
+              begin
+              // This means that the data buffer is being used as the KeyFields
+              // So, in this case we want to look at the OLD values.
+                tmpParam.PSQLVAR^.SQLInd := pointer( tmpCol.FOldColumnInd );
+                tmpParam.PSQLVAR^.SQLData := tmpCol.FOldColumnBuffer;
+              end;
+            end;
+          end;
+        end;
+        if not Assigned( tmpCol ) then
+          raise EIB_DatasetError.Create( Format( E_Inv_Custom_DML,
+                                                 [tmpParam.FullFieldName] ));
+      end;
+    except
+      Unprepare;
+      raise;
+    end;
+  end;
+end;
+
+const
+  OldPfx = 'OLD.';
+
+function TIB_UpdateSQL.GetEditDSQL: TIB_Statement;
+var
+  ii, jj: smallint;
+  edSQL: string;
+begin
+  if CheckDSQLNeedsInit( FEditDSQL ) then
+  begin
+    if ModifySQL.Count > 0 then
+      PrepareCustomDML( FEditDSQL, FModifySQL.Text )
+    else
+    with Dataset do
+    begin
+      CheckKeyRelation;
+      edSQL := 'UPDATE ' + SysKeyRelation + #13#10;
+      jj := 0;
+      for ii := 0 to FieldCount - 1 do with Fields[ii] do
+      begin
+        if not ReadOnly and not Computed and ( SysKeyRelation = RelName ) then
+        begin
+          if jj = 0 then
+            edSQL := edSQL + '  SET ' + SQLName + ' = ' + ParamChar + SQLName
+          else
+            edSQL := edSQL + #13#10'    , ' +
+                     SQLName + ' = ' +
+                     ParamChar + SQLName;
+          Inc( jj );
+        end;
+      end;
+      if jj = 0 then begin
+        raise EIB_DatasetError.Create( Format( E_Init_Default_SQL_Failed,
+                                               [ 'EditDSQL' ] ));
+      end;
+      edSQL := edSQL + #13#10'WHERE ';
+      if SearchedEdits then
+      begin
+        if FCachedUpdates then
+        begin
+          for ii := 0 to Fields.ColumnCount - 1 do
+          begin
+            with Fields[ii] do
+            begin
+              if ( not IsArray ) and
+                 ( not IsBlob ) and
+                 ( not Computed ) and
+                 ( SysKeyRelation = RelName ) then
+              begin
+                if ii > 0 then
+                  edSQL := edSQL + IB_AND;
+                edSQL := edSQL + RelName + '.' +
+                                 SQLName + ' = ' +
+                                 ParamChar + OldPfx + SQLName;
+              end;
+            end;
+          end;
+          PrepareCustomDML( FEditDSQL, edSQL );
+        end
+        else
+        begin
+          for ii := 0 to KeyFields.ColumnCount - 1 do with KeyFields[ii] do
+          begin
+            if ii > 0 then edSQL := edSQL + IB_AND;
+            edSQL := edSQL + RelName + '.' +
+                             SQLName + ' = ' + ParamChar + OldPfx + SQLName;
+          end;
+          FEditDSQL.SQL.Text := edSQL;
+          FEditDSQL.FCombineDuplicateParams := false;
+          FEditDSQL.Prepare;
+          AssignKeyRefs( FEditDSQL );
+        end;
+      end
+      else
+      begin
+        edSQL := edSQL + 'CURRENT OF ' + Fields.CursorName;
+        FEditDSQL.SQL.Text := edSQL;
+        FEditDSQL.Prepare;
+      end;
+      jj := 0;
+      for ii := 0 to FieldCount - 1 do
+        with Fields[ii] do
+          if not ReadOnly and not Computed and ( SysKeyRelation = RelName ) then
+          begin
+            FEditDSQL.Params.PSQLDA.SQLVAR[jj] := PSQLVAR^;
+            Inc( jj );
+          end;
+    end;
+  end;
+  Result := FEditDSQL;
+end;
+
+function TIB_UpdateSQL.GetLockDSQL: TIB_Statement;
+var
+  ii, jj: smallint;
+  lkSQL: string;
+begin
+  if CheckDSQLNeedsInit( FLockDSQL ) then
+  begin
+    if LockSQL.Count > 0 then
+      PrepareCustomDML( FLockDSQL, FLockSQL.Text )
+    else
+    with Dataset do
+    begin
+      CheckKeyRelation;
+      lkSQL := 'UPDATE ' + SysKeyRelation;
+      jj := 0;
+      for ii := 0 to FieldCount - 1 do
+      begin
+        with Fields[ii] do
+        begin
+          if not ReadOnly and not Computed and ( SysKeyRelation = RelName ) then
+          begin
+            lkSQL := lkSQL + ' SET ' + SQLName + ' = ' + SQLName;
+            Inc( jj );
+            Break;
+          end;
+        end;
+      end;
+      if jj = 0 then
+      begin
+        raise EIB_DatasetError.Create( Format( E_Init_Default_SQL_Failed,
+                                               [ 'LockSQL' ] ));
+      end;
+      lkSQL := lkSQL + #13#10'WHERE ';
+      if SearchedEdits then
+      begin
+        if FCachedUpdates then
+        // Actually, this indicates a problem here!
+          for ii := 0 to Fields.ColumnCount - 1 do with Fields[ii] do
+          begin
+            if ( not IsArray ) and
+               ( not IsBlob ) and
+               ( not Computed ) and
+               ( SysKeyRelation = RelName ) then
+            begin
+              if ii > 0 then lkSQL := lkSQL + IB_AND;
+              lkSQL := lkSQL + RelName + '.' +
+                               SQLName + ' = ' + ParamChar + OldPfx + SQLName;
+            end;
+          end
+        else
+          for ii := 0 to KeyFields.ColumnCount - 1 do
+            with KeyFields[ii] do
+            begin
+              if ii > 0 then lkSQL := lkSQL + IB_AND;
+              lkSQL := lkSQL + RelName + '.' +
+                               SQLName + ' = ' + ParamChar + OldPfx + SQLName;
+            end;
+        if FCachedUpdates then
+          PrepareCustomDML( FLockDSQL, lkSQL )
+        else
+        begin
+          FLockDSQL.SQL.Text := lkSQL;
+          FLockDSQL.FCombineDuplicateParams := false;
+          FLockDSQL.Prepare;
+          AssignKeyRefs( FLockDSQL );
+        end;
+      end else begin
+        lkSQL := lkSQL + 'CURRENT OF ' + Fields.CursorName;
+        FLockDSQL.SQL.Text := lkSQL;
+        FLockDSQL.Prepare;
+      end;
+    end;
+  end;
+  Result := FLockDSQL;
+end;
+
+function TIB_UpdateSQL.GetDeleteDSQL: TIB_Statement;
+var
+  ii: smallint;
+  dlSQL: string;
+begin
+  if CheckDSQLNeedsInit( FDeleteDSQL ) then
+  begin
+    if DeleteSQL.Count > 0 then
+      PrepareCustomDML( FDeleteDSQL, FDeleteSQL.Text )
+    else
+    with Dataset do
+    begin
+      CheckKeyRelation;
+      dlSQL := 'DELETE FROM ' + SysKeyRelation + ' '#13#10'WHERE ';
+      if SearchedDeletes then
+      begin
+        if FCachedUpdates then
+          for ii := 0 to Fields.ColumnCount - 1 do with Fields[ii] do
+          begin
+            if ( not IsArray ) and
+               ( not IsBlob ) and
+               ( not Computed ) and
+               ( SysKeyRelation = RelName ) then
+            begin
+              if ii > 0 then
+                dlSQL := dlSQL + IB_AND;
+              dlSQL := dlSQL + RelName + '.' +
+                               SQLName + ' = ' + ParamChar + OldPfx + SQLName;
+            end;
+          end
+        else
+          for ii := 0 to KeyFields.ColumnCount - 1 do with KeyFields[ii] do
+          begin
+            if ii > 0 then
+              dlSQL := dlSQL + IB_AND;
+            dlSQL := dlSQL + RelName + '.' +
+                             SQLName + ' = ' + ParamChar + OldPfx + SQLName;
+          end;
+        if FCachedUpdates then
+          PrepareCustomDML( FDeleteDSQL, dlSQL )
+        else
+        begin
+          FDeleteDSQL.SQL.Text := dlSQL;
+          FDeleteDSQL.FCombineDuplicateParams := false;
+          FDeleteDSQL.Prepare;
+          AssignKeyRefs( FDeleteDSQL );
+        end;
+      end else begin
+        dlSQL := dlSQL + 'CURRENT OF ' + Fields.CursorName;
+        FDeleteDSQL.SQL.Text := dlSQL;
+        FDeleteDSQL.Prepare;
+      end;
+    end;
+  end;
+  Result := FDeleteDSQL;
+end;
+
+function TIB_UpdateSQL.GetInsertDSQL: TIB_Statement;
+var
+  jj, kk: smallint;
+  ss, tt: string;
+  tmpPrm: TIB_Column;
+begin
+  if CheckDSQLNeedsInit( FInsertDSQL ) then
+  begin
+    if InsertSQL.Count > 0 then
+      PrepareCustomDML( FInsertDSQL, FInsertSQL.Text )
+    else
+    begin
+      CheckKeyRelation;
+      kk := 0;
+      ss := '';
+      tt := '';
+      for jj := 0 to Dataset.FieldCount - 1 do
+      begin
+        if not Dataset.Fields[jj].ReadOnly and
+           not Dataset.Fields[jj].Computed and
+           ( Dataset.SysKeyRelation = Dataset.Fields[jj].RelName ) then
+        begin
+          if kk > 0 then
+          begin
+            ss := ss + #13#10', ' + Dataset.Fields[jj].SQLName;
+            tt := tt + #13#10', ' + Dataset.ParamChar +
+                                    Dataset.Fields[jj].FullFieldName;
+          end else
+          begin
+            ss := ss + #13#10'( ' + Dataset.Fields[jj].SQLName;
+            tt := tt + #13#10'( ' + Dataset.ParamChar +
+                                    Dataset.Fields[jj].FullFieldName;
+          end;
+          Inc( kk );
+        end;
+      end;
+      if kk > 0 then
+      begin
+        ss := ss + ')'#13#10;
+        tt := tt + ')';
+        FInsertDSQL.SQL.Text := 'INSERT INTO ' +
+                                Dataset.SysKeyRelation + ss +
+                                'VALUES ' + tt;
+        FInsertDSQL.FCombineDuplicateParams := false;
+        FInsertDSQL.Prepare;
+        try
+          if ( kk = FInsertDSQL.ParamCount ) then
+          begin
+            kk := 0;
+            for jj := 0 to Dataset.FieldCount - 1 do
+              with Dataset.Fields[jj] do
+                if not ReadOnly and
+                   not Computed and
+                   ( Dataset.SysKeyRelation = RelName ) then
+                begin
+                  FInsertDSQL.Params[kk].PSQLVAR^ := PSQLVAR^;
+                  if not Odd( FInsertDSQL.Params[kk].PSQLVAR^.SQLType ) then
+                    Inc( FInsertDSQL.Params[kk].PSQLVAR^.SQLType );
+                  Inc( kk );
+                end;
+          end
+          else
+          begin
+            for jj := 0 to FInsertDSQL.ParamCount - 1 do
+              with FInsertDSQL.Params[jj] do
+              begin
+                tmpPrm := Dataset.FieldByName( FullFieldName );
+                PSQLVAR^ := tmpPrm.PSQLVAR^;
+                if not Odd( PSQLVAR^.SQLType ) then
+                  Inc( PSQLVAR^.SQLType );
+              end;
+          end;
+        except
+          FInsertDSQL.Unprepare;
+          raise;
+        end;
+      end;
+    end;
+  end;
+  Result := FInsertDSQL;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_UpdateSQL.SQL_Edit;
+var
+  ii, jj, kk: smallint;
+  ASQLDA: PXSQLDA;
+  edSQL: string;
+  WasUpdated: boolean;
+begin
+  WasUpdated := false;
+  try
+  if ( ModifySQL.Count > 0 ) or
+     ( PreparedEdits and not Dataset.FCachedUpdates ) then
+  with EditDSQL do
+  begin
+    CheckTransaction( true );
+    if FieldCount = 0 then API_Execute
+                      else API_Execute2;
+    if ( RowsAffected = 0 ) and ( EditDSQL.StatementType = stUpdate ) then
+      raise EIB_DatasetError.Create( E_Record_Not_Located_For_Update )
+    else
+    if RowsAffected > 1 then
+      raise EIB_DatasetError.Create( E_Multiple_Records_Updated );
+    WasUpdated := true;
+    if FieldCount > 0 then HandleOutputValues( EditDSQL );
+  end
+  else
+  with Dataset do
+  begin
+    if SearchedEdits then
+    begin
+      CheckKeyRelation;
+      edSQL := 'UPDATE ' + SysKeyRelation + #13#10;
+      jj := 0;
+      for ii := 0 to FieldCount - 1 do begin
+        with Fields[ii] do begin
+          if IsModified and not ReadOnly and not Computed then begin
+            if jj = 0 then begin
+              edSQL := edSQL + ' SET ';
+             end else begin
+              edSQL := edSQL + #13#10'   , ';
+            end;
+            edSQL := edSQL + SQLName + ' = ?'; // Server
+            Inc( jj );
+          end;
+        end;
+      end;
+      if jj > 0 then
+      begin
+        if FCachedUpdates then
+        begin
+          for ii := 0 to Fields.ColumnCount - 1 do
+            with Fields[ii] do
+              if not IsBlob and not IsArray and ( RelName <> '' ) then
+                if not OldIsNull then
+                  Inc( jj );
+        end
+        else
+          Inc( jj, KeyFields.ColumnCount );
+        GetMem( ASQLDA, XSQLDA_LENGTH( jj ));
+        try
+          ASQLDA.version := SQLDA_VERSION1;
+          ASQLDA.sqln := jj;
+          ASQLDA.sqld := jj;
+          edSQL := edSQL + #13#10'WHERE ';
+          if FCachedUpdates then
+          begin
+            kk := 0;
+            for ii := 0 to Fields.ColumnCount - 1 do with Fields[ii] do
+              if not IsBlob and not IsArray and ( RelName <> '' ) then
+              begin
+                if kk > 0 then edSQL := edSQL + IB_AND;
+                edSQL := edSQL + RelName + '.';
+                if stLitCriteria( SQLName ) = IB_DB_Key then
+                  edSQL := edSQL + IB_RDB;
+                if OldIsNull then
+                  edSQL := edSQL + SQLName + ' IS NULL'
+                else
+                  edSQL := edSQL + SQLName + ' = ?'; // Server
+                Inc( kk );
+              end;
+          end
+          else
+            for ii := 0 to KeyFields.ColumnCount - 1 do
+              with KeyFields[ii] do
+              begin
+                if ii > 0 then
+                  edSQL := edSQL + IB_AND;
+                if RelName <> '' then
+                  edSQL := edSQL + RelName + '.';
+                if stLitCriteria( SQLName ) = IB_DB_Key then
+                  edSQL := edSQL + IB_RDB;
+                edSQL := edSQL + SQLName + ' = ?'; // Server
+              end;
+          jj := 0;
+          for ii := 0 to FieldCount - 1 do
+            with Fields[ii] do
+              if IsModified and not ReadOnly and not Computed then
+              begin
+                ASQLDA.SQLVAR[jj] := PSQLVAR^;
+                Inc( jj );
+              end;
+          if FCachedUpdates then
+            for ii := 0 to Fields.ColumnCount - 1 do with Fields[ii] do
+            begin
+              if not IsBlob and
+                 not IsArray and ( RelName <> '' ) and not OldIsNull then
+              begin
+                ASQLDA.SQLVAR[jj] := PSQLVAR^;
+                if ASQLDA.SQLVAR[jj].sqlname = IB_DB_KEY then
+                begin
+                  ASQLDA.SQLVAR[jj].sqlname := IB_RDB+IB_DB_KEY;
+                  ASQLDA.SQLVAR[jj].sqlname_length := Length(IB_RDB+IB_DB_KEY);
+                end;
+                ASQLDA.SQLVAR[jj].SQLInd  := pointer( FOldColumnInd );
+                ASQLDA.SQLVAR[jj].SQLData := FOldColumnBuffer;
+                Inc( jj );
+              end;
+            end
+          else
+            for ii := 0 to KeyFields.ColumnCount - 1 do with KeyFields[ii] do
+            begin
+              ASQLDA.SQLVAR[jj] := PSQLVAR^;
+              if ASQLDA.SQLVAR[jj].sqlname = IB_DB_KEY then
+              begin
+                ASQLDA.SQLVAR[jj].sqlname := IB_RDB+IB_DB_KEY;
+                ASQLDA.SQLVAR[jj].sqlname_length := Length(IB_RDB+IB_DB_KEY);
+              end;
+              if not KeyFields.IsKeyFields then
+              begin
+              // This means that the data buffer is being used as the KeyFields
+                ASQLDA.SQLVAR[jj].SQLInd  := pointer( FOldColumnInd );
+                ASQLDA.SQLVAR[jj].SQLData := FOldColumnBuffer;
+              end;
+              Inc( jj );
+            end;
+          CheckTransaction( true );
+          with IB_Session do
+          begin
+            errcode := isc_dsql_execute_immediate( @status,
+                                                   PdbHandle,
+                                                   PtrHandle,
+                                                   Length(edSQL),
+                                                   PChar(edSQL),
+                                                   IB_Connection.SQLDialect,
+                                                   ASQLDA );
+            if errcode = 0 then
+              WasUpdated := true
+            else
+              HandleException( Dataset );
+          end;
+        finally
+          FreeMem( ASQLDA, XSQLDA_LENGTH( ASQLDA.sqln ));
+        end;
+      end;
+    end
+    else
+    begin
+      for ii := 0 to Fields.RelationCount - 1 do
+      begin
+        kk := 0;
+        edSQL := 'UPDATE ' + Fields.RelationNames[ ii ] + #13#10;
+        for jj := 0 to FieldCount - 1 do
+        begin
+          with Fields[jj] do
+          begin
+            if IsModified and not ReadOnly and not Computed and
+              ( Fields.RelationNames[ ii ] = RelName ) then
+            begin
+              if kk = 0 then
+                edSQL := edSQL + '  SET '
+              else
+                edSQL := edSQL + '    , ';
+              edSQL := edSQL + SQLName + ' = ?'; // Server
+              Inc( kk );
+            end;
+          end;
+        end;
+        if kk > 0 then
+        begin
+          GetMem( ASQLDA, XSQLDA_LENGTH( kk ));
+          try
+            ASQLDA.version := SQLDA_VERSION1;
+            ASQLDA.sqln := kk;
+            ASQLDA.sqld := kk;
+            edSQL := edSQL + #13#10'WHERE CURRENT OF ' + Fields.CursorName;
+            kk := 0;
+            for jj := 0 to FieldCount - 1 do
+            begin
+              with Fields[jj] do
+              begin
+                if IsModified and not ReadOnly and not Computed and
+                  ( Fields.RelationNames[ ii ] = RelName ) then
+                begin
+                  ASQLDA.SQLVAR[kk] := PSQLVAR^;
+                  Inc( kk );
+                end;
+              end;
+            end;
+            CheckTransaction( true );
+            with IB_Session do
+            begin
+              errcode := isc_dsql_execute_immediate( @status,
+                                                     PdbHandle,
+                                                     PtrHandle,
+                                                     Length(edSQL),
+                                                     PChar(edSQL),
+                                                     IB_Connection.SQLDialect,
+                                                     ASQLDA );
+              if errcode = 0 then
+                WasUpdated := true
+              else
+                HandleException( Dataset );
+            end;
+          finally
+            FreeMem( ASQLDA, XSQLDA_LENGTH( ASQLDA.sqln ));
+          end;
+        end;
+      end;
+    end;
+  end;
+  finally
+    if WasUpdated then
+      try
+        if dcfAnnounceEdit in Dataset.DMLCacheFlags then
+          Dataset.DoDMLCacheAnnounceItem( ditEdit );
+      finally
+        Dataset.IB_Transaction.Activate;
+      end;
+  end;
+end;
+
+function TIB_UpdateSQL.SQL_Lock: boolean;
+begin
+  with LockDSQL do
+  begin
+    CheckTransaction( true );
+    if FieldCount = 0 then API_Execute
+                      else API_Execute2;
+    Result := ( RowsAffected = 1 ) or ( LockDSQL.StatementType <> stUpdate );
+    if Result and ( FieldCount > 0 ) then HandleOutputValues( LockDSQL );
+  end;
+end;
+
+procedure TIB_UpdateSQL.SQL_Insert;
+var
+  ii, jj: integer;
+  ss, tt: string;
+  ASQLDA: PXSQLDA;
+  WasUpdated: boolean;
+begin
+  WasUpdated := true;
+  FNeedRecordResync := false;
+  if ( InsertSQL.Count > 0 ) or PreparedInserts then
+  begin
+    with InsertDSQL do
+    begin
+      CheckTransaction( true );
+      if FieldCount = 0 then API_Execute
+                        else API_Execute2;
+      if ( RowsAffected = 0 ) and ( InsertDSQL.StatementType = stInsert ) then
+        raise EIB_DatasetError.Create( E_Record_Not_Inserted )
+      else
+      if ( RowsAffected > 1 ) and ( InsertDSQL.StatementType = stInsert ) then
+        raise EIB_DatasetError.Create( E_Multiple_Records_Inserted );
+      WasUpdated := true;
+      if FieldCount > 0 then HandleOutputValues( InsertDSQL );
+    end;
+  end
+  else
+  with Dataset do
+  begin
+    CheckKeyRelation;
+    jj := 0;
+    ss := '';
+    tt := '';
+    for ii := 0 to FieldCount - 1 do
+    begin
+      if not Fields[ii].ReadOnly and
+         not Fields[ii].Computed and
+         ( SysKeyRelation = Fields[ii].RelName ) then
+      begin
+        if not Fields[ii].IsNull then
+        begin
+          if jj > 0 then
+          begin
+            ss := ss + #13#10', ' +           Fields[ii].SQLName;
+            tt := tt + #13#10', ' + '? /* ' + Fields[ii].FieldName + ' */';
+          end
+          else
+          begin
+            ss := ss + #13#10'( ' +           Fields[ii].SQLName;
+            tt := tt + #13#10'( ' + '? /* ' + Fields[ii].FieldName + ' */';
+          end;
+          Inc( jj );
+        end
+        else
+        if Fields[ii].IsDefaulted then
+          FNeedRecordResync := true;
+      end;
+    end;
+    if jj = 0 then
+      raise Exception.Create( 'Invalid INSERT statement: No columns' );
+    ss := ss + ' )';
+    tt := tt + ' )';
+    ss := 'INSERT INTO ' + SysKeyRelation + ss + #13#10'VALUES ' + tt;
+    GetMem( ASQLDA, XSQLDA_LENGTH( jj ));
+    try
+      ASQLDA.version := SQLDA_VERSION1;
+      ASQLDA.sqln := jj;
+      ASQLDA.sqld := jj;
+      jj := 0;
+      for ii := 0 to FieldCount - 1 do
+        if not Fields[ii].ReadOnly and
+           not Fields[ii].Computed and
+           not Fields[ii].IsNull and
+           ( SysKeyRelation = Fields[ii].RelName ) then
+        begin
+          ASQLDA.SQLVAR[jj] := Fields[ii].PSQLVAR^;
+          Inc( jj );
+        end;                  
+        CheckTransaction( true );
+      with IB_Session do
+      begin
+        errcode := isc_dsql_execute_immediate( @status,
+                                               PdbHandle,
+                                               PtrHandle,
+                                               Length( ss ),
+                                               PChar( ss ),
+                                               IB_Connection.SQLDialect,
+                                               ASQLDA );
+        if errcode = 0 then
+          WasUpdated := true
+        else
+          HandleException( Dataset );
+      end;
+    finally
+      FreeMem( ASQLDA, XSQLDA_LENGTH( ASQLDA.sqln ));
+    end;
+  end;
+  if WasUpdated then
+    try
+      if dcfAnnounceInsert in Dataset.DMLCacheFlags then
+        Dataset.DoDMLCacheAnnounceItem( ditInsert );
+    finally
+      Dataset.IB_Transaction.Activate;
+    end;
+end;
+
+procedure TIB_UpdateSQL.SQL_Delete;
+var
+  ii, jj, kk: smallint;
+  ASQLDA: PXSQLDA;
+  dlSQL: string;
+  WasUpdated: boolean;
+begin
+  WasUpdated := false;
+  try
+    if ( DeleteSQL.Count > 0 ) or not Dataset.FCachedUpdates then
+      with DeleteDSQL do
+      begin
+        CheckTransaction( true );
+        if FieldCount = 0 then API_Execute
+                          else API_Execute2;
+        if ( RowsAffected = 0 ) and ( DeleteDSQL.StatementType = stDelete ) then
+          raise EIB_DatasetError.Create( E_Record_Not_Located_For_Delete )
+        else
+        if RowsAffected > 1 then
+          raise EIB_DatasetError.Create( E_Multiple_Records_Deleted )
+        else
+          WasUpdated := true;
+      end
+    else
+    with Dataset do
+    begin
+      if SearchedDeletes then
+      begin
+        CheckKeyRelation;
+        dlSQL := 'DELETE FROM ' + SysKeyRelation + #13#10;
+        jj := 0;
+        if FCachedUpdates then
+        begin
+          for ii := 0 to Fields.ColumnCount - 1 do
+            with Fields[ii] do
+              if ( RelName = SysKeyRelation ) and not OldIsNull then
+                Inc( jj );
+        end
+        else
+          Inc( jj, KeyFields.ColumnCount );
+        GetMem( ASQLDA, XSQLDA_LENGTH( jj ));
+        try
+          ASQLDA.version := SQLDA_VERSION1;
+          ASQLDA.sqln := jj;
+          ASQLDA.sqld := jj;
+          dlSQL := dlSQL + #13#10'WHERE ';
+          if FCachedUpdates then
+          begin
+            kk := 0;
+            for ii := 0 to Fields.ColumnCount - 1 do with Fields[ii] do
+              if RelName = SysKeyRelation then
+              begin
+                if kk > 0 then dlSQL := dlSQL + IB_AND;
+                dlSQL := dlSQL + RelName + '.';
+                if stLitCriteria( SQLName ) = IB_DB_Key then
+                  dlSQL := dlSQL + IB_RDB;
+                if OldIsNull then
+                  dlSQL := dlSQL + SQLName + ' IS NULL'
+                else
+                  dlSQL := dlSQL + SQLName + ' = ?'; // Server
+                Inc( kk );
+              end;
+          end else
+            for ii := 0 to KeyFields.ColumnCount - 1 do with KeyFields[ii] do
+            begin
+              if ii > 0 then
+                dlSQL := dlSQL + IB_AND;
+              if RelName = SysKeyRelation then
+                dlSQL := dlSQL + RelName + '.';
+              if stLitCriteria( SQLName ) = IB_DB_Key then
+                dlSQL := dlSQL + IB_RDB;
+              dlSQL := dlSQL + SQLName + ' = ?'; // Server
+            end;
+          jj := 0;
+          if FCachedUpdates then
+            for ii := 0 to Fields.ColumnCount - 1 do with Fields[ii] do
+            begin
+              if ( RelName = SysKeyRelation ) and not OldIsNull then
+              begin
+                ASQLDA.SQLVAR[jj] := PSQLVAR^;
+                if ASQLDA.SQLVAR[jj].sqlname = IB_DB_KEY then
+                begin
+                  ASQLDA.SQLVAR[jj].sqlname := IB_RDB+IB_DB_KEY;
+                  ASQLDA.SQLVAR[jj].sqlname_length := Length(IB_RDB+IB_DB_KEY);
+                end;
+                ASQLDA.SQLVAR[jj].SQLInd  := pointer( FOldColumnInd );
+                ASQLDA.SQLVAR[jj].SQLData := FOldColumnBuffer;
+                Inc( jj );
+              end;
+            end
+          else
+            for ii := 0 to KeyFields.ColumnCount - 1 do with KeyFields[ii] do
+            begin
+              ASQLDA.SQLVAR[jj] := PSQLVAR^;
+              if ASQLDA.SQLVAR[jj].sqlname = IB_DB_KEY then
+              begin
+                ASQLDA.SQLVAR[jj].sqlname := IB_RDB+IB_DB_KEY;
+                ASQLDA.SQLVAR[jj].sqlname_length := Length(IB_RDB+IB_DB_KEY);
+              end;
+              if not KeyFields.IsKeyFields then
+              begin
+              // This means that the data buffer is being used as the KeyFields
+                ASQLDA.SQLVAR[jj].SQLInd  := pointer( FOldColumnInd );
+                ASQLDA.SQLVAR[jj].SQLData := FOldColumnBuffer;
+              end;
+              Inc( jj );
+            end;
+          CheckTransaction( true );
+          with IB_Session do
+          begin
+            errcode := isc_dsql_execute_immediate( @status,
+                                                   PdbHandle,
+                                                   PtrHandle,
+                                                   Length(dlSQL),
+                                                   PChar(dlSQL),
+                                                   IB_Connection.SQLDialect,
+                                                   ASQLDA );
+            if errcode = 0 then
+              WasUpdated := true
+            else
+              HandleException( Dataset );
+          end;
+        finally
+          FreeMem( ASQLDA, XSQLDA_LENGTH( ASQLDA.sqln ));
+        end;
+      end
+      else
+      begin
+        raise EIB_DatasetError.Create( 'Not ready yet' );
+{
+        for ii := 0 to Fields.RelationCount - 1 do begin
+          kk := 0;
+          dlSQL := 'DELETE FROM ' + Fields.RelationNames[ ii ] + #13#10;
+          for jj := 0 to FieldCount - 1 do begin
+            with Fields[jj] do begin
+              if IsModified and not ReadOnly and not Computed and
+                ( Fields.RelationNames[ ii ] = RelName ) then
+              begin
+                if kk = 0 then begin
+                  dlSQL := dlSQL + '  SET ';
+                 end else begin
+                  dlSQL := dlSQL + '    , ';
+                end;
+                dlSQL := dlSQL + SQLNameD + ' = ?'; // Server
+                Inc( kk );
+              end;
+            end;
+          end;
+          if kk > 0 then begin
+            GetMem( ASQLDA, XSQLDA_LENGTH( kk ));
+            try
+              ASQLDA.version := SQLDA_VERSION1;
+              ASQLDA.sqln := kk;
+              ASQLDA.sqld := kk;
+              dlSQL := dlSQL +
+                           #13#10'WHERE CURRENT OF ' + Fields.CursorName;
+              kk := 0;
+              for jj := 0 to FieldCount - 1 do begin
+                with Fields[jj] do begin
+                  if IsModified and not ReadOnly and not Computed and
+                    ( Fields.RelationNames[ ii ] = RelName ) then
+                  begin
+                    ASQLDA.SQLVAR[kk] := PSQLVAR^;
+                    Inc( kk );
+                  end;
+                end;
+              end;
+              with IB_Session do begin
+                errcode := isc_dsql_execute_immediate( @status,
+                                                       PdbHandle,
+                                                       PtrHandle,
+                                                       Length(dlSQL),
+                                                       PChar(dlSQL),
+                                                       IB_Connection.SQLDialect,
+                                                       ASQLDA );
+                if errcode = 0 then begin
+                  WasUpdated := true;
+                end else begin
+                  HandleException( Dataset );
+                end;
+              end;
+            finally
+              FreeMem( ASQLDA, XSQLDA_LENGTH( ASQLDA.sqln ));
+            end;
+          end;
+        end;
+}
+      end;
+    end;
+  finally
+    if WasUpdated then
+      try
+        if dcfAnnounceDelete in Dataset.DMLCacheFlags then
+          Dataset.DoDMLCacheAnnounceItem( ditDelete );
+      finally
+        Dataset.IB_Transaction.Activate;
+      end;
+  end;
+end;
+
+procedure TIB_UpdateSQL.HandleOutputValues( ADSQL: TIB_Statement );
+var
+  ii: integer;
+  tmpCol: TIB_Column;
+  KeyAffected: boolean;
+begin
+  KeyAffected := false;
+  ADSQL.Fields.CleanBuffers( true );
+  ADSQL.Fields.FRowState := rsUnmodified;
+  for ii := 0 to ADSQL.FieldCount - 1 do
+  begin
+    tmpCol := Dataset.FindField( ADSQL.Fields[ ii ].FieldName );
+    if Assigned( tmpCol ) then
+      tmpCol.ColData := ADSQL.Fields[ ii ].ColData;
+    tmpCol := Dataset.FindKeyField( ADSQL.Fields[ ii ].FieldName );
+    if Assigned( tmpCol ) then
+    begin
+      tmpCol.ColData := ADSQL.Fields[ ii ].ColData;
+      KeyAffected := true;
+    end;
+  end;
+  if KeyAffected then
+    Dataset.SysUpdateKeyData( false );
+end;
+
+procedure TIB_UpdateSQL.DoHandleError(       Sender: TObject;
+                                       const errcode: isc_long;
+                                             ErrorMessage,
+                                             ErrorCodes: TStringList;
+                                       const SQLCODE: isc_long;
+                                             SQLMessage,
+                                             SQL: TStringList;
+                                         var RaiseException: boolean);
+begin
+  if RaiseException and Assigned( Dataset ) then begin
+    Dataset.DoHandleError( Sender,
+                           errcode,
+                           ErrorMessage,
+                           ErrorCodes,
+                           SQLCODE,
+                           SQLMessage,
+                           SQL,
+                           RaiseException );
+  end;
+end;
+
+procedure TIB_UpdateSQL.SetDeleteSQL( AValue: TIB_StringList );
+begin
+  FDeleteSQL.Assign( AValue );
+end;
+procedure TIB_UpdateSQL.SetModifySQL( AValue: TIB_StringList );
+begin
+  FModifySQL.Assign( AValue );
+end;
+procedure TIB_UpdateSQL.SetLockSQL( AValue: TIB_StringList );
+begin
+  FLockSQL.Assign( AValue );
+end;
+procedure TIB_UpdateSQL.SetInsertSQL( AValue: TIB_StringList );
+begin
+  FInsertSQL.Assign( AValue );
+end;
+
+procedure TIB_UpdateSQL.SQLChanged( Sender: TObject );
+begin
+  if ( Sender = FDeleteSQL ) and Assigned( FDeleteSQL ) and
+                                 Assigned( FDeleteDSQL ) then
+    FDeleteDSQL.Unprepare;
+  if ( Sender = ModifySQL ) and Assigned( FModifySQL ) and
+                                Assigned( FEditdSQL ) then 
+    FEditDSQL.Unprepare;
+  if ( Sender = LockSQL ) and Assigned( FLockSQL ) and
+                              Assigned( FLockDSQL ) then
+    FLockDSQL.Unprepare;
+  if ( Sender = InsertSQL ) and Assigned( FInsertSQL ) and
+                                Assigned( FInsertDSQL ) then
+    FInsertDSQL.Unprepare;
+end;
+

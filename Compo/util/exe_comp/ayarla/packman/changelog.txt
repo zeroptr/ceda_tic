@@ -1,0 +1,24 @@
+February 3, 2006: Version 1.0
+- Completely recoded (only listing major changes).
+- Removed tooltips and added help file, contents, and an about dialog.
+- Added selectable compression algorithm support via compression libraries.
+- Added support for "in-place" packing and it is now the default mode.
+- Seperated "compress sections" mode into "max (old header) and "max (new header)".
+- Added code filtering support.
+- Added an option to backup and restore the original file header at runtime.
+- Added overlay support.
+- Removed the "Null Relocated Data" option (it is always on now).
+- Changed all the "Rip" options to "Strip" options. They basically have the opposite meaning now.
+- Fixed TLS support so that it actually works.
+- Added export forwarding support.
+- Added Strip Relocations option.
+- Added support for forcing section compression instead of just excluding section compression.
+- Resource filtering is now more advanced with the ability to narrow a filter to more than just the level 1 directory.
+- Removed the "Run" button.
+- Due to the recoding, should compress many more executables successfully.
+- Source is now available!
+
+November 1, 2004: Version 0.0.0.1
+- First release.
+- Most compression specific goals are met.
+- Probably riddled with bugs =(

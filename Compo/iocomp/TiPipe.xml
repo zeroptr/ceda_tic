@@ -1,0 +1,223 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<FlowIndicatorColor>255</FlowIndicatorColor>
+<FlowIndicatorHideWhenOff>1</FlowIndicatorHideWhenOff>
+<FlowIndicatorSize>6</FlowIndicatorSize>
+<FlowIndicatorSpacing>8</FlowIndicatorSpacing>
+<FlowIndicatorStyle>0</FlowIndicatorStyle>
+<FlowIndicatorUseTubeColor>1</FlowIndicatorUseTubeColor>
+<FlowInterval>50</FlowInterval>
+<FlowReverse>0</FlowReverse>
+<TubeColor>8947712</TubeColor>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Flow Scheme</Name>
+<Scheme>
+<Name>Normal Right-Up [Default]</Name>
+<Properties>
+<FlowInterval>50</FlowInterval>
+<FlowReverse>0</FlowReverse>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Normal Left-Down</Name>
+<Properties>
+<FlowInterval>50</FlowInterval>
+<FlowReverse>1</FlowReverse>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Fast Right-Up</Name>
+<Properties>
+<FlowInterval>25</FlowInterval>
+<FlowReverse>0</FlowReverse>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Fast Left-Down</Name>
+<Properties>
+<FlowInterval>25</FlowInterval>
+<FlowReverse>1</FlowReverse>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Slow Right-Up</Name>
+<Properties>
+<FlowInterval>100</FlowInterval>
+<FlowReverse>0</FlowReverse>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Slow Left-Down</Name>
+<Properties>
+<FlowInterval>100</FlowInterval>
+<FlowReverse>1</FlowReverse>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Flow Indicator Scheme</Name>
+<Scheme>
+<Name>Small Tight Circles</Name>
+<Properties>
+<FlowIndicatorSize>6</FlowIndicatorSize>
+<FlowIndicatorSpacing>8</FlowIndicatorSpacing>
+<FlowIndicatorStyle>0</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Tight Boxes</Name>
+<Properties>
+<FlowIndicatorSize>6</FlowIndicatorSize>
+<FlowIndicatorSpacing>8</FlowIndicatorSpacing>
+<FlowIndicatorStyle>1</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Tight Triangles</Name>
+<Properties>
+<FlowIndicatorSize>6</FlowIndicatorSize>
+<FlowIndicatorSpacing>8</FlowIndicatorSpacing>
+<FlowIndicatorStyle>2</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Loose Circles</Name>
+<Properties>
+<FlowIndicatorSize>6</FlowIndicatorSize>
+<FlowIndicatorSpacing>16</FlowIndicatorSpacing>
+<FlowIndicatorStyle>0</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Loose Boxes</Name>
+<Properties>
+<FlowIndicatorSize>6</FlowIndicatorSize>
+<FlowIndicatorSpacing>16</FlowIndicatorSpacing>
+<FlowIndicatorStyle>1</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Loose Triangles</Name>
+<Properties>
+<FlowIndicatorSize>6</FlowIndicatorSize>
+<FlowIndicatorSpacing>16</FlowIndicatorSpacing>
+<FlowIndicatorStyle>2</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Tight Circles [Default]</Name>
+<Properties>
+<FlowIndicatorSize>12</FlowIndicatorSize>
+<FlowIndicatorSpacing>8</FlowIndicatorSpacing>
+<FlowIndicatorStyle>0</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Tight Boxes</Name>
+<Properties>
+<FlowIndicatorSize>12</FlowIndicatorSize>
+<FlowIndicatorSpacing>8</FlowIndicatorSpacing>
+<FlowIndicatorStyle>1</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Tight Triangles</Name>
+<Properties>
+<FlowIndicatorSize>12</FlowIndicatorSize>
+<FlowIndicatorSpacing>8</FlowIndicatorSpacing>
+<FlowIndicatorStyle>2</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Loose Circles</Name>
+<Properties>
+<FlowIndicatorSize>12</FlowIndicatorSize>
+<FlowIndicatorSpacing>16</FlowIndicatorSpacing>
+<FlowIndicatorStyle>0</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Loose Boxes</Name>
+<Properties>
+<FlowIndicatorSize>12</FlowIndicatorSize>
+<FlowIndicatorSpacing>16</FlowIndicatorSpacing>
+<FlowIndicatorStyle>1</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Loose Triangles</Name>
+<Properties>
+<FlowIndicatorSize>12</FlowIndicatorSize>
+<FlowIndicatorSpacing>16</FlowIndicatorSpacing>
+<FlowIndicatorStyle>2</FlowIndicatorStyle>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Pressure Scheme</Name>
+<Scheme>
+<Name>No Pressure When Off [Default]</Name>
+<Properties>
+<FlowIndicatorHideWhenOff>1</FlowIndicatorHideWhenOff>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Pressure When Off</Name>
+<Properties>
+<FlowIndicatorHideWhenOff>0</FlowIndicatorHideWhenOff>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Aqua [Default]</Name>
+<Properties>
+<FlowIndicatorColor>255</FlowIndicatorColor>
+<FlowIndicatorUseTubeColor>1</FlowIndicatorUseTubeColor>
+<TubeColor>8947712</TubeColor>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<FlowIndicatorColor>0</FlowIndicatorColor>
+<FlowIndicatorUseTubeColor>0</FlowIndicatorUseTubeColor>
+<TubeColor>32896</TubeColor>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Grayscale</Name>
+<Properties>
+<FlowIndicatorColor>0</FlowIndicatorColor>
+<FlowIndicatorUseTubeColor>0</FlowIndicatorUseTubeColor>
+<TubeColor>7895160</TubeColor>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<FlowIndicatorColor>14671839</FlowIndicatorColor>
+<FlowIndicatorUseTubeColor>0</FlowIndicatorUseTubeColor>
+<TubeColor>0</TubeColor>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Brown</Name>
+<Properties>
+<FlowIndicatorColor>128</FlowIndicatorColor>
+<FlowIndicatorUseTubeColor>0</FlowIndicatorUseTubeColor>
+<TubeColor>10837</TubeColor>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

@@ -1,0 +1,56 @@
+inherited Vector3DSeriesForm: TVector3DSeriesForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Vector 3D series draws points as simple lines in 3D space.'
+      'Each series point determines start and end xyz values.'
+      ''
+      'Series1.AddVector( x0,y0,z0 , x1,y1,z1 ) ;')
+  end
+  inherited Chart1: TChart
+    BottomWall.Transparent = True
+    LeftWall.Transparent = True
+    Legend.Visible = False
+    RightWall.Transparent = True
+    RightWall.Visible = True
+    Title.Text.Strings = (
+      '3D vectors')
+    Chart3DPercent = 55
+    RightAxis.ZPosition = 0.010000000000000000
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 92
+    View3DOptions.Rotation = 358
+    View3DOptions.Zoom = 84
+    object Series1: TVector3DSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+      EndArrow.Color = 536870912
+      EndXValues.Name = 'EndX'
+      EndXValues.Order = loNone
+      EndYValues.Name = 'EndY'
+      EndYValues.Order = loNone
+      EndZValues.Name = 'EndZ'
+      EndZValues.Order = loNone
+      StartArrow.Color = 536870912
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

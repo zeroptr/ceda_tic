@@ -1,0 +1,176 @@
+object BackImageEditor: TBackImageEditor
+  Left = 192
+  Top = 107
+  AutoScroll = False
+  ClientHeight = 250
+  ClientWidth = 281
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Bevel1: TBevel
+    Left = 108
+    Top = 9
+    Width = 79
+    Height = 71
+  end
+  object Image1: TImage
+    Left = 111
+    Top = 12
+    Width = 73
+    Height = 65
+    Stretch = True
+  end
+  object LabelSize: TLabel
+    Left = 193
+    Top = 56
+    Width = 17
+    Height = 13
+    Caption = '0x0'
+  end
+  object LabelExt: TLabel
+    Left = 193
+    Top = 38
+    Width = 3
+    Height = 13
+  end
+  object RGBitmap: TRadioGroup
+    Left = 9
+    Top = 112
+    Width = 112
+    Height = 84
+    HelpContext = 91
+    Caption = 'St&yle'
+    Items.Strings = (
+      'Stretch'
+      'Tile'
+      'Center'
+      'C&ustom')
+    TabOrder = 0
+    OnClick = RGBitmapClick
+  end
+  object BBrowse: TButton
+    Left = 5
+    Top = 12
+    Width = 75
+    Height = 25
+    HelpContext = 727
+    Caption = 'B&rowse...'
+    TabOrder = 1
+    OnClick = BBrowseClick
+  end
+  object CBTransp: TCheckBox
+    Left = 10
+    Top = 86
+    Width = 149
+    Height = 17
+    HelpContext = 1928
+    Caption = '&Transparent'
+    TabOrder = 2
+    OnClick = CBTranspClick
+  end
+  object Button1: TButton
+    Left = 5
+    Top = 47
+    Width = 75
+    Height = 25
+    Caption = '&Filters...'
+    TabOrder = 3
+    OnClick = Button1Click
+  end
+  object GBPosition: TGroupBox
+    Left = 136
+    Top = 112
+    Width = 137
+    Height = 84
+    Caption = 'Position:'
+    TabOrder = 4
+    object Label4: TLabel
+      Left = 55
+      Top = 22
+      Width = 21
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Left:'
+      FocusControl = ELeft
+    end
+    object Label5: TLabel
+      Left = 54
+      Top = 54
+      Width = 22
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'T&op:'
+      FocusControl = ETop
+    end
+    object ELeft: TEdit
+      Left = 79
+      Top = 19
+      Width = 30
+      Height = 21
+      HelpContext = 1468
+      TabOrder = 0
+      Text = '0'
+      OnChange = ELeftChange
+    end
+    object UDLeft: TUpDown
+      Left = 109
+      Top = 19
+      Width = 15
+      Height = 21
+      HelpContext = 1468
+      Associate = ELeft
+      TabOrder = 1
+    end
+    object ETop: TEdit
+      Left = 79
+      Top = 51
+      Width = 30
+      Height = 21
+      HelpContext = 1468
+      TabOrder = 2
+      Text = '0'
+      OnChange = ETopChange
+    end
+    object UDTop: TUpDown
+      Left = 109
+      Top = 51
+      Width = 15
+      Height = 21
+      HelpContext = 1468
+      Associate = ETop
+      TabOrder = 3
+    end
+  end
+  object PanelButtons: TPanel
+    Left = 0
+    Top = 209
+    Width = 281
+    Height = 41
+    Align = alBottom
+    TabOrder = 5
+    Visible = False
+    object Button2: TButton
+      Left = 112
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object Button3: TButton
+      Left = 200
+      Top = 8
+      Width = 75
+      Height = 25
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+end

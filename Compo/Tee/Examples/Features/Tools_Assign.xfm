@@ -1,0 +1,135 @@
+inherited ToolsAssign: TToolsAssign
+  Left = 329
+  Top = 206
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter [1]
+    Left = 0
+    Top = 273
+    Width = 711
+    Height = 4
+    Cursor = crVSplit
+    Align = alTop
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Now all the chart Tools include an Assign method which allows to' +
+        ' copy all the characteristics to other tool created previously i' +
+        'nto the same Chart '
+      'or other Charts available.'
+      ''
+      'Example :'
+      'var i : integer;'
+      'begin'
+      '  for i:=0 to Chart2.Tools.Count-1 do'
+      '      Chart2.Tools[i].Assign(Chart1.Tools[i]);'
+      'end;')
+  end
+  inherited Chart1: TChart
+    Top = 115
+    Height = 119
+    MarginTop = 7
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Visible = False
+    View3D = False
+    Align = alTop
+    object Series2: TBarSeries
+      BarPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000B880400000000000107D400000000000387840000000
+        00000079400000000000E075400000000000706C40}
+    end
+    object ChartTool3: TGridBandTool
+      Band1.Color = 14540253
+      Band2.Color = clSilver
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 234
+    Height = 39
+    object BitBtn3: TBitBtn
+      Left = 11
+      Top = 6
+      Width = 123
+      Height = 25
+      Caption = '&Assign all Tools'
+      TabOrder = 0
+      OnClick = BitBtn3Click
+    end
+    object bEdit: TButton
+      Left = 146
+      Top = 6
+      Width = 111
+      Height = 25
+      Caption = 'Edit Tools Chart&1...'
+      TabOrder = 1
+      OnClick = bEditClick
+    end
+    object bEdit2: TButton
+      Left = 266
+      Top = 6
+      Width = 111
+      Height = 25
+      Caption = 'Edit Tools Chart&2...'
+      TabOrder = 2
+      OnClick = bEdit2Click
+    end
+  end
+  object Chart2: TChart
+    Left = 0
+    Top = 277
+    Width = 711
+    Height = 269
+    MarginTop = 7
+    Title.Text.Strings = (
+      'TChart')
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Visible = False
+    View3D = False
+    Align = alClient
+    TabOrder = 3
+    object Series1: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.HorizSize = 8
+      Pointer.InflateMargins = True
+      Pointer.Style = psRightTriangle
+      Pointer.VertSize = 8
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        000F000000000000000040504000000000000034400000000000404A40000000
+        0000C05C400000000000E06A400000000000E070400000000000F06440000000
+        0000605840000000000050644000000000004060400000000000306640000000
+        0000C05C400000000000D0614000000000002067400000000000A06E40}
+    end
+    object ChartTool1: TGridBandTool
+      Band1.Color = 3381759
+      Band2.Color = 9094655
+      AxisID = 2
+    end
+  end
+end

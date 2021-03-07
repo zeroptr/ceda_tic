@@ -1,0 +1,1405 @@
+
+{                                                                              }
+{ TIB_Transaction                                                              }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: Exception class for the TIB_Transaction component.}
+EIB_TransactionError = class(EIB_Error);
+{: Status of the transaction.
+<br><br>
+<br>tsNone - No transaction has been physically or logically started.
+
+<br>tsInactivePending - A transaction is in the process of physically starting.
+
+<br>tsInactive - Transaction has been started but no DML or DDL has been
+executed causing it to become active.
+
+<br>tsActivePending - A dataset in the transaction is in an edit state that will
+cause the transaction to become active if it is to be successfully posted.
+
+<br>tsActive - DML or DDL has been executed causing transaction
+activation. Either AutoCommit is false or the StartTransaction method was
+called allowing DML & DDL chages to be held within transaction control of the
+application. If AutoCommit were true then there would be an immediate SavePoint
+and the state would go back to tsInactive or tsActivePending.
+
+<br>tsSavePointPending - A call to SavePoint has been made and it is in the
+process of executing it.
+
+<br>tsCommitRetainingPending - Transaction is about to commit but be retained.
+
+<br>tsCommitPending - Transaction is about to commit and end.
+
+<br>tsCommitRefreshPending - Transaction is about to commit and end except the
+datasets will all be refreshed. This happens when Refresh( true ) is called.
+
+<br>tsRollbackRetainingPending - Transaction is about to rollback and retained.
+
+<br>tsRollbackPending - Transaction is about to rollback and end.
+
+<br>tsRollbackRefreshPending - Transaction is about to rollback and end except
+all datasets will be refreshed in the process.
+This happens when Refresh( false ) is called.}
+TIB_TransactionState = ( tsNone,
+                         tsInactivePending,
+                         tsInactive,
+                         tsActivePending,
+                         tsActive,
+                         tsSavePointPending,
+                         tsCommitRetainingPending,
+                         tsCommitPending,
+                         tsCommitRefreshPending,
+                         tsRollbackRetainingPending,
+                         tsRollbackPending,
+                         tsRollbackRefreshPending );
+{: All of the different notification messages generated by the
+TIB_Transaction component and propagated to the TIB_TransactionLink class.}
+TIB_TransactionEventType = ( tetBeforeAssignment,
+                             tetAfterAssignment,
+                             tetBeforeStart,
+                             tetAfterStart,
+                             tetBeforeCommit,
+                             tetAfterCommit,
+                             tetBeforeCommitRetaining,
+                             tetAfterCommitRetaining,
+                             tetBeforeRollback,
+                             tetAfterRollback,
+                             tetBeforeRollbackRetaining,
+                             tetAfterRollbackRetaining,
+                             tetBeforeEnd,
+                             tetAfterEnd,
+                             tetOnPostPendingChanged,
+                             tetOnCachedUpdatePendingChanged,
+                             tetOnStatusChanged );
+{: Isolation levels for the transaction.
+<br><br>
+<br>tiConcurrency - Read-Repeatable or Snapshot.
+<br>tiConsistency - Forced-Repeatable or Forced Snapshot.
+<br>tiCommitted - Read-Committed.}
+TIB_Isolation = ( tiConcurrency,
+                  tiConsistency,
+                  tiCommitted );
+{: Event type used by most events for the TIB_Transaction component.}
+TIB_TransactionEvent = procedure( Sender: TIB_Transaction ) of object;
+{: Event type used by some events for the TIB_Transaction component.}
+TIB_TransactionCanPauseEvent = procedure(     Sender: TIB_Transaction;
+                                          var AllowPause: boolean  ) of object;
+{: Event type used by TIB_Transaction class to pass in custom TPB settings.
+<br><br>
+AConnection is either nil or the connection to which the TPB will be applied.
+<br><br>
+If it is nil then TPB customizations will be applied to all of the
+connections that belong to this transaction.}
+TIB_CustomizeTPBEvent = procedure (     Sender: TIB_Transaction;
+                                        AConnection: TIB_Connection;
+                                    var BufInd: longint;
+                                    var Buffer: pchar ) of object;
+{: This component is used in order to store all the settings necessary for
+management of transaction timeouts.}
+TIB_TimeoutProps = class ( TPersistent )
+private
+  FAllowCheckOAT: word;
+  FAttempt: word;
+  FAttemptMaxRows: longint;
+  FAttemptTicks: word;
+  FAttemptRetry: word;
+  FNextAttempt: word;
+  FPromptUser: dword;
+  FPromptUserDuration: word;
+  FPromptUserRetry: word;
+  FNextPromptUser: word;
+  FForceClosed: dword;
+  FDisableCheckOATFromError: boolean;
+published
+{: This property determines the amount of time in seconds IBO will wait 
+before it will physically end a transaction that is no longer needed by the
+system.
+<br><br>
+This is a useful tuning mechanism for dealing with IBO's automatic OAT
+advancement capabilities.
+<br><br>
+While it is desirable to avoid having a transaction stay open for too long it is
+also undesirable to have to start and stop a transaction for every little thing
+that is done.
+<br><br>
+What I have done is hooked up a session level timer to feed the transaction with
+notifications in which it will check if there are transactions that could be
+ended that haven't been yet. This is the amount of time IBO will wait before it
+kills an unneeded transaction.
+<br><br>
+Use the ForceClosed property to setup a time to force the transaction to
+end in order to guarantee that the OAT will be able to advance.}
+  property AllowCheckOAT: word read FAllowCheckOAT
+                               write FAllowCheckOAT
+                               default 120;
+{: This is the point in time when IBO will begin to attempt to close the
+transaction if at all possible. By default it will check
+for datasets that are set to CommitAction caFetchAll but not yet fetched
+to EOF. It will start causing fetches to take place in the background, to the
+point that eventually all the records are fetched, thus allowing the cursor to
+be closed.  When that happens, the transaction can then be closed.
+<br><br>
+This mode still behaves in a non-intrusive manner but it tends to get more
+aggressive about what it tries to accomplish so that the transaction can be
+ended.
+<br><br>
+The Attempt behavior is to check for any datasets set to caFetchAll.  For any
+that it finds, it begins fetching records to try and get the transaction freed
+up.  It will try and do anything else in a non-intrusive manner to get conditions right for allowing the transaction to close.
+<br><br>
+It is performing "background" fetches without using multi-threading.
+Multi-threading is out since I don't want to impose critical sections all
+over the place. <br><br>
+It hooks into the session timer to feed individual row fetches.  It allows the
+dataset to fetch only for the duration of time that you specify in Attempt.
+To make it a totally background procedure, callbacks are disallowed during that
+time.}
+  property Attempt: word read FAttempt write FAttempt default 1200;
+{: While attempting to fetch in records from datasets that do not have the
+caFetchAll CommitAction set it is possible for a user to open a very
+large dataset containing millions of rows. This could result in pulling down
+potentially all those rows from the server without ever reaching the end of the
+dataset.  The client machine's memory would probably be exhausted before EOF was
+ reached, anyway.
+<br><br>
+This property is to limit the number of rows that IBO will fetch while in
+the process of automatically attempting to create the conditions for allowing
+the transaction to be cycled.}
+  property AttemptMaxRows: longint read FAttemptMaxRows
+                                   write FAttemptMaxRows default 5000;
+{: This is the duration allowed for whatever activities are going on in order
+to create the conditions for allowing the transaction to be closed.  It is in
+milliseconds (1000ths of a second), giving very fine control over just how much
+time the system is interrupted while attempting to process the stuff holding
+the transaction up.
+<br><br>
+It is multiplied a little when trying to get caRefresh configured datasets to
+cooperate and attempt to get them fetched to the EOF. Its better if they can
+avoid doing a refresh if possible so that the dataset won't keep a transaction
+open right after a Commit takes place. So, I just buy a little time that I
+assume would go into the process of actually refreshing the dataset. It's
+kind of a gamble I guess. Perhaps I should put this behavior under property
+control as well...}
+  property AttemptTicks: word read FAttemptTicks
+                              write FAttemptTicks default 150;
+{: This is the Retry allowed for whatever activities are going on in order to
+create the conditions for allowing the transaction to be closed. It is
+the time of inactivity between the background operations working towards getting
+all dataset's cursors closed.  If any attempt to fetch rows fails to get them
+all, it will try again in after the period of time defined by this property.}
+  property AttemptRetry: word read FAttemptRetry write FAttemptRetry default 5;
+{: This is the point in time that IBO will actually get intrusive about
+prompting the user to get on with their work and get the transaction closed.
+<br><br>
+The default behavior is to invoke the EndWithConfirm method if the
+OnTimeoutPromptUser event is not assigned. If they choose Cancel, nothing
+will happen. They will be prompted again after the PromptUserRetry period of
+seconds has transpired.
+<br><br>
+It would be appropriate to plug in your own custom algorithm for interacting
+with the user of your application to get them to resolve their transaction.}
+  property PromptUser: dword read FPromptUser write FPromptUser default 0;
+{: Period in seconds between IBO's prompts to the user to resolve the
+outstanding transaction.
+<br><br>
+At present, no system action is triggered by this setting. It is here for your
+own convenience and use. I plan eventually to plug a procedure in here that
+allows a timeout on the EndWithConfirm method and provides a default value upon
+the dialog timing out.}
+  property PromptUserDuration: word read FPromptUserDuration
+                                    write FPromptUserDuration
+                                    default 15;
+{: Amount of time in seconds that IBO waits before retrying prompting the user
+to resolve their transaction.}
+  property PromptUserRetry: word read FPromptUserRetry
+                                 write FPromptUserRetry
+                                 default 60;
+{: This property determines the period in seconds IBO will wait before it forces
+ a transaction to end, without regard for user activity.  Once the transaction
+ has been physically started for the specified period of time it will be forced
+ closed.
+<br><br>
+By default it is set to 0 so that no action will be taken.
+<br><br>
+<b>All datasets of this transaction will be closed as a result of this
+action.</b>  If AutoCommit is set true, a transaction Close will attempt a
+commit and if an exception is raised it will force a rollback.}
+  property ForceClosed: dword read FForceClosed write FForceClosed default 0;
+end;
+
+{: This component is designed to encapsulate all of the InterBase API's
+transaction functionality. It provides all properties, methods and events
+necessary to have full control over transaction capabilities.
+<br><br>
+Here are some hints for working with IB Objects transactions:
+<br><br>
+With IBO three conceptual aspects of transaction need to be considered.
+They are the physical transaction, the logical transaction and whether the
+transaction is explicit.  Each has its own behavior and in many cases the
+behaviors overlap.  Other factors, such as isolation, also affect the behaviors.
+<br><br>
+<b>Physical Transactions</b>
+<br><ul>
+<li>IBO automatically takes care of starting the physical transaction.  It is
+not necessary to start the physical transaction explicitly yourself.
+<li>It is the physical transaction which needs to be kept as short as possible
+so that the server is not prevented from doing its garbage collection.
+<li>It is where the settings that provide the isolation, lockwait, recversion,
+and so on, take effect.
+<li>The physical transaction forms the foundation for the logical and explicit
+transactions.</ul>
+<br><br>
+<b>Long Transactions</b>
+A physical transaction of long duration can lead to severe performance
+degradation and, eventually, a server crash if it is left for more than a day or
+ so in a moderately active database environment. A high-volume database could
+ show signs of degradation within a day.
+<br><br>
+<b>End of the Physical Transaction</b>
+A physical transaction is ended when Commit[Retaining], Rollback[Retaining],
+Refresh() or Close is called. The same methods also end a logical unit of
+work and an explicit transaction. 
+<br><br>
+<b>Oldest Active Transaction (OAT) Management</b>
+OAT (Oldest Active Transaction) Management is IBO's set of automated features
+that close the physical transaction for you.  Provided you avoid or carefully
+manage the cases where the OAT management is suspended, you will not have any
+problems with long physical transactions in your applications.
+<br><br>
+Here are the cases that prevent IBO from automatically advancing the OAT:
+<ol>
+<li><b>You are not using cached updates, AutoCommit is false and you post any
+change to the database.</b>
+<br>This flags the transaction as active (tsActive).  The OAT stuff is suspended
+whilst a transaction's state is tsActive. You must call Commit[Retaining],
+Rollback[Retaining], SavePoint or Refresh() to resolve the active state of the
+transaction and allow the OAT stuff to resume.
+<br>
+<li><b>You are using PessimisticLocking and you have a row in dssEdit state.</b>
+<br>In order to give duration to the lock, the transaction must be held open.
+As soon as the row is posted or cancelled, the lock ends, the former rules apply
+and OAT behavior resumes.
+<br>
+<li><b>You use the tiConcurrency isolation level.</b><br>OAT will not advance,
+because tiConcurrency tells the server that you want a snapshot view of the
+database. If physical transactions were to able to come and go in order to
+advance the OAT, the snapshot view would be corrupted. Each time a new
+transaction is started with tiConcurrency you get a fresh view of the database
+because other user's committed changes become visible.
+<br>
+<li><b>You have a SELECT statement that will return thousands of rows and you
+open it but don't fetch all the records.</b>
+<br>This forces a cursor to be held open on the server until all the rows have
+been fetched.  Eventually this situation would be overcome by the background
+fetching that begins taking place in order to free up the cursor. If you set the
+CommitAction to caInvalidateCursor then it will just get refreshed for you and
+there won't be a problem.
+<p>It is generally inadvisable to leave large datasets open where all
+records are not fetched in.</p>
+</ol>
+<br>
+Be sure to get familiar with the TimeOutProps settings because it is possible
+there to ensure that the OAT advancement issues can be dealt with.
+<br><br>
+<br>
+<b>Logical Transactions</b>
+<br>
+Consider a logical transaction to be the unit of work that the user is
+performing. IBO will automatically keep track of your logical transaction for
+you.
+<br><br>
+<b>Implicit Logical Transaction</b>
+Use the TransactionIsActive property to determine whether you are in an implicit
+logical transaction.<ul>
+<li>If AutoCommit is true, the implicit logical transaction will be limited to
+the duration of time that any dataset is in an edit state. As soon as it is
+posted, the transaction is auto-committed and the implicit logical transaction
+ends.
+<br><br>
+<li>If AutoCommit is false then the implicit logical transaction will start from
+the moment at which a dataset is put into an edit state and will persist after a
+change is posted.  It will not finish until the transaction is ended by
+explicitly calling one of the methods to end it. <br>
+<li>If a dataset is cancelled and no other changes had been posted then the
+implicit logical transaction will be ended automatically.
+</ul>
+<br><br>
+<b>Explicit Transactions</b>
+<ul>
+<li>An explicit transaction is initiated by calling the StartTransaction method.
+It will persist until one of the methods to end the unit of work is called. <br>
+<li> SavePoint does not end an explicit transaction.<br>
+<li>The InTransaction property is used exclusively to determine whether you are
+in an explicit transaction. It does not indicate the status of an implicit
+logical transaction or of the underlying physical transaction.<br>
+<li>AutoCommit=True behavior is suspended during an explicit transaction and all
+changes posted to the server remain in the transaction, i.e. they are not
+committed when a dataset's Post method is called.<li>
+</ul>
+<br><br>
+<b>AutoCommit</b><br>
+<ul>
+<li>Setting AutoCommit to True allows you to avoid taking explicit control of
+logical transactions. It will generate an immediate SavePoint when you activate
+the transaction by posting a change to a dataset, executing a DML statement, etc. Everything becomes committed on the server the moment it is executed. In these conditions, there really is no logical transaction to worry about.
+<br><br>
+<li>If AutoCommit is false, you need to call SavePoint, CommitRetaining, Commit,
+RollbackRetaining, Rollback or Refresh() in order to process a unit of work.
+These methods all end the logical transaction whether it is implicit or
+explicit.
+</ul>}
+TIB_Transaction = class( TIB_Component )
+private
+{ Utility Storage }
+  flag_junk_value: integer;
+{ Property storage fields }
+  FtrHandle: isc_tr_handle;
+  FConnectionLinkList: TList;
+  FStatementList: TList;
+  FDatasetList: TList;
+  FTransactionLinkList: TList;
+  FTransactionState: TIB_TransactionState;
+  FReadOnly: boolean;
+  FIsolation: TIB_Isolation;
+  FRecVersion: boolean;
+  FLockWait: boolean;
+  FAutoCommit: boolean;
+  FServerAutoCommit: boolean;
+  FAnnounceFocus: boolean;
+  FPostPendingCount: integer;
+  FCachedUpdatePendingCount: integer;
+  FConfirmCancelPrompt: TStrings;
+  FConfirmClosePrompt: TStrings;
+  FTPBLength: smallint;
+  FDMLCache: TIB_TransactionDMLCache;
+  FWantPostPendingChanged: integer;
+  FWantCachedUpdatePendingChanged: integer;
+  FActivateCount: cardinal;
+  FStartedDateTime: TDateTime;
+  FLastStarted: TDateTime;
+  FLastStopped: TDateTime;
+  FPaused: integer;
+  FPauseDisabled: integer;
+  FResumeFromCommit: boolean;
+  FIsPausePending: boolean;
+  FOpenCursors: integer;
+  FInTransaction: boolean;
+  FClosePending: boolean;
+  FOATPending: boolean;
+  FPessimisticLockCount: integer;
+  FTimeoutProps: TIB_TimeoutProps;
+  FConnectionWasLost: boolean;
+{ Event storage fields }
+  FBeforeStart: TIB_TransactionEvent;
+  FAfterStart: TIB_TransactionEvent;
+  FBeforeCommitRetaining: TIB_TransactionEvent;
+  FAfterCommitRetaining: TIB_TransactionEvent;
+  FBeforeSavePoint: TIB_TransactionEvent;
+  FAfterSavePoint: TIB_TransactionEvent;
+  FBeforeRollbackRetaining: TIB_TransactionEvent;
+  FAfterRollbackRetaining: TIB_TransactionEvent;
+  FBeforeCommit: TIB_TransactionEvent;
+  FAfterCommit: TIB_TransactionEvent;
+  FBeforeRollback: TIB_TransactionEvent;
+  FAfterRollback: TIB_TransactionEvent;
+  FBeforeEnd: TIB_TransactionEvent;
+  FAfterEnd: TIB_TransactionEvent;
+  FOnGainFocus: TIB_TransactionEvent;
+  FOnLoseFocus: TIB_TransactionEvent;
+  FOnCustomizeTPB: TIB_CustomizeTPBEvent;
+  FOnPauseChanged: TIB_TransactionEvent;
+  FOnGetCanPause: TIB_TransactionCanPauseEvent;
+  FOnTimeoutPromptUser: TIB_TransactionEvent;
+{ Property Access Methods }
+  procedure SetStarted( AValue: boolean );
+  function GetStarted: boolean;
+  function GetPtrHandle: pisc_tr_handle;
+  function GetPdbHandles( Index: integer ): pisc_db_handle;
+  function GetConnectionCount: integer;
+  function GetConnection( Index: integer ): TIB_Connection;
+  function GetConnectionIndex( Index: TIB_Connection ): integer;
+  function GetStatementCount: integer;
+  function GetStatement( Index: integer ): TIB_Statement;
+  function GetDatasetCount: integer;
+  function GetDataset( Index: integer ): TIB_Dataset;
+  function GetTransactionLinkCount: integer;
+  function GetTransactionLink( Index: integer ): TIB_TransactionLink;
+  function GetTransactionIsActive: boolean;
+  procedure SetConfirmCancelPrompt( AValue: TStrings );
+  procedure SetConfirmClosePrompt( AValue: TStrings );
+  procedure ResetTransactionState( LogicalEnd: boolean );
+  function GetIsPaused: boolean;
+  function GetIsPauseDisabled: boolean;
+  function GetTimeActive: TDateTime;
+  function GetIB_Connection: TIB_Connection;
+  procedure SetIB_Connection( AValue: TIB_Connection );
+  function GetIB_Connection1: TIB_Connection;
+  procedure SetIB_Connection1( AValue: TIB_Connection );
+  function GetIB_Connection2: TIB_Connection;
+  procedure SetIB_Connection2( AValue: TIB_Connection );
+  procedure SetTimeoutProps( AValue: TIB_TimeoutProps );
+protected
+{ Connection handling stuff }
+  procedure SysAddConnection( NewConnection: TIB_Connection ); //~virtual;
+  procedure SysRemoveConnection( OldConnection: TIB_Connection ); //~virtual;
+  procedure SysRemoveAllConnections; //~virtual;
+  function GetAutoCommit: boolean; //~virtual;
+  function IsAutoCommitStored: boolean; //~virtual;
+{ Property Access Methods }
+  procedure SetTransactionState( AValue: TIB_TransactionState ); //~virtual;
+  procedure SetAnnounceFocus( AValue: boolean ); //~virtual;
+  procedure SetAutoCommit( AValue: boolean ); //~virtual;
+  procedure SetServerAutoCommit( AValue: boolean ); //~virtual;
+  procedure SetReadOnly( AValue: boolean ); //~virtual;
+  procedure SetIsolation( AValue: TIB_Isolation ); //~virtual;
+  procedure SetRecVersion( AValue: boolean ); //~virtual;
+  procedure SetLockWait( AValue: boolean ); //~virtual;
+  function GetCanPause: boolean; //~virtual;
+  procedure DoPauseChanged; //~virtual;
+  procedure IsPausedError;
+{ Inherited Methods }
+  procedure SetSession( ASession: TIB_Session ); override;
+  function NeedTimerNotifications: boolean; override;
+{ System Methods }
+  function SysStart: boolean; //~dynamic;
+  procedure SysBeforeStart; //dynamic;
+  procedure SysFailedStart; //~dynamic;
+  procedure SysAfterStart; //~dynamic;
+  procedure SysCommit( ARefreshing: boolean ); //~dynamic;
+  procedure SysCommitRetaining( ASavePointOnly: boolean ); //virtual;
+  procedure SysRollback( ARefreshing: boolean ); //~dynamic;
+  function SysCommitBegin( ARefreshing: boolean ): boolean;
+  procedure SysCommitEnd( ARefreshing: boolean );
+  function SysRollbackBegin( ARefreshing: boolean ): boolean;
+  procedure SysRollbackEnd( ARefreshing: boolean );
+  procedure SysRollbackRetaining; //~virtual;
+  procedure SysBeforeEnd; //~dynamic;
+  procedure SysAfterEnd( WasCommitted: boolean ); //~dynamic;
+  procedure SysPostAll( IncludeCachedUpdates: boolean ); //~dynamic;
+  procedure SysCancelAll( IncludeCachedUpdates: boolean ); //~dynamic;
+  procedure SysAdjustPendingCount; 
+  procedure SysAdjustPostPendingCount( Adj: integer );
+  procedure SysAdjustCachedUpdatePendingCount( Adj: integer );
+  procedure SysBeforeExecDDL; //~dynamic;
+  procedure SysAfterExecDDL; //~dynamic;
+  procedure SysProcessCommitAction( const ABeforeEnd,
+                                          ACommitChanges,
+                                          ARefreshing,
+                                          ARetaining: boolean );
+  procedure SysTimeOutAttempt( var Done: boolean );
+  procedure SysTimeOutPromptUser;
+  function CheckLostConnection: boolean;
+{ API Level methods }
+  procedure API_Start;
+  procedure API_Commit;
+  procedure API_CommitRetaining;
+  procedure API_Rollback;
+  procedure API_RollbackRetaining;
+  procedure API_ExecuteImmediate( const ACommand: string; AParam: PXSQLDA );
+{ Event Dispatch Methods }
+  procedure DoBeforeStart; //~dynamic;
+  procedure DoAfterStart; //~dynamic;
+  procedure DoBeforeCommit; //~dynamic;
+  procedure DoAfterCommit; //~dynamic;
+  procedure DoBeforeCommitRetaining; //~dynamic;
+  procedure DoAfterCommitRetaining; //~dynamic;
+  procedure DoBeforeSavePoint; //~dynamic;
+  procedure DoAfterSavePoint; //~dynamic;
+  procedure DoBeforeRollbackRetaining; //~dynamic;
+  procedure DoAfterRollbackRetaining; //~dynamic;
+  procedure DoBeforeRollback; //~dynamic;
+  procedure DoAfterRollback; //~dynamic;
+  procedure DoBeforeEnd; //~dynamic;
+  procedure DoAfterEnd; //~dynamic;
+  procedure DoGainFocus; //~dynamic;
+  procedure DoLoseFocus; //~dynamic;
+  procedure DoCustomizeTPB(     AConnection: TIB_Connection;
+                            var AIndex: longint;
+                            var ABuffer: pchar );
+{ Linked Event Dispatch Methods }
+  procedure ProcessEvent( AEvent: TIB_TransactionEventType ); //~virtual;
+  procedure ProcessConnectionEvent( Sender: TIB_ConnectionLink;
+                                    AEvent: TIB_ConnectionEventType );//~virtual;
+public
+
+{ Inherited Methods }
+
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+
+{ New methods }
+
+{: This method is used to apply updates for selected datasets in a
+specified order.
+<br><br>
+To have all datasets for the transaction handled in no specific order, pass in
+an empty set.}
+  procedure ApplyUpdates( const ADatasets: array of TIB_BDataset );
+{: This method is used to cancel updates for selected datasets in a specified
+order.
+<br><br>
+To have all datasets for the transaction handled in no specific order, pass in
+an empty set.}
+  procedure CancelUpdates( const ADatasets: array of TIB_BDataset );
+{: This method adds a new connection to use for a multi-database transaction.}
+  procedure AddConnection( New: TIB_Connection );
+{: This method removes a connection from the list of connections to span.}
+  procedure RemoveConnection( Old: TIB_Connection ); 
+{: This method is used to add a DML cache item to the list so that when the
+transaction is committed it will announce these changes to other transactions
+in the same connection that have an isolation of tiCommitted.
+<br><br>
+This is done automatically if you set the appropriate announce DML cache flags
+in the dataset. If you need some behavior that is different from the default
+behavior, call this method from the OnDMLCacheAnnounceItem event handler.}
+  procedure AddDMLCacheItem(       AConnection: TIB_Connection;
+                                   ADataset: TIB_Dataset;
+                             const AKeyFieldNames: string;
+                                   AKeyFieldValues: variant;
+                                   ADMLItemType: TIB_DMLCacheItemType ); 
+{: This method starts what I call an explicit logical transaction. It causes the
+InTransaction property to return True. The explicit logical transaction then
+persists  until Commit, CommitRetaining, Rollback, RollbackRetaining, Close or
+Refresh() is called.
+<br><br>
+If AutoCommit is set to true, autocommitting behavior is temporarily suspended
+by calling this method, allowing all changes to be held within a logical
+transaction. Once the logical transaction is ended, auto commit behavior will
+resume.
+<br><br>
+An exception will be raised if StartTransaction has already been called, so it
+is advisable to check the status of the InTransaction property before calling
+this method.
+<br><br>
+If StartTransaction is never called, the InTransaction property will always
+return false, even if changes are posted to the server or are pending.
+<br><br>
+Instead of calling StartTransaction, it is possible to rely on the implicit
+logical transaction that IBO maintains for you automatically. In this case, if
+AutoCommit is false, use the TransactionIsActive property (<b>not</b> the
+InTransaction property) to determine whether something has actually been sent to
+the server or (if a dataset is still in an edit state) is pending.}
+  procedure StartTransaction;
+{: Some statements may process an alteration to data or metadata that IBO is not
+smart enough to detect. This could be due to calling the ExecuteImmediate()
+method where a DML or DDL is performed. It could also be a case where a stored
+procedure is used as a SELECT proc in a TIB_Cursor and it also has DML
+statements in it. In such cases it is necessary to activate the transaction
+manually, to let IBO know something is happening that necessitates setting the
+transaction active.
+<ul>
+<li>If AutoCommit is true and StartTransaction wasn't previously called this
+will cause an immediate SavePoint to be generated which will cause the Status to
+go back to tsInactive or tsActivePending depending on the states of the
+datasets.
+<br><br>
+<li>If AutoCommit is false or a logical transaction was explicitly started the
+Status will be set to tsActive and TransactionIsActive will now indicate True.
+</ul>
+IBO calls this method internally whenever a dataset posts a change or a DML
+statement is executed successfully. It also calls this method when a stored
+procedure is executed and the StoredProcHasDML property is set to true.}
+  procedure Activate;
+{: This method causes a post of all datasets in an edit state and then makes all
+posted changes in the transaction committed on the server. This call retains the
+current physical transaction so it doesn't require that open datasets be closed
+or have all their records fetched into the buffers.
+<br><br>
+This method is ideal for when you don't want the datasets to be closed but need
+all changes posted up to this point to be committed.
+<br><br>
+Because calling this method does not end the transaction it is still holding up
+garbage collection. It is vital for any application that may be persistently
+open for a long period of time to ensure that an occasional hard Commit or
+Rollback is performed so that the OAT (oldest active transaction) can be
+advanced and enable garbage collection to take place.
+<br><br>
+This is especially critical for apps that run 24X7.}
+  procedure CommitRetaining;
+{: This method posts any pending edits, inserts and deletes and then causes a
+commit, totally ending both the logical and physical aspects of the current
+transaction.
+<br><br>
+Commit also causes the datasets to perform their CommitAction setting.<ul>
+<li>By default, all native IB_Dataset components are closed.
+<li>By default, the TDataset-based datasets use caInvalidateCursor, which leaves
+them open.
+</ul>The CommitAction property on datasets determines what behavior they should
+display when the transaction is committed or rolled back. It may be desirable
+for some datasets to remain open in spite of the end of the transaction.
+CommitAction can be set to allow that to happen.}
+  procedure Commit;
+{: This method is the same as CommitRetaining except that it does not require
+that the datasets of the transaction all be posted first. Its job is simply to
+perform a call to the API function that does a commit retaining on the server.
+So, if the transaction was active it goes back to the inactive or active pending
+state, according to whether or not a dataset needs to be posted.
+<br><br>
+A call to the SavePoint method does NOT actually end the logical transaction,
+even though you could say that it does end a physical unit of work.
+<br><br>
+AutoCommit does a SavePoint in order to make the new committed changes effective 
+immediately, even before the AfterPost event handler is called.  This makes the
+new changes visible to others if AfterPost sends notification after a DML
+statement is processed.}
+  procedure SavePoint;
+{: This method causes a rollback, ending both the physical and logical aspects
+of the current transaction. It also cancels any pending inserts, edits or
+deletes for all datasets that are a part of this transaction.
+<br><br>
+By default, Rollback also causes the datasets to all be closed. The CommitAction
+property on the datasets determines what action they should take when their
+physical transaction is ended. It may be desirable for some datasets to remain
+open in spite of the end of the transaction. The CommitAction allows for that to
+happen, either by fetching all records or by performing a refresh after the
+rollback - your choice.
+<br><br>
+One of the pitfalls of the BDE is that, when Commit or Rollback is called, it
+will force a FetchAll of all datasets in order to preserve its cursor and keep
+the dataset Active. IBO gives you more careful control over such action.
+In some cases it can be a valid approach but in others it is a severe
+performance trap.
+<br><br>
+To work around this problem, you can set the soft-commit flag at a global-driver
+level.  Unfortunately, the soft-commit flag prevents the OAT from advancing
+properly.  This isn't desirable either, so with the BDE there really is no
+winning.}
+  procedure Rollback;
+{: This method cancels any pending inserts, edits or deletes and performs a
+rollback, but the datasets are not all closed.
+<br><br>
+This method's behavior varies according to InterBase version:
+<ul>
+<li>For IB 5.x and earlier, it emulates cursor retention by refreshing all the
+datasets and maintaining their current cursor positions wherever possible. The
+datasets will actually be refreshed, because it has to perform a hard rollback
+which does end the physical transaction.
+<br><br>
+<li>InterBase 6 supports cursor retention at the API level so this method maps
+into that functionality. Thus, for InterBase 6 and later, both the cursors and
+the physical transaction will be retained.
+</ul>
+It will still be necessary to refresh the datasets.  IBO does not attempt to
+keep track of all the changes made during a transaction (e.g. in a cache
+somewhere) in order to provide capability for reverting them out of the client
+buffers - a good example of the optimistic nature of the client/server
+environment.}
+  procedure RollbackRetaining; 
+{: This method causes a transaction-wide refresh of all buffered datasets. It is
+equivalent to opening and closing all datasets, as occurs when Refresh is called.
+<br><br>
+It ends the current transaction and starts a new one so that all of the
+previously opened datasets can be refreshed according to their RefreshAction
+property setting. Thus, the normal state changes that would attend a Rollback
+or Commit can be avoided.
+<br><br>
+CommitChanges parameter indicates whether to Commit changes (if True) or
+Rollback (if False).}
+  procedure Refresh( CommitChanges: boolean );
+{: This method permits the transaction Isolation property to be changed even
+while the transaction is active. It operates essentially the same as the
+Refresh() method but changes the Isolation level before refreshing the datasets.
+<br><br>
+The transaction does have to be closed in order for this to take place so if
+there are changes pending they will either need to be committed or rolled back.
+<br><br>
+CommitChanges parameter indicates whether to Commit changes (if True) or
+Rollback (if False).}
+  procedure ChangeIsolation( NewIsolation: TIB_Isolation;
+                             CommitChanges: boolean );
+{: This method causes a transaction to end.  If AutoCommit is True, it ends
+with a Commit;  otherwise it ends with a Rollback.  If an exception is raised
+during the Commit, a rollback is performed automatically.
+<br><br>
+This is typically only used when the object is being destroyed or its
+connection is being closed and an exception is undesirable.}
+  procedure Close;
+{: This method is great for a UI when a physical transaction needs to be
+resolved and user input is desired.
+<br><br>
+This call will always result in the physical end of the transaction unless
+cancel is pressed. <br>
+NOTE :: To end just the logical transaction and not the physical
+use the EndWithConfirm method instead of this one.}
+{$IFNDEF IBO4_BETA}
+  function CloseWithConfirm: TModalResult;
+{$ELSE}
+  function CloseWithConfirm: integer;
+{$ENDIF}
+{: This method is great for a UI when a transaction needs to be resolved
+and the user input is desired.
+<br><br>
+Keep this in mind:  if the changes are not to be saved then a RollbackRetaining
+is performed which may end the physical transaction. Please see the information
+on the RollbackRetaining method to see how its behavior varies according to the
+version of InterBase you are using.}
+{$IFNDEF IBO4_BETA}
+  function EndWithConfirm: TModalResult;
+{$ELSE}
+  function EndWithConfirm: integer;
+{$ENDIF}
+{: This is a quick way to execute a statement without having to create a
+statement object. It will execute the statement for each connection the
+transaction is involved in. If you have more than one connection and it fails
+you should actually perform a rollback because there isn't a way to know which
+database the error occurred in.}
+  procedure ExecuteImmediate( const ACommand: string );   
+{: All datasets that are associated with this transaction will be posted.}
+  procedure PostAll;
+{: All datasets that are associated with this transaction will be cancelled.}
+  procedure CancelAll;
+{: This method causes the transaction to be the focused transaction for the
+session.}
+  procedure SetFocus;
+{: This method announces the event that prompts all transaction links to update
+their status.
+<br><br>
+It is possible for a script to execute a COMMIT WORK statement which
+will cause a transaction to end. As a result, the transaction handle is cleared
+to nil, but the IB_Transaction component is not aware that this happened. So,
+after running a script, use this method to have a TIB_Transaction instance check
+whether it is still up to date.}
+  procedure UpdateStatus;
+{: This method will increment the flag that determines whether event
+notifications should be sent to the OnPostPendingChanged events of the
+transaction links.}
+  procedure BeginPostPendingNotify;
+{: This method will decrement that flag that determines whether event
+notifications should be sent to the OnPostPendingChanged events of the
+transaction links.}
+  procedure EndPostPendingNotify;
+{: This method will increment that flag that determines whether event
+notifications should be sent to the OnCachedUpdatePendingChanged events of the
+transaction links.}
+  procedure BeginCachedUpdatePendingNotify;
+{: This method will decrement that flag that determines whether event
+notifications should be sent to the OnCachedUpdatePendingChanged events of the
+transaction links.}
+  procedure EndCachedUpdatePendingNotify;
+{: Call Pause( true ) to commit a transaction without notifying any datasets
+that the transaction has stopped.  <br>
+Call Pause( false ) to rollback a transaction without notifying any datasets
+that the transaction has stopped.
+<br>While the transaction is paused, the Started property will return false and
+IsPaused will return true.  The TransactionState property will report the status
+of the transaction as it was before being paused.
+<br><br>
+Call Resume to have the transaction restored to its earlier state,
+including having all datasets that were opened refreshed.
+<br><br>
+This is essentially like the Refresh method split into two parts.  The Pause
+that closes the transaction and the Resume that reopens and refreshes the
+transaction.
+<br><br>
+Any attempt to start/activate the transaction while it is paused will result in
+a "Transaction Paused" exception.
+<br><br>
+Returns true if the transaction became paused, otherwise false.}
+  function Pause( CommitChanges: boolean ): boolean;
+{: See description for Pause function.
+<br><br>
+Returns true if the transaction is no longer paused, false if the transaction
+is still paused (possibly due to multiple depth of pause calls).}
+  function Resume( WithRestart: boolean ): boolean;
+{: Call this to disable pause processing - usually to prevent a long running
+report or procedure being interrupted by a call to Pause.  Call EnablePause
+to re-enable Pause capability for the transaction.
+<br><br>
+DisablePause/EnablePause would usually be code in a try/finally block to
+ensure that the transaction can be paused after the long running process
+has completed.
+<br><br>
+If DisablePause is called when the Transaction is already paused then
+the standard "Transaction Paused" exception is raised.}
+  procedure DisablePause;
+{: See DisablePause for details. }
+  procedure EnablePause;
+{: This method is used in the processing to control the mechanisms to keep the
+OAT advancing. It is mainly used internally and should never really need to be
+called from an application.
+<br><br>
+The method checks to see if the current physical transaction can be ended
+internally. If there are no changes pending a commit nor any open cursors that
+need to be preserved, IBO can automatically end the transaction and allow the
+OAT to advance. The next time any dataset needs a transaction, it is
+automatically started again. This makes the OAT management transparent to the
+application code.}
+  procedure CheckOAT;
+{: This DisableOAT method is used in the processing to control the mechanisms to
+keep the OAT advancing. It is mainly used internally and should never really
+need to be called from an application.
+<br><br>
+It can be very beneficial to performance if the OAT is temporarily disabled
+whilst a large number of queries are processed. It will allow all the queries to
+operate within a single physical transaction instead of having IBO start and end
+a physical transaction each time a single dataset is processed.}
+//  procedure DisableOAT;
+{: The EnableOAT method is used in the processing to control the mechanisms to
+keep the OAT advancing. It is mainly used internally and should never really
+need to be called from an application.
+<br><br>
+Please see DisableOAT for useful comments.}
+//  procedure EnableOAT;
+  
+{: Override of the base class method in TIB_Component.
+<br><br>
+This procedure is called to make sure the Transaction OAT is helped along.}
+  procedure ProcessPassiveTasks( var IsDone,
+                                     IsWaiting,
+                                     Terminate: boolean ); override;
+  
+{ Properties }
+
+{: This is the number of times during the transaction that Activate has been
+called.
+<br><br>
+I use this for basic logging purposes.}
+  property ActivateCount: cardinal read FActivateCount;
+{: Native API transaction handle.}
+  property trHandle: isc_tr_handle read FtrHandle;
+{: Pointer to the native API transaction handle.}
+  property PtrHandle: pisc_tr_handle read GetPtrHandle;
+{: When a transaction is being physically started, this determines the size of
+the buffer used to store transaction settings. In the case that a lot of
+settings are going to be used, it would be important to increase this size to
+accommodate it. The default size is only 1024 bytes.}
+  property TPBLength: smallint read FTPBLength write FTPBLength default 1024;
+{: Current state of the transaction.}
+  property TransactionState: TIB_TransactionState read FTransactionState;
+{: This property indicates whether there is a change posted or pending to post
+for the transaction. This property works for both the implicit and explicit
+logical transaction modes.
+<br><br>
+It is different to InTransaction in that it will still return false even if
+StartTransaction has been called. InTransaction returns true once
+StartTransaction has been called, even if no changes have been posted or are
+even pending to post.}
+  property TransactionIsActive: boolean read GetTransactionIsActive;
+{: This property indicates whether an explicit logical transaction is in
+progress.  It returns true only after StartTransaction has been called.
+If StartTransaction has not been called it will return false, even if an
+implicit logical transaction is in effect.
+<br><br>
+For more general control use the TransactionIsActive property, which works for
+both the implicit and explicit modes of the logical transaction.}
+  property InTransaction: boolean read FInTransaction;
+{: This property tells whether the Close method has been called. Close will end
+the transaction in such a way that there will not be any more datasets open or
+in search mode after it processes.}
+  property ClosePending: boolean read FClosePending;  
+{: Number of connections associated with this transaction.}
+  property ConnectionCount: integer read GetConnectionCount;
+{: Indexed reference to the connections associated with this transaction.}
+  property Connections[Index: integer]: TIB_Connection read GetConnection;
+{: Index reference of a connection that may be associated to the transaction.
+<br><br>
+An index of -1 is returned if the connection is found to be absent from the
+list.}
+  property ConnectionIndex[Index: TIB_Connection]: integer
+      read GetConnectionIndex;
+{: Number of statements associated with this transaction.}
+  property StatementCount: integer read GetStatementCount;
+{: Indexed reference to the statements associated with this transaction.}
+  property Statements[Index: integer]: TIB_Statement read GetStatement;
+{: Number of datasets associated with this transaction.}
+  property DatasetCount: integer read GetDatasetCount;
+{: Indexed reference to the datasets associated with this transaction.}
+  property Datasets[Index: integer]: TIB_Dataset read GetDataset;
+{: Indexed reference to the pointers to the connections associated with
+this transaction.}
+  property PdbHandles[Index: integer]: pisc_db_handle read GetPdbHandles;
+{: Number of datasets associated with this transaction that NeedToPost.}
+  property PostPendingCount: integer read FPostPendingCount;
+{: Number of datasets associated with this transaction that need to apply
+CachedUpdates.}
+  property CachedUpdatePendingCount: integer read FCachedUpdatePendingCount;
+{: Indicates the number of open cursors associated with the transaction.}
+  property OpenCursors: integer read FOpenCursors;  
+{: Returns True if a transaction has been physically started.
+<br><br>
+Whether it returns True or False, an active logical transaction could
+nevertheless be in progress.}
+  property Started: boolean read GetStarted write SetStarted;
+{: This is a datetime indicating the system time at the point when this
+transaction was started.}
+  property StartedDateTime: TDateTime read FStartedDateTime;
+{: The datetime when the transaction was last started. (If 0 then transaction
+has never been started.)  Unlike StartedDateTime, this property is set with the
+actual API call which means that it always reflects the actual transaction
+start time, regardless of internal processing of this class.}
+  property LastStarted: TDateTime read FLastStarted;
+{: The datetime when the transaction was last stopped (committed or rolledback).
+(If 0 then the transaction has never been stopped.)  Unlike StartedDateTime, 
+this property is set with the actual API call which means that it always
+reflects the actual transaction stop time, regardless of internal processing
+of this class.}
+  property LastStoppped: TDateTime read FLastStopped;
+{: Number of transactionLink components that reference this transaction.}
+  property TransactionLinkCount: integer read GetTransactionLinkCount;
+{: Array of TransactionLink objects.}
+  property TransactionLinks[ Index: integer ]: TIB_TransactionLink
+      read GetTransactionLink;
+{: Is the transaction currently paused? }
+  property IsPaused: boolean read GetIsPaused;
+{: Is the transaction currently in the process of being paused? }
+  property IsPausePending: boolean read FIsPausePending;
+{: Has Pause been disabled? }
+  property IsPauseDisabled: boolean read GetIsPauseDisabled;
+{: Find out if the transaction can be paused. }
+  property CanPause: boolean read GetCanPause;
+{: Reports the amount of time the transaction has been active, that is,
+the difference between now and the LastStarted time IF the transaction
+is currently active.  If not active returns a value of 0. }
+  property TimeActive: TDateTime read GetTimeActive;
+{: This flag tells whether the commit being done was initiated.}
+  property OATPending: boolean read FOATPending;
+
+published
+{ Properties }
+
+{: This property determines the primary connection on which this transaction
+will be started.}
+  property IB_Connection: TIB_Connection read GetIB_Connection
+                                         write SetIB_Connection;
+{: This property determines the first additional connection on which this
+transaction will be started.}
+  property IB_Connection1: TIB_Connection read GetIB_Connection1
+                                          write SetIB_Connection1;
+{: This property determines the second additional connection on which this
+transaction will be started.}
+  property IB_Connection2: TIB_Connection read GetIB_Connection2
+                                          write SetIB_Connection2;
+{: This property is an IBO behavioral property which does not map to any
+specific feature of the InterBase API.
+<br><br>
+It is used to provide a simpler interface when all changes should be made
+permanent as they occur.
+<br><br>
+This setting takes effect when a transaction is activated or closed.
+<br><br>
+When a transaction is physically activated, a SavePoint is generated that will
+cause the transaction to go back to an inactive or active pending state.
+Thus, if AutoCommit is true then the status of the transaction will never get
+beyond tsActivePending unless Autocommit behaviour is suspended temporarily by a
+call to StartTransaction.
+<br><br>
+If Close is called then AutoCommit will cause a Commit to be used to end the
+transaction instead of a Rollback. If an exception is raised when committing
+a rollback is performed.
+<br><br>
+It is safe to use AutoCommit true with datasets that use PessimisticLocking.
+IBO does not perform a commit retaining when the DML to place the record lock
+is executed. However, once another dataset in the same transaction posts, a
+SavePoint will be generated which will clear the record lock.  The effect of
+this is a point of risk.  With the lock cleared, another transaction with
+tiCommitted isolation, or new transactions of any isolation, will be able to
+alter the row.
+<br><br>
+Calling the StartTransaction method temporarily suspends the auto commit
+behavior until the logical transaction is ended. At that point the auto commit
+behavior will resume.
+<br><br>
+It is a mistake to think of AutoCommit as a mechanism for ensuring that there
+will be no long running transactions holding up garbage collection. The OAT
+advancement is not affected by setting AutoCommit to True.  AutoCommit does not
+cause the transaction to be physically ended.  It uses a SavePoint, which maps
+to a call to isc_commit_retaining(). This call enables changes to be committed
+to the server while preserving existing cursors.  It does not itself cause OAT
+to advance.
+<br><br>
+IBO automatically advances the OAT as best it can when tiCommitted isolation
+is used. So AutoCommit in that respect is automatic.}
+  property AutoCommit: boolean read GetAutoCommit
+                               write SetAutoCommit
+                               stored IsAutoCommitStored;
+{: Use the native AutoCommit mode of InterBase. If you are watching the SQL
+trace monitor and looking for any COMMIT RETAINING calls resulting from
+AutoCommit being true, you will not see any. You will only see a COMMIT or
+ROLLBACK call to end the transaction. I don't bother calling anything when I
+know the commit has been performed on the server automatically.
+<br><br>
+In some cases it is necessary to set ServerAutoCommit to true when executing
+scripts that have DDL in them.  Try it, if you have a script that is giving
+errors.
+<br><br>
+Another condition which makes a good reason to set this true is when you need to
+initiate a change on the server that must be committed.  It will guarantee that,
+if the statement executes properly on the server, it will be committed at the
+same time.  When it is false, the client still has to issue a subsequent call to
+commit the changes made by executing a statement which opens up a point of
+failure.
+<br><br>
+Note: You cannot use PessimisticLocking when ServerAutocommit is true.}
+  property ServerAutoCommit: boolean read FServerAutoCommit
+                                     write SetServerAutoCommit
+                                     default false;
+{: This message is here to make it convenient to have generic base class forms
+provide customizable feedback to the user.  So far I have one base class form
+that uses it. }
+  property ConfirmCancelPrompt: TStrings read FConfirmCancelPrompt
+                                         write SetConfirmCancelPrompt;
+{: This message is used in the dialog that accompanies the CloseWithConfirm
+and EndWithConfirm methods.}
+  property ConfirmClosePrompt: TStrings read FConfirmClosePrompt
+                                        write SetConfirmClosePrompt;
+{: Determines whether this transaction should announce that it has received
+focus.}
+  property AnnounceFocus: boolean read FAnnounceFocus
+                                  write SetAnnounceFocus
+                                  default false;
+{: Makes this transaction ReadOnly at the API level.
+<br><br>
+It is propagated to all the datasets which are attached to this transaction.}
+  property ReadOnly: boolean read FReadOnly
+                             write SetReadOnly
+                             default false;
+{: Determines the isolation level of the transaction.
+<br><br>
+These are the supported modes of isolation:
+<br><br>
+<br>tiConcurrency - Read-Repeatable or Snapshot
+<br>tiConsistency - Forced-Repeatable or Forced Snapshot (Exclusive access)
+<br>tiCommitted - Read-Committed
+<br><br><b>Summarizing behavior at each isolation level:</b>
+<br>
+<br>tiConcurrency - Read-Repeatable or Snapshot
+<br>
+<br>
+This transaction isolation is ideal for reports or exports that need to be
+able to work with a consistent view of the data in a way that will not block
+others from continuing to update the data. As long as the transaction is
+open you are guaranteed to get the same exact view of the data over and over
+again. Essentially, you are given a true SNAPSHOT of the data.
+<br><br>
+You can update data from this transaction isolation and the updates made
+within your own transaction context are visible. But, if another user or
+transaction context has any posted OR COMMITTED changes to individual rows that
+exist in your snapshot set, this isolation level will always encounter a
+deadlock situation when attempting to perform an update or delete on those
+changed rows.  The deadlock occurs because later transactions have added new
+record versions after that of the snapshot-isolated baseline row.  Because these
+changes by other transactions are not visible to the snapshot-isolated
+transaction, the posting of any changes based on that older view are disallowed.
+<br><br>
+To restate this, changes attempted on any rows within a transaction isolated at
+the tiConcurrency level will be deadlocked as a result of any committed or "in
+limbo" changes on the same rows from another transaction context.  <br><br>
+There is only one way to avoid such deadlocks:  close and reopen the transaction
+in order to establish a more recent baseline to work from.  This, of course,
+causes all of the buffered data for the datasets to be closed and requires the
+user to start afresh.
+
+<br><br>
+This isolation level is not very useful for user interfaces that involve
+browsing of data and "pot-shot" editing of records. As users work on the data
+they will slowly build up locks, with nobody able to see others' work once it
+has committed.  A user has no way to know when (or whether) to do a rollback or
+commit in order to resolve deadlocks.  It is risky to impose on users this
+degree of responsibility for database-level control.
+<br><br>
+Be aware that tiConcurrency is the default isolation level for explicitly
+defined transactions when you use an IB_Transaction component yourself from the
+component palette.  IBO generates an individual, internal transaction for each
+IB_DSQL, IB_Cursor or IB_Query component that does not have an explicitly
+defined transaction object assigned to its IB_Transaction property.
+<br>
+<br>tiConsistency - Forced-Repeatable or Forced Snapshot or Snapshot Table
+Stability
+<br><br>
+This isolation is the same as tiConcurrency except that it also imposes the same
+snapshot view on other transactions.  While holding its consistent view of the
+set of data, it blocks any other transaction from altering the rows it holds in
+that set.  I refer to it as "forced" because it forces its view of the data set
+to be the same for all users and to stay that way.
+<br><br>
+Use this isolation ONLY when you are fully aware of its effect on all other
+users of the table(s) involved in the transaction.  It will cause deadlocks
+galore since it is a blocking transaction.  This could lock up a database and
+keep others from making changes - consider, for example, the effect of
+SELECT * FROM ATABLE.  Of course, if this is what you want to accomplish then go
+for it.
+<br><br>
+Used well, snapshot isolation can be a powerful tool.  If you are clear about
+the effects, don't be afraid of using these isolation levels for transactions
+controlling individual tables for a specialized task.  tiConsistency can be an
+effective way to force exclusive access to specified tables during a transaction.
+<br><br>
+<b>tiCommitted - Read-Committed</b>
+<br><br>
+This is the ideal isolation for a browsing user interface because it keeps all
+committed changes in the database visible to the transaction as they occur.
+The interface can be refreshed to reveal changes in the database without the
+need to start a new transaction.
+<br><br>
+With IB_Query components, it is possible to refresh individual rows of the
+dataset.  Further, by refreshing the keys of the IB_Query, it is even possible
+to refresh the ordering or inclusion of rows, when the ORDER BY criteria change
+or when other users have deleted and inserted rows, without having to refetch
+the individual rows of the dataset.  This type of refresh causes all of the row
+buffers to be stored aside, for reassociation with the record buffer in memory
+when their keys are fetched from the server.
+<br><br>
+Read-committed isolation should not be used to run a report or an export because
+changes in the data might cause the report to be skewed or inconsistent.
+When designing an application, it is a good idea to have the users browsing an
+IB_Query-based dataset and then, if they want to run a report, to take the SQL
+of the IB_Query and assign it to an IB_Cursor under a freshly-started
+transaction with tiConcurrency isolation for running the report.
+<br><br>
+The method AssignSQLWithSearch() provides an excellent means to transfer the SQL
+from an IB_Query to an IB_Cursor, even retaining all of the search criteria of
+the IB_Query.
+<br><br>
+Read-committed is the default isolation for the transaction that is internally
+created and assigned when the IB_Transaction property of an IB_DSQL, IB_Cursor
+or IB_Query is not assigned to an explicit named IB_Transaction component.  It
+is done this way because the default setting for AutoCommit is changed to True
+for implicit transactions.  Although AutoCommit does not demand that the
+isolation level be set to tiCommitted, it is the most sensible option for this
+"point-and-shoot" style of updating.
+<br><br>
+<b>"Dirty Read"</b>
+<br>
+InterBase does not support a non-isolated transaction state - a "dirty read" -
+in which any transaction can read both committed and pending changes from other
+transaction contexts.
+<br><br>
+Each transaction defines how it will be able to read data from the database.}
+  property Isolation: TIB_Isolation read FIsolation write SetIsolation;
+{: This property affects only transactions whose Isolation is set to tiCommitted.
+It determines whether the most recent record version must be seen, or whether an
+earlier record version can be seen in order to avoid a deadlock when reading
+records.
+<br><br>
+Setting RecVersion to True will avoid deadlocks by allowing uncommitted changes
+in the database to be ignored. Only the most recent committed changes will be
+visible. I consider this the "friendly" mode of committed isolation.
+<br><br>
+If this transaction must see the most recent record version and another
+transaction has an update or delete pending, a deadlock condition is generated
+when this transaction encounters the row that the other transaction intends to
+update or delete.  Deadlock will occur even when just selecting the data while
+using tiCommitted isolation with RecVersion set to False.  Unless LockWait is
+true, an immediate Deadlock is inevitable and a user will be prevented from
+finishing the processing of the query.
+<br><br>
+Thus, when RecVersion is set to False, LockWait should usually set to True so
+that queries, or multi-record updates, deletes, etc., will be able to process to
+completion without being stopped by a deadlock exception.
+<br><br>
+It is VERY important that all transactions performing updates, deletes, etc.
+have a very short duration in this type of configuration so that a client
+application will not appear to be locked up indefinitely.
+<br><br>
+This is the only set of conditions where a deadlock can be encountered when
+selecting data, other than the conflict that occurs where another transaction
+was started using tiConsistency against the same table.}
+  property RecVersion: boolean read FRecVersion
+                               write SetRecVersion
+                               default true;
+{: When there is a conflict or deadlock condition this property determines
+whether an error should be returned immediately or should wait until the
+uncommitted changes are resolved.
+<br><br>
+There are cases where it knows not to wait and returns a deadlock error
+immediately, regardless of this setting.
+<br><br>
+This property should only be set to True if you are absolutely certain that
+transactions involving updates will be quickly resolved.}
+  property LockWait: boolean read FLockWait write SetLockWait default false;
+{ Transaction timeout properties.}
+  property TimeoutProps: TIB_TimeoutProps read FTimeoutProps
+                                          write SetTimeoutProps
+                                          stored true;
+
+{: General transaction event notification.}
+  property BeforeStart: TIB_TransactionEvent read FBeforeStart
+                                             write FBeforeStart;
+{: General transaction event notification.}
+  property AfterStart: TIB_TransactionEvent read FAfterStart
+                                            write FAfterStart;
+{: General transaction event notification.}
+  property BeforeCommit: TIB_TransactionEvent read FBeforeCommit
+                                              write FBeforeCommit;
+{: General transaction event notification.}
+  property AfterCommit: TIB_TransactionEvent read FAfterCommit
+                                             write FAfterCommit;
+{: General transaction event notification.}
+  property BeforeCommitRetaining: TIB_TransactionEvent
+    read FBeforeCommitRetaining
+   write FBeforeCommitRetaining;
+{: General transaction event notification.}
+  property AfterCommitRetaining:  TIB_TransactionEvent
+    read FAfterCommitRetaining
+   write FAfterCommitRetaining;
+{: General transaction event notification.}
+  property BeforeSavePoint: TIB_TransactionEvent
+    read FBeforeSavePoint
+   write FBeforeSavePoint;
+{: General transaction event notification.}
+  property AfterSavePoint:  TIB_TransactionEvent
+    read FAfterSavePoint
+   write FAfterSavePoint;
+{: General transaction event notification.}
+  property BeforeRollbackRetaining: TIB_TransactionEvent
+    read FBeforeRollbackRetaining
+   write FBeforeRollbackRetaining;
+{: General transaction event notification.}
+  property AfterRollbackRetaining:  TIB_TransactionEvent
+    read FAfterRollbackRetaining
+   write FAfterRollbackRetaining;
+{: General transaction event notification.}
+  property BeforeRollback:  TIB_TransactionEvent read FBeforeRollback
+                                                 write FBeforeRollback;
+{: General transaction event notification.}
+  property AfterRollback:   TIB_TransactionEvent read FAfterRollback
+                                                 write FAfterRollback;
+{: General transaction event notification.}
+  property BeforeEnd:       TIB_TransactionEvent read FBeforeEnd
+                                                 write FBeforeEnd;
+{: General transaction event notification.}
+  property AfterEnd:        TIB_TransactionEvent read FAfterEnd
+                                                 write FAfterEnd;
+{: General transaction event notification.}
+  property OnGainFocus:     TIB_TransactionEvent read FOnGainFocus
+                                                 write FOnGainFocus;
+{: General transaction event notification.}
+  property OnLoseFocus:     TIB_TransactionEvent read FOnLoseFocus
+                                                 write FOnLoseFocus;
+{: This event allows direct alteration of the TPB (Transaction Parameter
+Buffer) that is passed to the API call in order to start a transaction.
+<br><br>
+In the case of a transaction that spans more than one database, it is possible
+to customize the TPB that is associated with each database as well as the base
+TPB that will be, by default, a part of the TPB for all of the databases.
+<br><br>
+The AConnection parameter provides the reference to the IB_Connection to which
+the TPB will apply. If it is nil, customizations will be applied to all of the
+connections.
+<br><br>
+Here is a thread I made that may shed some additional light on the subject:
+<br><br>
+First of all, SET TRANSACTION   RESERVING .. is an embedded SQL
+statement that is processed by GPRE into the appropriate API call with the
+transaction parameter block configured with the specified settings.
+<br><br>
+So, what we will need to do is configure the TPB (transaction parameter
+block) to use the functionality that the RESERVING clause gives by adding on
+the TPB items and information that will deliver this behavior.
+<br><br>
+Using the TIB_Transaction.OnCustomizeTPB event it is possible to override and
+clarify what is being sent to the API in the TPB. In your case you will need
+to add <ul>
+<li>a byte code to indicate that you want to reserve some resources
+(isc_tpb_lock_write), followed by
+<li>a list of those resources ( a length indicator and table name ), followed by 
+<li>an item indicating the protection level to assign (isc_tpb_protected). 
+</ul>
+The API guide describes how to set up the TPB and explains all of the different
+options available. You may need to repeat this for each table that you want to
+reserve.
+<br><br>
+If your transaction is across multiple connections, two variations of
+OnCustomizeTPB will be triggered. <ul>
+<li>In the first one triggered you will get a nil for the Connection, which
+causes any alterations (additions) to the TPB to be applied to all of the TPBs
+of the TEB array. (A TPB is generated for each connection involved in the
+transaction.)
+<li>Then, for each connection, another invocation of the OnCustomizeTPB is
+triggered so that database-specific TPB alterations can be put in place.
+</ul>
+When the TPB is being interpreted the last setting wins. Thus, it is possible
+to override previous TPB items and force the transaction to take on a
+certain behavior specific to a given connection, just by adding what you want
+at the end of the TPB specific to a particular database.
+<br><br>
+I have provided a helper method to assist in cramming information into a TPB.
+Please look in the source at the API_Start method and use the same approach
+when constructing the TPB in the event code that you write. It makes things
+much cleaner and easier.}
+  property OnCustomizeTPB: TIB_CustomizeTPBEvent read FOnCustomizeTPB
+                                                 write FOnCustomizeTPB;
+{: Notification of when the transaction is paused or resumed.  Check
+the IsPaused state, it has been set before this event is called.}
+  property OnPauseChanged: TIB_TransactionEvent read FOnPauseChanged
+                                                write FOnPauseChanged;
+{: Called to allow developer to override the conditions determining whether a
+transaction can be paused.  This is only called if the current transaction state
+will permit the pause to occur - so the AllowPause parameter will be true when
+the event handler is called.}
+  property OnGetCanPause: TIB_TransactionCanPauseEvent read FOnGetCanPause
+                                                       write FOnGetCanPause;
+{: Use this event to hook in your customized behavior to resolve a transaction
+that needs the user's cooperation in order to end it.}
+  property OnTimeoutPromptUser: TIB_TransactionEvent read FOnTimeoutPromptUser
+                                                     write FOnTimeoutPromptUser;
+{$IFNDEF HELPSCAN}
+  property _TransactionLinkCount: integer read GetTransactionLinkCount
+                                          write flag_junk_value
+                                          stored false;
+  property _ConnectionCount: integer read GetConnectionCount
+                                     write flag_junk_value
+                                     stored false;
+  property _StatementCount: integer read GetStatementCount
+                                    write flag_junk_value
+                                    stored false;
+  property _DatasetCount: integer read GetDatasetCount
+                                  write flag_junk_value
+                                  stored false;
+{$ENDIF}
+{$I IB_Component.PBL}
+end;
+
+{$IFNDEF HELPSCAN}
+TIB_TransactionDefault = class( TIB_Transaction )
+public
+  constructor Create( AOwner: TComponent ); override;
+published
+  property AutoCommit default true;
+  property Isolation default tiCommitted;
+end;
+
+TIB_TransactionInternal = class( TIB_TransactionDefault )
+public
+  constructor Create( AOwner: TComponent ); override;
+published
+  property ReadOnly default true;
+end;
+{$ENDIF}
+
+// IBA_Transaction.IMP

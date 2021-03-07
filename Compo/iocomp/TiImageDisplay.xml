@@ -1,0 +1,104 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>0</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderMargin>0</BorderMargin>
+<BorderStyle>0</BorderStyle>
+<Stretched>0</Stretched>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>1</TimerIncrementUp>
+<TimerInterval>1000</TimerInterval>
+<Transparent>0</Transparent>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Animation Scheme</Name>
+<Scheme>
+<Name>Forward Crawl [Default]</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>1</TimerIncrementUp>
+<TimerInterval>1000</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Forward Very Slow</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>1</TimerIncrementUp>
+<TimerInterval>500</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Forward Slow</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>1</TimerIncrementUp>
+<TimerInterval>300</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Forward Medium</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>1</TimerIncrementUp>
+<TimerInterval>150</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Forward Fast</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>1</TimerIncrementUp>
+<TimerInterval>75</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Reverse Crawl</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>0</TimerIncrementUp>
+<TimerInterval>1000</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Reverse Very Slow</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>0</TimerIncrementUp>
+<TimerInterval>500</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Reverse Slow</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>0</TimerIncrementUp>
+<TimerInterval>300</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Reverse Medium</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>0</TimerIncrementUp>
+<TimerInterval>150</TimerInterval>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Reverse Fast</Name>
+<Properties>
+<TimerAutoRepeat>1</TimerAutoRepeat>
+<TimerIncrementUp>0</TimerIncrementUp>
+<TimerInterval>75</TimerInterval>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

@@ -1,0 +1,151 @@
+object RadarForm: TRadarForm
+  Left = 228
+  Top = 166
+  Width = 413
+  Height = 383
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 405
+    Height = 97
+    Align = alTop
+    TabOrder = 0
+    object Memo1: TMemo
+      Left = 8
+      Top = 8
+      Width = 281
+      Height = 81
+      Lines.Strings = (
+        'A Radar series shows each point at a different angle.  '
+        ''
+        'Several Radar series can be displayed at the same time,'
+        'each one with different configuration.')
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      Left = 302
+      Top = 12
+      Width = 75
+      Height = 17
+      Caption = '&Squared'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 302
+      Top = 32
+      Width = 97
+      Height = 17
+      Caption = 'Show &Labels'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 302
+      Top = 52
+      Width = 81
+      Height = 17
+      Caption = 'Show L&ines'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox3Click
+    end
+    object CheckBox5: TCheckBox
+      Left = 302
+      Top = 72
+      Width = 97
+      Height = 17
+      Caption = 'Show &Axis'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = CheckBox5Click
+    end
+  end
+  object Chart1: TChart
+    Left = 0
+    Top = 130
+    Width = 405
+    Height = 219
+    AllowPanning = pmNone
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    BackWall.Pen.Visible = False
+    Gradient.Direction = gdRightLeft
+    Gradient.Visible = True
+    Title.Alignment = taLeftJustify
+    Title.Text.Strings = (
+      'Radar Series')
+    BottomAxis.Increment = 72.000000000000000000
+    ClipPoints = False
+    Frame.Visible = False
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    View3DWalls = False
+    Zoom.Allow = False
+    Align = alClient
+    TabOrder = 1
+    object Series1: TRadarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Circled = True
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      CircleBackColor = clWhite
+      CircleLabels = True
+      CircleLabelsFont.Style = [fsItalic]
+      CirclePen.Color = clAqua
+      Pen.Color = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+    end
+    object Series2: TRadarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Circled = True
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      Pen.Color = clGreen
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+    end
+    object Series3: TRadarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clBlue
+      Circled = True
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      Pen.Color = clBlue
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 97
+    Width = 405
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 2
+  end
+end

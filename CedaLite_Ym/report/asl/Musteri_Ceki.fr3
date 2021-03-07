@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="4.3" DotMatrixReport="True" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.MDIChild="True" PreviewOptions.Modal="False" PreviewOptions.Zoom="1" PrintOptions.Collate="False" PrintOptions.Printer="Varsay�lan" PrintOptions.PrintOnSheet="0" PrintOptions.ShowDialog="False" ReportOptions.CreateDate="39128,6845144213" ReportOptions.Description.Text="" ReportOptions.LastChange="39548,7297846065" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;&#13;&#10;&#13;&#10;begin&#13;&#10;&#13;&#10;end." StoreInDFM="False" PropData="044C65667403080203546F7003D80008446174617365747301010C3200000020446174615365743D226672784442717279436172692220446174615365744E616D653D226672784442717279436172692200010C3000000020446174615365743D22667278444271727943656B2220446174615365744E616D653D22667278444271727943656B2200010C3600000020446174615365743D2266727844427172795369726B65742220446174615365744E616D653D2266727844427172795369726B6574220000095661726961626C65730100055374796C650100">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxDMPPage Name="Page1" PaperWidth="210,819863845505" PaperHeight="296,862308276426" PaperSize="9" LeftMargin="0" RightMargin="0" TopMargin="0" BottomMargin="0" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="" FontStyle="0">
+    <TfrxReportTitle Name="ReportTitle1" Height="476" Left="0" Top="17" Width="796,8">
+      <TfrxDMPMemoView Name="DMPMemo1" Left="38,4" Top="51" Width="288" Height="17" DisplayFormat.DecimalSeparator="," Text="[frxDBqrySirket.&#34;SIRKET_AD&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo2" Left="144" Top="102" Width="288" Height="17" DataField="CARI_AD" DataSet="frxDBqryCari" DataSetName="frxDBqryCari" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCari.&#34;CARI_AD&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo3" Left="144" Top="119" Width="288" Height="17" DataField="ADRES_1" DataSet="frxDBqryCari" DataSetName="frxDBqryCari" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCari.&#34;ADRES_1&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo8" Left="288" Top="17" Width="278,4" Height="17" DisplayFormat.DecimalSeparator="," Text="ALACAK ÇEKİ"/>
+      <TfrxDMPMemoView Name="DMPMemo9" Left="537,6" Top="68" Width="124,8" Height="17" DisplayFormat.DecimalSeparator="," Text="İşlem Tarihi:"/>
+      <TfrxDMPMemoView Name="DMPMemo11" Left="672" Top="68" Width="115,2" Height="17" DataSet="frxDBqryCek" DataSetName="frxDBqryCek" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="mm.dd.yyyy" DisplayFormat.Kind="fkDateTime" Text="[frxDBqryCek.&#34;ISLEMTAR&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo27" Left="48" Top="425" Width="729,6" Height="34" DataSet="frxDBqryBCEKIADE" DataSetName="frxDBqryBCEKIADE" DisplayFormat.DecimalSeparator="," Text="[frxDBqryBCEKIADE.&#34;GTYAZI&#34;] Hesabınıza alacak kaydedilmiştir"/>
+      <TfrxDMPMemoView Name="DMPMemo30" Left="528" Top="340" Width="144" Height="17" DisplayFormat.DecimalSeparator="," Text="Teslim Alan:"/>
+      <TfrxDMPMemoView Name="DMPMemo32" Left="144" Top="136" Width="288" Height="17" DataField="ADRES_2" DataSet="frxDBqryCari" DataSetName="frxDBqryCari" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCari.&#34;ADRES_2&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo4" Left="144" Top="153" Width="134,4" Height="17" DataField="ADRES_2" DataSet="frxDBqryCari" DataSetName="frxDBqryCari" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCari.&#34;ADRES_2&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo5" Left="297,6" Top="153" Width="134,4" Height="17" DataField="ADRES_2" DataSet="frxDBqryCari" DataSetName="frxDBqryCari" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCari.&#34;ADRES_2&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo15" Left="9,6" Top="238" Width="67,2" Height="17" DisplayFormat.DecimalSeparator="," Text="ÇEK NO"/>
+      <TfrxDMPMemoView Name="DMPMemo17" Left="86,4" Top="238" Width="201,6" Height="17" DisplayFormat.DecimalSeparator="," Text="BANKA"/>
+      <TfrxDMPMemoView Name="DMPMemo18" Left="297,6" Top="238" Width="124,8" Height="17" DisplayFormat.DecimalSeparator="," Text="BANKA ÇEK NO"/>
+      <TfrxDMPMemoView Name="DMPMemo19" Left="432" Top="238" Width="86,4" Height="17" DisplayFormat.DecimalSeparator="," Text="HESAP NO"/>
+      <TfrxDMPMemoView Name="DMPMemo20" Left="528" Top="238" Width="105,6" Height="17" DisplayFormat.DecimalSeparator="," Text="VADE TARİHİ"/>
+      <TfrxDMPMemoView Name="DMPMemo21" Left="9,6" Top="255" Width="748,8" Height="17" DisplayFormat.DecimalSeparator="," Text="------------------------------------------------------------------------------"/>
+      <TfrxDMPMemoView Name="DMPMemo22" Left="9,6" Top="289" Width="67,2" Height="17" DataField="CEK_ID" DataSet="frxDBqryCek" DataSetName="frxDBqryCek" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCek.&#34;CEK_ID&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo23" Left="86,4" Top="289" Width="201,6" Height="17" DataField="BANKA_AD" DataSet="frxDBqryCek" DataSetName="frxDBqryCek" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCek.&#34;BANKA_AD&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo24" Left="297,6" Top="289" Width="124,8" Height="17" DataField="CEK_NUM" DataSet="frxDBqryCek" DataSetName="frxDBqryCek" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCek.&#34;CEK_NUM&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo25" Left="432" Top="289" Width="86,4" Height="17" DataField="HESAP_NO" DataSet="frxDBqryCek" DataSetName="frxDBqryCek" DisplayFormat.DecimalSeparator="," Text="[frxDBqryCek.&#34;HESAP_NO&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo26" Left="643,2" Top="289" Width="105,6" Height="17" DataSet="frxDBqryCek" DataSetName="frxDBqryCek" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2n" DisplayFormat.Kind="fkNumeric" HAlign="haRight" Text="[frxDBqryCek.&#34;TUTAR_VPB&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo7" Left="28,8" Top="102" Width="105,6" Height="17" DisplayFormat.DecimalSeparator="," Text="ÜNVANI:"/>
+      <TfrxDMPMemoView Name="DMPMemo10" Left="28,8" Top="119" Width="105,6" Height="17" DisplayFormat.DecimalSeparator="," Text="ADRESİ:"/>
+      <TfrxDMPMemoView Name="DMPMemo16" Left="528" Top="289" Width="105,6" Height="17" DataSet="frxDBqryCek" DataSetName="frxDBqryCek" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="mm.dd.yyyy" DisplayFormat.Kind="fkDateTime" Text="[frxDBqryCek.&#34;VADETAR&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo28" Left="643,2" Top="238" Width="105,6" Height="17" DisplayFormat.DecimalSeparator="," Text="ÇEK TUTARI"/>
+    </TfrxReportTitle>
+  </TfrxDMPPage>
+</TfrxReport>

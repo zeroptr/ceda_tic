@@ -1,0 +1,1312 @@
+
+{                                                                              }
+{ TIB_Statement                                                                }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{  Wassim Haddad                                                               }
+{  10-Aug-2001                                                                 }
+{                                                                              }
+{  Added CalculateAllFields property which dictates the behaviour of           }
+{  OnCalculateField firing mode.                                               }
+{                                                                              }
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: Exception class for the TIB_Statement based components.}
+EIB_StatementError = class( EIB_Error );
+
+{: InterBase statement types.}
+TIB_StatementType = ( stUnknown,
+                      stSelect,
+                      stInsert,
+                      stUpdate,
+                      stDelete,
+                      stDDL,
+                      stGetSegment,
+                      stPutSegment,
+                      stExecProcedure,
+                      stStartTrans,
+                      stCommit,
+                      stRollback,
+                      stSelectForUpdate,
+                      stSetGenerator );
+{: Statement event types.
+<br><br>
+Many of these are used exclusively by the dataset class.}
+TIB_StatementEventType = ( setBeforeAssignment,
+                           setAfterAssignment,
+                           setBeforePrepare,
+                           setAfterPrepare,
+                           setBeforeUnprepare,
+                           setAfterUnprepare,
+                           setBeforeExecute,
+                           setAfterExecute,
+                           setBeforeExecDML,
+                           setAfterExecDML,
+                           setBeforeExecDDL,
+                           setAfterExecDDL,
+                           setPreparedChanged,
+                           setActiveChange,
+                           setCheckBrowseMode,
+                           setLayoutChanged,
+                           setRowHeightChanged,
+                           setParamsStateChanged,
+                           setParamsDataChange,
+                           setParamsUpdateData,
+                           setParamsRefsChanged,
+                           setFieldsStateChanged,
+                           setFieldsDataChange,
+                           setFieldsUpdateData,
+                           setFieldsRefsChanged,
+                           setInvalidateRows,
+                           setShowNearest,
+                           setFocusControl,
+                           setOrderingChanged,
+                           setOrderingLinkChanged,
+                           setSearchingLinkChanged,
+                           setUpdateSearchCriteria,
+                           setHintsChanged,
+                           setSelectedChanged,
+                           setUserDefined );
+{: Standard event type for the TIB_Statement class.}
+TIB_StatementEvent = procedure( Sender: TIB_Statement ) of object;
+{: Event type for a change in the state of the fields or params row.}
+TIB_RowStateEvent = procedure( Sender: TIB_Statement;
+                               Row: TIB_Row ) of object;
+{: Event to create a custom field type.}
+TIB_CreateColumnEvent = procedure (       Sender: TIB_Statement;
+                                          ARow: TIB_Row;
+                                    const ANewIndex: smallint;      
+                                    const PSQLVAR: PXSQLVAR;
+                                      var AColumn: TIB_Column ) of object;
+{: Event type to get the value of a Macro substitution.}
+TIB_MacroSubstituteEvent = procedure (       Sender: TIB_Component;
+                                       const ATextBlock: string;
+                                         var ATextResult: string ) of object;
+{: Event to handle a calculated field operation.}
+TIB_RowFieldEvent = procedure ( Sender: TIB_Statement;
+                                ARow: TIB_Row;
+                                AField: TIB_Column ) of object;
+{: Types of rows.}
+TIB_RowType  = ( rtParam, rtField, rtKey );
+{: States that a row's buffer can be in.}
+TIB_RowState = ( rsNone, rsUnmodified, rsModified );
+{: Trimming options }
+TIB_ColumnTrimming = ( ctNone, ctAll, ctBoth, ctLeft, ctRight, ctSentence );
+{: List of the different sections of the SQL statement.}
+{$IFDEF IBO_ENUMINDEX_SUPPORT}
+TIB_SQLSections = ( ssSQL,
+                    ssSelect,
+                    ssFrom,
+                    ssWhere,
+                    ssGroup,
+                    ssHaving,
+                    ssUnion,
+                    ssPlan,
+                    ssOrder,
+                    ssForUpdate );
+{$ELSE}
+TIB_SQLSections = integer;
+{$ENDIF}
+{: Special strings class for handling the SQL property.}
+TIB_SQLStrings = class(TIB_StringList)
+private
+  FStatement: TIB_Statement;
+{$IFDEF IBO_ENUMINDEX_SUPPORT}
+  FBegPos: array [TIB_SQLSections] of integer;
+  FEndPos: array [TIB_SQLSections] of integer;
+{$ELSE}
+  FBegPos: array [ssSQL..ssForUpdate] of integer;
+  FEndPos: array [ssSQL..ssForUpdate] of integer;
+{$ENDIF}
+  function GetBegPos( AVal: TIB_SQLSections ): integer;
+  function GetEndPos( AVal: TIB_SQLSections ): integer;
+  function GetSQLSection( Index: TIB_SQLSections ): string;
+protected
+  procedure Changing; override;
+  procedure AssignTo( APersistent: TPersistent ); override;
+  property BegPos[ index: TIB_SQLSections ]: integer read GetBegPos;
+  property EndPos[ index: TIB_SQLSections ]: integer read GetEndPos;
+public
+  procedure Assign( APersistent: TPersistent ); override;
+  procedure AssignWithSearch( ASQLStrings: TIB_SQLStrings );
+  property Section[ index: TIB_SQLSections ]: string read GetSQLSection;
+end;
+{: This class serves as a foundational base class for the TIB_DSQL,
+TIB_Cursor and TIB_Query components.
+<br><br>
+It handles all of the necessary API calls to allocate, prepare and execute an
+InterBase dynamic SQL (DSQL) statement. It also interprets and defines memory
+buffers that are bound to column objects for both input and output handling.
+<br><br>
+An important thing to know about this component and its descendants is that all
+output is accessed in the Fields[] array and not the Params[] array. The BDE
+returns stored procedure results in the Params[] array and this is not how it
+works in InterBase. I may emulate how the BDE does it at a future time but for
+now when executing stored procedures get the results from the Fields[] array.
+<br><br>
+Before Params[] can be accessed the statement or dataset must be Prepared.
+This is the step that creates objects for all of the input and output columns.}
+TIB_Statement = class(TIB_Component)
+private
+{ Property storage fields }
+  FstHandle: isc_stmt_handle;
+  FIB_ConnectionLink: TIB_ConnectionLink;
+  FIB_TransactionLink: TIB_TransactionLink;
+  FIB_StatementLinkList: TList;
+  FSQL: TIB_SQLStrings;
+  FKeyRelation: string;
+  FRefinedSQL: string;
+  FServerSQL: string;
+  FPreparedSQL: string;
+  FParamValueLinks: TIB_StringList;
+  FSysParamNames: TIB_StringList;
+  FSysFieldNames: TIB_StringList;
+  FSysTableNames: TIB_StringList;
+  FSysFieldNamesNeedRefine: boolean;
+  FOldParamValueLinks: TIB_StringList;
+  FSelectParamsCount: integer;
+  FParamCheck: boolean;
+  FSQLHistory: TIB_StringList;
+  FKeepSQLHistory: boolean;
+  FSQLHistoryRef: integer;
+  FStatementType: TIB_StatementType;
+  FRowsAffected: TIB_RowsAffected;
+  FStatementPlan: string;
+  FPrepared: boolean;
+  FSQLIsValid: boolean;
+  FParams: TIB_Row;
+  FParamCount: integer;
+  FCursorFields: TIB_Row;
+  FCursorFieldCount: smallint;
+  FCursorKeyFields: TIB_Row;
+  FCursorKeyFieldCount: smallint;
+  FParamChar: char;
+  FMacroBegin: string;
+  FMacroEnd: string;
+  FAssigningSQL: boolean;
+  FPreparingSQL: boolean;
+  FRefiningSQL: boolean;
+  FRepreparingSQL: boolean;
+  FUnpreparing: boolean;
+  FStoredProcHasDML: boolean;
+  FDatabaseName: string;
+  FRetrieveDomainNames: boolean;
+  FWasSingleton: boolean;
+  FUnExPrmCnt: integer;
+  FSQLDialect: integer;
+  FSetParamAttribs: boolean;
+{ Hints that appear in the TIB_NavigatorBar and other controls }
+  FHints: TStrings;
+{ Field attributes }
+  FCalculatedFields: TIB_StringList;
+  FColumnAttributes: TIB_StringList;
+  FFieldsAlignment: TIB_StringList;
+  FFieldsCharCase: TIB_StringList;
+  FFieldsDisplayFormat: TIB_StringList;
+  FFieldsDisplayLabel: TIB_StringList;
+  FFieldsGridLabel: TIB_StringList;
+  FFieldsDisplayWidth: TIB_StringList;
+  FFieldsEditMask: TIB_StringList;
+  FFieldsIndex: TIB_StringList;
+  FFieldsReadOnly: TIB_StringList;
+  FFieldsTrimming: TIB_StringList;
+  FFieldsVisible: TIB_StringList;
+{ Optimization/System Flags }
+  flag_statement_type_invalid: boolean;
+  flag_rows_affected_invalid: boolean;
+  flag_statement_plan_invalid: boolean;
+  flag_prepare_after_load: boolean;
+  flag_junk_value: integer;
+{ Event storage fields }
+  FBeforePrepare: TIB_StatementEvent;
+  FAfterPrepare: TIB_StatementEvent;
+  FBeforeUnprepare: TIB_StatementEvent;
+  FAfterUnprepare: TIB_StatementEvent;
+  FBeforeExecute: TIB_StatementEvent;
+  FAfterExecute: TIB_StatementEvent;
+  FBeforeExecDDL: TIB_StatementEvent;
+  FAfterExecDDL: TIB_StatementEvent;
+  FBeforeExecDML: TIB_StatementEvent;
+  FAfterExecDML: TIB_StatementEvent;
+  FOnPrepareSQL: TIB_StatementEvent;
+  FOnPreparedChanged: TIB_StatementEvent;
+  FOnActiveChange: TIB_StatementEvent;
+  FOnLayoutChanged: TIB_StatementEvent;
+  FOnInvalidateSQL: TIB_StatementEvent;
+  FOnParamsStateChanged: TIB_RowStateEvent;
+  FOnFieldsStateChanged: TIB_RowStateEvent;
+  FOnCreateColumn: TIB_CreateColumnEvent;
+  FOnCalculateField: TIB_RowFieldEvent;
+  FOnValidateField: TIB_RowFieldEvent;
+  FOnBlobCallback: TIB_BlobCallbackEvent;
+  FOnMacroSubstitute: TIB_MacroSubstituteEvent;
+  FCalculateAllFields: boolean;
+{ Property Access Methods }
+  function GetPdbHandle: pisc_db_handle;
+  function GetPtrHandle: pisc_tr_handle;
+  function GetPstHandle: pisc_stmt_handle;
+  function GetStatementPlan: string;
+  function GetStatementLinkCount: integer;
+  function GetClientSQL: string;
+  procedure SetKeyRelation( const AValue: string );
+  procedure SetSQLHistoryRef( AValue: integer );
+  function GetSQLDialect: integer;
+  function GetSQLIsRefined: boolean;
+  function GetCalculatingFields: boolean; virtual;
+  function GetMacroBegin: string;
+  function GetMacroEnd: string;
+  procedure SetMacroBegin( AValue: string );
+  procedure SetMacroEnd( AValue: string);
+  function IsMacroBeginStored: boolean;
+  function IsMacroEndStored: boolean;
+  procedure UpdateAlignment;
+  procedure UpdateCharCase;
+  procedure UpdateDisplayFormat;
+  procedure UpdateDisplayLabel;
+  procedure UpdateGridLabel;
+  procedure UpdateDisplayWidth;
+  procedure UpdateEditMask;
+  procedure UpdateIndex;
+  procedure UpdateReadOnly;
+  procedure UpdateTrimming;
+  procedure UpdateVisible;
+  procedure SysUpdateAlignment( AField: TIB_Column );
+  procedure SysUpdateCharCase( AField: TIB_Column );
+  procedure SysUpdateDisplayFormat( AField: TIB_Column );
+  procedure SysUpdateDisplayLabel( AField: TIB_Column );
+  procedure SysUpdateGridLabel( AField: TIB_Column );
+  procedure SysUpdateDisplayWidth( AField: TIB_Column );
+  procedure SysUpdateEditMask( AField: TIB_Column );
+  procedure SysUpdateReadOnly( AField: TIB_Column );
+  procedure SysUpdateTrimming( AField: TIB_Column );
+  procedure SysUpdateVisible( AField: TIB_Column );
+{------------------------------------------------------------------------------}
+protected
+{------------------------------------------------------------------------------}
+  FJoinLinks: TIB_StringList;
+  FReadOnly: boolean;
+  FActive: boolean;
+  FIgnoreLayoutChange: integer;
+  // Allow a derivation to cause DoMacroSubtitue to be called whether
+  // an OnMacroSubstitute event has been defined or not (for built in macros).
+  FAlwaysCallMacroSubstitute: boolean;
+  FBindingCursor: TIB_Dataset;
+  FDefineCursorKeyFields: boolean;
+  FIB_Transaction: TIB_TransactionDefault;
+  FCombineDuplicateParams: boolean;
+  function IsConnectionStored: boolean;
+  function IsTransactionStored: boolean;
+  function IsPreparedStored: boolean;
+  function IsActiveStored: boolean;
+  procedure GetColumnIsReadOnly(     AColumn: TIB_Column;
+                                 var AReadOnly: boolean ); virtual;
+  procedure GetControlIsReadOnly(     AColumn: TIB_Column;
+                                  var AReadOnly: boolean ); virtual;
+  procedure DoHandleError(       Sender: TObject;
+                           const errcode: isc_long;
+                                 ErrorMessage,
+                                 ErrorCodes: TStringList;
+                           const SQLCODE: isc_long;
+                                 SQLMessage,
+                                 SQL: TStringList;
+                             var RaiseException: boolean); override;
+  procedure DoCalculateField( ARow: TIB_Row; AField: TIB_Column ); virtual;
+  procedure DoMacroSubstitute; virtual;
+{ Methods }
+  procedure UpdateDesigner;
+  function GetSysKeyRelation: string; virtual;
+  function GetDomainName( const ARelName, ASQLName: string ): string;
+  function GetSQLIsAggregate: boolean; //virtual;
+  function GetSQLIsSelectProc: boolean; //virtual;
+  procedure OnSQLChange( Sender: TObject );
+  procedure LayoutChange( Sender: TObject );
+  procedure HintsChange( Sender: TObject );
+  procedure Notification( AComponent: TComponent;
+                          Operation: TOperation); override;
+  procedure SysUpdateLayout( FirstTime: boolean ); //~virtual;
+  procedure SetColumnAttributes( Value: TIB_StringList ); //virtual;
+  procedure SetCalculatedFields( Value: TIB_StringList ); //virtual;
+  function GetDatabaseName: string; //~virtual;
+  procedure SetDatabaseName( const AValue: string ); virtual;
+  procedure SetFieldsAlignment( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsCharCase( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsDisplayFormat( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsDisplayLabel( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsGridLabel( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsDisplayWidth( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsEditMask( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsIndex( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsReadOnly( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsTrimming( Value: TIB_StringList ); //virtual;
+  procedure SetFieldsVisible( Value: TIB_StringList ); //virtual;
+{ Attribute Manipulation Methods }
+  function GetColAttributeParams( const ACol, AParam: string ): string;
+  procedure SetColAttributeParams( const ACol, AParam: string; AValue: string );
+  function GetColIsAttributeSet( const ACol, AParam: string ): boolean;
+  procedure SetColIsAttributeSet( const ACol, AParam: string; AValue: boolean );
+{ Hints for NavBar and other Bars }
+  procedure SetHints( Value: TStrings ); //virtual;
+{ Property Access Methods }
+  procedure SetPrepared( Value: boolean ); //virtual;
+  procedure SetActive( Value: boolean ); virtual;
+  function GetActive: boolean; virtual;
+  procedure SetConnection( AValue: TIB_Connection ); virtual;
+  function GetConnection: TIB_Connection; virtual;
+  procedure SetTransaction( AValue: TIB_Transaction ); virtual;
+  function GetTransaction: TIB_Transaction; virtual;
+  function GetDefaultConnection: TIB_Connection; virtual;
+  function GetDefaultTransaction: TIB_Transaction; virtual;
+  function GetSQL: TStrings; virtual;
+  procedure SetSQL( AValue: TStrings ); virtual;
+  procedure SysSQLChange( Sender: TObject; var Unprepare: boolean ); virtual;
+  procedure SysLayoutChange( Sender: TObject ); virtual;
+  function GetStatementType: TIB_StatementType; virtual;
+  function GetRowsAffected: integer; //virtual;
+  function GetRowsSelected: integer; //virtual;
+  function GetFields: TIB_Row; virtual;
+  function GetParams: TIB_Row; //~virtual;
+  function GetFieldCount: integer;
+  function GetParamCount: integer;
+  function GetFieldValue( const FieldName: string ): Variant;
+  procedure SetFieldValue( const FieldName: string; const Value: Variant );
+  function GetParamValue( const ParamName: string ): Variant;
+  procedure SetParamValue( const ParamName: string; const Value: Variant );
+  function GetIsSelectSQL: boolean; //virtual;
+  function GetSysParamNames: TIB_StringList; //virtual;
+  function GetSysFieldNames: TIB_StringList; virtual;
+  function GetSysTableNames: TIB_StringList; //virtual;
+{ System Methods }
+  procedure SysUpdateStatementType; //virtual;
+  procedure SysPrepareAfterLoad; //virtual;
+  function SysAllocate: boolean; virtual;
+  procedure SysDeallocate( AllowCachedHandle: boolean ); //virtual;
+  function SysPrepare: boolean; virtual;
+  procedure SysExecPrepare; //virtual;
+  procedure SysClose; virtual;
+  procedure SysUnprepare; virtual;
+  procedure SysBeforePrepare; virtual;
+  procedure SysAfterPrepare; virtual;
+  procedure SysBeforeUnprepare; virtual;
+  procedure SysAfterUnprepare; virtual;
+  procedure SysExecute; virtual;
+  procedure SysExecuteFailed; //~virtual;
+  procedure SysBeforeExecute; virtual;
+  procedure SysAfterExecute; //~virtual;
+  procedure SysBeforeExecuteForOutput; virtual;
+  procedure SysAfterExecuteForOutput; virtual;
+  procedure SysBeforeExecuteWithInput; //~virtual;
+  procedure SysAfterExecuteWithInput; //~virtual;
+  procedure SysExecuteImmediate( Statement: string;
+                                 AParam: PXSQLDA ); //~virtual;
+  procedure SysExecImmed2( Statement: string; AParam,
+                                              AField: PXSQLDA ); //~virtual;
+  procedure SysPreparedChanged; virtual;
+  procedure SysActiveChange; virtual;
+  procedure SysLayoutChanged; //~virtual;
+  procedure SysPrepareSQL; virtual;
+  function SysNeedToRefineSQL: boolean; virtual;
+  procedure SysRefineSQL; virtual;
+  procedure SysInitRawSQL; virtual;
+  procedure SysGetRawSQL; //~virtual;
+  function SysSubstituteMacros( const ATextBlock: string ): string; virtual;
+  procedure SysFinishRawSQL; virtual;
+  procedure SysFieldNamesRefine;
+  procedure SysUpdateDescriptors; virtual;
+  procedure SysStoreParamValueLinks; //~virtual;
+  procedure SysRestoreParamValueLinks; //~virtual;
+  procedure SysDescribeVARList( ARow: TIB_Row ); virtual;
+  procedure SysExecStatement; virtual;
+  procedure SysExecSelect; virtual;
+  procedure SysPrepareFailed; virtual;
+{ Row alteration event handlers }
+  procedure SysParamsStateChanged( Sender: TIB_Row ); //~virtual;
+  procedure SysBeforeParamsDataChange( Sender: TIB_Row;
+                                       AField: TIB_Column ); virtual;
+  procedure SysAfterParamsDataChange( Sender: TIB_Row;
+                                      AField: TIB_Column ); virtual;
+  procedure SysCursorFieldsStateChanged( Sender: TIB_Row ); //~virtual;
+  procedure SysBeforeCursorFieldDataChange( Sender: TIB_Row;
+                                            AField: TIB_Column ); //~virtual;
+  procedure SysAfterCursorFieldDataChange( Sender: TIB_Row;
+                                           AField: TIB_Column ); //~virtual;
+  procedure SysFieldsStateChanged( Sender: TIB_Row ); //~virtual;
+  procedure SysBeforeFieldDataChange( Sender: TIB_Row;
+                                      AField: TIB_Column ); virtual;
+  procedure SysAfterFieldDataChange( Sender: TIB_Row;
+                                     AField: TIB_Column ); virtual;
+{ Connection Link event handlers }
+  procedure ProcessConnectionEvent( AConnectionLink: TIB_ConnectionLink;
+                                    AEvent: TIB_ConnectionEventType ); virtual;
+{ Transaction Link event handlers }
+  procedure ProcessTransactionEvent( ATransactionLink: TIB_TransactionLink;
+                                     AEvent: TIB_TransactionEventType ); virtual;
+{ Dispatch a local event for this component.}
+  procedure ProcessEvent( AEvent: TIB_StatementEvent ); //~virtual;
+{ Dispatch an event for the datasource and datalink components.}
+  procedure ProcessLinkEvent( AEvent: TIB_StatementEventType;
+                              Info: integer ); virtual;
+{ System Methods }
+  function API_Prepare(     Text: PChar;
+                        var InVar,
+                            OutVar: smallint ): integer; virtual;
+  procedure API_Execute;
+  function API_QuickFetch( Exec2: boolean ): integer;
+  procedure API_Execute2;
+  procedure API_ExecuteImmediate( Statement:string; AParam: PXSQLDA );
+  function ISC_ExecImmed2( const AStatement: string; AParam,
+                                                     AField: PXSQLDA ): integer;
+  procedure API_ExecImmed2( const AStatement: string; AParam,
+                                                      AField: PXSQLDA );
+  procedure API_DSQL_SQL_INFO( var Items: array of Char;
+                               var Buffer: array of Char);
+  procedure API_CheckStatement( const AStatement: string;
+                                  var errcode: longint );
+{ Inherited methods }
+  procedure Loaded; override;
+  procedure SetSession( ASession: TIB_Session ); override;
+{ Stored Internal Property Methods }
+  procedure DefineProperties( Filer: TFiler ); override;
+  procedure ReadOldParamData( Reader: TReader );
+  procedure WriteOldParamData( Writer: TWriter );
+{ Properties }
+  property CursorFields: TIB_Row read FCursorFields;
+  property CursorFieldCount: smallint read FCursorFieldCount;
+  property CursorKeyFields: TIB_Row read FCursorKeyFields;
+  property CursorKeyFieldCount: smallint read FCursorKeyFieldCount;
+  property SysKeyRelation: string read GetSysKeyRelation;
+  property WasSingleton: boolean read FWasSingleton;
+
+public
+
+{ Inherited Methods }
+  constructor Create( AOwner: TComponent ); override;
+  constructor CreateWithBinding( AOwner: TComponent;
+                                 ADataset: TIB_Dataset ); virtual;
+  destructor Destroy; override;
+{: Clears out the history of statements added to the statement history.}
+  procedure ClearSQLHistory;
+{: Adds the current statement to the statement history depending on where the
+SQLHistoryRef property is set.}
+  function AddSQLHistory( ASQL: TStrings; Position: integer ): boolean;
+{: Drops a string from out of the SQL History.}
+  procedure RemoveSQLHistory( Position: integer );
+{: Method to cause the current fields to be recalculated.}
+  procedure CalculateFields; virtual;
+{: Method to check the status of the IB_Connection reference and optionally
+request that a connection be attempted.}
+  function CheckConnection( RequestConnect: boolean ): boolean; //virtual;
+{: Method to check the status of the IB_Transaction reference and optionally
+request that a transaction be started.}
+  function CheckTransaction( RequestStart: boolean ): boolean; virtual;
+{: Method which allows direct access to the contents of a BLOB parameter or
+field.
+<br><br>
+Here is some sample code showing how to use this method:
+<br>
+<br>procedure TIB_ColumnBlob.LoadFromStream( const AStream: TStream );
+<br>var
+<br>  tmpStream: TStream;
+<br>begin
+<br>  tmpStream := Statement.CreateBlobStream( Self, bsmWrite );
+<br>  try
+<br>    tmpStream.CopyFrom( AStream, 0 );
+<br>  finally
+<br>    tmpStream.Free;
+<br>  end;
+<br>end;
+<br>
+<br>procedure TIB_ColumnBlob.SaveToStream( const AStream: TStream );
+<br>var
+<br>  tmpStream: TStream;
+<br>begin
+<br>  tmpStream := Statement.CreateBlobStream( Self, bsmRead );
+<br>  try
+<br>    AStream.CopyFrom( tmpStream, 0 );
+<br>  finally
+<br>    tmpStream.Free;
+<br>  end;
+<br>end;}
+  function CreateBlobStream( AColumn: TIB_Column;
+                             AMode: TIB_BlobStreamMode ): TIB_BlobStream;
+{: BDE/VCL compatibility method. It does the same as Execute.
+<br><br>
+If you are using input parameters, it is very important to be aware that IBO
+will preserve parameter values.  You need to clear the values out explicitly,
+even when unpreparing and preparing again.
+<br><br>
+The easiest ways to clear them out are by:<ul>
+<li>calling the Clear method of the input parameters;  or
+<li>Calling the Params.ClearBuffers( rsNone ) method of the Params object.
+</ul>}
+  procedure ExecSQL;
+{: This method will cause the server resources involved with the statement to
+be freed up so that the client will not unnecessarily hold resources on the
+server open.  A case for using this method is when you have a lookup dataset
+that fetches all the data that it needs and will stay open for a long while.
+The statement has no need to hold the server resources for a read-only dataset.
+<br><br>
+From IBO version 3.4 forward, this method becomes effectively obsolete since
+capability was added for IBO to do as much of this as it can, automatically,
+utilizing the TIB_Transaction timeout properties.}
+  procedure FreeServerResources; virtual;
+{: Prepare or reprepare an invalidated statement or dataset.
+<br><br>
+This causes the creation of all input and output columns.}
+  procedure Prepare;
+{: This method will close, unprepare and free up the InterBase statement
+handle obtained upon allocation.
+<br><br>
+I now have the connection caching the statement handles so it is possible that
+allocating and deallocating a statement will reuse a handle already acquired.
+<br><br>
+This also frees all of the input and output column buffers.
+<br><br>
+For datasets it also deallocates all of its auxillary statements and cursors.
+<br><br>
+One caution is that you should not assume that an Unprepare will set all the
+input parameter values to NULL.  If you happen to prepare a new statement that
+has an input parameter of the same name as one from the previous statement, the
+old value will survive unless you clear it explicitly. }
+  procedure Unprepare;
+{: This method will execute the SQL statement.}
+  procedure Execute; virtual;
+{: This method allows you to execute DDL statements without having to go through
+all the steps to prepare, describe, etc.
+<br><br>
+ExecuteDDL also notifies the connection and transaction objects that the
+metadata have been altered.}
+  procedure ExecuteDDL( const Statement: string );
+{: This method allow you to execute DML statements without having to go through
+all the steps to prepare, describe, etc.
+<br><br>
+ExecuteDML also notifies the statement link objects that data have been altered.}
+  procedure ExecuteDML( const Statement: string; AParam: PXSQLDA );
+{: This method allows immediate execution of a statement with input
+parameters.}
+  procedure ExecuteImmediate( const Statement: string; AParam: PXSQLDA );
+{: This method will allow immediate execution of a statement with both
+input and output parameters.}
+  procedure ExecImmed2( const Statement: string; AParam, AField: PXSQLDA );
+{: This method flags the statement or dataset as needing to be reprepared
+before it is executed again.}
+  procedure InvalidateSQL; dynamic;
+{: This method will attempt to return a TIB_Column reference for the
+field name passed in. If it cannot be found then an exception is raised.}
+  function FieldByName( const AFieldName: string ): TIB_Column;
+{: This method will attempt to return a TIB_Column reference for the
+parameter name passed in. If it cannot be found then an exception is raised.}
+  function ParamByName( const AFieldName: string ): TIB_Column; virtual;
+{: This method will attempt to return a TIB_Column reference for the field
+name passed in. If it cannot be found then nil is returned.}
+  function FindField( const FieldName: string ): TIB_Column;
+{: This method will attempt to return a TIB_Column reference for the field
+name passed in in the KeyFields array.
+<br><br>
+If it cannot be found then nil is returned.}
+  function FindKeyField( const FieldName: string ): TIB_Column; virtual;
+{: This method will attempt to return a TIB_Column reference for the
+parameter name passed in. If it cannot be found then nil is returned.}
+  function FindParam( const FieldName: string ): TIB_Column;
+{: This procedure will take a BlobNode and get the data for its BLOBID and
+store it into the buffer with the size indicated.}
+  procedure GetBlobNodeData( AVar: PXSQLVAR;
+                             ArrayDesc: PISC_Array_Desc;
+                             ABlobNode: PIB_BlobNode );
+{: This procedure will take a BlobNode and "put" the data for it in a new
+temporary BLOBID and store it in the BlobNode.BLOBID.}
+  procedure PutBlobNodeData( AVar: PXSQLVAR;
+                             ArrayDesc: PISC_Array_Desc;
+                             ABlobNode: PIB_BlobNode );
+{: This method populates a string list with the names of the fields.}
+  procedure GetFieldNamesList( AStrings: TStrings );
+{: This method populates a string list with the names of the parameters.}
+  procedure GetParamNamesList( AStrings: TStrings );
+{: This method populates a TList with the TIB_Column references for the
+fields.}
+  procedure GetFieldList( AList: TList; const FieldNames: string );
+{: This method populates a TList with the TIB_Column references for the
+parameters.}
+  procedure GetParamList( AList: TList; const ParamNames: string );
+{: This method will return a Generator value with a specified increment.}
+  function GeneratorValue( const AGenerator: string;
+                                 Increment: integer ): ISC_INT64;
+{: This method will return a Generator value with a specified increment.}
+  function Gen_ID( const AGenerator: string; Increment: integer ): ISC_INT64;
+{: Begin a bracketed operation on the FieldsXXXX properties for efficiency.}
+  procedure BeginLayout; dynamic;
+{: End a bracketed operation on the FieldsXXXX properties for efficiency.}
+  procedure EndLayout; dynamic;
+{: Force the IB_Column objects in the Fields and Params properties to take
+on the settings in the FieldsXXXX property settings.
+<br><br>
+Within a BeginLayout ... EndLayout block it is possible to make multiple
+alterations to the TIB_StringProperty properties (FieldsDisplayFormat and so on)
+and then have them all coordinated in a single "flush" instead of each and every
+time the FieldsXXX properties are changed.
+<br><br>After calling EndLayout to end the block, call this method to apply the
+updated values in all of the properties named in the block operation. }
+  procedure UpdateLayout;
+{: Cause any controls holding changes to data to save them to the row buffer.}
+  procedure UpdateRecord;
+{: This function indicate whether or this statement or dataset is using the
+default connection of the session.}
+  function UsingDefaultConnection: boolean;
+{: This function indicates whether this statement or dataset is using the
+default transaction of the connection.}
+  function UsingDefaultTransaction: boolean;
+{------------------------------------------------------------------------------}
+{$IFNDEF HELPSCAN}
+public
+{$ELSE}
+published
+{$ENDIF}
+{------------------------------------------------------------------------------}
+
+{ Properties to be public for IB_DSQL }
+
+{: Makes the contents of the SQL history list available.
+<br><br>
+Use the CommaText property of another stringlist to parse the statement out.}
+  property SQLHistory: TIB_StringList read FSQLHistory;
+{: Positions the reference into the history list. Changes made to the SQL
+property will overwrite the existing setting when this property is set to an
+existing entry in the list.}
+  property SQLHistoryRef: integer read FSQLHistoryRef
+                                  write SetSQLHistoryRef;
+{: This property determines whether a SQL history is preserved for the
+compoenent or not. Each time a statement is successfully prepared an entry is
+made in the history list.
+<br><br>
+If the SQLHistoryRef has been scrolled to a previous statement in the list
+then new entries are not made but the current one is overwriten.
+<br><br>
+This is utilized in the IB_DSQL tab of the IB_SQL utility.}
+  property KeepSQLHistory: boolean read FKeepSQLHistory
+                                   write FKeepSQLHistory
+                                   default false;
+{: Setting this to false will cause IBO to ignore all requests to retrieve the
+name of the Domain for its columns. DomainName will be blank in this case.}
+  property RetrieveDomainNames: boolean read FRetrieveDomainNames
+                                        write FRetrieveDomainNames;
+{: This gives a count of the number of input parameters which were included in
+the select portion of a SELECT statement. For some reason the parser for
+InterBase DSQL handles parameters in this part of the statement in a different
+order so it can sometimes be necessary to give them special treatment.}
+  property SelectParamsCount: integer read FSelectParamsCount;
+
+{ Properties to be published for IB_StoredProc }
+
+{: If a stored procedure does not perform any DML operations then it is
+posssible to make it so that executing it will not activate the transaction.}
+  property StoredProcHasDML: boolean read FStoredProcHasDML
+                                     write FStoredProcHasDML
+                                     default true;
+
+{ Properties to be published with the IB_Cursor and IB_Query components }
+
+{: This property can make a dataset that involves a multi-table join become
+insert or delete capable. It specifies which relation the insert or delete
+action should be performed on.}
+  property KeyRelation: string read FKeyRelation write SetKeyRelation;
+
+{: The various bar controls will look here for generic hint definitions.
+<br><br>
+Please see the source within each IB_XXXXBar.PAS file to see which constants
+are used to index the custom hints.}
+  property Hints: TStrings read FHints write SetHints;
+{: If input parameters are used in the SQL statement, the values that need to
+be assigned to these parameters can be added as string entries into this string
+list. Before the dataset is opened these values are bound to the corresponding
+parameters and converted as necessary.
+<br><br>
+After a statement has been Prepared, it is best to change parameter values by
+using the Params[] property or the ParamByName() method to change the TIB_Column
+instances directly.}
+  property ParamValueLinks: TIB_StringList read FParamValueLinks;
+{: Set to true to use the FieldsXXXX properties to initialise parameter attributes.
+Param column instances are not initialised in this manner otherwise.}
+  property SetParamAttribs: boolean read FSetParamAttribs write FSetParamAttribs
+    default false;
+
+{ Events to be published }
+
+{: General statement notification event.}
+  property BeforePrepare:    TIB_StatementEvent read FBeforePrepare
+                                                write FBeforePrepare;
+{: General statement notification event.}
+  property AfterPrepare:     TIB_StatementEvent read FAfterPrepare
+                                                write FAfterPrepare;
+{: General statement notification event.}
+  property BeforeUnprepare:  TIB_StatementEvent read FBeforeUnprepare
+                                                write FBeforeUnprepare;
+{: General statement notification event.}
+  property AfterUnprepare:   TIB_StatementEvent read FAfterUnprepare
+                                                write FAfterUnprepare;
+{: General statement notification event.}
+  property BeforeExecute:    TIB_StatementEvent read FBeforeExecute
+                                                write FBeforeExecute;
+{: General statement notification event.}
+  property AfterExecute:     TIB_StatementEvent read FAfterExecute
+                                                write FAfterExecute;
+{: General statement notification event.}
+  property BeforeExecDDL:    TIB_StatementEvent read FBeforeExecDDL
+                                                write FBeforeExecDDL;
+{: General statement notification event.}
+  property AfterExecDDL:     TIB_StatementEvent read FAfterExecDDL
+                                                write FAfterExecDDL;
+{: General statement notification event.}
+  property BeforeExecDML:    TIB_StatementEvent read FBeforeExecDML
+                                                write FBeforeExecDML;
+{: General statement notification event.}
+  property AfterExecDML:     TIB_StatementEvent read FAfterExecDML
+                                                write FAfterExecDML;
+{: This event allows specific hooks into the process that gets and puts BLOB
+segments to and from the server. It is especially handy for a progress bar.}
+  property OnBlobCallback: TIB_BlobCallbackEvent read FOnBlobCallback
+                                                 write FOnBlobCallback;
+{: The event is used in order to provide macro substitutions when in the phase
+of preparing the SQL statement for execution.
+<br><br>
+This will produce an event for each one of these where you can supply the
+substitute values for them.
+<br><br>
+If you set the macro characters to a percent then this is what your SQL
+statement would look like:
+<br><br>
+  SELECT * FROM %%MYTABLE%%
+<br><br>
+Warning, there is a lot of behind the scenes parsing and generation of
+statements that should also be taken into consideration. It is likely a macro
+value will be requested more than once for a single statement prepare.}
+  property OnMacroSubstitute: TIB_MacroSubstituteEvent read FOnMacroSubstitute
+                                                       write FOnMacroSubstitute;
+{: General statement notification event.
+<br><br>
+This indicates a special phase that is performed just before sending a SQL
+statement to the server to be prepared. It is possible to manipulate the SQL
+property directly or to use the other properties like SQLWhere, SQLOrder and
+even the special SQLWhereItems property, which allow you to adjust the statement
+sent to the server for your desired effect.
+<br><br>
+Use this in combination with InvalidateSQL and Refresh methods if you want to
+bind a control on your form to the SQL that is sent to the server. In this
+event, base the alteration of the SQL on the setting in the control. Then, when
+the control is changed, call InvalidateSQL and Refresh.}
+  property OnPrepareSQL: TIB_StatementEvent read FOnPrepareSQL
+                                            write FOnPrepareSQL;
+{: General statement notification event.}
+  property OnPreparedChanged: TIB_StatementEvent read FOnPreparedChanged
+                                                 write FOnPreparedChanged;
+{: General statement notification event.}
+  property OnActiveChange: TIB_StatementEvent read FOnActiveChange
+                                               write FOnActiveChange;
+{: General statement notification event.}
+  property OnLayoutChanged: TIB_StatementEvent read FOnLayoutChanged
+                                               write FOnLayoutChanged;
+{: General statement notification event.}
+  property OnInvalidateSQL: TIB_StatementEvent read FOnInvalidateSQL
+                                               write FOnInvalidateSQL;
+{: General statement notification event.}
+  property OnParamsStateChanged: TIB_RowStateEvent
+      read FOnParamsStateChanged
+     write FOnParamsStateChanged;
+{: General statement notification event.}
+  property OnFieldsStateChanged: TIB_RowStateEvent
+      read FOnFieldsStateChanged
+     write FOnFieldsStateChanged;
+{: Method to allow customized TIB_Column classes to be used.}
+  property OnCreateColumn: TIB_CreateColumnEvent read FOnCreateColumn
+                                                 write FOnCreateColumn;
+{: Event where code can be placed to provide values for the fields created as
+a result of entering specifications in the CalculatedFields property.
+<br><br>
+It is very important that the calculations be done in the context of the
+IB_Row parameter which is passed into the event. Otherwise, you could be
+basing calculations for one row using data from another row.
+<br><br>
+This is possible because IBO handles lots of different row types, especially
+when working with the buffered datasets.}
+  property OnCalculateField: TIB_RowFieldEvent read FOnCalculateField
+                                               write FOnCalculateField;
+{: Event to validate the field's value. Raise an exception if it is invalid.}
+  property OnValidateField: TIB_RowFieldEvent read FOnValidateField
+                                              write FOnValidateField;
+
+public
+
+{ New Properties }
+
+{: The prepared status of the statement or dataset can be determined
+with this property.
+<br><br>
+This property should be true before calling ParamByName() or accessing the
+Params[] array.  ParamByName() will Prepare the statement itself if necessary,
+but you must test Prepared yourself for Params[] and call Prepare if it is
+false. }
+  property Prepared: boolean read FPrepared write SetPrepared
+                                            stored IsPreparedStored;
+{: When output is being requested, Active will be true if a prepared statement
+was successfully executed and output exists.}
+  property Active: boolean read GetActive write SetActive
+                                          stored IsActiveStored;
+{: Once the statement is prepared, this property returns which statement type
+(stSelect, stInsert, stDelete, etc.) has been prepared.  Check out the full
+range in the help for TIB_StatementType. }
+  property StatementType: TIB_StatementType read GetStatementType;
+{: Indicates whether the statement is a SELECT SQL statement.}
+  property IsSelectSQL: boolean read GetIsSelectSQL;
+{: Property which indicates whether the SQL statement is an aggregate style
+SELECT statement. This could be from the inclusion of DISTINCT, COUNT(), MIN(),
+MAX(), AVG() or a GROUP BY clause.}
+  property SQLIsAggregate: boolean read GetSQLIsAggregate;
+{: This property returns True if the SELECT statement is selecting data from a
+stored procedure.}
+  property SQLIsSelectProc: boolean read GetSQLIsSelectProc;
+{: If a DML statement is executed, this property returns the number of rows
+that were affected by it.}
+  property RowsAffected: integer read GetRowsAffected;
+{: This result accompanies RowsAffected and returns the number of rows that were
+selected on the server in order to complete the operation performed.}
+  property RowsSelected: integer read GetRowsSelected;
+{: If a SELECT or query based DML is prepared, an optimization PLAN will be
+resolved for it. This property returns the optimization plan assigned to the
+statement by the server.}
+  property StatementPlan: string read GetStatementPlan;
+{: This is the InterBase statement handle obtained as a result of allocating
+it.}
+  property stHandle: isc_stmt_handle read FstHandle;
+{: Pointer to the InterBase statement handle.}
+  property PstHandle: pisc_stmt_handle read GetPstHandle;
+{: Pointer to the InterBase connection handle referenced by this statement.}
+  property PdbHandle: pisc_db_handle read GetPdbHandle;
+{: Pointer to the InterBase transaction handle referenced by this statement.}
+  property PtrHandle: pisc_tr_handle read GetPtrHandle;
+{: Reference to the output columns of the statement or dataset.}
+  property Fields: TIB_Row read GetFields;// write SetFields;
+{: This property gives a variant result of the given output column passed in.}
+  property FieldValues[const FieldName: string]: Variant
+      read GetFieldValue
+     write SetFieldValue; default;
+{: This property accepts or returns gives a variant representing the value of
+the input column passed in.}
+  property ParamValues[const ParamName: string]: Variant
+      read GetParamValue
+     write SetParamValue;
+{: Number of output columns.}
+  property FieldCount: integer read GetFieldCount;
+{: Number of input columns.}
+  property ParamCount: integer read GetParamCount;
+{: Character to be used as an alternative prefix character to denote an input
+parameter in the SQL property.
+<br><br>
+By default this is a colon ":" but caution should be exercised, since some
+triggers and stored procedures use a colon prefix to denote internal parameters.
+It will cause problems if they are parsed as input parameters.}
+  property ParamChar: char read FParamChar write FParamChar default ':';
+{: This property, if set True, makes the parser check for input parameters.
+<br><br>
+It can be useful to set False where you are processing many DDL and DML
+statements that you know will never need to be checked for input parameters. }
+  property ParamCheck: boolean read FParamCheck write FParamCheck default true;
+{: Text to signify the beginning of a macro token string.
+<br><br>
+In the SQL, place the token string, to mark the beginning of your macro
+token. For example, if you use the percent symbol for both the MacroBegin and
+MacroEnd markers, you would write your SQL like this:<br>
+<br>
+SELECT %%MYCOLS%% FROM %%MYTABLE%%
+<br>
+<br>
+Then, in the handler you would check for the macros named "MYCOLS" and
+"MYTABLE" and substitute in the appropriate values. }
+  property MacroBegin: string read GetMacroBegin
+                              write SetMacroBegin
+                              stored IsMacroBeginStored;
+{: Text to signify the ending of a macro.
+<br>
+See MacroBegin for more information.}
+  property MacroEnd: string read GetMacroEnd
+                            write SetMacroEnd
+                            stored IsMacroEndStored;
+{: Parameter values are stored aside so that, between transactions, their
+values can be preserved. This stringlist contains a standard list of column
+entries with their corresponding values.}
+  property OldParamValueLinks: TIB_StringList read FOldParamValueLinks;
+{: Flag which returns True if the statement is in the process of being
+assigned.}
+  property AssigningSQL: boolean read FAssigningSQL;
+{: Flag which returns True if the statement is in the process of being
+prepared.}
+  property PreparingSQL: boolean read FPreparingSQL;
+{: Flag indicating whether the PrepareSQL phase is in refinement.}
+  property RefiningSQL: boolean read FRefiningSQL;
+{: Property which returns the refined SQL that was sent to the server.}
+  property RefinedSQL: string read FRefinedSQL;
+{: Returns a flag indicating whether the dataset is a result of a refined SQL
+statement.
+<br><br>
+This tells you that the dataset is working with a reduced subset of rows, which
+it will do as a means to avoid fetching all of the rows from the server in order
+to be able to position the current record pointer onto a given row.
+<br><br>
+When performing incremental searching it is possible to set up different
+parameters that allow a refined dataset to be defined before the actual
+incremental searching begins. Thus, if a user types "Wha" the dataset
+can be refined to only include records that are STARTING WITH "Wh" and then
+incrementally search upon thos records only. In this way the records starting
+with "A" to "V" will simply stay on the server and not be brought to the client.
+<br><br>
+This is employed in the handling of the SearchingLinks. SQLIsRefined will always
+be true if SearchingLinks are defined.}
+  property SQLIsRefined: boolean read GetSQLIsRefined;
+{: Property which returns the SQL that was sent to the server.
+<br><br>
+This does not include refinements made.}
+  property ServerSQL: string read FServerSQL;
+{: Property which returns the client-provided SQL statement without any
+alterations that might be applied for sending to the server.}
+  property ClientSQL: string read GetClientSQL;
+{: Flag which returns True if the statement is going through a re-prepare cycle.
+<br><br>
+It may be important to check this property in the AfterPrepare event.}
+  property RepreparingSQL: boolean read FRepreparingSQL;
+{: Number of statement link objects referencing this statement.
+<br><br>
+This applies to datasources for datasets, too, since these are base classes for
+them.}
+  property StatementLinkCount: integer read GetStatementLinkCount;
+{: Tells whether the statement has a need to reprepare itself.
+<br><br>
+This becomes true when a call to InvalidateSQL is made and is false after a
+statement or dataset is prepared or reprepared.}
+  property SQLIsValid: boolean read FSQLIsValid;
+{: This is the property which contains the SQL statement to be prepared
+and executed.
+<br><br>
+For datasets it contains the SELECT statement.}
+  property SQL: TStrings read GetSQL write SetSQL;
+{: Indicates the SQLDialect of the connection.}
+  property SQLDialect: integer read GetSQLDialect;
+{: Existence of specific user-defined column attributes can be accessed through
+this property.}
+  property IsColAttributeSet[ const ACol, Index: string ]: boolean
+      read GetColIsAttributeSet
+     write SetColIsAttributeSet;
+{: User defined column attributes can be stored via this property.  Index can
+be a string or one of the pre-defined ColumnAttribute string constants.  See
+the help for the ColumnAttributes property for a list of these constants. }
+  property ColAttributeParams[ const ACol, Index: string ]: string
+      read GetColAttributeParams
+     write SetColAttributeParams;
+
+{: System use property.}
+  property SysBindingCursor: TIB_Dataset read FBindingCursor;
+{: System use property.}
+  property SysParamNames: TIB_StringList read GetSysParamNames;
+{: System use property.}
+  property SysFieldNames: TIB_StringList read GetSysFieldNames;
+{: System use property.}
+  property SysTableNames: TIB_StringList read GetSysTableNames;
+{: System use property.}
+  property StatementLinkList: TList read FIB_StatementLinkList;
+public
+
+{: This is a special property that allows custom attributes for the columns
+of this statement to be stored.
+<br><br>
+The following string constant definitions utilized by other components and
+controls:
+<br><br>
+<br>// Used in column object creation. It tells that the column is actually a
+<br>// COMPUTED BY derived column.
+<br>  IB_COMPUTED   = 'COMPUTED';
+<br>
+<br>// 53bit integer based numeric objects, [Now removed]
+<br>  IB_NOROUNDERR = 'NOROUNDERR';
+<br>  IB_CURR       = 'CURR';
+<br>  IB_COMP       = 'COMP';
+<br>
+<br>// Used for searching
+<br>  IB_NOCASE     = 'NOCASE';     // Flag to set a case insensitive field.
+<br>                                // < colname >=NOCASE=< nocasecolname >;
+<br>  IB_NOTRAILING = 'NOTRAILING'; // Flag to use STARTING on literal strings.
+<br>
+<br>// Used by the SeachPanel
+<br>  IB_NOINSERT = 'NOINSERT';
+<br>  IB_NOEDIT   = 'NOEDIT';
+<br>  IB_NOSEARCH = 'NOSEARCH';
+<br><br>
+Attribute <b>IB_BOOLEAN</b><br>
+If a column is defined as a BOOLEAN, the TIB_Grid will display checkbox glyphs
+and the Boolean column will work just like a checkbox control. The BOOLEAN
+values for the column default to 'T' and 'F' for string type columns and 0 and 1
+for numeric type columns. It is possible to define custom values for BooleanTrue
+and BooleanFalse by appending a parameter value to the ColumnAttributes BOOLEAN
+entry.  For example:
+<br><br>
+MYCOLUMN=BOOLEAN=Y,N;< another parameter if necessary semicolon separated >
+<br><br>
+This will use 'Y' as the BooleanTrue value and 'N' as the BooleanFalse value.
+<br><br>
+It is possible to set multiple ColumnAttributes for a single column in one
+entry. Use semi-colons to separate the attributes.
+<br><br>
+If a Boolean column is nullable, three states are possible when clicking on the
+cell - True, False and Grayed (null or unknown). A column defined as NOT NULL
+will only toggle between True and False.
+<br><br>
+If you want to disable this feature in the grid, the IB_Grid control has a
+property called IndicateBooleans which allows you to do so.
+<br><br>
+Refer to the help on the TIB_StringList class to see how to use and work with
+link entries and their parameters. The only one so far that uses a parameter
+is the NOCASE setting - refer to the link entry example above, which uses it. }
+  property ColumnAttributes: TIB_StringList read FColumnAttributes
+                                            write SetColumnAttributes;
+{: This property is used to enumerate and define the types of any calculated
+fields to be used with the statement or dataset.
+<br><br>
+The format of this property emulates a column definition in a CREATE TABLE
+statement where you declare the COLUMN NAME, COLUMN TYPE and its nullable
+status, if applicable. For example:
+<br><br>
+<br>MYINTCOLUMN INTEGER NOT NULL
+<br>MYSTRCOLUMN VARCHAR ( 50 )
+<br>MYDATECOLUMN DATE
+<br><br>
+When the statement is prepared, these columns will behave just as though they
+were part of the original statement, except that it is necessary to supply
+calculation algorithms for them, in the row context, to the OnCalculateFields
+event.
+<br><br>
+When you use the buffered datasets, calculated fields need to be calculated only
+once, upon being fetched.  The calculation results are stored in the buffer,
+along with the rest of the dataset.  Also, under any circumstances which could
+make them become invalid, they will be refreshed automatically.
+<br><br>
+It should be entirely feasible to use a Lookup() call to another dataset in
+order to maintain a lookup field.
+<br><br>
+The Contact sample application shows a very simple example of how to use these
+properties.}
+  property CalculatedFields: TIB_StringList read FCalculatedFields
+                                            write SetCalculatedFields;
+{: Property which tells whether the values of CalculatedFields are being set.}
+  property CalculatingFields: boolean read GetCalculatingFields;
+{: Property to connect to a connection component by providing a global string
+instead of a direct component reference. This is intended to provide BDE
+compatibility.}
+  property DatabaseName: string read GetDatabaseName write SetDatabaseName;
+
+{ Properties to be published for the IB_DSQL, IB_Cursor and IB_Query }
+
+{: Gives contol over how the data should be aligned if something other than
+the default is desired.
+<br><br>
+<br>Make column entries using the standard format as:
+<br>[< tablename >.]< columnname >=R[IGHT]
+<br>[< tablename >.]< columnname >=C[ENTER]
+<br>[< tablename >.]< columnname >=L[EFT]  }
+  property FieldsAlignment: TIB_StringList read FFieldsAlignment
+                                           write SetFieldsAlignment;
+{: Gives contol over how string data should be handled by data aware
+controls.
+<br><br>
+<br>Make column entries using the standard format as:
+<br>[< tablename >.]< columnname >=U[PPER]
+<br>[< tablename >.]< columnname >=L[OWER]
+<br>[< tablename >.]< columnname >=P[ROPER]
+<br>[< tablename >.]< columnname >=N[ORMAL]}
+  property FieldsCharCase: TIB_StringList read FFieldsCharCase
+                                          write SetFieldsCharCase;
+{: Allows a display string to be provided for a column's DisplayText property.
+<br><br>
+Use the standard format for making column entries.
+<br>
+<br>Date based columns use the DateTimeToString() syntax.
+<br>Numeric based columns use the FormatFloat() syntax.
+<br>All other columns use the FormatMaskText() syntax.
+<br>
+<br>Make column entries using the standard format as:
+<br>
+<br>[< tablename >.]< columnname >=mm/dd/yyyy
+<br>[< tablename >.]< columnname >=##0.00
+<br>[< tablename >.]< columnname >=(000)_000-0000;0;*}
+  property FieldsDisplayFormat: TIB_StringList read FFieldsDisplayFormat
+                                               write SetFieldsDisplayFormat;
+{: Allows the DisplayLabel to contain a more user friendly column heading.
+<br>
+<br>This is used in the IB_Grid and the IB_SearchPanel.
+<br>
+<br>Use the standard format for making column entries.}
+  property FieldsDisplayLabel: TIB_StringList read FFieldsDisplayLabel
+                                              write SetFieldsDisplayLabel;
+{: Allows you to override DisplayLabels for a column with a label specifically
+for display on a grid column title.  Normally such a label may be an
+abbreviation designed to fit as a title on a narrow column.
+<br>
+<br>This is used in the IB_Grid only.
+<br>
+<br>Use the standard format for making column entries.}
+  property FieldsGridLabel: TIB_StringList read FFieldsGridLabel
+                                              write SetFieldsGridLabel;
+{: Allows the width in pixels of a IB_Grid column to be adjusted.
+<br>
+<br><b>The standard format for making column entries is:</b>
+<br>[< tablename >.]< columnname >=35
+<br>[< tablename >.]< columnname >=95}
+  property FieldsDisplayWidth: TIB_StringList read FFieldsDisplayWidth
+                                              write SetFieldsDisplayWidth;
+{: Allows an EditMask string to be provided for a column's data aware
+control to use when editing the contents of the column..
+<br><br>
+Make column entries using this standard format:
+<br>
+<br>[< tablename >.]< columnname >=(000)_000-0000;0;*
+<br>
+<br>For more information about edit masks, please refer to the help topic on
+TCustomMaskEdit.EditMask. }
+  property FieldsEditMask: TIB_StringList read FFieldsEditMask
+                                          write SetFieldsEditMask;
+{: Allows the order of the IB_Column objects to be altered.
+<br><br>
+Simply make a list of standard column references in the desired order. Any
+columns in the dataset that are not included in this list are just moved to the
+end of the list.
+<br>
+<br>Use this standard format:
+<br>
+<br>[< tablename >.]< columnname >
+<br>[< tablename >.]< columnname >
+<br>[< tablename >.]< columnname >}
+  property FieldsIndex: TIB_StringList read FFieldsIndex write SetFieldsIndex;
+{: Allows controls bound to specific  fields to be locked as "read only".
+It is also possible to restrict the property to make a column become read-only
+just during certain states, in order to block edits, inserts and/or searching
+on that column.
+<br><br>
+The standard format for column entries is:
+<br>
+<br>[< tablename >.]< columnname >=T[RUE];NOEDIT;NOINSERT;NOSEARCH
+<br>[< tablename >.]< columnname >=F[ALSE];NOEDIT;NOINSERT;NOSEARCH}
+  property FieldsReadOnly: TIB_StringList read FFieldsReadOnly
+                                          write SetFieldsReadOnly;
+{: Set the trimming of fields according to the valid entries below:
+<br><br>
+The standard format for column entries is:
+<br>
+<br>[< tablename >.]< columnname >=N[one]
+<br>[< tablename >.]< columnname >=A[ll]
+<br>[< tablename >.]< columnname >=B[oth]
+<br>[< tablename >.]< columnname >=L[eft]
+<br>[< tablename >.]< columnname >=R[ight]
+<br>[< tablename >.]< columnname >=S[entence]}
+  property FieldsTrimming: TIB_StringList read FFieldsTrimming
+                                          write SetFieldsTrimming;
+{: Setting Visible to False allows columns to be hidden in an IB_Grid if it is
+not using GridLinks.
+
+<br>
+<br>The standard format for column entries is:
+<br>[< tablename >.]< columnname >=T[RUE]
+<br>[< tablename >.]< columnname >=F[ALSE]}
+  property FieldsVisible: TIB_StringList read FFieldsVisible
+                                         write SetFieldsVisible;
+{: Connection to be used for this statement.}
+  property IB_Connection: TIB_Connection read GetConnection
+                                         write SetConnection
+                                         stored IsConnectionStored;
+{: Transaction to be used for this statement.
+<br><br>
+If the IB_Connection property is referencing a TIB_Database component then this
+property is automatically set to reference a transaction that is internally
+contained in the TIB_Database instance. This is for BDE emulation only.
+<br><br>
+If this property is left as nil and the component is not referenced to an
+IB_Database, it will create its own internal transaction instance when the
+statement is prepared.
+<br><br>
+Thus, if you never assign this property your, statements and datasets could all
+be maintaining their own individual transactions.  This could be undesirable.
+This internal transaction instance defaults to setting AutoCommit true and
+Isolation to tiCommitted, meaning that each statement and dataset is able to see
+what all the others have done.}
+  property IB_Transaction: TIB_Transaction read GetTransaction
+                                           write SetTransaction
+                                           stored IsTransactionStored;
+{: This is a reference to the input parameters for the statement.
+<br>
+<br>With InterBase Objects, all inputs are handled by parameters.
+<br><br>
+Be sure to Prepare the statement before accessing Param or Field column
+references directly.}
+  property Params: TIB_Row read GetParams;
+
+{$IFNDEF HELPSCAN}
+{ Design-time reference count property. }
+  property _StatementLinkCount: integer read GetStatementLinkCount
+                                        write flag_junk_value
+                                        stored false;
+{$ENDIF}
+
+published
+{: This property if set will call OnCalculateFields once for any field update
+with AField set to nil so that all caculated fields can be changed at once
+using Arow. }
+  property CalculateAllFields: boolean read FCalculateAllFields
+                                       write FCalculateAllFields
+                                       default false;
+
+end; { TIB_Statement }
+
+{                                                                              }
+{ TIB_DSQL                                                                     }
+{                                                                              }
+
+{: This component is used for all InterBase DSQL statements that do not
+involve the handling of multiple rows of output data.
+<br><br>
+It is ideal for executing a stored procedure, doing a large batch of record
+inserts, executing DDL or DML statements, etc.
+<br><br>
+All of the help topics for properties, methods and events are listed under its
+parent class TIB_Statement.}
+TIB_DSQL = class( TIB_Statement )
+{$I IBA_Statement.PBL}
+{$I IBA_DSQL.PBL     }
+end;
+
+// IBA_Statement.IMP

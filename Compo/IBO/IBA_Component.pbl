@@ -1,0 +1,9 @@
+
+{                                                                              }
+{ IB_Component.PBL                                                             }
+{                                                                              }
+
+published
+
+  property OnError: TIB_ErrorEvent read FOnError write SetOnError;
+

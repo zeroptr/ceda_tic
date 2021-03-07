@@ -1,0 +1,499 @@
+// IBA_DataSource.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_DataSource.Create(AOwner: TComponent);
+begin
+  inherited Create( AOwner );
+  FDataLinkList := TList.Create;
+  FAutoEdit := true;
+  FAutoInsert := true;
+  FEnabled := true;
+  FControlsDisabledLevel := 0;
+  FInterfaceDisabledLevel := 0;
+end;
+
+destructor TIB_DataSource.Destroy;
+begin
+  Dataset := nil;
+  while DataLinkCount > 0 do
+    TIB_DataLink(FDataLinkList.Items[ 0 ]).DataSource := nil;
+  FDataLinkList.Free;
+  FDataLinkList := nil;
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_DataSource.Edit: boolean;
+begin
+  if State <> dssEdit then
+    if Prepared and AutoEdit then
+      Dataset.SysEdit;
+  Result := State = dssEdit;
+end;
+
+function TIB_DataSource.Insert: boolean;
+begin
+  if ( State <> dssInsert ) and
+     Prepared and
+     AutoInsert and (( Dataset.Fields.RowState = rsNone ) or
+                     ( not Dataset.Unidirectional )) then
+    Dataset.SysInsert;
+  Result := State = dssInsert;
+end;
+
+function TIB_DataSource.Modify: boolean;
+begin
+  if not Modifying and Assigned( Dataset ) then
+    if not Edit then
+      if Dataset.Fields.RowState = rsNone then
+        Insert;
+  Result := Modifying;
+end;
+
+function TIB_DataSource.Modifying: boolean;
+begin
+  Result := State in [ dssEdit, dssInsert, dssSearch ];
+end;
+
+procedure TIB_DataSource.Reset;
+begin
+  ProcessEvent( setFieldsDataChange, 0 );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataSource.SetStatement( AValue: TIB_Statement );
+begin
+  if ( AValue <> nil ) and not ( AValue is TIB_Dataset ) then
+    raise EIB_DatasetError.Create( E_InvalidClassType )
+  else
+    inherited SetStatement( AValue );
+end;
+
+procedure TIB_DataSource.SetDataset( AValue: TIB_Dataset );
+begin
+  if IsLinkedTo( AValue ) then
+    raise EIB_DatasetError.Create( E_NoCircularRef );
+  if AValue <> Dataset then
+  begin
+    if Dataset <> nil then
+      with Dataset do
+        if Assigned( FDataSourceList ) then
+          FDataSourceList.Remove( Self );
+    Statement := AValue;
+    if Dataset <> nil then
+      with Dataset do
+        if Assigned( FDataSourceList ) then
+          FDataSourceList.Add( Self );
+  end;
+end;
+
+function TIB_DataSource.GetDataset: TIB_Dataset;
+begin
+  Result := FStatement as TIB_Dataset;
+end;
+
+function TIB_DataSource.GetReadOnly: boolean;
+begin
+  if State = dssSearch then
+    Result := false
+  else
+  if Dataset <> nil then
+    Result := Dataset.ReadOnly
+  else
+    Result := true;
+end;
+
+function TIB_DataSource.GetCanModify: boolean;
+begin
+  if not Prepared then
+    Result := false
+  else
+  if Modifying then
+    Result := true
+  else
+  if Dataset.CanModify then
+  begin
+    if RowState = rsNone then
+      Result := AutoInsert
+    else
+      Result := AutoEdit;
+  end
+  else
+    Result := false;
+end;
+
+function TIB_DataSource.GetNeedToPost: boolean;
+begin
+  Result := Prepared and Dataset.NeedToPost;
+end;
+
+function TIB_DataSource.GetEof: boolean;
+begin
+  if Dataset <> nil then
+    Result := Dataset.Eof
+  else
+    Result := true;
+end;
+
+function TIB_DataSource.GetBof: boolean;
+begin
+  if Dataset <> nil then
+    Result := Dataset.Bof
+  else
+    Result := true;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_DataSource.GetState: TIB_DatasetState;
+begin
+  if Dataset <> nil then
+    Result := Dataset.State
+  else
+    Result := dssInactive;
+end;
+
+function TIB_DataSource.GetRowState: TIB_RowState;
+begin
+  if Dataset <> nil then
+    Result := Dataset.Fields.RowState
+  else
+    Result := rsNone;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataSource.SysPrepareSQL;
+var
+  ii: integer;
+begin
+  inherited SysPrepareSQL;
+  for ii := 0 to DataLinkCount - 1 do
+    TIB_DataLink(FDataLinkList.Items[ ii ]).SysPrepareSQL;
+end;
+
+procedure TIB_DataSource.ProcessEvent( AEvent: TIB_StatementEventType;
+                                       Info: longint );
+var
+  ii: integer;
+begin
+  inherited ProcessEvent( AEvent, Info );
+  if not ( csLoading    in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+  case AEvent of
+    setBeforeAssignment:
+    if Assigned( FBeforeAssignment ) then
+      FBeforeAssignment( Self, Dataset );
+    setAfterAssignment:
+    begin
+      if Assigned( FAfterAssignment ) then
+        FAfterAssignment( Self, Dataset );
+      SysStateChanged;
+      ProcessEvent( setFieldsDataChange, 0 );
+    end;
+    setFieldsDataChange:
+    if ControlsDisabledLevel > 0 then
+      FDSDataChange := true
+    else
+      SysDataChange( TIB_Column( Info ));
+    setFieldsUpdateData: SysUpdateData( TIB_Column( Info ));
+  end;
+  if ( ControlsDisabledLevel = 0 ) or
+     ( AEvent in [ setBeforeAssignment,
+                   setAfterAssignment,
+                   setParamsRefsChanged,
+                   setFieldsRefsChanged ] ) then
+  begin
+    ii := 0;
+    while ii < DataLinkCount do
+    begin
+      if FInterfaceDisabledLevel > 0 then
+      begin
+{$IFDEF IBO4_BETA}
+        if not( TIB_DataLink( FDataLinkList.Items[ ii ] ).FIsCtrlLink ) then
+{$ELSE}
+        if not( TIB_DataLink( FDataLinkList.Items[ ii ] ) is
+                                                     TIB_InterfaceDataLink) then
+{$ENDIF}
+          TIB_DataLink(FDataLinkList.Items[ ii ]).ProcessStatementEvent( AEvent,
+                                                                         Info );
+        if AEvent = setFieldsDataChange then
+          FDSDataChange := true; // indicate refresh still needed
+      end
+      else
+        TIB_DataLink(FDataLinkList.Items[ ii ]).ProcessStatementEvent( AEvent,
+                                                                       Info );
+      Inc( ii );
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataSource.AddDataLink( ADataLink: TObject );
+begin
+  FDataLinkList.Add( ADataLink );
+end;
+
+procedure TIB_DataSource.RemoveDataLink( ADataLink: TObject );
+begin
+  FDataLinkList.Remove( ADataLink );
+end;
+
+function TIB_DataSource.GetDataLinkCount: integer;
+begin
+  if Assigned( FDataLinkList ) then
+    Result := FDataLinkList.Count
+  else
+    Result := 0;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_DataSource.IsLinkedTo( Dataset: TIB_Dataset ): boolean;
+var
+  DataSource: TIB_DataSource;
+begin
+  Result := True;
+  while Assigned( Dataset ) do
+  begin
+    DataSource := Dataset.MasterSource;
+    if DataSource = nil then Break;
+    if DataSource = Self then Exit;
+    Dataset := DataSource.Dataset;
+  end;
+  Result := False;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataSource.SetAnnounceFocus( AValue: boolean );
+begin
+  if AnnounceFocus <> AValue then
+  begin
+    FAnnounceFocus := AValue;
+    if AnnounceFocus then
+      AllowFocus := true;
+  end;
+end;
+
+procedure TIB_DataSource.SetAllowFocus( AValue: boolean );
+begin
+  if AllowFocus <> AValue then
+  begin
+    FAllowFocus := AValue;
+    if not AllowFocus then
+      AnnounceFocus := false;
+  end;
+end;
+
+function TIB_DataSource.IsAllowFocusStored: boolean;
+begin
+  Result := AllowFocus and not AnnounceFocus;
+end;
+
+procedure TIB_DataSource.SetFocus;
+begin
+  if AllowFocus then
+    IB_Session.FocusedDataSource := Self;
+end;
+
+procedure TIB_DataSource.DoGainFocus;
+begin
+  if not ( csLoading    in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( OnGainFocus ) then
+      OnGainFocus( Self, Dataset );
+end;
+
+procedure TIB_DataSource.DoLoseFocus;
+begin
+  if not ( csLoading    in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( OnLoseFocus ) then
+      OnLoseFocus( Self, Dataset );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_DataSource.SetEnabled( AValue: boolean );
+begin
+  if Enabled <> AValue then
+  begin
+    FEnabled := AValue;
+    if Enabled then
+      EnableControls
+    else
+      DisableControls;
+  end;
+end;
+
+procedure TIB_DataSource.DoStateChanged;
+begin
+  if not ( csLoading    in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( FOnStateChanged ) then
+      FOnStateChanged( Self, Dataset );
+end;
+
+procedure TIB_DataSource.SysUpdateData( AField: TIB_Column );
+begin
+  if ControlsDisabledLevel = 0 then
+    if Assigned( FOnUpdateData ) then
+      FOnUpdateData( Self, Dataset, AField );
+end;
+
+procedure TIB_DataSource.SysDataChange( AField: TIB_Column );
+begin
+  if Assigned( FOnDataChange ) then
+    FOnDataChange( Self, Dataset, AField );
+end;
+
+procedure TIB_DataSource.SysStateChanged;
+var
+  ii: integer;
+  tmpList: TList;
+begin
+  if ControlsDisabledLevel > 0 then
+    FDSStateChange := true
+  else
+  if FInterfaceDisabledLevel > 0 then
+  begin
+    DoStateChanged;
+    FDSStateChange := true; // Still need refresh
+    tmpList := TList.create;
+    try
+      for ii := 0 to DataLinkCount - 1 do
+{$IFDEF IBO4_BETA}
+        if not( TIB_DataLink( FDataLinkList.Items[ ii ] ).FIsCtrlLink ) then
+{$ELSE}
+        if not( TIB_DataLink( FDataLinkList.Items[ ii ] ) is
+                                                     TIB_InterfaceDataLink) then
+{$ENDIF}
+          tmpList.Add( FDataLinkList.Items[ ii ] );
+      for ii := 0 to tmpList.Count - 1 do
+        if FDataLinkList.IndexOf( tmpList[ ii ] ) >= 0 then
+          TIB_DataLink(tmpList[ ii ]).SysStateChanged;
+      for ii := 0 to DataLinkCount - 1 do
+{$IFDEF IBO4_BETA}
+        if not( TIB_DataLink( FDataLinkList.Items[ ii ] ).FIsCtrlLink ) and
+{$ELSE}
+        if not( TIB_DataLink( FDataLinkList.Items[ ii ] ) is
+                                                     TIB_InterfaceDataLink) and
+{$ENDIF}
+           (tmpList.IndexOf( FDataLinkList[ ii ] ) = -1) then
+          TIB_DataLink(FDataLinkList[ ii ]).SysStateChanged;
+    finally
+      tmpList.Free;
+    end;
+  end
+  else
+  begin
+    DoStateChanged;
+    tmpList := TList.create;
+    try
+      for ii := 0 to DataLinkCount - 1 do
+        tmpList.Add( FDataLinkList.Items[ ii ] );
+      for ii := 0 to tmpList.Count - 1 do
+        if FDataLinkList.IndexOf( tmpList[ ii ] ) >= 0 then
+          TIB_DataLink(tmpList[ ii ]).SysStateChanged;
+      for ii := 0 to DataLinkCount - 1 do
+        if tmpList.IndexOf( FDataLinkList[ ii ] ) = -1 then
+          TIB_DataLink(FDataLinkList[ ii ]).SysStateChanged;
+    finally
+      tmpList.Free;
+    end;
+  end;
+end;
+
+procedure TIB_DataSource.DisableControls;
+begin
+  if (FControlsDisabledLevel = 0) and
+     (FInterfaceDisabledLevel = 0) then
+  begin
+    FDSStateChange := false;
+    FDSDataChange := false;
+  end;
+  Inc( FControlsDisabledLevel );
+end;
+
+procedure TIB_DataSource.EnableControls;
+begin
+  Dec( FControlsDisabledLevel );
+  if (FControlsDisabledLevel = 0) and
+     (FInterfaceDisabledLevel = 0) then
+  begin
+    if FDSStateChange then
+    begin
+      SysStateChanged;
+      SysDataChange( nil );
+    end
+    else
+    if FDSDataChange then
+      SysDataChange( nil );
+  end;
+end;
+
+procedure TIB_DataSource.DisableInterface;
+begin
+  if (FControlsDisabledLevel = 0) and
+     (FInterfaceDisabledLevel = 0) then
+  begin
+    FDSStateChange := false;
+    FDSDataChange := false;
+  end;
+  Inc( FInterfaceDisabledLevel );
+end;
+
+procedure TIB_DataSource.EnableInterface;
+begin
+  Dec( FInterfaceDisabledLevel );
+  if (FControlsDisabledLevel = 0) and
+     (FInterfaceDisabledLevel = 0) then
+  begin
+    if FDSStateChange then
+    begin
+      SysStateChanged;
+      SysDataChange( nil );
+    end
+    else
+    if FDSDataChange then
+      SysDataChange( nil );
+  end;
+end;

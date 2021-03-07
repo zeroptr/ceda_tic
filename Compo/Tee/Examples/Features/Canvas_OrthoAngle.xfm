@@ -1,0 +1,66 @@
+inherited OrthoAngle: TOrthoAngle
+  Left = 294
+  Top = 258
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The new property OrthoAngle defines the slope used to draw the C' +
+        'hart in '
+      'Orthogonal mode. '
+      'Valid range is from 0 to 90 degree.  By default it is 45 degree.'
+      ''
+      'Example: Chart1.View3DOptions.OrthoAngle:=60')
+  end
+  inherited Chart1: TChart
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 40
+      Top = 10
+      Width = 103
+      Height = 13
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '&Orthogonal Angle:'
+      FocusControl = TrackBar1
+    end
+    object Label2: TLabel
+      Left = 301
+      Top = 11
+      Width = 12
+      Height = 13
+      Caption = '45'
+    end
+    object TrackBar1: TTrackBar
+      Left = 149
+      Top = 6
+      Width = 150
+      Height = 28
+      Max = 180
+      Orientation = trHorizontal
+      Frequency = 10
+      Position = 45
+
+
+      TabOrder = 0
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+      OnChange = TrackBar1Change
+    end
+  end
+end

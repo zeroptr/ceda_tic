@@ -1,0 +1,36 @@
+object HighLowLineEditor: THighLowLineEditor
+  Left = 247
+  Top = 290
+  AutoScroll = False
+  ClientHeight = 135
+  ClientWidth = 186
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object BPen: TButtonPen
+    Left = 8
+    Top = 16
+    Caption = '&Border...'
+    TabOrder = 0
+  end
+  object CBColorEach: TCheckBox
+    Left = 11
+    Top = 85
+    Width = 127
+    Height = 17
+    HelpContext = 164
+    Caption = 'Color &Each'
+    TabOrder = 1
+    OnClick = CBColorEachClick
+  end
+  object BColor: TButtonColor
+    Left = 8
+    Top = 49
+    HelpContext = 421
+    Caption = '&Color...'
+    TabOrder = 2
+  end
+end

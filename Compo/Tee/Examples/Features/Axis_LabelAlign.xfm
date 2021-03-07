@@ -1,0 +1,59 @@
+inherited AxisLabelAlignForm: TAxisLabelAlignForm
+  Caption = 'AxisLabelAlignForm'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Vertical axes can now align their Labels to the opposite directi' +
+        'on.'
+      'Note: The labels Angle should be 0 (no label rotation).'
+      ''
+      'Example: Chart1.LeftAxis.LabelsAlign := alOpposite;')
+  end
+  inherited Chart1: TChart
+    View3D = False
+    object Series1: THorizBarSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdLeftRight
+      XValues.DateTime = False
+      XValues.Name = 'Bar'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loAscending
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 13
+      Width = 193
+      Height = 17
+      Caption = 'Opposite Label alignment'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object RadioGroup1: TRadioGroup
+      Left = 217
+      Top = 3
+      Width = 153
+      Height = 34
+      Caption = 'Axis:'
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        'Left'
+        'Right')
+      TabOrder = 1
+      OnClick = RadioGroup1Click
+    end
+  end
+end

@@ -1,0 +1,179 @@
+object PolarForm: TPolarForm
+  Left = 292
+  Top = 113
+  Width = 465
+  Height = 379
+  Color = clBtnFace
+  ParentFont = True
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Chart1: TChart
+    Left = 0
+    Top = 66
+    Width = 457
+    Height = 286
+    AllowPanning = pmNone
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    BackWall.Pen.Visible = False
+    Foot.Font.Height = -12
+    Foot.Text.Strings = (
+      '')
+    Legend.Alignment = laBottom
+    Legend.Color = 8454143
+    Legend.ColorWidth = 37
+    Legend.Inverted = True
+    Legend.ShadowSize = 4
+    Legend.Symbol.Width = 37
+    Title.Alignment = taLeftJustify
+    Title.Brush.Color = 16777088
+    Title.Color = 16777088
+    Title.Font.Height = -19
+    Title.Font.Style = [fsBold, fsItalic]
+    Title.Frame.Color = clRed
+    Title.Frame.Width = 4
+    Title.Text.Strings = (
+      ' Wind Direction and Speed ')
+    AxisVisible = False
+    BottomAxis.Automatic = False
+    BottomAxis.AutomaticMaximum = False
+    BottomAxis.AutomaticMinimum = False
+    BottomAxis.Increment = 30
+    BottomAxis.Maximum = 992
+    BottomAxis.Minimum = 3
+    ClipPoints = False
+    Frame.Visible = False
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    View3DWalls = False
+    Zoom.Allow = False
+    OnAfterDraw = Chart1AfterDraw
+    Align = alClient
+    Color = clWhite
+    TabOrder = 0
+    object PolarSeries1: TPolarSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Title = 'California'
+      OnClick = PolarSeries1Click
+      Circled = True
+      AngleIncrement = 30
+      AngleValues.DateTime = False
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clBlue
+      Brush.Style = bsDiagCross
+      CircleBackColor = 8454143
+      CircleLabels = True
+      CircleLabelsFont.Color = clPurple
+      CircleLabelsFont.Style = [fsBold, fsItalic]
+      CircleLabelsRotated = True
+      CirclePen.Color = clBlue
+      CirclePen.Style = psDot
+      CirclePen.Width = 2
+      ClockWiseLabels = True
+      Pen.Color = clRed
+      Pointer.HorizSize = 6
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      Left = 459
+      Top = 125
+    end
+    object PolarSeries2: TPolarSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clBlue
+      Title = 'Catalonia'
+      OnClick = PolarSeries1Click
+      Circled = True
+      ColorEachPoint = True
+      AngleIncrement = 30
+      AngleValues.DateTime = False
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = 65408
+      CirclePen.Color = clBlue
+      Pen.Color = clBlue
+      Pointer.HorizSize = 5
+      Pointer.InflateMargins = True
+      Pointer.Style = psDiamond
+      Pointer.VertSize = 5
+      Pointer.Visible = True
+      Left = 459
+      Top = 181
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 457
+    Height = 33
+    Align = alTop
+    TabOrder = 1
+    object CheckBox1: TCheckBox
+      Left = 10
+      Top = 8
+      Width = 79
+      Height = 17
+      Caption = '&Animate !!!'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 96
+      Top = 8
+      Width = 73
+      Height = 17
+      Caption = '&Circled'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 176
+      Top = 8
+      Width = 89
+      Height = 17
+      Caption = 'Transparent'
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 33
+    Width = 457
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 2
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 392
+    Top = 78
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 40
+    Top = 258
+  end
+end

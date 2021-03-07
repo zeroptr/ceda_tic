@@ -1,0 +1,60 @@
+inherited CountForm: TCountForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'The Count function calculates the number of points of the'
+      'data source series.')
+  end
+  inherited Chart1: TChart
+    Top = 90
+    Height = 247
+    Title.Text.Strings = (
+      'Count function')
+    Chart3DPercent = 10
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.BackColor = clBlack
+      Marks.Color = clBlack
+      Marks.Font.Color = clRed
+      Marks.Visible = True
+      SeriesColor = clRed
+      Title = 'Source'
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.ShadowSize = 0
+      Marks.ShapeStyle = fosRoundRectangle
+      Marks.Visible = True
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Count'
+      VertAxis = aRightAxis
+      Pointer.Brush.Color = 33023
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TCountTeeFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    Visible = False
+  end
+end

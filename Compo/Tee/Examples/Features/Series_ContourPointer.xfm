@@ -1,0 +1,129 @@
+inherited SeriesContourPointer: TSeriesContourPointer
+  Left = 367
+  Top = 292
+  Width = 571
+  Height = 482
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 563
+  end
+  inherited Memo1: TMemo
+    Width = 563
+    Lines.Strings = (
+      
+        'For Contour series with a very big number of levels it can be vi' +
+        'sually better to display '
+      'level lines as small dots instead of continous lines.'
+      ''
+      'Series1.Pen.Visible := False'
+      'Series1.Pointer.Visible := True')
+  end
+  inherited Chart1: TChart
+    Width = 563
+    Height = 299
+    BackWall.Color = clWhite
+    BackWall.Transparent = False
+    Title.Text.Strings = (
+      'Contour Pointer')
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Visible = False
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Visible = False
+    RightAxis.Axis.Width = 1
+    TopAxis.Axis.Width = 1
+    View3D = False
+  end
+  inherited Panel1: TPanel
+    Width = 563
+    object Label1: TLabel
+      Left = 242
+      Top = 14
+      Width = 31
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Width:'
+      FocusControl = SEPointHorizSize
+    end
+    object Label2: TLabel
+      Left = 331
+      Top = 13
+      Width = 34
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Height:'
+      FocusControl = SEPointVertSize
+    end
+    object cbVisible: TCheckBox
+      Left = 17
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = 'Pointer visible'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbVisibleClick
+    end
+    object bEdit: TButton
+      Left = 458
+      Top = 9
+      Width = 65
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = bEditClick
+    end
+    object bPen: TButtonPen
+      Left = 128
+      Top = 9
+      Width = 97
+      Caption = 'Series &Pen...'
+      TabOrder = 2
+    end
+    object SEPointHorizSize: TEdit
+      Left = 276
+      Top = 11
+      Width = 28
+      Height = 21
+      HelpContext = 245
+      TabOrder = 3
+      Text = '1'
+      OnChange = SEPointHorizSizeChange
+    end
+    object UDPointHorizSize: TUpDown
+      Left = 304
+      Top = 11
+      Width = 15
+      Height = 21
+      HelpContext = 245
+      Associate = SEPointHorizSize
+      Min = 1
+      Max = 1000
+      Position = 1
+      TabOrder = 4
+    end
+    object SEPointVertSize: TEdit
+      Left = 368
+      Top = 11
+      Width = 28
+      Height = 21
+      HelpContext = 674
+      TabOrder = 5
+      Text = '1'
+      OnChange = SEPointVertSizeChange
+    end
+    object UDPointVertSize: TUpDown
+      Left = 396
+      Top = 11
+      Width = 15
+      Height = 21
+      HelpContext = 674
+      Associate = SEPointVertSize
+      Min = 1
+      Max = 1000
+      Position = 1
+      TabOrder = 6
+    end
+  end
+end

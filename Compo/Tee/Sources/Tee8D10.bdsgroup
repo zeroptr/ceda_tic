@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality" Type="String">Default.Personality</Option>
+			<Option Name="ProjectType" Type="String"></Option>
+			<Option Name="Version" Type="String">1.0</Option>
+			<Option Name="GUID" Type="String">{E3F6DAA0-D557-4BF7-8EBE-BEA0262056A7}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects ActiveProject="TeeLanguage810.bpl">
+      <Projects Name="Tee810.bpl" Type="String">Tee810.bdsproj</Projects>
+      <Projects Name="TeeUI810.bpl" Type="String">TeeUI810.bdsproj</Projects>
+      <Projects Name="TeeDB810.bpl" Type="String">TeeDB810.bdsproj</Projects>
+      <Projects Name="TeePro810.bpl" Type="String">TeePro810.bdsproj</Projects>
+      <Projects Name="TeeLanguage810.bpl" Type="String">TeeLanguage810.bdsproj</Projects>
+      <Projects Name="TeeGL810.bpl" Type="String">TeeGL810.bdsproj</Projects>
+      <Projects Name="TeeImage810.bpl" Type="String">TeeImage810.bdsproj</Projects>
+      <Projects Name="DclTeePro810.bpl" Type="String">DclTeePro810.bdsproj</Projects>
+      <Projects Name="Targets" Type="String">Tee810.bpl TeeUI810.bpl TeeDB810.bpl TeePro810.bpl TeeLanguage810.bpl TeeGL810.bpl TeeImage810.bpl DclTeePro810.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

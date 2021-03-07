@@ -1,0 +1,791 @@
+
+{                                                                              }
+{ IBA_BDataset                                                                 }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: These are flags used to maintain buffer synchronization with the server.}
+TIB_BufferSynchroFlags = ( bsBeforeEdit, bsAfterEdit, bsAfterInsert );
+
+{: These are flags used to maintain buffer synchronization with the server.}
+TIB_BufferSynchroFlagsSet = set of TIB_BufferSynchroFlags;
+
+{: VCL compatibility.}
+TIB_FilterRecordEvent = procedure(     ARow: TIB_Row;
+                                   var Accept: Boolean ) of object;
+{: This class serves as a base to the IB_Query component.
+<br><br>
+It is constructed in such a way that a fully scrollable/updateable dataset is
+obtained. The buffering of data is all on the client.
+<br><br>
+All properties and events above the TIB_Dataset class are documented here.
+<br><br>
+Please see IB_Query for more specific information about how this class is
+implemented in an application.}
+TIB_BDataset = class(TIB_Dataset)
+private
+  FCurrentCursor: TIB_BindingCursor;
+  FBufferCursor: TIB_BindingCursor;
+  FLocateCursor: TIB_LocateCursor;
+  FFilterCursor: TIB_FilterCursor;
+  FSeekCursor: isc_stmt_handle;
+  PSeekDA: PXSQLDA;
+  FDescCursor: TIB_Dataset;
+  FNodeList: TIB_NodeList;
+  FCanInsert: boolean;
+  FBufferSynchroFlags: TIB_BufferSynchroFlagsSet;
+  FKeyLookupRowData: string;
+  FKeyLookupRef: TIB_NodeRef;
+  FKeyFieldsMap: TList;
+  FLocateLevel: integer;
+  FIncSearchKeyInt: DWORD;
+  FIncSearchSeekInt: DWORD;
+  FIncSearchLastTick: DWORD;
+  FIncSearchKeyString: string;
+  FIncSearchString: string;
+  FIncSearchLevel: integer;
+  FIncSearchMaxLevel: integer;
+  FIncSearchCurRow: longint;
+  FIncSearchRowNum: longint;
+  FIncSearchNearestRowNum: longint;
+  FFilterText: string;
+  FFilterPlan: string;
+  FFetchWholeRows: boolean;
+  FKeySQLSelect: string;
+  FCursorIsKeyFields: boolean;
+  FLastAllocatedKeyVal: integer;
+  FFound: boolean;
+  FBufferKeyIsValid: integer;
+  FTransactionCachedUpdatesFlag: boolean;
+  FProcessingUpdates: boolean;
+  FSuppressDupRecs: boolean;
+  FRefineZone: TIB_RefineZone;
+  FOnRowSelectedChanged: TIB_RowSelectedChanged;
+  FOnMultiSelect: TIB_DatasetEvent;
+  FOnFilterRecord: TIB_FilterRecordEvent;
+  function SysScrollCurrent( NeedCursor,
+                             KeepCursor,
+                             ClearBlobs: boolean ): boolean;
+  function SyncBufferFields: boolean;
+  procedure SysProcessUpdates( AProcess: TIB_CachedUpdatesProcess );
+  procedure CheckTransactionFlagForCachedUpdates;
+  procedure GetRestoreInsertedRecord(     Sender: TObject;
+                                          ANode: PIB_Node;
+                                      var ABoolean: boolean );
+  procedure GetRecordIsFiltered(     Sender: TObject;
+                                     ANode: PIB_Node;
+                                 var ABoolean: boolean );
+  procedure FreeExtraCursors;
+  procedure DescCursorAfterFetchEof(IB_Dataset: TIB_Dataset);
+  procedure DescCursorAfterFetchRow(IB_Dataset: TIB_Dataset);
+  procedure DescCursorBeforeUnprepare(Sender: TIB_Statement);
+  function AfterFetchRow( IB_Dataset: TIB_Dataset ): boolean;
+  procedure NodeListBeginBusy( Sender: TObject );
+  procedure NodeListEndBusy( Sender: TObject );
+  function NeedRecords( Sender: TObject;
+                        AAscending: boolean;
+                        ANumOfRecs: longint ): longint;
+  function GetCalculatingFields: boolean; override;
+  function GetRefineSQLWhere( Ascending, CheckNull: boolean ): string;
+protected
+  FIBODataset: pointer;
+  function CanUseDualCursors: boolean;
+  procedure UpdateOperation(     Operation: TIB_DataOperation;
+                                 UpdateKind: TIB_UpdateKind;
+                             var UpdateAction: TIB_UpdateAction );
+  procedure UpdateError(     E: Exception;
+                             UpdateKind: TIB_UpdateKind;
+                         var UpdateAction: TIB_UpdateAction ); virtual;
+  function DoCompareText( IB_Field: TIB_Column; const S1,S2: string ): integer;
+  function DoCompareStr( IB_Field: TIB_Column; const S1,S2: string ): integer;
+  procedure DoUpdateRecord(     UpdateKind: TIB_UpdateKind;
+                            var UpdateAction: TIB_UpdateAction ); virtual;
+{ Inherited Property Access Methods }
+  procedure SetConnection( AValue: TIB_Connection ); override;
+  procedure SetTransaction( AValue: TIB_Transaction ); override;
+  function GetCanEdit: boolean; override;
+  function GetCanInsert: boolean; override;
+  function GetFields: TIB_Row; override;
+  function GetKeyFields: TIB_Row; override;
+  function GetBofRowNum: longint; override;
+  function GetEofRowNum: longint; override;
+  function GetRowNum: longint; override;
+  procedure SetRowNum( AValue: longint ); override;
+  function GetUnidirectional: boolean; override;
+  procedure SetUnidirectional( AValue: boolean ); virtual;
+  function GetBof: boolean; override;
+  function GetEof: boolean; override;
+  function SysRecordCount: longint; override;
+  function SysGetCursorRecordCount: longint; override;
+  procedure SysLayoutChange( Sender: TObject ); override;
+  function GetStatementType: TIB_StatementType; override;
+  function GetBookmark: string; override;
+  procedure SetBookmark( const ABookMark: string ); override;
+  function GetBufferBookmark: string; override;
+  procedure SetBufferBookmark( const ABookmark: string ); override;
+  procedure SysAfterFieldDataChange( Sender: TIB_Row;
+                                     AField: TIB_Column); override;
+  procedure SetDatabaseName( const AValue: string ); override;
+  function GetUpdatesPending: boolean; override;
+  function GetUpdateStatus: TIB_UpdateStatus; override;
+{ SQL Generator procedures }
+  function IsUsingManualDML( UpdateKind: TIB_UpdateKind ): boolean; override;
+  procedure SQL_DeleteRow; override;
+  procedure SQL_EditRow; override;
+  function SQL_LockRow: boolean; override;
+{ Property Access Methods }
+  function GetBufferFields: TIB_Row; override;
+  function GetBufferRowNum: longint; override;
+  procedure SetBufferRowNum( AValue: longint ); override;
+  function GetBufferEof: boolean; override;
+  function GetBufferBof: boolean; override;
+  function GetBufferRowCount: longint; override;
+  function GetBufferHasBof: boolean; override;
+  function GetBufferHasEof: boolean; override;
+  function GetBufferRowFlags: TIB_RowFlagSet;
+  function GetRowFlags: TIB_RowFlagSet;
+  function GetSysFieldNames: TIB_StringList; override;
+{ System Methods }
+  procedure SysBeforeUnprepare; override;
+  procedure SysAfterUnprepare; override;
+  function SysNeedToRefineSQL: boolean; override;
+  procedure SysRefineSQL; override;
+  procedure SysPrepareSQL; override;
+  procedure SysUpdateDescriptors; override;
+  procedure SysPreparedChanged; override;
+  function SysAfterFetchCursorRow: boolean; override;
+  procedure SysAfterFetchCursorEof; override;
+  procedure SysBeforeExecuteForOutput; override;
+  procedure SysBeforeScroll; override;
+  procedure SysAfterScroll; override;
+  procedure SysBeforeSearch; override;
+  procedure SysAfterExecuteForOutput; override;
+  procedure SysJustBeforeOpen; override;
+  procedure SysBeforeOpen; override;
+  procedure SysAfterOpen; override;
+  procedure SysAfterClose; override;
+  procedure SysAfterCancel; override;
+  procedure SysFirst; override;
+  function SysMoveBy( IncRows: longint ): longint; override;
+  procedure SysLast; override;
+  procedure SysPostEditedRow; override;
+  procedure SysPostInsertedRow; override;
+  procedure SysLockRow; override;
+  procedure SysEditCursorRow; override;
+  procedure SysInsertCursorRow; override;
+  procedure SysDeleteCursorRow; override;
+  procedure SysInsertRow; override;
+  procedure SysAfterInsert; override;
+  procedure SysCancelInsertedRow; override;
+  procedure SysAdjustCurrentRow( ADeleteNode, AScrollEvents: boolean );
+  procedure SysAfterPost; override;
+  procedure SysPost( CancelUnmodified, IsRetaining: boolean ); override;
+  procedure SysExecPost( CancelUnmodified: boolean ); override;
+  procedure SysUpdateKeyData( PreserveOldKeyData: boolean ); override;
+  procedure DoKeyDataChange( AField: TIB_Column ); override;
+{ New Property Methods }
+  function GetAsXML: string; //~virtual;
+  function GetCachedEditCount: longint;
+  function GetCachedInsertCount: longint;
+  function GetCachedDeleteCount: longint;
+  function GetFilterDeletedRecords: boolean;
+  procedure SetFilterDeletedRecords( AValue: boolean );
+  function GetFiltered: boolean;
+  procedure SetFiltered( AValue: boolean );
+  procedure SetFilterText( const AValue: string ); //~virtual;
+  function GetFilterOptions: TIB_FilterOptions;
+  procedure SetFilterOptions( AValue: TIB_FilterOptions ); //~virtual;
+  function GetIsEmpty: boolean;
+  procedure SetSelected( ARowNum: longint; AValue: boolean ); //~virtual;
+  function GetSelected( ARowNum: longint ): boolean; //~virtual;
+  procedure SetBookmarkSelected( const ABookmark: string;
+                                       AValue: boolean ); //~virtual;
+  function GetBookmarkSelected( const ABookmark: string ): boolean; //~virtual;
+  function GetOrderingRefinePos: smallint; //~virtual;
+  procedure SetOrderingRefinePos( AValue: smallint ); //~virtual;
+  function GetOrderingRefineStr: string; //~virtual;
+  procedure SetOrderingRefineStr( {const} AValue: string ); //~virtual;
+  function mkOrderingRefineStr( const AValue: string;
+                                      Desc: boolean ): string; //~virtual;
+  procedure SetFetchWholeRows( AValue: boolean ); //~virtual;
+  procedure SetCachedUpdates( AValue: boolean ); //~virtual;
+  procedure SetOnFilterRecord( AValue: TIB_FilterRecordEvent ); //~virtual;
+  procedure CheckCursorFields;
+  function CheckRowNum( var ARowNum: longint ): boolean;
+  function GetFound: boolean; //~virtual;
+  procedure SetFound( AValue: boolean ); //~virtual;
+{ New system methods }
+  procedure SysBeforeSearchedDML; //~virtual;
+  procedure SysDeallocateSeekCursors; //~virtual;
+  function SysGetCurrentCursor( CheckSynchro: boolean ): boolean; //~virtual;
+  function SysLookupKeyForBufferFields( ANodeRef: TIB_NodeRef ): boolean;
+  function SysIncSearch( AString: string;
+                         ACol: string;
+                         SeekNearest: boolean;
+                         PartialMatch: boolean ): boolean;
+  function LocateRecord( const AKeyFields: string;
+                         const AKeyValues: Variant;
+                               AOptions: TIB_LocateOptions;
+                               SyncCursor: boolean;
+                               ALocateNearest: boolean ): boolean;
+  function SysLocateRecord( const AKeyFields: string;
+                            const AKeyValues: Variant;
+                            const FAGen: integer;
+                                  AOptions: TIB_LocateOptions;
+                                  SyncCursor: boolean;
+                                  StartPos,
+                                  EndPos: longint ): longint;
+  procedure SysUpdateOperation(     Operation: TIB_DataOperation;
+                                    UpdateKind: TIB_UpdateKind;
+                                var UpdateAction: TIB_UpdateAction ); virtual;
+  procedure NodeApplyUpdate(     Sender: TObject;
+                                 ANode: PIB_Node;
+                                 UpdateKind: TIB_UpdateKind;
+                             var UpdateAction: TIB_UpdateAction );
+  procedure NodeCancelUpdate( Sender: TObject; ANode: PIB_Node );
+  function GotoBOF: boolean;
+  function GotoEOF: boolean;
+  procedure BufferGotoNULL; //~virtual;
+  function SeekKeyForBufferFields( var ANodeRef: TIB_NodeRef ): boolean;
+  
+public
+{Inherited Methods}
+  constructor Create( AOwner: TComponent ); override;
+  destructor Destroy; override;
+  procedure FreeSErverResources; override;
+{: Begin a bracketed operation on the FieldsXXXX properties for efficiency.}
+  procedure BeginLayout; override;
+{: End a bracketed operation on the FieldsXXXX properties for efficiency.}
+  procedure EndLayout; override;
+
+{Methods}
+
+{: Calculate the fields of the row indicated.}
+  function CheckRecordFilter( ARow: TIB_Row ): boolean; 
+{: This call will clear out the current incremental search criteria
+used in conjunction with the key-by-key behavior when calling the
+IncSearchKey() method.}
+  procedure ClearIncSearchString;
+{: Work in progress.}
+  procedure ApplyUpdates; dynamic;
+{: Work in progress.}
+  procedure CancelUpdates; dynamic;
+{: Work in progress.}
+  procedure CommitUpdates; dynamic;
+{: Change the record back to the state it was in when the edit or insert mode
+was started..}
+  procedure RevertRecord;
+{: Manually initiate the recalculation of calculated fields for the current
+row.}
+  procedure CalculateFields; override;
+{:}
+  procedure DefaultDMLCacheReceivedItem( const ADMLCacheItem: TIB_DMLCacheItem);
+                                                                       override;
+{: When True, this setting causes the query to be processed like the Delphi
+TQuery, to fetch whole rows instead of splitting the buffer to get the keys and
+then the individual rows as required.
+<br><br>
+Set FetchWholeRows to False if you have to deal with a very large dataset (both
+rows and cols) and the user wants to scroll around it at random and do refreshes,
+etc.  Because scrolling at random means calling Locate(), doing IncSearches,
+etc., a small key, such as a single-column integer, is desirable to make this
+perform effectively.
+<br><br>
+A query that is a child in a KeyLinks relationship is also a candidate for
+split buffering if it has a large number of rows.  This way, when the parent asks
+it to seek, it will only have to fetch keys to get to the desired record if it
+is not already in the buffer.
+<br><br>
+The down-side to this setting is that, with three cursors instead of one, the
+rows are not able to be batched up into a single network packet.  Instead, they
+come one at a time which could possibly end up being less efficient if,
+eventually, the whole dataset has to be fetched.
+<br><br>
+Normally, it is better to leave FetchWholeRows set to True so that IB can batch
+rows together in a packet for more efficient transmission across the wire.
+Arrange for the user to make use of the search mode, rather than scroll around.
+Entering search criteria is more accurate for locating target rows and offloads
+work to the server more efficiently.
+<br><br>
+The rule of thumb is this. If you expect to fetch more than one-third of the
+dataset, keep FetchWholeRows at the default setting of True.  Only set it to
+False if you have a small key and a wide row and will only be peeking at small
+slices of the dataset.
+<br><br>
+FetchWholeRows must be True when selecting from a stored procedure and will be
+ignored if set to False.}
+  property FetchWholeRows: boolean read FFetchWholeRows
+                                   write SetFetchWholeRows;
+{: This property indicates whether an incremental search is in progress.}
+  property IncSearchLevel: integer read FIncSearchLevel;
+{: Method to tell the dataset to position the record pointer away from any valid
+record.}
+  function GotoNULL: boolean;
+{: Used for processing key-by-key incremental searching.
+<br><br>
+Returns True if the criteria match up exactly with a row, False if not.}
+  function IncSearchKey( AKey: char;
+                         KeyByKey: boolean;
+                         AllowTimeout: boolean;
+                         SeekNearest: boolean ): boolean; //~virtual;
+{: Used to process a whole string to be searched for within the current data.}
+  function IncSearchString( AString: string;
+                            StartRowNum: longint;
+                            SeekNearest: boolean ): boolean; //~virtual;
+
+{: This keeps track of the timings during incremental searching so that the
+proper timeouts will be calculated for automatically clearing the incremental
+searching criteria.}
+  property IncSearchLastTick: DWORD read FIncSearchLastTick;
+
+
+{: For a dataset having calculated fields declared, this method will cause the
+entire dataset to be recalculated.
+<br><br>
+This is useful when a condition changes that requires a recalculation of all
+calculated fields for the whole dataset.}
+  procedure InvalidateCalculatedFields; //~virtual;
+{: This method will remove all of the individual record buffers for the Dataset
+and leave the key buffer intact.  The fetch-on-demand logic of this Dataset will
+cause any record buffers to be fetched from the server again as required, when
+they are subsequently referred to.}
+  procedure InvalidateRows; override;
+{: This method will invalidate a single row from the Dataset, causing it to be
+re-fetched from the server next time it is referred to.  This provides a very
+efficient method of reflecting back to the client any changes made in a
+server-side DML operation.}
+  procedure InvalidateRowNum( ARowNum: longint ); override;
+{: This method will invalidate a single row from the Dataset, causing it to be
+re-fetched from the server next time it is referred to.  This provides a very
+efficient method of reflecting back to the client any changes made in a
+server-side DML operation.}
+  function InvalidateBookmark( const ABookmark: string ): boolean; override;
+{: By default, the internal cursors are NOT invalidated when the main SQL is
+invalidated. Call this method in conjunction with InvalidateSQL so that
+the internal cursors will be reprepared the next time the Dataset is prepared.}
+  procedure InvalidateSQLWithCursors;
+{: Property which provides the most efficient way to tell whether the dataset is
+empty.<br><br>
+Don't try to use a SELECT COUNT(*) query or to read RecordCount to ascertain
+this condition!!}
+  property IsEmpty: boolean read GetIsEmpty;
+{: This property determines whether the KeyLinks should be defined automatically
+if none were provided by the developer.  A setting of True is not applicable if
+the dataset is providing data, for display purposes, to a parent dataset through
+KeySource and KeyLinks linkages.}
+  property KeyLinksAutoDefine default true;
+{: Same as in TDataset }
+  function Lookup( const AKeyFields: string;
+                   const AKeyValues: Variant;
+                   const AResultFields: string ): Variant;
+{: Same as in TDataset }
+  function Locate( const AKeyFields: string;
+                   const AKeyValues: Variant;
+                         AOptions: TIB_LocateOptions ): boolean;
+{: Method to toggle the dataset's rows Selected state.}
+  procedure ToggleSelected;
+{: Method to force the Selected state of all rows in the dataset to True or
+False.
+<br><br>
+IBO applies this method to all rows, whether they have so far been fetched into
+the dataset yet or not.}
+  procedure SelectAll( State: boolean );
+{: This method will populate a TStrings list with bookmarks of the selected
+records.}
+  procedure SelectedBookmarks( AStrings: TStrings );
+{: Gives control over a particular range of rows and their Selected status.}
+  procedure SelectRange( StartRow, EndRow: longint;
+                         State, Exclusive: boolean );
+
+{: System reference to the in-memory portion of the buffered dataset.}
+  property NodeList: TIB_NodeList read FNodeList;
+{: This method is used to verify whether all of the rows in the range specified
+are valid. If they are not, IBO will attempt to make them valid.}
+  function ValidateRows( Start, Finish: longint ): boolean; override;
+
+{ New Methods }
+
+{: This method will remove a record from the buffer in memory only.}
+  procedure DeleteBufferBookmark( ABookmark: string );
+{: This method will remove a row from the buffer in memory but not generate any
+SQL to delete it from the server. This provides a way to delete rows from memory
+that have been deleted from the server in another component. If the row was not
+deleted from the server, it will be returned into the dataset next time Refresh
+is called. }
+  procedure DeleteBufferRowNum( ARowNum: longint );
+{: W.I.P.
+<br><br>
+This method will manually add a row to the key buffer of the dataset, at the
+position of the BufferCursor in the NodeList underlying the dataset.
+<br><br>
+It is a direct hack into the in-memory table that represents the buffered
+dataset so use it with great care!
+<br><br>
+After Refresh is called, the added row will be removed if not on the server.}
+  procedure InsertBufferBookmark( ABookmark: string );
+{: This method is used to locate a record that currently exists in the
+buffer or if it would when all of the records for the Dataset were fetched
+from the server. If the record is not in the current buffer then a SELECT
+statement is put together according to the current valid Dataset and the
+search is performed on the server for this record. If it is not valid then
+false will be returned and if it is valid then that individual record is
+immediatly fetched and put into the buffer row. BufferRowNum will be -1 in
+this case. The contents of this row fetched are also put into the temporary
+buffer so that if its key is ever fetched from the server it will be
+associated properly. Then it would not have to be fetched again if accessed.
+<br><br>
+First, place the key values in KeyFields and then call this method. If the
+record is in the current buffer then it will be moved to it and true will be
+returned. Otherwise, false will be returned and the cursor position will
+become invalid. The means that BufferRowNum will reflect the row if it was
+found.}
+  function LookupKeyForBufferFields: boolean;
+{: This method is used to locate a record that currently exists in the
+Dataset or if it would when all of the records for the Dataset were fetched
+from the server. If the record is not in the current buffer then a SELECT
+statement is put together according to the current valid Dataset and the
+search is performed on the server for this record. If it is not valid then
+false will be returned and if it is valid then keys are selected from the
+server until the matching one is located sequentially. This happens very
+quickly when your key is very narrow. Plus you avoid having to fetch the bulk
+of the records like the BDE does in order to perform the search.
+<br><br>
+If false is returned then the RowNum was not changed from its current position.
+<br><br>
+If true is returned then the RowNum will be the newly selected row.
+<br><br>
+First, place the key values in KeyFields and then call this method. If the
+record is in the current buffer then it will be moved to it and true will be
+returned. Otherwise, false will be returned and the cursor position will
+become invalid. The means that BufferRowNum will reflect the row if it was
+found.}
+  function LookupKeyForFields: boolean;
+{: Since it is possible to interrupt operations when callbacks are enabled it
+is potentially useful to know if there is a lookup being interrupted. This
+property gives an indication if a lookup is underway or not.}
+  property KeyLookupCurLevel: integer read FKeyLookupCurLevel;
+{: This method causes the dataset to walk all the records of the primary and
+secondary buffers in order to recalculate their Filtered flag.
+<br><br>
+The OnFilterRecord event will be triggered for each row as a result of this
+call.}
+  procedure RefreshFilteredRows;
+{: This is used in debugging the internal dynamic memory structures that
+compose the buffering of the data.}
+  procedure TraceBufferNodes(       Ascending,
+                                    AllowDeleted,
+                                    AllowFiltered: boolean;
+                              const AStrings: TStrings );
+
+{ Properties }
+
+{: This returns the XML equivalent for the entire table.
+<br><br>
+It is not recommended to use this for large tables since they will all be
+buffered in memory. Use the TIB_Cursor and write a simple loop to output
+records and use the AsXML property of the TIB_Column.}
+  property AsXML: string read GetAsXML;
+{: The number of rows in the buffer that have been edited via CachedUpdates.}
+  property CachedEditCount: longint read GetCachedEditCount;
+{: The number of rows in the buffer that have been inserted via CachedUpdates.}
+  property CachedInsertCount: longint read GetCachedInsertCount;
+{: The number of rows in the buffer that have been deleted via
+CachedUpdates.}
+  property CachedDeleteCount: longint read GetCachedDeleteCount;
+{: VCL compatibility. It is now ready for use!}
+  property CachedUpdates: boolean read FCachedUpdates
+                                  write SetCachedUpdates
+                                  default false;
+{: This property determines whether records deleted via cached updates will
+remain visible in the buffer or will be filtered out.}
+  property FilterDeletedRecords: boolean read GetFilterDeletedRecords
+                                         write SetFilterDeletedRecords
+                                         default true;
+{: VCL compatibility.}
+  property Filtered: boolean read GetFiltered write SetFiltered default false;
+{: VCL compatibility.}
+  property Filter: string read FFilterText write SetFilterText;
+{: VCL compatibility.}
+  property FilterOptions: TIB_FilterOptions read GetFilterOptions
+                                            write SetFilterOptions
+                                            default [];
+{: Provides the ability to specify a particular PLAN when a dataset is prepared
+with Filtered=True. <br>Notes<br>
+1. While Filtered=True, any PLAN specified here will REPLACE any PLAN that was
+previously specified.
+<br>
+2. To have any effect, the FilterPlan property must be set before Filtered is
+set to True.}
+  property FilterPlan: string read FFilterPlan write FFilterPlan;
+{: VCL compatibility.}
+  function FindFirst: boolean;
+{: VCL compatibility.}
+  function FindLast: boolean;
+{: VCL compatibility.}
+  function FindNext: boolean;
+{: VCL compatibility.}
+  function FindPrior: boolean;
+{: VCL compatibility.}
+  function FindRecord( Restart, GoForward: boolean ): boolean; //~virtual;
+{: VCL compatibility.}
+  property Found: boolean read GetFound;
+{: The period of time a matching record will be sought, in milliseconds.
+<br><br>
+If searching is going on after this period expires it will stop at the row it
+has reached and sound a MessageBeep() to indicate that the search has terminated.
+<br><br>
+This property has no effect if a process is hung on the server because of a slow
+query or a failure of some sort.  It can only operate during a Callback.}
+  property IncSearchSeekInt: DWORD read FIncSearchSeekInt
+                                   write FIncSearchSeekInt
+                                   default 180000;
+{: The time in milliseconds that will elapse before a new search string is
+started when the user is entering in incremental key presses.
+<br><br>
+This takes effect when the IncSearchKey() method is called.}
+  property IncSearchKeyInt: DWORD read FIncSearchKeyInt
+                                  write FIncSearchKeyInt
+                                  default 3500;
+{: The character position (count of user-entered characters) at which the
+incremental search is to begin.
+<br><br>
+For tables of over 1,000 records a value of 1 may improve responsiveness.
+<br><br>
+For tables of 5,000 - 10,000 a value of 2 and for 50,000 above 4 or 5 may be
+appropriate.
+<br><br>
+It will depend most upon how your server is set up and the type of connection
+you are working with. If you are using a modem then a higher value may be best.
+<br><br>
+If set to 0 then no refinement will happen and all records will be brought to
+the client.}
+  property OrderingRefinePos: smallint read GetOrderingRefinePos
+                                       write SetOrderingRefinePos;
+{: This property stores the buffer that is used by the IncSearchString()
+method to perform incremental searching.
+<br><br>
+It directly correlates with the refinement criteria used to make incremental
+searching much more efficient with large Datasets.}
+  property OrderingRefineStr: string read GetOrderingRefineStr
+                                     write SetOrderingRefineStr;
+{: This is a hack that will suppress duplicate records which are returned from
+a query that is, for example, a self-join in a full text search using partial
+word matching criteria.
+<br><br>
+In order for it to work, set the KeyLinks to the distinct column(s) so that it
+will ignore any records fetched with that same bookmark.}
+  property SuppressDuplicates: boolean read FSuppressDupRecs
+                                       write FSuppressDupRecs;
+{: Access to the search string generated by the IncSearchKey() method.}
+  property IncSearchKeyString: string read FIncSearchKeyString;
+{: This is the SELECT list that is used to fetch the keys.}
+  property KeySQLSelect: string read FKeySQLSelect;
+{: Used internally to indicate whether the CursorFields is also serving as the
+KeyFields.}
+  property CursorIsKeyFields: boolean read FCursorIsKeyFields;
+{: This gives a raw pointer to the parent TDataset object that this instance is
+serving as an internal cursor to.
+<br>
+<br>
+This is useful in the case where you need to scan through all datasets for a
+connection and you would like to do so for all TDataset based datasets.
+<br>
+<br>
+To use this property, first check that it is not nil and, if is assigned, cast
+it as a TIBODataset() reference and operate on it.
+<br>
+<br>
+It is an untyped pointer, to avoid forcing the DB.PAS unit to be included in the
+native IBO suite of components.}
+  property IBODataset: pointer read FIBODataset;
+{: Redeclaration of property to better suit a buffered dataset.}
+  property PreparedEdits default true;
+{: The addition to the Dataset of scrolling and buffering capability at this
+level is going to change the default behavior for this property.}
+  property RefreshAction default raKeepRowNum;
+  property SearchedEdits default true;
+  property SearchedDeletes default true;
+{: Access multi-select information for the Dataset based on the RowNum.
+<br><br>
+Additional methods are planned, to provide easier ways to work with this feature,
+for example, SelectAll, DeselectAll, ToggleAll, DeleteSelected, etc.}
+  property Selected[ ARowNum: longint ]: boolean read GetSelected
+                                                 write SetSelected;
+{: Use a Bookmark to access multi-select information for the Dataset.
+<br><br>
+It will retrieve a value for rows in the storage buffer as well.
+<br><br>
+These are valid rows previously cached but not currently included in the active
+Dataset.}
+  property BookmarkSelected[ const ABookmark: string ]: boolean
+      read GetBookmarkSelected
+     write SetBookmarkSelected;
+{: Direct access to the row flags of the buffer row.}
+  property BufferRowFlags: TIB_RowFlagSet read GetBufferRowFlags;
+{: Direct access to the row flags of the current row.}
+  property RowFlags: TIB_RowFlagSet read GetRowFlags;
+{: This property helps maintain correct synchronization between the client
+buffer and the server.}
+  property BufferSynchroFlags: TIB_BufferSynchroFlagsSet
+      read FBufferSynchroFlags
+     write FBufferSynchroFlags;
+{: This property is redeclared in order to change its default behavior for
+buffered Datasets.
+<br><br>
+If it is necessary to change multiple parameters and you do not want it to
+refresh the Dataset for each one, use the BeginUpdate and EndUpdate() methods
+of the Params property in order to have all of the changes to it handled in a
+single event notification.}
+  property RefreshOnParamChange default true;
+{: This is a flag to determine whether cached updates are in the process of
+being applied to the server.}
+  property ProcessingUpdates: boolean read FProcessingUpdates;
+{: Implement a unidirectional cursor for a class is that is actually buffered.
+<br><br>
+If you want a unidirectional cursor it is better, if possible, to use the
+TIB_Cursor component and thus avoid the overhead of the buffering layer.}
+  property Unidirectional: boolean read GetUnidirectional
+                                   write SetUnidirectional
+                                   default false;
+{: This property tells which refinement zone is currently in use in the internal
+buffers for this dataset. Unless you have set up the OrderingLinks property to
+use horizontal refinement for navigating large datasets, this will always
+return the default rzTop.}
+  property RefineZone: TIB_RefineZone read FRefineZone;
+{: This event allows each individual record to be flagged as to whether it is
+currently within or outside the filtered set. It integrates fully with all of
+the other filtering and navigation mechanisms such as Filtered, FindFirst,
+FindNext, FindPrior, FindLast, Locate(), and so on.
+<br><br>
+New features in version 4 mean it is no longer necessary to refresh the rows
+from the server in order to re-evaluate the row's Filtered flag. The flag is
+now applied to all of the rows which remain in the buffers.  If the filtering
+criteria change, it is now sufficient to call only the RefreshFilteredRows
+method. It does not involve the server at all - it just recalculates all of
+the filtered flags of the rows in the buffers.
+<br><br>
+If this event is assigned it will be called for each record whether or not
+the Filtered property is true or false. In the future I may make it so that it
+won't call this event until Filtered is set to true.}
+  property OnFilterRecord: TIB_FilterRecordEvent read FOnFilterRecord
+                                                 write SetOnFilterRecord;
+{: This event provides notification when a multi-row selection is performed.}
+  property OnMultiSelect: TIB_DatasetEvent
+     read FOnMultiSelect
+    write FOnMultiSelect;
+{: This event provides notification of when a row's Selected status is
+changed.}
+  property OnRowSelectedChanged: TIB_RowSelectedChanged
+     read FOnRowSelectedChanged
+    write FOnRowSelectedChanged;
+{: VCL Compatibility.}
+  property OnUpdateError: TIB_UpdateErrorEvent read FOnUpdateError
+                                               write FOnUpdateError;
+{: VCL Compatibility.}
+  property OnUpdateRecord: TIB_UpdateRecordEvent read FOnUpdateRecord
+                                                 write FOnUpdateRecord;
+end; { TIB_BDataset }
+
+{                                                                              }
+{ TIB_Query                                                                    }
+{                                                                              }
+
+{: It is possible to process ANY InterBase DSQL statement using this component.
+<br><br>
+It is primarily a buffered scrollable Dataset that is ideal for
+browsing and providing a dataset for random scrolling.
+<br><br>
+This component also has many built-in features to do operations such as
+incremental searching, filtering, finding, etc.
+<br><br>
+The optional KeyLinks property is normally defined by the developer, to identify
+each row of the output uniquely.  If KeyLinks is undefined, an arbitrary, unique
+numerical value will be assigned to each row of output.
+<br><br>
+The KeyLinks entries are usually the columns from a primary or unique key;  or,
+where no suitable unique key is available, the DB_KEY record pointer can be used.
+Note, however, that using the DB_KEY renders the dataset incapable of inserting
+any new rows.
+<br><br>
+IMPORTANT: It is important to know that now every type of SQL statement can
+be used in this component. But, pay very close attention to what is going on
+in the IB_Monitor to see if it will give the dataset that you are expecting.
+<br><br>
+This biggest gotcha occurs if you place join criteria in the WHERE clause, i.e.
+when you use a statement containing implicit joins or, worse, mixing up the
+implicit and explicit join syntaxes.  IBO does not like this in the buffered
+query and problems could result.
+<br><br>
+You will NOT get the expected Dataset with FetchWholeRows False, because the
+IB_Query component's Dataset is defined by a special cursor deduced from the
+KeyLinks property. This special cursor for this statement would look like this:
+<br><br>
+SELECT TABLE.COL FROM TABLE
+<br><br>
+and then the scrolling cursors will look like this:
+<br><br>
+SELECT DISTINCT( COL ) FROM TABLE WHERE TABLE.COL=?BIND_COL
+<br><br>
+The scrolling cursors are designed to fetch a single row for each key that is
+fetched by the special cursor. The purpose is to optimize the buffering so that
+the whole rows are fetched only when needed.
+<br><br>
+If a user wants to see the last row of the Dataset, the internal cursor fetches
+just the key columns.  This is very quick, especially when the key is only four
+bytes wide.  When it gets that last key, it puts it into the input parameter
+of the scrolling cursor and fetches whole row buffer.  By this means, a series of
+very narrow fetches is performed instead of a whole succession of wide fetches.
+<br><br>
+SELECT statements that include JOINs can be used with this component as long as
+the JoinLinks (if applicable) and KeyLinks are properly defined.  Always keep in
+mind that it is essential for each row of the output to be uniquely identified
+by the KeyLinks and that the JoinLinks have to be applied to both the special
+cursor for keys and the scrolling cursors used to fetch the whole individual
+record buffers.  JoinLinks therefore plays an important part in ensuring that
+only individual rows are fetched by the scrolling cursors when you have implicit
+JOIN syntax.
+<br><br>
+For more information on its properties, methods and events see the TIB_Statement,
+TIB_Dataset, and TIB_BDataset classes.}
+TIB_Query = class(TIB_BDataset)
+{$I IBA_Statement.PBL }
+{$I IBA_Dataset.PBL }
+{$I IBA_BDataset.PBL }
+end;
+
+// IBA_Dataset.IMP
+// IBA_BDataset.IMP

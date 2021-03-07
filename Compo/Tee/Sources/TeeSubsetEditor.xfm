@@ -1,0 +1,57 @@
+inherited SubsetFuncEditor: TSubsetFuncEditor
+  Left = 271
+  Top = 197
+  ClientHeight = 152
+  ClientWidth = 177
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 8
+    Top = 56
+    Width = 25
+    Height = 13
+    Caption = '&Start:'
+    FocusControl = EStart
+  end
+  object Label2: TLabel
+    Left = 8
+    Top = 104
+    Width = 22
+    Height = 13
+    Caption = '&End:'
+    FocusControl = EEnd
+  end
+  object Label3: TLabel
+    Left = 8
+    Top = 5
+    Width = 35
+    Height = 13
+    Caption = '&Values:'
+    FocusControl = CBValues
+  end
+  object EStart: TEdit
+    Left = 8
+    Top = 74
+    Width = 121
+    Height = 21
+    TabOrder = 0
+    Text = '0'
+    OnChange = EStartChange
+  end
+  object EEnd: TEdit
+    Left = 8
+    Top = 122
+    Width = 121
+    Height = 21
+    TabOrder = 1
+    Text = '0'
+    OnChange = EEndChange
+  end
+  object CBValues: TComboFlat
+    Left = 8
+    Top = 21
+    Width = 145
+    TabOrder = 2
+    OnChange = CBValuesChange
+  end
+end

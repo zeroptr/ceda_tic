@@ -1,0 +1,24 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.02.5
+#------------------------------------------------------------------------------
+MAKE = make -$(MAKEFLAGS) -f$**
+DCC =dcc $<
+#------------------------------------------------------------------------------
+PROJECTS = bplTee8K3BCB.so bplTee8K3BCB.so bplTeeUI8K3BCB.so
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+bplTee8K3BCB.so: Tee8K3BCB.bpk
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$@.mak
+
+bplTee8K3BCB.so: Tee8K3BCB.bpk
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $@).mak
+
+bplTeeUI8K3BCB.so: TeeUI8K3BCB.bpk
+	$(ROOT)/bin/bpr2mak $<
+	make -$(MAKEFLAGS) -f$(basename $@).mak
+
+

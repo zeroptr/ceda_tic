@@ -1,0 +1,141 @@
+inherited AxisOpaqueZone: TAxisOpaqueZone
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'When using multiple axes and doing zoom or scroll,'
+      'series points can display outside the axes "zones" or limits.'
+      ''
+      'You can prevent this with a small code at Series '
+      'events: BeforeDrawValues and AfterDrawValues.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Visible = False
+    CustomAxes = <
+      item
+        Axis.Color = clLime
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 25.000000000000000000
+        EndPosition = 50.000000000000000000
+      end
+      item
+        Axis.Color = clBlue
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 50.000000000000000000
+        EndPosition = 75.000000000000000000
+      end
+      item
+        Axis.Color = clRed
+        Horizontal = False
+        OtherSide = False
+        StartPosition = 75.000000000000000000
+      end>
+    LeftAxis.EndPosition = 25.000000000000000000
+    View3D = False
+    object Series1: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clBlack
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 0
+      Marks.Visible = False
+      SeriesColor = clGreen
+      VertAxis = aCustomVertAxis
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomVertAxis = 0
+    end
+    object Series4: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clBlue
+      VertAxis = aCustomVertAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomVertAxis = 1
+    end
+    object Series3: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = False
+      VertAxis = aCustomVertAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      CustomVertAxis = 2
+    end
+    object ChartTool1: TColorLineTool
+      Style = clMinimum
+      Value = 74.000000000000000000
+      AxisID = 2
+    end
+    object ChartTool2: TColorLineTool
+      Style = clMinimum
+      AxisID = 5
+    end
+    object ChartTool3: TColorLineTool
+      Style = clMinimum
+      Value = 3.000000000000000000
+      AxisID = 6
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 149
+      Top = 13
+      Width = 29
+      Height = 13
+      Caption = '&Scroll:'
+      FocusControl = ScrollBar1
+    end
+    object CheckBox1: TCheckBox
+      Left = 20
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Opaque zones'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object ScrollBar1: TScrollBar
+      Left = 189
+      Top = 13
+      Width = 129
+      Height = 16
+
+      Position = 50
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+  end
+end

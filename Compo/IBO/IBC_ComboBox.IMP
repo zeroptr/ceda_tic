@@ -1,0 +1,525 @@
+// IBC_ComboBox.INT
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  20-Dec-2001                                                                 }
+{     Added GetAutoLabel interface routine to support change to                }
+{     IIB_GridWinControl                                                       }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  11-Oct-2001                                                                 }
+{     Improve support for csDropDown mode.                                     }
+{                                                                              }
+
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.IMP}
+{$UNDEF IB_AutoLabel}
+
+constructor TIB_CustomComboBox.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  {$IFDEF IBO_VCL30_OR_GREATER}
+  FAutoLabel := TIB_AutoLabel.Create( Self );
+  {$ENDIF}
+  inherited Create( AOwner );
+  ControlStyle := ControlStyle + [csReplicatable];
+  ControlStyle := ControlStyle - [csFramed];
+  DataLink.Control := Self;
+  DataLink.OnStateChanged := StateChanged;
+  DataLink.OnDataChange := DataChange;
+  DataLink.OnUpdateData := UpdateData;
+  FBorderStyle := bsSingle;
+end;
+
+destructor TIB_CustomComboBox.Destroy;
+begin
+  {$IFDEF IBO_VCL30_OR_GREATER}
+  FAutoLabel.Free;
+  FAutoLabel := nil;
+  {$ENDIF}
+  DataSource := nil;
+  with DataLink do
+  begin
+    Control := nil;
+    OnStateChanged := nil;
+    OnDataChange := nil;
+    OnUpdateData := nil;
+  end;
+  if Assigned( FItemValues ) then
+  begin
+    FItemValues.Free;
+    FItemValues := nil;
+  end;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomComboBox.Loaded;
+begin
+  inherited;
+  {$IFDEF IBO_VCL30_OR_GREATER}
+  RemakeAutoLabel;
+  {$ENDIF}
+end;
+
+procedure TIB_CustomComboBox.CreateParams(var Params: TCreateParams);
+const
+  BorderStyles: array[TBorderStyle] of Longint = (0, WS_BORDER);
+begin
+  inherited CreateParams(Params);
+{
+  if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
+  begin
+    Params.Style := Params.Style and not WS_BORDER;
+    Params.ExStyle := Params.ExStyle or WS_EX_CLIENTEDGE;
+  end
+  else
+}
+  Params.Style := longint(Params.Style) or longint(BorderStyles[FBorderStyle]);
+end;
+
+procedure TIB_CustomComboBox.Clear;
+begin
+  if Assigned( FItemValues ) then
+    FItemValues.Clear;
+  inherited Clear;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomComboBox.SysDataChange;
+var
+  tmpStr: string;
+begin
+  with DataLink do
+  begin
+    MaxLength := FieldMaxLength;
+    tmpStr := FieldText;
+    if Value <> tmpStr then
+      Value := tmpStr;
+  end;
+end;
+
+procedure TIB_CustomComboBox.SysStateChanged;
+begin
+  with DataLink do
+    if ColorScheme then
+      inherited Color := Color;
+  SetEditReadOnly;
+  UpdateTabStop;
+end;
+
+procedure TIB_CustomComboBox.SysUpdateData;
+begin
+  DataLink.FieldText := Value;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_CustomComboBox.GetValue: string;
+begin
+  if Style <> csDropDown then
+  begin
+    Result := '';
+    if ( ItemIndex >= 0 ) then
+    begin
+      if Assigned( FItemValues ) and ( ItemIndex < FItemValues.Count ) then
+        Result := FItemValues.Strings[ItemIndex]
+      else
+        Result := Text;
+    end;
+  end
+  else
+    Result := Text;
+end;
+
+procedure TIB_CustomComboBox.SetValue( const AValue: string );
+var
+  ii: Integer;
+begin
+  if Style <> csDropDown then
+  begin
+    if AValue = '' then
+    begin
+      SetItemIndex( -1 );
+      Exit;
+    end;
+    if Assigned( FItemValues ) and ( FItemValues.Count > 0 ) then
+      for ii := 0 to FItemValues.Count - 1 do
+        //NOTE// Use case-sensitive comparison here
+        if CompareStr( FItemValues.Strings[ii], AValue ) = 0 then
+        begin
+          if ii < Items.Count then
+          begin
+            SetItemIndex( ii );
+            Exit;
+          end;
+          Break;
+        end;
+  end;
+  SetComboText( AValue );
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_CustomComboBox.GetItemIndex: Integer;
+begin
+{$IFDEF IBO_VCL60_OR_GREATER}
+  Result := inherited GetItemIndex;
+{$ELSE}
+  Result := inherited ItemIndex;
+{$ENDIF}
+end;
+
+procedure TIB_CustomComboBox.SetItemIndex( const Value: Integer );
+var
+  Redraw: Boolean;
+begin
+{$IFDEF IBO_VCL60_OR_GREATER}
+  if inherited GetItemIndex <> Value then
+{$ELSE}
+  if inherited ItemIndex <> Value then
+{$ENDIF}
+  begin
+    Redraw := ( Style <> csSimple ) and HandleAllocated;
+    if Redraw then
+      SendMessage( Handle, WM_SETREDRAW, 0, 0 );
+    try
+{$IFDEF IBO_VCL60_OR_GREATER}
+      inherited SetItemIndex( Value );
+{$ELSE}
+      inherited ItemIndex := Value;
+{$ENDIF}
+    finally
+      if Redraw then
+      begin
+        SendMessage( Handle, WM_SETREDRAW, 1, 0 );
+        Invalidate;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomComboBox.SetComboText( const AValue: string );
+var
+  I: Integer;
+begin
+  if AValue <> GetComboText then
+  begin
+    if Style <> csDropDown then
+    begin
+      if AValue = '' then
+        I := -1
+      else
+        I := Items.IndexOf( AValue );
+      SetItemIndex( I );
+      if I >= 0 then
+        Exit;
+    end;
+    if ( Style in [csDropDown, csSimple] ) or
+       ( csDesigning in ComponentState ) then
+      Text := AValue;
+  end;
+end;
+
+function TIB_CustomComboBox.GetComboText: string;
+var
+  I: Integer;
+begin
+  if ( Style in [csDropDown, csSimple] ) or
+     ( csDesigning in ComponentState ) then
+    Result := Text
+  else
+  begin
+    I := ItemIndex;
+    if I < 0 then
+      Result := ''
+    else
+      Result := Items[ I ];
+  end;
+end;
+
+procedure TIB_CustomComboBox.Change;
+begin
+// **************** start change by Wassim Haddad 11-Aug-2001 **************
+  if not (DataLink.State=dssSearch) and not SearchAlways then begin
+         if ( not (Style = csDropDownList) or ( DataLink.FieldText <> Value ) )
+          and DataLink.Modify then
+    begin
+      DataLink.ControlIsModified := true;
+      if Style = csDropDownList then
+        DataLink.FieldText := Value;
+      inherited Change;
+      if Style <> csDropDownList then
+        DataLink.ControlIsModified := true;
+    end;
+  end else DataLink.FieldText:=Value;
+// **************** end change *********************************************
+end;
+
+procedure TIB_CustomComboBox.Click;
+begin
+  if DataLink.CanModify then
+    inherited Click;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomComboBox.CreateWnd;
+begin
+  inherited CreateWnd;
+  if not Focused then
+  begin
+    SysStateChanged;
+    SysDataChange( nil );
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if Key in [VK_BACK, VK_DELETE, VK_UP, VK_DOWN] then
+    if not DataLink.Modify and (Key in [VK_UP, VK_DOWN]) then
+      Key := 0;
+  if Key = VK_ESCAPE then
+  begin
+    if ( DataLink.State = dssSearch ) or SearchAlways then
+      DataLink.FieldText := ''
+    else
+      Field.Revert;
+  end;
+end;
+
+procedure TIB_CustomComboBox.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if (Key in [#32..#255]) and (DataLink.Field <> nil) and
+    not DataLink.Field.IsValidChar(Key) then
+  begin
+    MessageBeep(0);
+    Key := #0;
+  end;
+  case Key of
+    ^H, ^V, ^X, #32..#255:
+      DataLink.Modify;
+    #27:
+    begin
+      if DroppedDown and (not (Style = csSimple)) then
+        DroppedDown := False
+      else
+      begin
+        SysDataChange( nil );
+        SelectAll;
+      end;
+      Key := #0;
+    end;
+  end;
+end;
+
+procedure TIB_CustomComboBox.SetEditReadOnly;
+begin
+  if (Style in [ csDropDown, csSimple ]) and HandleAllocated then
+    SendMessage( EditHandle, EM_SETREADONLY, Ord( not DataLink.Editing ), 0 );
+end;
+
+procedure TIB_CustomComboBox.WndProc(var Message: TMessage);
+begin
+
+  if not (csDesigning in ComponentState) then
+  if not (csDestroying in ComponentState) then
+    case Message.Msg of
+      WM_COMMAND:
+        if TWMCommand( Message ).NotifyCode = CBN_SELCHANGE then
+// ********* start change by Wassim Haddad 11-Aug-2001 *********
+          if not DataLink.CanModify then      // not DataLink.Modify
+// ********* end change ****************************************
+          begin
+            if Style <> csSimple then
+              PostMessage(Handle, CB_SHOWDROPDOWN, 0, 0);
+            Exit;
+          end;
+      CB_SHOWDROPDOWN: begin
+        if Message.WParam <> 0 then
+// ********* start change by Wassim Haddad 11-Aug-2001 *********
+//          DataLink.Modify
+// ********* end change ****************************************
+        else
+        if not DataLink.Editing then
+          SysDataChange( nil ); //Restore text
+      end;
+    end;
+
+  inherited WndProc( Message );
+end;
+
+procedure TIB_CustomComboBox.ComboWndProc( var Message: TMessage;
+  ComboWnd: HWnd; ComboProc: Pointer );
+begin
+  if not ( csDesigning in ComponentState ) then
+    case Message.Msg of
+      WM_LBUTTONDOWN:
+        if ( Style = csSimple ) and ( ComboWnd <> EditHandle ) then
+// ********* start change by Wassim Haddad 11-Aug-2001 *********
+          if not DataLink.CanModify then      //if not DataLink.Modify then
+// ********* end change ****************************************
+              Exit;
+    end;
+  inherited ComboWndProc( Message, ComboWnd, ComboProc );
+end;
+
+procedure TIB_CustomComboBox.CMEnter( var Message: TCMEnter );
+begin
+  inherited;
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomComboBox.CMExit( var Message: TCMExit );
+begin
+  try
+    DataLink.UpdateData;
+  except
+    SelectAll;
+    SetFocus;
+    raise;
+  end;
+  inherited;
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomComboBox.SetItems( const AValue: TStrings );
+begin
+  Items.Assign( AValue );
+  SysDataChange( nil );
+end;
+
+function TIB_CustomComboBox.GetItemValues: TStrings;
+begin
+  if not Assigned( FItemValues ) then
+    FItemValues := TIB_StringList.Create;
+  Result := FItemValues;
+end;
+
+procedure TIB_CustomComboBox.SetItemValues(AValue: TStrings);
+begin
+  if not Assigned( FItemValues ) then
+    FItemValues := TIB_StringList.Create;
+  FItemValues.Assign( AValue );
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomComboBox.BoundsChanged;
+begin
+  // ComboBoxes are a bit weird - in that their sizing is contrainted.
+  // so all we do is repaint to see what happened.
+  Repaint;
+end;
+
+// IIB_GridWinControl interface functions
+
+function TIB_CustomComboBox.IBG_DisplayColumn: TObject;
+begin
+  Result := Field;
+end;
+
+function TIB_CustomComboBox.IBG_GetText: string;
+begin
+  // GetText is supposed to return the untranslated value of the field
+  if Assigned( Field ) then
+  begin
+    Result := Field.DisplayText;
+    // If the style restricts to the list then only return a value if
+    // we find the it in the list...
+    if (Style = csDropDownList) then
+    begin
+      if ItemValues.Count > 0 then
+      begin
+        if ItemValues.IndexOf( Field.DisplayText ) < 0 then
+          Result := '';
+      end
+      else
+      begin
+        if Items.IndexOf( Field.DisplayText ) < 0 then
+          Result := '';
+      end;
+    end;
+  end
+  else
+    Result := '';
+end;
+
+function TIB_CustomComboBox.IBG_TranslateText(AVal: string): string;
+var
+  tmpIndex: integer;
+begin
+  // Result := Items.Strings[ ItemValues.IndexOf( AVal ) ];
+  Result := AVal;
+  // With csDropDown style any value is acceptable and so
+  // ItemValues is ignored and no translation performed.
+  if Style = csDropDownList then
+  begin
+    // let blank values pass straight through
+    if Length(AVal) > 0 then
+    begin
+      // if separate itemvalues provided ensure given
+      // value exists in that list.
+      if ItemValues.Count > 0 then
+      begin
+        // If given value not found in ItemValues then
+        // return blank, otherwise return corresponding
+        // display value from Items list.
+        tmpIndex := ItemValues.IndexOf( AVal );
+        if tmpIndex >= 0 then
+          Result := Items.Strings[ tmpIndex ]
+        else
+          Result := '';
+      end
+      else  // if no separate ItemValues defined
+      begin
+        // If given value not found in Items list then
+        // return blank.  Otherwise the item will be
+        // returned directly (already assigned to result)
+        tmpIndex := Items.IndexOf( AVal );
+        if tmpIndex < 0 then
+          Result := '';
+      end;
+    end;
+  end;
+end;
+
+function TIB_CustomComboBox.IBG_HasActiveChild: boolean;
+begin
+  Result := DroppedDown;
+end;
+
+procedure TIB_CustomComboBox.IBG_SetBorderStyle( AVal: TBorderStyle );
+begin
+  BorderStyle := AVal;
+end;
+
+function TIB_CustomComboBox.IBG_GetFont: TFont;
+begin
+  Result := Font;
+end;
+
+procedure TIB_CustomComboBox.IBG_SetFont( const AFont: TFont );
+begin
+  Font.Assign( AFont );
+end;
+
+procedure TIB_CustomComboBox.IBG_SetColor( AColor: TColor );
+begin
+  Color := AColor;
+end;
+
+procedure TIB_CustomComboBox.IBG_SetVisible( AVal: boolean );
+begin
+  Visible := AVal;
+end;
+
+function TIB_CustomComboBox.IBG_GetAutoLabel: TObject;
+begin
+  Result := FAutoLabel;
+end;
+

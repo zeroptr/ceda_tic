@@ -1,0 +1,82 @@
+Steema Software SL
+Rebuilding Borland's Decision Cube packages in C++ Builder 6.
+-------------------------------------------------------------
+
+When TeeChart Pro is installed in C++ Builder, the Decision
+Cube packages are automatically disabled because TeeChart
+Pro 5 packages are different to the ones included by 
+default in C++ Builder.
+
+C++ Builder Enterprise includes source code files for 
+the Decision Cube components, so it's possible to recompile 
+the Decision Cube packages using TeeChart Pro following these steps:
+
+Instructions to recompile:
+
+1. Download and install TeeChart Pro for C++ Builder.
+   (Available at www.steema.com, Customer Downloads)
+
+2. Select "Components->Install packages" in C++ Builder, and remove
+   "Borland Decision Cube components" with the "Remove button.
+
+3. Manually remove all compiled Decision Cube files from C++ Builder \Lib\ ,
+   \Lib\Obj , \Include\vcl\ and windows \System\ (or \System32\) directories.
+
+4. Locate the Decision Cube source code. It should be in the CBuilder
+   \Source\Decision Cube directory.
+
+5. Since C++ Builder Decision Cube source code does not include 
+   *.bpk (packages) files, you'll have to manually build dss60.bpk and
+   dcldss60.bpk packages.
+
+   dss60.bpk package:
+
+   + Create new package : "File->New->Package"
+   + Save new package as dss60.bpk : "File->SaveAs"
+   + Add the following files to "Contains" section : mxarrays.pas, 
+     mxbutton.pas, mxcommon.pas, mxConsts.pas, mxDB.pas, mxDCube.pas, 
+     mxdsql.pas, mxgraph,pas, mxgrid.pas, mxpbar.pas, mxpivsrc.pas, 
+     mxqedcom.pas, mxparse.pas, mxstore.pas, mxtables.pas
+   + Add the following files to "Requires" section : Tee7C6.bpi,
+     vcl60.bpi, dbrtl60.bpi bdertl60.bpi, vcldb60.bpi
+   + Save package
+   
+   dcldss60.bpk package:
+
+   + Create new package : "File->New->Package"
+   + Save new package as dcldss60.bpk : "File->SaveAs"
+   + Add the following files to "Contains" section : mxdconts.pas,
+     mxdimedt.pas, mxdssqry.pas, mxreg.pas
+   + Edit mxreg.pas file : replace ChartReg with TeeChartReg (Uses section).
+     Save mxreg.pas file.
+   + Add the following files to "Requires" section : dss60.bpi,
+     dcltee7c6.bpi
+   + Go to "Project->Option Source" menu item. Locate <PFLAGS value= section.
+     Add -luVCL60 to PFlags section:
+     <PFLAGS value="-$YD -$W -$O- -v -JPHNE -M -luVCL60"/>
+   + Save package
+
+
+6. Recompile dss60.bpk packages.If you get a complaint about 
+   "always built package with the newer built...", then click on "Options" 
+   speed button and change: "Build control" to "Rebuild as needed", and 
+   recompile.
+
+7. Copy the new DSS60.bpl to Windows \System directory. Copy all 
+   newly compiled *.bpi, *.lib, to \Lib\ , *.dcu *.obj to \Lib\Obj and *.hpp 
+   files to the CBuilder \include\vcl directory. 
+
+8. Copy the newly recompiled DclDSS60.bpl to C++Builder \Bin directory, 
+   newly compiled *.bpi, *.lib, to \Lib\ , *.dcu *.obj to \Lib\Obj and *.hpp 
+   files to the C++Builder \include\vcl directory.
+
+9. Select "Component->Install packages" menu and click the "Add" button.
+   Then select the new DclDSS60.bpl package, located in 
+   C++Builder \Bin directory.
+
+-------------------------------------------------------------
+
+NOTE : 
+
+  When you recompile Decision Cube files it's very important C++ Builder
+  is no longer referencing any old Decision Cube compiled files !

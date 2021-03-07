@@ -1,0 +1,39 @@
+inherited AreaTreatNulls: TAreaTreatNulls
+  Left = 403
+  Top = 248
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Splitter1: TSplitter
+    Left = 381
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Null (empty) points in Area series can be displayed or ignored, ' +
+        'and when displayed they can '
+      'be drawn in two modes (DontPaint and Skip)'
+      ''
+      'Series1.TreatNulls := tnSkip'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 381
+  end
+  inherited Panel1: TPanel
+    inherited Label1: TLabel
+      Left = 278
+      Width = 62
+      Caption = 'Point #3,   Y:'
+    end
+    inherited RadioGroup1: TRadioGroup
+      Left = 7
+    end
+    inherited Edit1: TEdit
+      Left = 341
+    end
+  end
+  inherited ChartGrid1: TChartGrid
+    Left = 384
+    Width = 256
+  end
+end

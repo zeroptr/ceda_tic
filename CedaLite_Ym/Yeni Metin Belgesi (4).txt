@@ -1,0 +1,11 @@
+update dekont set tipi='B' where tipi is null
+
+
+
+update fatura_d
+set SEFER_BEKLEME =0 where SEFER_BEKLEME is null;
+
+update fatura_d
+set SEFER_BEKLEME =
+(Select urunhar.SEFER_BEKLEME from urunhar where urunhar.urunhar_id=fatura_d.urunhar_id )
+where not (Select FIRST 1 urunhar.SEFER_BEKLEME from urunhar where urunhar.urunhar_id=fatura_d.urunhar_id ) is null

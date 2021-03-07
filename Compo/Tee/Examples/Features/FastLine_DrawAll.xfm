@@ -1,0 +1,70 @@
+inherited FastLineDrawAll: TFastLineDrawAll
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Fast-Line series below is displaying One Million points ( 10' +
+        '00000 ) !'
+      
+        'To speed up display, a new property ( DrawAllPoints ) only draws' +
+        ' line'
+      
+        'segments between points that are not placed at the same "X" pixe' +
+        'l position.'
+      ''
+      'Series1.DrawAllPoints := False ;')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'One million points !'
+      'Displaying non-repeated X position only.')
+    View3D = False
+    Zoom.Animated = True
+    Zoom.AnimatedSteps = 3
+    Zoom.Brush.Color = clBlue
+    Zoom.Brush.Style = bsSolid
+    Zoom.Pen.Color = clRed
+    Zoom.Pen.Width = 3
+    object Series1: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 8
+      Top = 16
+      Width = 28
+      Height = 13
+      Caption = '&Draw:'
+      FocusControl = RadioButton1
+    end
+    object RadioButton1: TRadioButton
+      Left = 48
+      Top = 15
+      Width = 129
+      Height = 17
+      Caption = '&All points (one million)'
+      TabOrder = 0
+      OnClick = RadioButton1Click
+    end
+    object RadioButton2: TRadioButton
+      Left = 192
+      Top = 15
+      Width = 129
+      Height = 17
+      Caption = 'Non-repeated X only'
+      Checked = True
+      TabOrder = 1
+      TabStop = True
+      OnClick = RadioButton2Click
+    end
+  end
+end

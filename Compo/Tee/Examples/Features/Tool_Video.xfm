@@ -1,0 +1,139 @@
+inherited VideoToolForm: TVideoToolForm
+  Left = 507
+  Top = 267
+  VertScrollBar.Range = 0
+  AutoScroll = False
+  ClientHeight = 534
+  ClientWidth = 602
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 602
+  end
+  inherited Memo1: TMemo
+    Width = 602
+    Lines.Strings = (
+      
+        'TVideoTool creates a standard Windows AVI video file with frames' +
+        ' that correspond'
+      'to each time a Chart is displayed.'
+      ''
+      
+        'You can combine for example a video tool together with a rotatio' +
+        'n animation '
+      '(or a TSeriesAnimate tool) to create videos showing live charts.'
+      ''
+      
+        'Videos can also be created with animated realtime charts or any ' +
+        'other kind'
+      'of multiple chart display.')
+  end
+  inherited Chart1: TChart
+    Width = 449
+    Height = 269
+    BackWall.Pen.Visible = False
+    BackWall.Size = 10
+    BackWall.Transparency = 30
+    BackWall.Transparent = False
+    BottomWall.Pen.Visible = False
+    BottomWall.Size = 10
+    Gradient.Balance = 63
+    Gradient.Direction = gdDiagonalDown
+    Gradient.EndColor = clBlack
+    Gradient.MidColor = 9868950
+    Gradient.SubGradient.EndColor = 44631
+    Gradient.Visible = True
+    LeftWall.Pen.Visible = False
+    LeftWall.Size = 10
+    LeftWall.Transparency = 30
+    Legend.Visible = False
+    RightWall.Size = 10
+    Title.Visible = False
+    BottomAxis.Grid.SmallDots = True
+    Frame.Visible = False
+    LeftAxis.Grid.SmallDots = True
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 178
+    View3DOptions.VertOffset = -18
+    View3DOptions.Zoom = 75
+    Align = alNone
+    TabOrder = 2
+    object Series1: TTriSurfaceSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Border.Color = clWhite
+      PaletteStyle = psCustom
+      UseColorRange = False
+      UsePalette = True
+      Transparency = 30
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+      CustomPalette = {
+        2000000038748CE0E35FF73FFF996600866DC8B3F868F93FFF666600D5660487
+        0D72FB3F99CCFF002360405A227BFD3FFF00800072597C2D3784FF3FCCCC9900
+        60295C00A6C600409966CC000726FA6930CB0140CC666600AE2298D3BACF0240
+        FFCC9900561F363D45D403409966FF00FD1BD4A6CFD80440CCCCCC00A4187210
+        5ADD054066FFCC004B15107AE4E106406699FF00F211AEE36EE6074099669900
+        990E4C4DF9EA0840CCCCFF00410BEAB683EF0940FF996600E80788200EF40A40
+        FF6666008F04268A98F80B4099CCFF003601C4F322FD0C408000FF00DDFD615D
+        AD010E40CCCC990085FAFFC637060F409966CC0096FB4E1861051040CC666600
+        E9F91D4DA6871040FFCC99003DF8EC81EB0911409966FF0091F6BBB6308C1140
+        CCCCCC00E4F48AEB750E124066FFCC0038F35920BB9012406699FF008BF12855
+        0013134099669900DFEFF78945951340CCCCFF0033EEC6BE8A171440FF996600
+        86EC95F3CF991440FF666600DAEA6428151C154099CCFF002DE9335D5A9E1540
+        FF55AA00}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 602
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 271
+      Top = 14
+      Width = 50
+      Height = 13
+      Caption = '&File Name:'
+      FocusControl = Edit1
+    end
+    object bStart: TButton
+      Left = 8
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = '&Start recordering...'
+      TabOrder = 0
+      OnClick = bStartClick
+    end
+    object bStop: TButton
+      Left = 136
+      Top = 8
+      Width = 113
+      Height = 25
+      Caption = 'S&top recordering...'
+      TabOrder = 1
+      OnClick = bStopClick
+    end
+    object Edit1: TEdit
+      Left = 328
+      Top = 11
+      Width = 137
+      Height = 21
+      TabOrder = 2
+      Text = 'test.avi'
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 16
+    Top = 132
+  end
+end

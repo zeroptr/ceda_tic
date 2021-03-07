@@ -1,0 +1,37 @@
+inherited ChartListBoxEditor: TChartListBoxEditor
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Pressing F2 or calling a method is possible to edit the ChartLis' +
+        'tBox text'
+      'of the selected Series.'
+      ''
+      
+        'Press F2 or click "Editor" checkbox. To hide the editor, press F' +
+        '2, Escape,'
+      'Enter or arrows keys or click anywhere in the list.')
+  end
+  inherited Chart1: TChart
+    Left = 161
+    Width = 318
+  end
+  inherited Panel1: TPanel
+    inherited RadioGroup1: TRadioGroup
+      Visible = False
+    end
+    object CBEditor: TCheckBox
+      Left = 216
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Editor'
+      TabOrder = 1
+      OnClick = CBEditorClick
+    end
+  end
+  inherited ChartListBox1: TChartListBox
+    Width = 161
+  end
+end

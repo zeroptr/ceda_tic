@@ -1,0 +1,147 @@
+inherited PolarRadarTransp: TPolarRadarTransp
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 90
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'Polar and Radar series have now Transparency (percent from 0 to ' +
+        '100).'
+      ''
+      'Series1.Transparency := 40 ;')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 92
+    Height = 245
+    Title.Text.Strings = (
+      'Transparency in Polar Series')
+    BottomAxis.Increment = 10.000000000000000000
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    TabOrder = 0
+    object Series1: TPolarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clBlack
+      Circled = True
+      AngleIncrement = 10.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clRed
+      Brush.Style = bsBDiagonal
+      Pointer.Brush.Color = clWhite
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      Transparency = 30
+    end
+    object Series2: TPolarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clBlue
+      Circled = True
+      AngleIncrement = 10.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Brush.Style = bsCross
+      Pen.Color = clBlue
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      Transparency = 30
+    end
+    object Series3: TPolarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SeriesColor = clFuchsia
+      Circled = True
+      AngleIncrement = 10.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clYellow
+      Brush.Style = bsFDiagonal
+      Pen.Color = clFuchsia
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      Transparency = 30
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    object Label1: TLabel
+      Left = 13
+      Top = 11
+      Width = 68
+      Height = 13
+      Caption = '&Transparency:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 104
+      Top = 8
+      Width = 41
+      Height = 21
+      TabOrder = 0
+      Text = '30'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 145
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Increment = 5
+      Position = 30
+      TabOrder = 1
+    end
+    object Edit2: TEdit
+      Left = 176
+      Top = 8
+      Width = 41
+      Height = 21
+      TabOrder = 2
+      Text = '30'
+      OnChange = Edit2Change
+    end
+    object UpDown2: TUpDown
+      Left = 217
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Increment = 5
+      Position = 30
+      TabOrder = 3
+    end
+    object Edit3: TEdit
+      Left = 248
+      Top = 8
+      Width = 41
+      Height = 21
+      TabOrder = 4
+      Text = '30'
+      OnChange = Edit3Change
+    end
+    object UpDown3: TUpDown
+      Left = 289
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit3
+      Increment = 5
+      Position = 30
+      TabOrder = 5
+    end
+  end
+end

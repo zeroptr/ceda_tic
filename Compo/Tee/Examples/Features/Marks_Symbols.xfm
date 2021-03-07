@@ -1,0 +1,52 @@
+inherited MarkSymbols: TMarkSymbols
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Series marks can display symbols next to each mark.'
+      ''
+      'Series1.Marks.Symbols.Visible := True ;'
+      ''
+      'The symbol color is the same as the chart legend.')
+  end
+  inherited Chart1: TChart
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Symbol.Shadow.HorizSize = 1
+      Marks.Symbol.Shadow.Smooth = False
+      Marks.Symbol.Shadow.VertSize = 1
+      Marks.Symbol.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 121
+      Height = 17
+      Caption = '&View Symbols'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 144
+      Top = 8
+      Width = 137
+      Height = 25
+      Caption = '&Edit Symbols...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

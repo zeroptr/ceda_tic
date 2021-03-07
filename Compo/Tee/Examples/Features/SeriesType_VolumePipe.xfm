@@ -1,0 +1,62 @@
+inherited SeriesTypeVolumePipe: TSeriesTypeVolumePipe
+  Height = 399
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The VolumePipe Series represents values by the front-plane area ' +
+        'associated with each point. '
+      
+        'The Cone taper may be adjusted for the Series that will affect t' +
+        'he relative width of point areas so that values nearer the tip o' +
+        'f the Cone take up '
+      'more width relative to those further from the tip.')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Height = 216
+    Gradient.Balance = 55
+    Gradient.Direction = gdBottomTop
+    Gradient.EndColor = clNavy
+    Gradient.MidColor = 16744576
+    Gradient.StartColor = 16777088
+    Gradient.Visible = True
+    Title.Visible = False
+    LeftAxis.Visible = False
+    TabOrder = 0
+    ColorPaletteIndex = 10
+    object Series1: TVolumePipeSeries
+      Brush.Color = clNone
+      Gradient.EndColor = 8653042
+      Gradient.MidColor = clWhite
+      Gradient.StartColor = 8653042
+      Gradient.Visible = True
+      LinesPen.Style = psDot
+      LinesPen.Width = 3
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Style = smsPercent
+      Marks.Transparent = True
+      Marks.Visible = True
+      Pen.Visible = False
+      Data = {
+        060500000000000000008061408000FF0004436172730000000000E088400000
+        00200650686F6E65730000000000107E4000000020065461626C657300000000
+        0000614000000020084D6F6E69746F7273000000000020874000000020054C61
+        6D7073}
+    end
+  end
+  inherited Panel1: TPanel
+    object bEdit: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = bEditClick
+    end
+  end
+end

@@ -1,0 +1,43 @@
+inherited BarJoinForm: TBarJoinForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 58
+    Lines.Strings = (
+      
+        'Bar Join series draws a line between each bar point, at the top ' +
+        'position.'
+      ''
+      'The JoinPen property controls the pen used to draw the lines.')
+  end
+  inherited Chart1: TChart
+    Top = 99
+    Height = 238
+    Title.Visible = False
+    View3D = False
+    object Series1: TBarJoinSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      JoinPen.Color = clBlue
+      JoinPen.Width = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 58
+    object ButtonPen1: TButtonPen
+      Left = 16
+      Top = 8
+      Caption = '&Join...'
+      TabOrder = 0
+    end
+  end
+end

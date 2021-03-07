@@ -1,0 +1,71 @@
+inherited LegendItemsForm: TLegendItemsForm
+  Height = 411
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Chart Legend stores all values in a Items[]  array property.'
+      ''
+      '  Chart1.Legend.Item[5].Text:='#39'Hello'#39';')
+  end
+  inherited Chart1: TChart
+    Height = 228
+    Title.Visible = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    ColorPaletteIndex = 10
+    object Series1: TPieSeries
+      Marks.Arrow.Color = clBlack
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieMarks.VertCenter = True
+      PiePen.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 15
+      Top = 12
+      Width = 65
+      Height = 13
+      Caption = '&Legend Item :'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 85
+      Top = 9
+      Width = 36
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 118
+      Top = 9
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Max = 7
+      TabOrder = 1
+    end
+    object Edit2: TEdit
+      Left = 152
+      Top = 9
+      Width = 121
+      Height = 21
+      TabOrder = 2
+      Text = 'Edit2'
+      OnChange = Edit2Change
+    end
+  end
+end

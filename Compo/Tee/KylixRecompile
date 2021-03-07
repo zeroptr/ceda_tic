@@ -1,0 +1,129 @@
+#!/bin/sh
+#******************************************************
+#   TeeChart V7 recompile script
+#   Copyright (c) 2004 by Martin Kaul (mkaul@leuze.de)
+#******************************************************
+
+# find kylix3 installation path
+KYLIX3_START_APP=`whereis startkylix | awk '{ print $2 }'`
+if [ "$KYLIX3_START_APP" == "" ]; 
+then
+  echo "Cannot locate Kylix3 installation path."
+  echo -n "Please enter it manualy: "
+  read KYLIX3_PATH
+  KYLIX3_PATH_BIN=$KYLIX3_PATH/bin
+  if [ ! -f $KYLIX3_PATH_BIN/kylixpath ];
+  then
+    echo "The given path \""$KYLIX3_PATH"\" is not correct - exit"
+    exit
+  fi
+else
+  KYLIX3_START_PATH=`cat $KYLIX3_START_APP | grep kylix3 | awk '{ print $1 }'`
+  KYLIX3_PATH_BIN=`dirname $KYLIX3_START_PATH`
+  KYLIX3_PATH=`dirname $KYLIX3_PATH_BIN`
+fi
+
+echo
+echo "Found Kylix3 in "$KYLIX3_PATH
+echo -n "Should I continue with recompile? (y/n): "
+read response
+case $response in
+	y|Y|yes|Yes|YES )
+	  ;;
+	* )
+	  echo "abort...";
+	  exit
+	  ;;
+esac
+
+# include settings of script kylixpath
+source $KYLIX3_PATH_BIN/kylixpath >/dev/null
+
+#remove previous compiled files
+rm -rf *.so *.dpu *.dcp *.dcu *.o *.hpp *.a *.bpi
+rm -rf ./Compiled/Kylix3
+
+#start compilation
+echo === compile TeeChart for Kylix3 =============
+make -f Tee7K3.bpg
+
+#create static libraries
+echo === create static libraries === =============
+ln -s $KYLIX3_PATH /tmp/kylix3
+make -f Tee7K3Static.bpg
+ls *.a | awk '{ print "basename "$0" .a" }'| sh | awk '{ print "cp "$0".a "$0".bpi" }' | sh
+
+#move created files to directory "Compiled/Kylix3"
+mkdir -p ./Compiled/Kylix3/Bin
+mkdir -p ./Compiled/Kylix3/Lib
+
+mv *.so  ./Compiled/Kylix3/Bin
+mv *.dcp ./Compiled/Kylix3/Lib
+mv *.dpu ./Compiled/Kylix3/Lib
+cp *.res ./Compiled/Kylix3/Lib
+cp *.xfm ./Compiled/Kylix3/Lib
+mv *.a   ./Compiled/Kylix3/Lib
+mv *.bpi ./Compiled/Kylix3/Lib
+
+# detect all used pas-files
+DELPHI_PROJECTFILES=`find . -name '*.dpu' | awk '{ print "basename "$0" dpu" }' | sh | awk '{ print $0"dpk"}'`
+PASCALFILES=`cat $DELPHI_PROJECTFILES | grep ".pas" | awk '{print $1".pas"}' | sort `
+
+#create all headerfiles
+echo === create headerfiles =====================
+for file in $PASCALFILES ; do
+	echo -n --- create headerfile `basename $file pas`hpp
+	dcc -Q -$$$$YD -$$$$W -$$$$O- -$$$$A8 -v -JPHNE -M -U. -DCLX -LUdesignide --BCB $file >/dev/null ;
+	if [ -f `basename $file pas`hpp ] ; then echo "  --> ok"; else echo "  --> FAILED"; fi
+	mv `basename $file pas`hpp ./Compiled/Kylix3/Lib
+	mv `basename $file pas`o   ./Compiled/Kylix3/Lib
+	rm -f `basename $file pas`dcu
+done
+
+#remove temporary files
+rm -rf *.so *.dpu *.dcp *.dcu *.o *.hpp *.a *.bpi
+rm /tmp/kylix3
+
+# print todo hints
+echo 
+echo
+echo "--------------------------------------------------------------------------------"
+echo "| make the following steps to install the compiled TeeChart "
+echo "| components. "
+echo "|"
+echo "| 1.) as user root copy the TeeChart dynamic libraries from"
+echo "|     ./Compiled/Kylix3/Bin to "$KYLIX3_PATH"/bin and from"
+echo "|     ./Compiled/Kylix3/Lib to "$KYLIX3_PATH"/lib"
+echo "|"
+echo "|     example: \"sudo cp -fv ./Compiled/Kylix3/Bin/*.so "$KYLIX3_PATH/bin\"
+echo "|              \"sudo cp -fv ./Compiled/Kylix3/Lib/*.dcp "$KYLIX3_PATH/lib\"
+echo "|"
+echo "|              (\"sudo\" asks eventualy for the root password)"
+echo "|"
+echo "| 2.) Install TeeChart inside the Kylix3 C++ IDE"
+echo "|"
+echo "|     - start the Kylix C++ IDE using \"startbcb\""
+echo "|     - open the Dialog at \"/Component/Install Packages\" and"
+echo "|       press the Button \"Add\""
+echo "|"
+echo "|       install the following packages:"
+echo "|"
+echo "|         "$KYLIX3_PATH"/bin/dclTee7K3.so"
+echo "|         "$KYLIX3_PATH"/bin/dclTeePro7K3.so"
+echo "|         "$KYLIX3_PATH"/bin/bplTeeImage7K3.so"
+echo "|"
+echo "| 3.) Add the path \"`pwd`/Compiled/Kylix3/Lib\" to the Include and"
+echo "|     Library  path of each project that uses the TeeChart components"
+echo "|"
+echo "| IMPORTANT:"
+echo "| ~~~~~~~~~~"
+echo "|"
+echo "| 4.) To use the TeeChart components in own applications the QT Headerfile "
+echo "|     \""$KYLIX3_PATH"/include/vcl/Qt.hpp\" have to be replaced by an"
+echo "|     inofficial patched Qt.hpp"
+echo "|"
+echo "|     The patched headerfile can be found at the following Borland Webpage"
+echo "|     http://codecentral.borland.com/codecentral/ccweb.exe/listing?id=19525"
+echo "|"
+echo "--------------------------------------------------------------------------------"
+

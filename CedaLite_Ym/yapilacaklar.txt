@@ -1,0 +1,101 @@
+---satýþ faturasý listesinde ilk arama kriteri fatura numarasý gelecek
+
+
+--rapolar sýralama kod sýrasýna göre 
+
+
+--data degiþtirmede iþlem tamamlanýca ses çýkarsýn
+
+--bekleme faturasýnýn faturalaþtýrýlmasýnda sorun var kontro ledilecek
+faturalandý iþaretlemeiyor buyuk ihtimal birleþtrerek atmada
+
+
+--data degiþtrime ini ye göre yapýlýp önceki kýsayolda çalýþtýrma iptal idilip
+term me kurulum yapýlacak 
+
+--lapopta programýn ana ekranýnda ana maktamý laptoptamý çalýþtýgý gözükecek
+
+--data degiþtirmede en son yapýlan aktarmaya göre son çalýþýlan yeri kýrmýzýlaþtýracak
+
+
+---raporlar ekrana sýgacak sekilde ve mdichild ayarlanacak
+
+---sefer raporlarýn tumunda ara toplam alýnan kýsýmlarda borc-alacak
+bakiye ara toplamýn altýna yazýlacak borc mu alacak mý belirtilecek
+
+
+--raporlarýn sutunlarý ve alanarý arasýna çizgiler çizilecek dikdortgen içine alýnacak
+
+
+-----exece kiralýk kamyon alacak raporunu eskisine benzet
+
+--bu raporda tek tasýyýcý seçilirse tasýyý adý ana baþlýga alýnacak
+
+--alýnan raporun tarihleri ilk ve son olarak baþlýga laýnacak
+
+---seferler tarih sýralý gelecek
+
+
+--kiralýk kamyonun araç gruýplamsý kaldýrýlýlarak yeni araç bilgilerini yazmadan 
+sadece seferleri dokecek rapor yapacak
+
+
+---MAZOT FISINDE MAZOTCU FÝÞ NO NUN ÜZERÝNE ALINACAK
+
+
+
+
+META KARSILASTIR
+YEDEK AL DON DATA BUTUNLUK KONTROLU YAP
+
+PROC VE BELGETUR EKLE 
+YENI RAPORLARI KOPYALA
+
+MAZOT U YENÝDEN CALISTIR ESKÝ CARÝ HARLAR SÝLÝNSÝN YENÝLERÝ OLUSSUN
+BAKIM ISLEMINI ÇALIÞTIR
+
+
+
+
+mazot km olayý raporu
+ruhsat ehliyet bilgisi alma karþýlaþtýrma
+
+komisyonun kasaya atýlma olayý
+
+þirket expert test
+donem kopyalama devir iþlemleri ,devir bakiye iþlemleri
+
+
+----komisyon kasa hareketlerini kasa listesi olayý
+
+
+-----cari bakiyeli harek listesini kosullar bolumne
+---combobox hepsi,borc bakiyesi verenler, alacak bakiyesi veren þeklinde kosul koy sogularý ayarla
+
+
+
+--urun onceki sonraki
+--servise urun bakiye devreden olarak atýlabilir
+--urun harfe basýlca arama konumlanma
+
+
+
+ekinci istekler
+--cari ay bazýnda raporda kod sýralamasý,cari adý sutunu aca, bakiye sutunu aca
+--devir dahil edilsinmi check butonu ekle ona göre hesapla
+
+--cari kayýt giriþin de ilk tab sekmesine hangi gruba dahil ise o bilgi olarak ilk ekran gözüksün
+
+--yeni cari bakiyeli hareket listesinde devir bakiyesi olup hareketi olmayanlar gelip gelmedigini kontrol et
+
+belli tarihe kada cari bakiye toplamý raporlarda varmý kontrol et yok sa rapor yap
+cari yaþlandýrmalý rapor diger cari raporlarada eklenmeli mi?
+yaþlandýrmalý rapor diger hareket raporlara
+hareket raporlara tarih aralýgý eklenmeli
+
+
+
+
+
+
+

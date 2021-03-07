@@ -1,0 +1,33 @@
+inherited BarCylinderForm: TBarCylinderForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'A small "typo" bug in version 4:'
+      
+        'Now there is the new constant: bsCylinder  (it erroneusly was bs' +
+        'Cilinder).'
+      ''
+      'Example: Series1.BarStyle := bsCylinder ;')
+  end
+  inherited Chart1: TChart
+    object Series1: TBarSeries
+      BarPen.Visible = False
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      BarStyle = bsCilinder
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Visible = False
+  end
+end

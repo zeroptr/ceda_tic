@@ -1,0 +1,87 @@
+inherited ExpressionSourceEdit: TExpressionSourceEdit
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label2: TLabel [0]
+    Left = 8
+    Top = 43
+    Width = 30
+    Height = 13
+    Caption = '&Value:'
+    FocusControl = EditExpression
+  end
+  inherited Pan: TPanel
+    TabOrder = 2
+    inherited BApply: TButton
+      OnClick = BApplyClick
+    end
+  end
+  object EditExpression: TEdit
+    Left = 56
+    Top = 40
+    Width = 193
+    Height = 21
+    TabOrder = 0
+    Text = 'sin( x )'
+    OnChange = ERangeFromChange
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Top = 76
+    Width = 241
+    Height = 85
+    Caption = '&Range:'
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 8
+      Top = 24
+      Width = 26
+      Height = 13
+      Caption = '&From:'
+      FocusControl = ERangeFrom
+    end
+    object Label3: TLabel
+      Left = 128
+      Top = 24
+      Width = 16
+      Height = 13
+      Caption = '&To:'
+      FocusControl = ERangeTo
+    end
+    object Label4: TLabel
+      Left = 8
+      Top = 56
+      Width = 25
+      Height = 13
+      Caption = 'St&ep:'
+      FocusControl = EStep
+    end
+    object ERangeFrom: TEdit
+      Left = 48
+      Top = 20
+      Width = 65
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+      OnChange = ERangeFromChange
+    end
+    object ERangeTo: TEdit
+      Left = 160
+      Top = 20
+      Width = 65
+      Height = 21
+      TabOrder = 1
+      Text = '359'
+      OnChange = ERangeFromChange
+    end
+    object EStep: TEdit
+      Left = 48
+      Top = 52
+      Width = 65
+      Height = 21
+      TabOrder = 2
+      Text = '5'
+      OnChange = ERangeFromChange
+    end
+  end
+end

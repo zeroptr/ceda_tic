@@ -1,0 +1,111 @@
+
+{                                                                              }
+{ TIB_RadioGroup                                                               }
+{                                                                              }
+
+{: This control has been designed to provide a selection from a set group of
+options based on a mutually exclusive set of radio buttons.
+<br><br>
+Use the Items property to set the names of the buttons.
+<br><br>
+Use the Values property to specify alternative values that will correspond with
+the values in the field to which the control is bound.  Notice that this control
+cannot be used to select multiple options.
+<br><br>
+Here is a typical use of a gender field :
+<br><br>
+<p>
+<br>object EditGENDER: TIB_RadioGroup
+<br>  Width = 130
+<br>  Height = 21
+<br>  Columns = 2
+<br>  Items.Strings = (
+<br>    'Male'
+<br>    'Female')
+<br>  Values.Strings = (
+<br>    'M'
+<br>    'F')
+<br>  DataField = 'GENDER'
+<br>  DataSource = dsQuery
+<br>end
+</p>
+<br><br>
+The backspace key will toggle the current button on and off.}
+TIB_CustomRadioGroup = class(TCustomGroupBox)
+private
+  FTabStop: boolean;
+  procedure SetTabStop( AValue: boolean ); virtual;
+{$I IB_WinControl.INT}
+private
+  FButtons: TList;
+  FItems: TStrings;
+  FItemIndex: Integer;
+  FColumns: Integer;
+  FReading: Boolean;
+  FEditing: Boolean;
+  FValue: string;
+  FValues: TStrings;
+  FInSetValue: Boolean;
+  FOnChange: TNotifyEvent;
+  procedure ArrangeButtons;
+  procedure ButtonClick(Sender: TObject);
+  procedure ItemsChange(Sender: TObject);
+  procedure SetButtonCount(AValue: Integer);
+  procedure SetColumns(AValue: Integer);
+  procedure SetItemIndex(AValue: Integer);
+  procedure UpdateButtons;
+  procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+  procedure WMSize(var Message: TWMSize); message WM_SIZE;
+  function GetItemValue(Index: Integer): string;
+  procedure SetValue(const AValue: string);
+  procedure SetItems(AValue: TStrings);
+  procedure SetValues(AValue: TStrings);
+protected
+  procedure ReadState(Reader: TReader); override;
+{$IFDEF IBO_VCL30_OR_GREATER}
+  procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+{$ELSE}
+  procedure GetChildren(Proc: TGetChildProc ); override;
+{$ENDIF}
+  procedure Loaded; override;
+  procedure CreateParams(var Params: TCreateParams); override;
+  procedure Paint; override;
+  procedure Change; dynamic;
+  procedure Click; override;
+  procedure KeyPress(var Key: Char); override;
+  procedure SetButtonTabStops;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+{: Index of the item that is currently selected in the list of buttons.  The
+radiobutton corresponding to that item shows as "pushed in".
+<br><br>
+An index of -1 means that there is no selection made - no buttons appear
+"pushed in".}
+  property ItemIndex: Integer read FItemIndex write SetItemIndex default -1;
+{: Value of the currently selected radiobutton, as read from the data column.}
+  property Value: string read FValue write SetValue;
+{: This property allows multiple vertical columns of buttons to be defined.}
+  property Columns: Integer read FColumns write SetColumns default 1;
+{: This property determines the number of items in the group of radiobutton
+controls and the caption associated with each one.}
+  property Items: TStrings read FItems write SetItems;
+{: This property provides a table of values to store in the database instead
+of the entries listed in the Items property.}
+  property Values: TStrings read FValues write SetValues;
+{: Property to notify when the contents of the control have been changed.}
+  property OnChange: TNotifyEvent read FOnChange write FOnChange;
+end;
+
+TIB_RadioGroup = class(TIB_CustomRadioGroup)
+{$I IB_WinControl.PBL}
+{$IFNDEF HELPSCAN}
+published
+  property Columns;
+  property Items;
+  property Values;
+  property OnChange;
+{$ENDIF}
+end;
+
+// IBC_RadioGroup.IMP

@@ -1,0 +1,65 @@
+inherited ChartGridColors: TChartGridColors
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 89
+    Lines.Strings = (
+      
+        'The Chart Grid control links chart Series to a standard VCL Stri' +
+        'ng Grid.'
+      
+        'Using the grid is possible to add, delete and modify point value' +
+        's and text.'
+      ''
+      
+        'New in release 5.02 are the ShowColors and ShowFields properties' +
+        #39'.'
+      'Double click a color cell to change the bar color.')
+  end
+  inherited Chart1: TChart
+    Top = 130
+    Height = 207
+    inherited Series1: TBarSeries
+      ColorEachPoint = True
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 89
+    inherited ButtonColor1: TButtonColor
+      Visible = False
+    end
+    object CheckBox3: TCheckBox
+      Left = 216
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Show &Colors'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox3Click
+    end
+    object CheckBox4: TCheckBox
+      Left = 312
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Show &Fields'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = CheckBox4Click
+    end
+  end
+  inherited Panel2: TPanel
+    Top = 130
+    Height = 207
+    inherited ChartGridNavigator1: TChartGridNavigator
+      Top = 181
+    end
+    inherited ChartGrid1: TChartGrid
+      Height = 180
+      ShowColors = True
+    end
+  end
+end

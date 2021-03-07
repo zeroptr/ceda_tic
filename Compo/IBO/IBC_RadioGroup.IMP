@@ -1,0 +1,511 @@
+// IBC_RadioGroup.INT
+
+{$I IB_WinControl.IMP}
+
+constructor TIB_CustomRadioGroup.Create(AOwner: TComponent);
+begin
+  FIB_FieldDataLink := TIB_FieldDataLink.Create( Self );
+  inherited Create(AOwner);
+  inherited TabStop := false;
+  ControlStyle := [csSetCaption, csDoubleClicks, csReplicatable];
+  FIB_FieldDataLink.Control := Self;
+  FIB_FieldDataLink.OnStateChanged := StateChanged;
+  FIB_FieldDataLink.OnDataChange := DataChange;
+  FIB_FieldDataLink.OnUpdateData := UpdateData;
+  FButtons := TList.Create;
+  FItems := TIB_StringList.Create;
+  FValues := TIB_StringList.Create;
+  TIB_StringList(FItems).OnChange := ItemsChange;
+  TIB_StringList(FValues).OnChange := ItemsChange;
+  FItemIndex := -1;
+  FColumns := 1;
+  FBorderStyle := bsSingle;
+  FTabStop := true;
+  ArrangeButtons;
+end;
+
+destructor TIB_CustomRadioGroup.Destroy;
+begin
+  DataSource := nil;
+  with DataLink do
+  begin
+    Control := nil;
+    OnStateChanged := nil;
+    OnDataChange := nil;
+    OnUpdateData := nil;
+  end;
+  TStringList(FItems).OnChange := nil;
+  TStringList(FValues).OnChange := nil;
+  Destroying;
+  SetButtonCount( 0 );
+  FValues.Free;
+  FValues := nil;
+  FItems.Free;
+  FItems := nil;
+  FButtons.Free;
+  FButtons := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_CustomRadioGroup.Loaded;
+begin
+  inherited Loaded;
+  SysStateChanged;
+  SysDataChange( nil );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomRadioGroup.CreateParams(var Params: TCreateParams);
+const
+  BorderStyles: array[TBorderStyle] of Longint = (0, WS_BORDER);
+begin
+  inherited CreateParams(Params);
+  with Params do begin
+    Style := longint(Style) or longint(BorderStyles[FBorderStyle]);
+    if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then begin
+      Style := Style and not WS_BORDER;
+      ExStyle := ExStyle or WS_EX_CLIENTEDGE;
+    end;
+  end;
+end;
+
+procedure TIB_CustomRadioGroup.Paint;
+begin
+// Cause no default painting to occur.
+// This is to remove the internal caption and box.
+end;
+
+procedure TIB_CustomRadioGroup.ArrangeButtons;
+var
+  ButtonsPerCol, ButtonWidth, ButtonHeight, TopMargin, I: Integer;
+  DC: HDC;
+  SaveFont: HFont;
+  Metrics: TTextMetric;
+begin
+  if (FButtons.Count <> 0) and not FReading then begin
+    DC := GetDC(0);
+    SaveFont := SelectObject(DC, Font.Handle);
+    GetTextMetrics(DC, Metrics);
+    SelectObject(DC, SaveFont);
+    ReleaseDC(0, DC);
+    ButtonsPerCol := (FButtons.Count + Columns - 1) div Columns;
+    ButtonWidth := (Width - 10) div Columns;
+    I := Height - 5;
+    ButtonHeight := I div ButtonsPerCol;
+    TopMargin := (I mod ButtonsPerCol) div 2 + 1;
+    for I := 0 to FButtons.Count - 1 do begin
+      with TRadioButton(FButtons[I]) do begin
+        SetBounds((I div ButtonsPerCol) * ButtonWidth + 8,
+          (I mod ButtonsPerCol) * ButtonHeight + TopMargin,
+          ButtonWidth, ButtonHeight);
+        Visible := True;
+      end;
+    end;
+    SetButtonTabStops;
+  end;
+end;
+
+procedure TIB_CustomRadioGroup.SetButtonTabStops;
+var
+  I: Integer;
+begin
+  for I := 0 to FButtons.Count - 1 do begin
+    with TRadioButton(FButtons[I]) do begin
+      TabStop := Self.TabStop and
+                 ((( I = 0 ) and ( ItemIndex < 0 )) or ( I = ItemIndex ));
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{ TIB_GroupButton                                                              }
+{------------------------------------------------------------------------------}
+
+type
+  TIB_GroupButton = class(TRadioButton)
+  private
+    FInClick: Boolean;
+    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+  protected
+    procedure ChangeScale(M, D: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
+  public
+    constructor Create( AOwner: TComponent ); override;
+    destructor Destroy; override;
+  end;
+
+constructor TIB_GroupButton.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  ControlStyle := ControlStyle + [csReplicatable];
+  if AOwner is TIB_RadioGroup then begin
+    (AOwner as TIB_RadioGroup).FButtons.Add(Self);
+    Enabled := (AOwner as TIB_RadioGroup).Enabled;
+    OnClick := (AOwner as TIB_RadioGroup).ButtonClick;
+  end;
+  Visible := false;
+  ParentShowHint := false;
+  Parent := AOwner as TIB_RadioGroup;
+end;
+
+destructor TIB_GroupButton.Destroy;
+begin
+  TIB_RadioGroup(Owner).FButtons.Remove(Self);
+  inherited Destroy;
+end;
+
+procedure TIB_GroupButton.CNCommand(var Message: TWMCommand);
+begin
+  if not TIB_RadioGroup(Parent).FInSetValue then
+  if not FInClick then begin
+    FInClick := True;
+    try
+      if ((Message.NotifyCode = BN_CLICKED      ) or
+          (Message.NotifyCode = BN_DOUBLECLICKED)) and
+         TIB_RadioGroup(Parent).CanModify then begin
+{
+with Message do begin
+  ShowMessage( 'Msg: '    + IntToStr( Msg )    + #13#10 +
+               'ItemID: ' + IntToStr( ItemID ) + #13#10 +
+               'Ctl: '    + IntToStr( Ctl )    + #13#10 +
+               'Result: ' + IntToStr( Result ));
+end;
+}
+//        if not TIB_RadioGroup(Parent).FInSetValue then
+        inherited;
+      end;
+    except
+      Application.HandleException(Self);
+    end;
+    FInClick := False;
+  end;
+end;
+
+procedure TIB_GroupButton.ChangeScale(M, D: Integer);
+begin
+// Disable ScaleBy for the child controls.
+end;
+
+procedure TIB_GroupButton.KeyPress(var Key: Char);
+begin
+  TIB_RadioGroup(Parent).KeyPress(Key);
+  if Key in [ ^H, ' ' ] then
+    if TIB_RadioGroup(Parent).CanModify then
+    begin
+      Key := #0;
+      if Checked then
+        TIB_RadioGroup(Parent).Value := '' // Don't set Checked := false!
+      else
+        Checked := true;
+    end;
+  inherited KeyPress(Key);
+end;
+
+procedure TIB_GroupButton.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  TIB_RadioGroup(Parent).KeyDown(Key, Shift);
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TIB_GroupButton.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  TIB_RadioGroup(Parent).KeyUp(Key, Shift);
+  inherited KeyUp(Key, Shift);
+end;
+
+{------------------------------------------------------------------------------}
+{ TIB_RadioGroup                                                               }
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomRadioGroup.ButtonClick(Sender: TObject);
+begin
+  if not TabStop then begin
+  // Keep a TabStop false RadioGroup with all its buttons set to false.
+    (Sender as TWinControl).TabStop := false;
+  end;
+  if not FEditing then begin
+    FItemIndex := FButtons.IndexOf(Sender);
+    Click;
+  end;
+end;
+
+procedure TIB_CustomRadioGroup.ItemsChange(Sender: TObject);
+begin
+  if ( Sender = FItems ) and not FReading then begin
+    if FItemIndex >= FItems.Count then begin
+      FItemIndex := FItems.Count - 1;
+    end;
+    UpdateButtons;
+  end;
+  SysDataChange( nil );
+end;
+
+procedure TIB_CustomRadioGroup.ReadState(Reader: TReader);
+begin
+  FReading := True;
+  try
+    inherited ReadState(Reader);
+  finally
+    FReading := False;
+  end;
+  UpdateButtons;
+end;
+
+procedure TIB_CustomRadioGroup.SetButtonCount(AValue: Integer);
+begin
+  while FButtons.Count < AValue do TIB_GroupButton.Create(Self);
+  while FButtons.Count > AValue do TIB_GroupButton(FButtons.Last).Free;
+end;
+
+procedure TIB_CustomRadioGroup.SetItemIndex(AValue: Integer);
+begin
+  if FReading then begin
+    FItemIndex := AValue;
+  end else begin
+    if AValue < -1 then begin
+      AValue := -1;
+    end;
+    if AValue >= FButtons.Count then begin
+      AValue := FButtons.Count - 1;
+    end;
+    if FItemIndex <> AValue then begin
+      if FItemIndex >= 0 then begin
+        TIB_GroupButton(FButtons[FItemIndex]).Checked := False;
+      end;
+      FItemIndex := AValue;
+      if FItemIndex >= 0 then begin
+        TIB_GroupButton(FButtons[FItemIndex]).Checked := True;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_CustomRadioGroup.SetColumns(AValue: Integer);
+begin
+  if AValue < 1 then begin
+    AValue := 1;
+  end;
+  if AValue > 16 then begin
+    AValue := 16;
+  end;
+  if FColumns <> AValue then begin
+    FColumns := AValue;
+    ArrangeButtons;
+  end;
+end;
+
+procedure TIB_CustomRadioGroup.UpdateButtons;
+var
+  I: Integer;
+begin
+  SetButtonCount(FItems.Count);
+  for I := 0 to FButtons.Count - 1 do begin
+    TIB_GroupButton(FButtons[I]).Caption := FItems[I];
+  end;
+  if FItemIndex >= 0 then begin
+    FEditing := True;
+    try
+      TIB_GroupButton(FButtons[FItemIndex]).Checked := True;
+    finally
+      FEditing := False;
+    end;
+  end;
+  ArrangeButtons;
+end;
+
+procedure TIB_CustomRadioGroup.CMFontChanged(var Message: TMessage);
+begin
+  inherited;
+  ArrangeButtons;
+end;
+
+procedure TIB_CustomRadioGroup.WMSize(var Message: TWMSize);
+begin
+  inherited;
+  ArrangeButtons;
+end;
+
+{$IFDEF IBO_VCL30_OR_GREATER}
+procedure TIB_CustomRadioGroup.GetChildren(Proc:TGetChildProc; Root:TComponent);
+{$ELSE}
+procedure TIB_CustomRadioGroup.GetChildren(Proc: TGetChildProc );
+{$ENDIF}
+begin
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomRadioGroup.SysDataChange;
+begin
+  Value := DataLink.FieldText;
+end;
+
+procedure TIB_CustomRadioGroup.SysStateChanged;
+var
+  ii: Integer;
+begin
+  for ii := 0 to FButtons.Count - 1 do begin
+    TIB_GroupButton(FButtons[ii]).Enabled := Enabled;
+  end;
+  if DataLink.ColorScheme then begin
+    inherited Color := DataLink.Color;
+  end;
+  UpdateTabStop;
+end;
+
+procedure TIB_CustomRadioGroup.SysUpdateData;
+begin
+  if DataLink.ControlIsModified then
+  begin
+    DataLink.FieldText := Value;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_CustomRadioGroup.CMEnter( var Message: TCMEnter );
+begin
+  SysDataChange( nil );
+  inherited;
+end;
+
+procedure TIB_CustomRadioGroup.CMExit( var Message: TCMExit );
+begin
+  try
+    SysUpdateData( Field );
+  except
+    if ItemIndex >= 0 then begin
+      TRadioButton(Controls[ItemIndex]).SetFocus;
+    end else begin
+      TRadioButton(Controls[0]).SetFocus;
+    end;
+    raise;
+  end;
+  inherited;
+end;
+
+procedure TIB_CustomRadioGroup.Click;
+var
+  NewItemIndex: integer;
+begin
+  if not FInSetValue then
+  begin
+    NewItemIndex := ItemIndex;
+    if DataLink.Modify then
+    begin
+      inherited Click;
+      Value := GetItemValue(NewItemIndex);
+      SysUpdateData( Field );
+    end;
+  end;
+end;
+
+procedure TIB_CustomRadioGroup.Change;
+begin
+  with DataLink do
+  begin
+    if Editing or ( ParamName <> '' ) then
+      ControlIsModified := true;
+  end;
+  if Assigned( FOnChange ) then
+    FOnChange(Self);
+end;
+
+procedure TIB_CustomRadioGroup.KeyPress(var Key: Char);
+begin
+  inherited KeyPress( Key );
+  if not ReadOnly then
+    case Key of
+      #8, ' ': DataLink.Modify;
+      #27: SysDataChange( nil );
+    end;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_CustomRadioGroup.GetItemValue( Index: Integer ): string;
+begin
+  if ( Index < FValues.Count ) and ( FValues[Index] <> ''  ) then
+    Result := FValues[Index]
+  else
+  if Index < Items.Count then
+    Result := Items[Index]
+  else
+    Result := '';
+end;
+
+procedure TIB_CustomRadioGroup.SetValue( const AValue: string );
+var
+  ii, Index: Integer;
+begin
+   if ( FValue <> AValue ) and
+      (( not ReadOnly ) or Datalink.DataChanging ) then
+   begin
+    FInSetValue := True;
+    try
+      Index := -1;
+      for ii := 0 to Items.Count - 1 do
+      begin
+        if AValue = GetItemValue(ii) then
+        begin
+          Index := ii;
+          Break;
+        end;
+      end;
+      ItemIndex := Index;
+      if Index > -1 then
+      begin
+        if Focused then
+        begin
+          TRadioButton(FButtons[ Index ]).SetFocus;
+        end
+        else
+        for ii := 0 to FButtons.Count - 1 do
+        begin
+          if TRadioButton(FButtons[ii]).Focused then
+          begin
+            TRadioButton(FButtons[ Index ]).SetFocus;
+            Break;
+          end;
+        end;
+      end
+      else
+      for ii := 0 to FButtons.Count - 1 do
+      begin
+        if TRadioButton(FButtons[ii]).Checked then
+        begin
+          TRadioButton(FButtons[ Index ]).Checked := false;
+          Break;
+        end;
+      end;
+    finally
+      FInSetValue := False;
+    end;
+    FValue := AValue;
+    Change;
+  end;
+  SetButtonTabStops;
+end;
+
+procedure TIB_CustomRadioGroup.SetItems(AValue: TStrings);
+begin
+  Items.Assign(AValue);
+end;
+
+procedure TIB_CustomRadioGroup.SetValues(AValue: TStrings);
+begin
+  FValues.Assign(AValue);
+end;
+
+procedure TIB_CustomRadioGroup.SetTabStop( AValue: boolean );
+begin
+  if TabStop <> AValue then
+  begin
+    FTabStop := AValue;
+    SetButtonTabStops;
+  end;
+end;
+

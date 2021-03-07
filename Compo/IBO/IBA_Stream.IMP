@@ -1,0 +1,378 @@
+// IBA_Stream.INT
+// IBBlobStream.inc
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_BlobStream.Create( ARow: TIB_Row;
+                                   ASQLVAR: XSQLVAR;
+                                   AFieldNo: integer;
+                                   ABlobNode: PIB_BlobNode;
+                                   APBlobHead: PPIB_BlobNode;
+                                   AMode: TIB_BlobStreamMode );
+begin
+  FRow := ARow;
+  FPSQLVAR := ASQLVar;
+  FFieldNo := AFieldNo; 
+  FBlobNode := ABlobNode;
+  FPBlobHead := APBlobHead;
+  FMode := AMode;
+  FPosition := 0;
+  Initialize;
+  inherited Create;
+end;
+
+constructor TIB_BlobStream.CreateForColumn( AColumn: TIB_Column;
+                                            AMode: TIB_BlobStreamMode );
+begin
+  FColumn := AColumn;
+  Create( AColumn.Row,
+          AColumn.PSQLVar^,
+          AColumn.FieldNo,
+          AColumn.Row.GetBlobNode( AColumn.FieldNo ),
+          AColumn.Row.PBlobHead,
+          AMode );
+end;
+
+destructor TIB_BlobStream.Destroy;
+begin
+  if Assigned( FColumn ) and Modified then
+    FColumn.SysAfterModify;
+  inherited Destroy;
+end;
+
+procedure TIB_BlobStream.Initialize;
+var
+  ParentBlobRef: PIB_BlobNode;
+  tmpBlobNode: PIB_BlobNode;
+  tmpArrayDesc: PISC_ARRAY_DESC;
+begin
+  if Mode = bsmWrite then
+  begin
+    if not Assigned( BlobNode ) then
+      raise EIB_Error.Create( E_Unassigned_Blob_Node );
+    ClearBlobNodeData( BlobNode );
+    SetModified;
+    SQLVAR.SQLInd^ := IB_Null;
+  end
+  else
+  if ( SQLVAR.SQLInd^ = IB_Null ) or not Assigned( PBlobHead ) then
+  begin
+    if Assigned( BlobNode ) then
+      ClearBlobNodeData( BlobNode )
+    else
+    if Mode = bsmReadWrite then
+      raise EIB_Error.Create( E_Unassigned_Blob_Node );
+  end
+  else
+  if Assigned( BlobNode ) and
+     ( BlobNode.BlobChanged or
+      (( BlobNode.BlobSize > 0 ) and
+         not isc_quad_is_zero( BlobNode.BlobID ) and
+             isc_quad_equal( BlobNode.BlobID,
+                             pisc_quad(SQLVAR.SQLData)^))) then
+  else
+  case Mode of
+    bsmRead:
+    begin
+      tmpBlobNode := FindBlobNodeInList( PBlobHead,
+                                         pisc_quad(SQLVAR.SQLData)^,
+                                         FFieldNo,
+                                         true,
+                                         ParentBlobRef );
+      if Assigned( tmpBlobNode ) then
+        FBlobNode := tmpBlobNode
+      else
+      begin
+        tmpBlobNode := AllocMem( SizeOf( TIB_BlobNode ));
+        FBlobNode := tmpBlobNode;
+        ClearBlobNodeData( BlobNode );
+        BlobNode.BlobID := pisc_quad(SQLVAR.SQLData)^;
+        try
+          tmpArrayDesc := nil;
+          case SQLVAR.SQLType of
+            SQL_ARRAY,
+            SQL_ARRAY_:
+              tmpArrayDesc := @(FColumn as TIB_ColumnArray).ArrayDesc;
+          end;
+          Row.Statement.GetBlobNodeData( @SQLVAR, tmpArrayDesc, BlobNode );
+        except
+          if Assigned( tmpBlobNode ) then
+          begin
+            FreeBlobNodeData( tmpBlobNode );
+            FreeMem( tmpBlobNode );
+          end;
+          raise;
+        end;
+        tmpBlobNode.Next := PBlobHead^;
+        PBlobHead^ := tmpBlobNode;
+      end;
+    end;
+    bsmReadWrite:
+    begin
+      if not GetBlobNodeFromList( PBlobHead, true, BlobNode ) then
+        Row.Statement.GetBlobNodeData( @SQLVAR, nil, BlobNode );
+    end;
+  end;
+end;
+
+procedure TIB_BlobStream.SetModified;
+begin
+  if not FModified then
+  begin
+    if Assigned( FColumn ) then
+      FColumn.SysBeforeModify;
+    pisc_quad(SQLVAR.SQLData)^ := BlankQuad;
+    BlobNode.BlobChanged := true;
+    FModified := true;
+  end;
+end;
+
+function TIB_BlobStream.Read( var Buffer; Count: longint ): longint;
+begin
+  if Assigned( BlobNode ) then
+  begin
+    if FPosition + Count > BlobNode.BlobSize then
+      Result := BlobNode.BlobSize - FPosition
+    else
+      Result := Count;
+  end
+  else
+    Result := 0;
+  if Result > 0 then
+  begin
+    Move( pointer(longint(BlobNode.BlobBuffer) + FPosition)^, Buffer, Result );
+    Inc( FPosition, Result );
+  end;
+end;
+
+function TIB_BlobStream.Seek( Offset: longint; Origin: Word ): longint;
+begin
+  if Assigned( BlobNode ) then begin
+    case Origin of
+      0: FPosition := Offset;
+      1: Inc( FPosition, Offset );
+      2: FPosition := BlobNode.BlobSize + Offset;
+    end;
+    if FPosition > BlobNode.BlobSize then begin
+      FPosition := BlobNode.BlobSize;
+    end;
+  end;
+  if FPosition < 0 then begin
+    FPosition := 0;
+  end;
+  Result := FPosition;
+end;
+
+function TIB_BlobStream.Write( const Buffer; Count: longint ): longint;
+var
+  NewSize: integer;
+begin
+  Result := 0;
+  if FMode <> bsmRead then
+  begin
+    if not FModified then
+      SetModified;
+    SQLVAR.SQLInd^ := IB_NotNull;
+    NewSize := FPosition + Count;
+    if NewSize > BlobNode.BlobBufLen then
+    begin
+      IB_ReallocMem( BlobNode.BlobBuffer, BlobNode.BlobBufLen, NewSize );
+      BlobNode.BlobBufLen := NewSize;
+    end;
+    if Count > 0 then
+    begin
+      Move( Buffer, pointer(longint(BlobNode.BlobBuffer) + FPosition)^, Count );
+      Inc( FPosition, Count );
+      if FPosition > BlobNode.BlobSize then
+        BlobNode.BlobSize := FPosition;
+      Result := Count;
+    end;
+  end;
+end;
+
+(*
+
+type
+  TPictureFiler = class(TFiler)
+  public
+    ReadData: TStreamProc;
+    WriteData: TStreamProc;
+    constructor Create; overload;
+    procedure DefineProperty( const Name: string;
+                                    ReadData: TReaderProc;
+                                    WriteData: TWriterProc;
+                                    HasData: boolean ); override;
+    procedure DefineBinaryProperty( const Name: string;
+                                          ReadData,
+                                          WriteData: TStreamProc;
+                                          HasData: boolean ); override;
+    procedure FlushBuffer; override;
+  end;
+
+// Since I use TFiler only partially, the inherited constructor
+// TFiler.Create is unnecessary, so I use this dummy
+
+constructor TPictureFiler.Create;
+begin
+end;
+
+//will be called by TPicture, handing over the private methods to
+//read/write TPicture from/to Stream
+
+procedure TPictureFiler.DefineBinaryProperty( const Name: string;
+                                                    ReadData,
+                                                    WriteData: TStreamProc;
+                                                    HasData: boolean );
+begin
+  if Name = 'Data' then begin 
+    Self.ReadData := ReadData;
+    Self.WriteData := WriteData;
+  end;
+end;
+
+procedure TPictureFiler.DefineProperty( const Name: string;
+                                              ReadData: TReaderProc;
+                                              WriteData: TWriterProc;
+                                              HasData: boolean );
+begin
+  //at this time TPicture don't call this function
+  //only implemented as precaution to (unlikely) changes in future delphi
+  //versions
+end;
+
+procedure TPictureFiler.FlushBuffer;
+begin
+  //at this time TPicture don't call this function
+  //only implemented as precaution to (unlikely) changes in future
+  //delphi versions
+end;
+
+// Wrapper to call protected TPicture.DefineProperties
+// must be in same unit as ReadWritePictureFromStream
+type
+
+TMyPicture = class( TPicture )
+end;
+
+procedure ReadWritePictureFromStream( Picture: TPicture;
+                                      Stream: TStream;
+                                      Read: boolean );
+var
+  Filer: TPictureFiler;
+begin
+  Filer := TPictureFiler.Create;
+  try
+    // TPicture.DefineProperties is protected, but TMyPicture is declared in
+    // thisunit TMyPicture's protected members (also the inherited) are public
+    // to this unit
+    TMyPicture( Picture ).DefineProperties( Filer );
+    //TPicture.DefineProperties calls Filer.DefineBinaryProperty
+    if Read then
+      Filer.ReadData( Stream ) //TPicture does the work
+    else
+      Filer.WriteData( Stream ); //TPicture does the work
+  finally
+    Filer.Free;
+  end;
+end;
+
+//whatever TIcons actual image size, its LoadFromStream(Stream: TStream)
+//reads just to the end of the stream
+//if I have additional things after TIcon streamed, they are lost after
+//TIcon.LoadFromStream
+//so I store the actual size before in the stream
+procedure WritePictureToStream( Picture: TPicture; Stream: TStream );
+var
+  MStream: TMemoryStream;
+  iPictureSize: Integer;
+begin
+  MStream := TMemoryStream.Create;
+  try
+    //store TPicture data in TMemoryStream
+    ReadWritePictureFromStream( Picture, MStream, False );
+    iPictureSize := MStream.Size;
+    //store size of TPicture data in TStream
+    Stream.WriteBuffer( iPictureSize, sizeof( iPictureSize ));
+    //store TMemoryStream(containing TPicture data) in TStream
+    Stream.WriteBuffer( MStream.Memory^, iPictureSize );
+  finally
+    MStream.Free;
+  end;
+end;
+
+procedure ReadPictureFromStream( Picture: TPicture; Stream: TStream );
+var
+  MStream: TMemoryStream;
+  iPictureSize: Integer;
+begin
+  MStream := TMemoryStream.Create;
+  try
+    //read size of TPicture data
+    Stream.ReadBuffer( iPictureSize, sizeof( iPictureSize ));
+    //adjust buffer size
+    MStream.SetSize( iPictureSize );
+    //get TPicture data
+    Stream.ReadBuffer( MStream.Memory^, iPictureSize );
+    //why TMemoryStream ? See what I said above about TIcon
+    //read TPicture data
+    ReadWritePictureFromStream( Picture, MStream, True );
+  finally
+    MStream.Free;
+  end;
+end;
+
+//Now WritePictureToStream and ReadPictureFromStream could be used to
+//save/load any TPicture to/from any TStream.
+
+//example (in pseudo code):
+
+  AStream := ADataSet.CreateBlobStream( ABlobField, bmWrite );
+  try
+    WritePictureToStream( APicture, AStream );
+  finally
+    AStream.Free;
+  end;
+
+  AStream := ADataSet.CreateBlobStream( ABlobField, bmRead );
+  try
+    ReadPictureFromStream( APicture, AStream );
+  finally
+    AStream.Free;
+  end;
+
+*)
+
+

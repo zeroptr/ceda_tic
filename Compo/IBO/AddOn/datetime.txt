@@ -1,0 +1,232 @@
+/*------------------------------------------------------------
+   Date and time stored procedures
+--------------------------------------------------------------
+
+   Written by:
+     Gábor Gazsó
+
+     Address: HUNGARY H-1590 Budapest, PO. Box 113.
+     Phone:   +36 30 411-790
+     e-mail:  intelli@mail.matav.hu
+
+--------------------------------------------------------------
+This script file contains the following procedures:
+
+  Year         - Returns the year part of a date.
+  Month        - Returns the month part of a date.
+  Day          - Returns the day part of a date.
+  EncodeDate   - Creates a date from its parts.
+  DecodeDate   - Extracts a date to its parts.
+  ElapsedDays  - Returns the number of days between two days.
+  Modulus      - Returns the modulus of a division.
+  DayOfWeek    - Returns the number of the day of week.
+  Time         - Returns the hour and minute of a date.
+  DaysOfMonth  - Returns the number of days in a given month.
+  DayOfYear    - Returns the number of the day in the given year.
+  AddMonth     - Adds given number of months to a date.
+--------------------------------------------------------------
+*/
+   
+SET TERM # ;
+
+/* The calculation is based on the following mathematical algorithm:
+  ElapsedDays = ElapsedYears*365 +(ElapsedYears/4) +(ElapsedYears/100) +(ElapsedYears/400)
+  ElapsedDays = ElapsedYears*365 +(ElapsedYears*97/400)
+  ElapsedDays = ElapsedYears*146097/400
+  ElapsedDays*400/146097 = ElapsedYears
+*/
+CREATE PROCEDURE Year(ADate DATE)
+RETURNS (Result INTEGER)
+AS
+DECLARE VARIABLE ElapsedDays  INTEGER;
+DECLARE VARIABLE ElapsedYears INTEGER;
+BEGIN
+  /* Lets go to the begin of the year */
+  WHILE(CAST(ADate AS VARCHAR(5)) <> "1-JAN") DO
+    ADate = ADate -1;
+    
+  ElapsedDays = ADate -"1.1.1901";
+  Result = (ElapsedDays *400 /146097)+1901;
+END
+#
+
+CREATE PROCEDURE Day(ADate DATE)
+RETURNS (Result INTEGER)
+AS
+BEGIN
+  Result = CAST(CAST(ADate AS VARCHAR(2)) AS INTEGER);
+  WHEN ANY DO Result = CAST(CAST(ADate AS VARCHAR(1)) AS INTEGER);
+END
+#
+
+CREATE PROCEDURE Month(ADate DATE)
+RETURNS (Result INTEGER)
+AS
+DECLARE VARIABLE WorkDate DATE;
+DECLARE VARIABLE WorkDay  INTEGER;
+BEGIN
+  WorkDate = ADate;
+  Result = 1;
+  WHILE(CAST(WorkDate AS VARCHAR(5)) <> "1-JAN") DO
+  BEGIN
+    EXECUTE PROCEDURE Day(WorkDate) RETURNING_VALUES WorkDay;
+    IF(WorkDay = 1) THEN Result = Result+1;
+    WorkDate = WorkDate-1;
+  END
+END
+#
+
+CREATE PROCEDURE EncodeDate(Year INTEGER, Month INTEGER, Day INTEGER)
+RETURNS (Result DATE)
+AS
+BEGIN
+  Result = Day || "." || Month || "." || Year;
+END
+#
+
+CREATE PROCEDURE DecodeDate(ADate DATE)
+RETURNS (Year INTEGER, Month INTEGER, Day INTEGER)
+AS
+BEGIN
+  EXECUTE PROCEDURE Year(ADate) RETURNING_VALUES Year;
+  EXECUTE PROCEDURE Month(ADate) RETURNING_VALUES Month;
+  EXECUTE PROCEDURE Day(ADate) RETURNING_VALUES Day;
+END
+#
+
+CREATE PROCEDURE ElapsedDays(Date1 DATE, Date2 DATE)
+RETURNS (Result INTEGER)
+AS
+BEGIN
+  Result = Date2-Date1;
+END
+#
+
+/* This procedure calculates the modulus of two number */
+CREATE PROCEDURE Modulus(Dividend INTEGER, Divisor INTEGER)
+RETURNS (Result INTEGER)
+AS
+BEGIN
+  IF(Dividend = 0) THEN Result = 0;
+  ELSE
+    Result = Dividend-(CAST((Dividend / Divisor)-0.5 AS INTEGER)*Divisor);
+END
+#
+
+/* This procedure returns the number of the day of the week:
+   0 - Monday; 1 - Tuesday; 2 - Wdnesday; 3 - Thursday; 4 - Friday; 5 - Saturday; 6 - Sunday
+*/   
+CREATE PROCEDURE DayOfWeek(ADate DATE)
+RETURNS (Result INTEGER)
+AS
+DECLARE VARIABLE Elapsed INTEGER;
+BEGIN
+  EXECUTE PROCEDURE ElapsedDays("1.1.96", ADate) RETURNING_VALUES Elapsed;
+  EXECUTE PROCEDURE Modulus(Elapsed, 7) RETURNING_VALUES Result;
+END
+#
+
+CREATE PROCEDURE Time(ADate DATE)
+RETURNS (Hour INTEGER, Minute INTEGER)
+AS
+DECLARE VARIABLE Year     INTEGER;
+DECLARE VARIABLE Month    INTEGER;
+DECLARE VARIABLE Day      INTEGER;
+DECLARE VARIABLE WorkDate DATE;
+DECLARE VARIABLE Percent  DOUBLE PRECISION;
+DECLARE VARIABLE WorkHour DOUBLE PRECISION;
+BEGIN
+  EXECUTE PROCEDURE DecodeDate(ADate) RETURNING_VALUES(Year, Month, Day);
+  EXECUTE PROCEDURE EncodeDate(Year, Month, Day) RETURNING_VALUES(WorkDate);
+  Percent = ADate - WorkDate;
+  WorkHour = Percent *24;
+  Hour = WorkHour -0.5;
+  Minute = (WorkHour - Hour) *60 -0.5;
+END
+#
+
+CREATE PROCEDURE DaysOfMonth(AYear INTEGER, AMonth INTEGER)
+RETURNS (Result INTEGER)
+AS
+DECLARE VARIABLE WorkDate   DATE;
+BEGIN
+  Result = 31;
+  WHILE (Result > 28 AND WorkDate IS NULL) DO
+  BEGIN
+    EXECUTE PROCEDURE EncodeDate(AYear, AMonth, Result) RETURNING_VALUES(WorkDate);
+    WHEN ANY DO Result = Result -1;
+  END
+END
+#
+
+CREATE PROCEDURE DayOfYear(ADate DATE)
+RETURNS (Result INTEGER)
+AS
+DECLARE VARIABLE WorkYear   INTEGER;
+DECLARE VARIABLE WorkMonth  INTEGER;
+DECLARE VARIABLE I          INTEGER;
+BEGIN
+  Result = 0;
+  EXECUTE PROCEDURE Year(ADate) RETURNING_VALUES(WorkYear);  
+  EXECUTE PROCEDURE Month(ADate) RETURNING_VALUES(WorkMonth);  
+  WorkMonth = WorkMonth-1;  
+  WHILE (WorkMonth > 0) DO
+  BEGIN
+    EXECUTE PROCEDURE DaysOfMonth(WorkYear, WorkMonth) RETURNING_VALUES(I); 
+    Result = Result+I; 
+    WorkMonth = WorkMonth-1; 
+  END
+  EXECUTE PROCEDURE Day(ADate) RETURNING_VALUES(I); 
+  Result = Result +I;
+END
+#
+
+/* 
+  This procedure is based on the idea of George Kozaderov.
+  Address: 19-17, Engels st.,Ryazan, 390010, Russia
+  e-mail:  relmail@geo.ryazan.ru
+*/
+CREATE PROCEDURE AddMonth(ADate DATE, AMonth INTEGER)
+RETURNS (Result DATE)
+AS
+DECLARE VARIABLE Year           INTEGER;
+DECLARE VARIABLE Month          INTEGER;
+DECLARE VARIABLE Day            INTEGER;
+DECLARE VARIABLE Mod            INTEGER;
+DECLARE VARIABLE DaysOfMOnth    INTEGER;
+BEGIN
+  EXECUTE PROCEDURE DecodeDate(ADate) RETURNING_VALUES(Year, Month, Day);
+  IF(AMonth < 0) THEN
+  BEGIN
+    AMonth = AMonth * -1;
+    Year = Year - CAST(((AMonth-1)/12)-0.49 AS INTEGER) -1;
+    
+    AMonth = AMonth -1;
+    EXECUTE PROCEDURE Modulus(AMonth, 12) RETURNING_VALUES(Mod);
+    AMonth = 12 - (Mod+1);
+    Month = Month + AMonth;
+  END
+  ELSE
+  BEGIN
+    Year = Year + CAST(((AMonth-1)/12)-0.49 AS INTEGER);
+    
+    AMonth = AMonth -1;
+    EXECUTE PROCEDURE Modulus(AMonth, 12) RETURNING_VALUES(Mod);
+    Month = Month + Mod +1;
+  END
+  
+  IF(Month > 12) THEN
+  BEGIN
+    Year = Year +1;
+    Month = Month -12;
+  END
+  
+  EXECUTE PROCEDURE DaysOfMonth(Year, Month) RETURNING_VALUES (DaysOfMonth);
+  IF(Day > DaysOfMonth) THEN Day = DaysOfMonth;
+  
+  EXECUTE PROCEDURE EncodeDate(Year, Month, Day) RETURNING_VALUES (Result);
+END
+#
+
+SET TERM ; #
+

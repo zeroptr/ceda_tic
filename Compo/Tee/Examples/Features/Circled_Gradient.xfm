@@ -1,0 +1,66 @@
+inherited CircledGradient: TCircledGradient
+  Width = 464
+  Height = 374
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 456
+  end
+  inherited Memo1: TMemo
+    Width = 456
+    Lines.Strings = (
+      
+        'New Gradient property for "Circled" series like Smith, Polar, Ra' +
+        'dar, Clock and '
+      'Wind-Rose.  '
+      ''
+      'Note: Works in 2D and 3D orthogonal only.')
+  end
+  inherited Chart1: TChart
+    Width = 456
+    Height = 191
+    Legend.Visible = False
+    Title.Visible = False
+    BottomAxis.Increment = 10.000000000000000000
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TPolarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Circled = True
+      AngleIncrement = 10.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      CircleGradient.Direction = gdRadial
+      CircleGradient.EndColor = clGray
+      CircleGradient.RadialX = 32
+      CircleGradient.RadialY = -13
+      CircleGradient.Visible = True
+      CirclePen.Color = clNavy
+      CirclePen.Style = psDot
+      CirclePen.Width = 2
+      Pen.Color = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 456
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 105
+      Height = 25
+      Caption = '&Edit gradient...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

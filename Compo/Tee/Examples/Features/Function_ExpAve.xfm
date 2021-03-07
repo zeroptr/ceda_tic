@@ -1,0 +1,106 @@
+inherited ExpAveForm: TExpAveForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 41
+    Lines.Strings = (
+      'The Exponential Average function calculates the average of'
+      'all the source points using the exponential algorithm.')
+  end
+  inherited Chart1: TChart
+    Top = 82
+    Height = 255
+    Title.Text.Strings = (
+      'Exponential Average function')
+    View3D = False
+    object Series1: TLineSeries
+      Marks.ArrowLength = 0
+      Marks.Visible = False
+      SeriesColor = clRed
+      Title = 'Source'
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clGreen
+      Title = 'Exp. Average'
+      ClickableLine = False
+      Pointer.Brush.Color = clBlue
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TExpAverageFunction
+        Period = 1
+        Weight = 0.200000000000000000
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 41
+    object Label1: TLabel
+      Left = 21
+      Top = 12
+      Width = 95
+      Height = 13
+      Caption = '&Exponential Weight:'
+      FocusControl = TrackBar1
+    end
+    object Label2: TLabel
+      Left = 280
+      Top = 12
+      Width = 15
+      Height = 13
+      Caption = '0,2'
+    end
+    object TrackBar1: TTrackBar
+      Left = 120
+      Top = 8
+      Width = 150
+      Height = 25
+      Max = 100
+      Orientation = trHorizontal
+      Frequency = 5
+      Position = 20
+      TabOrder = 0
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+      OnChange = TrackBar1Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 344
+      Top = 11
+      Width = 73
+      Height = 17
+      Caption = '&Animate !'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 400
+    Top = 194
+  end
+end

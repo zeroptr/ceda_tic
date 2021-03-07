@@ -1,0 +1,92 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = IBO40CRT_C5.bpl IBO40TRT_C5.bpl IBO40VRT_C5.bpl IBO40FRT_C5.bpl \
+  IBO40XRT_C5.bpl IBO40WRT_C5.bpl IBO40WXRT_C5.bpl IBO40CDT_C5.bpl \
+  IBO40ADT_C5.bpl IBO40TDT_C5.bpl IBO40VDT_C5.bpl IBO40FDT_C5.bpl IBO40XDT_C5.bpl \
+  IBO40WDT_C5.bpl IBO40WXDT_C5.bpl IBO40FTS_C5.bpl IBO40RPL_C5.bpl IBO40EDT_C5.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+IBO40CRT_C5.bpl: IBO40CRT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40TRT_C5.bpl: IBO40TRT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40VRT_C5.bpl: IBO40VRT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40FRT_C5.bpl: IBO40FRT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40XRT_C5.bpl: IBO40XRT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40XDT_C5.bpl: IBO40XDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40FTS_C5.bpl: IBO40FTS_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40RPL_C5.bpl: IBO40RPL_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40WRT_C5.bpl: IBO40WRT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40WDT_C5.bpl: IBO40WDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40WXRT_C5.bpl: IBO40WXRT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40WXDT_C5.bpl: IBO40WXDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40TDT_C5.bpl: IBO40TDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40ADT_C5.bpl: IBO40ADT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40CDT_C5.bpl: IBO40CDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40VDT_C5.bpl: IBO40VDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40FDT_C5.bpl: IBO40FDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IBO40EDT_C5.bpl: IBO40EDT_C5.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+

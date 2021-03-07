@@ -1,0 +1,27 @@
+inherited EditorColor: TEditorColor
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'When using the EditColor method, colors created by the user are ' +
+        'now preserved.'
+      
+        'Show the color editor and add custom colors. Show it again. The ' +
+        'custom colors are there again.'
+      ''
+      'Custom Colors can also be created at run-time. See code example.')
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 97
+      Height = 25
+      Caption = '&Edit color...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

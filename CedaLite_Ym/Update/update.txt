@@ -1,0 +1,9 @@
+/*alter table dekont add FIRE D_MONEY NOT NULL,add NET_MIKTAR D_MONEY NOT NULL;*/
+delete from PARAMETERS where PARAM_NAME='RAPOR_RENK_KUL';
+delete from PARAMETERS where PARAM_NAME='RAP_ARKAPRENK1';
+delete from PARAMETERS where PARAM_NAME='RAP_ARKAPRENK2';
+delete from PARAMETERS where PARAM_NAME='RAP_RENK_TIPI';
+INSERT INTO PARAMETERS (SUBE_ID, MODUL_ID, PARAM_NAME, DEGER, PARAM_ACK, KODLAMA) VALUES (0, 0, 'RAPOR_RENK_KUL', '1', 'Raporlardaki satýr renklendirme kullnýlacak mý 1 evet 0 hayýr', 0);
+INSERT INTO PARAMETERS (SUBE_ID, MODUL_ID, PARAM_NAME, DEGER, PARAM_ACK, KODLAMA) VALUES (0, 0, 'RAP_ARKAPRENK1', '29', 'Raporlardaki renklendirmeki ilk satýr rengi', 0);
+INSERT INTO PARAMETERS (SUBE_ID, MODUL_ID, PARAM_NAME, DEGER, PARAM_ACK, KODLAMA) VALUES (0, 0, 'RAP_ARKAPRENK2', '30', 'Raporlardaki renklendirmeki ikinic satýr rengi', 0);
+INSERT INTO PARAMETERS (SUBE_ID, MODUL_ID, PARAM_NAME, DEGER, PARAM_ACK, KODLAMA) VALUES (0, 0, 'RAP_RENK_TIPI', '2', 'Raporlardaki renklendirme Arka plan ise 1 Yazý Rengi ise 2', 0);

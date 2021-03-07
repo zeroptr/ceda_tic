@@ -1,0 +1,58 @@
+package dxPSDBTeeChartD7;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressPrinting System ReportLink for DBTeeChart by Developer Express Inc.'}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  dxPSCoreD7,
+  dxPSTeeChartD7,
+{$IFNDEF TEEPRO}  
+  tee,
+  teedb;
+{$ELSE}  
+{$IFDEF TEE5}
+  tee57,
+  teedb57;
+{$ENDIF}
+{$IFDEF TEE6}
+  tee67,
+  teedb67;
+{$ENDIF}
+{$IFDEF TEE7}
+  tee77,
+  teedb77;
+{$ENDIF}
+{$IFDEF TEE8}
+  tee87,
+  teedb87;
+{$ENDIF}
+{$ENDIF}
+
+contains
+  dxPSDBTCLnkReg,
+  dxPSDBTCLnk;
+
+end.

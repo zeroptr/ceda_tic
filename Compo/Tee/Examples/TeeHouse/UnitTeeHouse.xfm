@@ -1,0 +1,1014 @@
+object Form1: TForm1
+  Left = 91
+  Top = 113
+  Width = 875
+  Height = 740
+  Caption = 'TeeHouse'
+  Color = clBtnFace
+  ParentFont = True
+  Menu = MainMenu1
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter2: TSplitter
+    Left = 226
+    Top = 33
+    Height = 642
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 0
+    Width = 867
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 0
+    Previewer = ChartPreviewer1
+    object SpeedButton1: TSpeedButton
+      Left = 373
+      Top = 5
+      Width = 23
+      Height = 22
+    end
+    object ScrollBar1: TScrollBar
+      Left = 400
+      Top = 8
+      Width = 89
+      Height = 16
+      LargeChange = 50
+      Max = 1800
+      Min = -800
+
+      SmallChange = 10
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object ScrollBar2: TScrollBar
+      Left = 496
+      Top = 8
+      Width = 89
+      Height = 16
+      LargeChange = 50
+      Max = 1800
+      Min = -800
+
+      SmallChange = 10
+      TabOrder = 1
+      OnChange = ScrollBar2Change
+    end
+    object ScrollBar3: TScrollBar
+      Left = 592
+      Top = 8
+      Width = 89
+      Height = 16
+      LargeChange = 50
+      Max = 1800
+      Min = -800
+
+      SmallChange = 10
+      TabOrder = 2
+      OnChange = ScrollBar3Change
+    end
+  end
+  object Chart1: TChart
+    Left = 229
+    Top = 33
+    Width = 638
+    Height = 642
+    BottomWall.Transparent = True
+    Gradient.EndColor = 13556735
+    Gradient.MidColor = 14739177
+    Gradient.StartColor = 16774122
+    Gradient.Visible = True
+    LeftWall.Transparent = True
+    Title.Text.Strings = (
+      'TChart')
+    Title.Visible = False
+    AxisVisible = False
+    Chart3DPercent = 90
+    View3DOptions.Orthogonal = False
+    View3DWalls = False
+    OnAfterDraw = Chart1AfterDraw
+    Align = alClient
+    Color = 16777088
+    TabOrder = 1
+    PrintMargins = (
+      15
+      28
+      15
+      28)
+    object GroupNames: TMemo
+      Left = 200
+      Top = 144
+      Width = 185
+      Height = 89
+      TabOrder = 0
+      Visible = False
+    end
+    object LayerNames: TMemo
+      Left = 200
+      Top = 240
+      Width = 185
+      Height = 89
+      TabOrder = 1
+      Visible = False
+    end
+  end
+  object PageControl2: TPageControl
+    Left = 0
+    Top = 33
+    Width = 226
+    Height = 642
+    ActivePage = TabSheet6
+    Align = alLeft
+    TabOrder = 2
+    OnResize = PageControl2Resize
+    object TabSheet4: TTabSheet
+      Caption = 'Blocks'
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 218
+        Height = 614
+        Align = alClient
+        TabOrder = 0
+        object CheckListBox1: TCheckListBox
+          Left = 1
+          Top = 57
+          Width = 216
+          Height = 348
+          OnClickCheck = CheckListBox1ClickCheck
+          Align = alClient
+          ItemHeight = 13
+          PopupMenu = PopupMenu1
+          TabOrder = 0
+          OnClick = CheckListBox1Click
+          OnDragOver = CheckListBox1DragOver
+          OnEndDrag = CheckListBox1EndDrag
+        end
+        object Panel2: TPanel
+          Left = 1
+          Top = 405
+          Width = 216
+          Height = 208
+          Align = alBottom
+          TabOrder = 1
+          object PageControl1: TPageControl
+            Left = 1
+            Top = 1
+            Width = 214
+            Height = 206
+            ActivePage = TabSheet1
+            Align = alClient
+            TabOrder = 0
+            object TabSheet1: TTabSheet
+              Caption = 'Format'
+              object Label4: TLabel
+                Left = 8
+                Top = 37
+                Width = 23
+                Height = 13
+                Caption = '&Title:'
+                FocusControl = BlockTitle
+              end
+              object BlockID: TLabel
+                Left = 4
+                Top = 162
+                Width = 14
+                Height = 13
+                Caption = 'ID:'
+              end
+              object Label7: TLabel
+                Left = 19
+                Top = 63
+                Width = 39
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'T&exture:'
+                FocusControl = BlockTexture
+              end
+              object Label8: TLabel
+                Left = 24
+                Top = 90
+                Width = 34
+                Height = 13
+                Alignment = taRightJustify
+                Caption = '&Shape:'
+                FocusControl = BlockShape
+              end
+              object Label10: TLabel
+                Left = 20
+                Top = 117
+                Width = 36
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'T&ransp:'
+              end
+              object BlockBorder: TButtonPen
+                Left = 8
+                Top = 3
+                Caption = '&Border...'
+                TabOrder = 0
+                OnClick = BlockBorderClick
+              end
+              object BlockColor: TButtonColor
+                Left = 88
+                Top = 3
+                Caption = '&Color...'
+                TabOrder = 1
+                OnClick = BlockColorClick
+              end
+              object BlockTitle: TEdit
+                Left = 37
+                Top = 34
+                Width = 125
+                Height = 21
+                TabOrder = 2
+                OnChange = BlockTitleChange
+              end
+              object BlockTexture: TComboBox
+                Left = 64
+                Top = 60
+                Width = 97
+                Height = 21
+                Style = csDropDownList
+                ItemHeight = 13
+                TabOrder = 3
+                OnChange = BlockTextureChange
+                Items.Strings = (
+                  '(none)')
+              end
+              object BlockShape: TComboBox
+                Left = 64
+                Top = 87
+                Width = 97
+                Height = 21
+                Style = csDropDownList
+                ItemHeight = 13
+                TabOrder = 4
+                OnChange = BlockShapeChange
+                Items.Strings = (
+                  'Cube'
+                  'Cylinder'
+                  'Sphere'
+                  'Triangle Rect.'
+                  'Pyramid'
+                  'Arrow'
+                  'Ellipse'
+                  'Text'
+                  'Image')
+              end
+              object BlockTransp: TScrollBar
+                Left = 64
+                Top = 116
+                Width = 94
+                Height = 16
+
+                TabOrder = 5
+                OnChange = BlockTranspChange
+              end
+              object BFont: TButton
+                Left = 11
+                Top = 139
+                Width = 75
+                Height = 25
+                Caption = '&Font...'
+                TabOrder = 6
+                OnClick = BFontClick
+              end
+              object BImage: TButton
+                Left = 95
+                Top = 139
+                Width = 75
+                Height = 25
+                Caption = '&Image...'
+                TabOrder = 7
+                OnClick = BImageClick
+              end
+            end
+            object TabSheet2: TTabSheet
+              Caption = 'Rotation'
+              ImageIndex = 1
+              object LRotation: TLabel
+                Left = 134
+                Top = 10
+                Width = 6
+                Height = 13
+                Caption = '0'
+              end
+              object LElevation: TLabel
+                Left = 133
+                Top = 34
+                Width = 6
+                Height = 13
+                Caption = '0'
+              end
+              object LTilt: TLabel
+                Left = 133
+                Top = 58
+                Width = 6
+                Height = 13
+                Caption = '0'
+              end
+              object BlockRotation: TScrollBar
+                Left = 8
+                Top = 8
+                Width = 121
+                Height = 16
+                Max = 360
+
+                TabOrder = 0
+                OnChange = BlockRotationChange
+              end
+              object BlockElevation: TScrollBar
+                Left = 8
+                Top = 32
+                Width = 121
+                Height = 16
+                Max = 360
+
+                TabOrder = 1
+                OnChange = BlockElevationChange
+              end
+              object BlockTilt: TScrollBar
+                Left = 8
+                Top = 56
+                Width = 121
+                Height = 16
+                Max = 360
+
+                TabOrder = 2
+                OnChange = BlockTiltChange
+              end
+            end
+            object TabSheet3: TTabSheet
+              Caption = 'Position'
+              ImageIndex = 2
+              object Label1: TLabel
+                Left = 11
+                Top = 11
+                Width = 10
+                Height = 13
+                Alignment = taRightJustify
+                Caption = '&X:'
+                FocusControl = Edit1
+              end
+              object Label2: TLabel
+                Left = 11
+                Top = 35
+                Width = 10
+                Height = 13
+                Alignment = taRightJustify
+                Caption = '&Y:'
+                FocusControl = Edit2
+              end
+              object Label3: TLabel
+                Left = 11
+                Top = 59
+                Width = 10
+                Height = 13
+                Alignment = taRightJustify
+                Caption = '&Z:'
+                FocusControl = Edit3
+              end
+              object Edit1: TEdit
+                Left = 24
+                Top = 8
+                Width = 49
+                Height = 21
+                TabOrder = 0
+                Text = '0'
+                OnChange = Edit1Change
+              end
+              object BlockX: TUpDown
+                Left = 73
+                Top = 8
+                Width = 16
+                Height = 21
+                Associate = Edit1
+                Min = -32767
+                Max = 32767
+                TabOrder = 1
+                Thousands = False
+              end
+              object Edit2: TEdit
+                Left = 24
+                Top = 32
+                Width = 49
+                Height = 21
+                TabOrder = 2
+                Text = '0'
+                OnChange = Edit2Change
+              end
+              object BlockY: TUpDown
+                Left = 73
+                Top = 32
+                Width = 16
+                Height = 21
+                Associate = Edit2
+                Min = -32767
+                Max = 32767
+                TabOrder = 3
+                Thousands = False
+              end
+              object Edit3: TEdit
+                Left = 24
+                Top = 56
+                Width = 49
+                Height = 21
+                TabOrder = 4
+                Text = '0'
+                OnChange = Edit3Change
+              end
+              object BlockZ: TUpDown
+                Left = 73
+                Top = 56
+                Width = 16
+                Height = 21
+                Associate = Edit3
+                Min = -32767
+                Max = 32767
+                TabOrder = 5
+                Thousands = False
+              end
+              object Edit4: TEdit
+                Left = 96
+                Top = 8
+                Width = 49
+                Height = 21
+                TabOrder = 6
+                Text = '0'
+                OnChange = Edit4Change
+              end
+              object BlockWidth: TUpDown
+                Left = 145
+                Top = 8
+                Width = 16
+                Height = 21
+                Associate = Edit4
+                Max = 32767
+                TabOrder = 7
+                Thousands = False
+              end
+              object Edit5: TEdit
+                Left = 96
+                Top = 32
+                Width = 49
+                Height = 21
+                TabOrder = 8
+                Text = '0'
+                OnChange = Edit5Change
+              end
+              object BlockHeight: TUpDown
+                Left = 145
+                Top = 32
+                Width = 16
+                Height = 21
+                Associate = Edit5
+                Max = 32767
+                TabOrder = 9
+                Thousands = False
+              end
+              object Edit6: TEdit
+                Left = 96
+                Top = 56
+                Width = 49
+                Height = 21
+                TabOrder = 10
+                Text = '0'
+                OnChange = Edit6Change
+              end
+              object BlockDepth: TUpDown
+                Left = 145
+                Top = 56
+                Width = 16
+                Height = 21
+                Associate = Edit6
+                Max = 32767
+                TabOrder = 11
+                Thousands = False
+              end
+              object CBSpinBy: TCheckBox
+                Left = 24
+                Top = 88
+                Width = 57
+                Height = 17
+                Caption = '&Spin by:'
+                TabOrder = 12
+                OnClick = CBSpinByClick
+              end
+              object ESpinBy: TEdit
+                Left = 85
+                Top = 86
+                Width = 30
+                Height = 21
+                TabOrder = 13
+                Text = '5'
+              end
+              object UDSpinBy: TUpDown
+                Left = 115
+                Top = 86
+                Width = 15
+                Height = 21
+                Associate = ESpinBy
+                Min = 1
+                Max = 1000
+                Position = 5
+                TabOrder = 14
+                OnClick = UDSpinByClick
+              end
+            end
+            object TabSheet7: TTabSheet
+              Caption = 'Group'
+              ImageIndex = 3
+              object Label5: TLabel
+                Left = 16
+                Top = 12
+                Width = 32
+                Height = 13
+                Alignment = taRightJustify
+                Caption = '&Group:'
+                FocusControl = BlockGroup
+              end
+              object Label6: TLabel
+                Left = 19
+                Top = 36
+                Width = 29
+                Height = 13
+                Alignment = taRightJustify
+                Caption = '&Layer:'
+                FocusControl = BlockLayer
+              end
+              object Label13: TLabel
+                Left = 16
+                Top = 64
+                Width = 23
+                Height = 13
+                Caption = 'Link:'
+              end
+              object BlockLink: TLabel
+                Left = 17
+                Top = 83
+                Width = 30
+                Height = 13
+                Caption = '(none)'
+              end
+              object BlockGroup: TComboBox
+                Left = 53
+                Top = 8
+                Width = 120
+                Height = 21
+                Style = csDropDownList
+                DropDownCount = 20
+                ItemHeight = 13
+                TabOrder = 0
+                OnChange = BlockGroupChange
+              end
+              object BlockLayer: TComboBox
+                Left = 52
+                Top = 32
+                Width = 121
+                Height = 21
+                Style = csDropDownList
+                DropDownCount = 20
+                ItemHeight = 13
+                TabOrder = 1
+                OnChange = BlockLayerChange
+              end
+              object Button1: TButton
+                Left = 144
+                Top = 75
+                Width = 25
+                Height = 25
+                Caption = '...'
+                TabOrder = 2
+                OnClick = Button1Click
+              end
+              object BClearLink: TButton
+                Left = 16
+                Top = 104
+                Width = 75
+                Height = 25
+                Caption = 'Clear '
+                TabOrder = 3
+                OnClick = BClearLinkClick
+              end
+            end
+            object TabSheet8: TTabSheet
+              Caption = 'Tile'
+              ImageIndex = 4
+              object Label11: TLabel
+                Left = 8
+                Top = 8
+                Width = 30
+                Height = 13
+                Caption = 'Tile X:'
+                FocusControl = BlockTileX
+              end
+              object Label12: TLabel
+                Left = 8
+                Top = 32
+                Width = 30
+                Height = 13
+                Caption = 'Tile Y:'
+                FocusControl = BlockTileY
+              end
+              object Label14: TLabel
+                Left = 8
+                Top = 56
+                Width = 30
+                Height = 13
+                Caption = 'Tile Z:'
+                FocusControl = BlockTileZ
+              end
+              object BlockTileX: TScrollBar
+                Left = 48
+                Top = 8
+                Width = 113
+                Height = 16
+                Max = 50
+                Min = 1
+
+                Position = 1
+                TabOrder = 0
+                OnChange = BlockTileXChange
+              end
+              object BlockTileY: TScrollBar
+                Left = 48
+                Top = 32
+                Width = 113
+                Height = 16
+                Max = 50
+                Min = 1
+
+                Position = 1
+                TabOrder = 1
+                OnChange = BlockTileYChange
+              end
+              object BlockTileZ: TScrollBar
+                Left = 48
+                Top = 56
+                Width = 113
+                Height = 16
+                Max = 50
+                Min = 1
+
+                Position = 1
+                TabOrder = 2
+                OnChange = BlockTileZChange
+              end
+            end
+          end
+        end
+        object Panel3: TPanel
+          Left = 1
+          Top = 1
+          Width = 216
+          Height = 56
+          Align = alTop
+          TabOrder = 2
+          object Label9: TLabel
+            Left = 8
+            Top = 33
+            Width = 25
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '&Filter:'
+            FocusControl = CBFilter
+          end
+          object BAdd: TButton
+            Left = 6
+            Top = 2
+            Width = 46
+            Height = 25
+            Caption = '&Add'
+            TabOrder = 0
+            OnClick = BAddClick
+          end
+          object BDelete: TButton
+            Left = 61
+            Top = 2
+            Width = 51
+            Height = 25
+            Caption = 'Delete'
+            TabOrder = 1
+            OnClick = BDeleteClick
+          end
+          object BDupli: TButton
+            Left = 120
+            Top = 2
+            Width = 52
+            Height = 25
+            Caption = 'Dupli'
+            TabOrder = 2
+            OnClick = BDupliClick
+          end
+          object CBFilter: TComboBox
+            Left = 38
+            Top = 30
+            Width = 145
+            Height = 21
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 3
+            OnChange = CBFilterChange
+          end
+        end
+      end
+    end
+    object TabSheet5: TTabSheet
+      Caption = 'Layers'
+      ImageIndex = 1
+      object Splitter1: TSplitter
+        Left = 0
+        Top = 232
+        Width = 218
+        Height = 3
+        Cursor = crVSplit
+        Align = alTop
+      end
+      object Groups: TCheckListBox
+        Left = 0
+        Top = 0
+        Width = 218
+        Height = 232
+        OnClickCheck = GroupsClickCheck
+        Align = alTop
+        ItemHeight = 13
+        PopupMenu = PopupMenu2
+        TabOrder = 0
+      end
+      object Layers: TCheckListBox
+        Left = 0
+        Top = 235
+        Width = 218
+        Height = 379
+        OnClickCheck = LayersClickCheck
+        Align = alClient
+        ItemHeight = 13
+        PopupMenu = PopupMenu3
+        TabOrder = 1
+      end
+    end
+    object TabSheet6: TTabSheet
+      Caption = 'OpenGL'
+      ImageIndex = 2
+      object Panel4: TPanel
+        Left = 0
+        Top = 573
+        Width = 218
+        Height = 41
+        Align = alBottom
+        TabOrder = 0
+        object Label15: TLabel
+          Left = 8
+          Top = 13
+          Width = 17
+          Height = 13
+          Caption = 'Tilt:'
+        end
+        object ScrollBar4: TScrollBar
+          Left = 48
+          Top = 12
+          Width = 153
+          Height = 17
+          Max = 360
+
+          TabOrder = 0
+          OnChange = ScrollBar4Change
+        end
+      end
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 675
+    Width = 867
+    Height = 19
+    Panels = <>
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = 'hou'
+    Filter = 'TeeHouse files (*.hou)|*.hou|TeeHouse text files (*.txt)|*.txt'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+    Title = 'Save TeeHouse to file'
+    Left = 273
+    Top = 81
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 71
+    Top = 233
+    object Movetotop1: TMenuItem
+      Caption = 'Move to &top'
+      OnClick = Movetotop1Click
+    end
+    object Movetobottom1: TMenuItem
+      Caption = 'Move to &bottom'
+      OnClick = Movetobottom1Click
+    end
+    object Moveup1: TMenuItem
+      Caption = 'Move &up'
+      ShortCut = 16469
+      OnClick = Moveup1Click
+    end
+    object Movedown1: TMenuItem
+      Caption = 'Move &down'
+      ShortCut = 16452
+      OnClick = Movedown1Click
+    end
+    object N5: TMenuItem
+      Caption = '-'
+    end
+    object Insert1: TMenuItem
+      Caption = '&Insert'
+      OnClick = Insert1Click
+    end
+    object Duplicate1: TMenuItem
+      Caption = '&Duplicate'
+      OnClick = Duplicate1Click
+    end
+    object Delete1: TMenuItem
+      Caption = 'D&elete'
+      ShortCut = 46
+      OnClick = Delete1Click
+    end
+    object N6: TMenuItem
+      Caption = '-'
+    end
+    object Orderbyname1: TMenuItem
+      Caption = 'Order by &name'
+      OnClick = Orderbyname1Click
+    end
+    object NoOrder1: TMenuItem
+      Caption = 'No &Order'
+      OnClick = NoOrder1Click
+    end
+    object N7: TMenuItem
+      Caption = '-'
+    end
+    object Savetoexternal1: TMenuItem
+      Caption = 'Save to external...'
+      OnClick = Savetoexternal1Click
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 336
+    Top = 224
+    object File1: TMenuItem
+      Caption = '&File'
+      object New1: TMenuItem
+        Caption = '&New'
+        OnClick = New1Click
+      end
+      object Open1: TMenuItem
+        Caption = '&Open...'
+        ShortCut = 16463
+        OnClick = Open1Click
+      end
+      object Save1: TMenuItem
+        Caption = '&Save'
+        ShortCut = 16467
+        OnClick = Save1Click
+      end
+      object Saveas1: TMenuItem
+        Caption = 'Save &as...'
+        OnClick = Saveas1Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Exit1: TMenuItem
+        Caption = '&Exit'
+        ShortCut = 32856
+        OnClick = Exit1Click
+      end
+    end
+    object Edit7: TMenuItem
+      Caption = '&Edit'
+      OnClick = Edit7Click
+      object Copy1: TMenuItem
+        Caption = '&Copy'
+        ShortCut = 16451
+        OnClick = Copy1Click
+      end
+      object Paste1: TMenuItem
+        Caption = '&Paste'
+        ShortCut = 16470
+        OnClick = Paste1Click
+      end
+      object Delete2: TMenuItem
+        Caption = '&Delete'
+        ShortCut = 16430
+        OnClick = Delete2Click
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object Duplicate2: TMenuItem
+        Caption = '&Duplicate'
+        OnClick = Duplicate2Click
+      end
+    end
+    object View1: TMenuItem
+      Caption = '&View'
+      object Resetview1: TMenuItem
+        Caption = '&Reset view'
+        OnClick = Resetview1Click
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Borders1: TMenuItem
+        Caption = '&Borders'
+        Checked = True
+        OnClick = Borders1Click
+      end
+      object extures1: TMenuItem
+        Caption = '&Textures'
+        Checked = True
+        OnClick = extures1Click
+      end
+      object Lightfocus1: TMenuItem
+        Caption = '&Light focus'
+        Checked = True
+        OnClick = Lightfocus1Click
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object Smooth1: TMenuItem
+        Caption = '&Smooth'
+        Checked = True
+        OnClick = Smooth1Click
+      end
+      object View3DAxes: TMenuItem
+        Caption = '&3D Axes'
+        OnClick = View3DAxesClick
+      end
+      object Boundingbox1: TMenuItem
+        Caption = 'Bounding box'
+        OnClick = Boundingbox1Click
+      end
+      object Locallight1: TMenuItem
+        Caption = 'Local light'
+        OnClick = Locallight1Click
+      end
+      object AntiAlias1: TMenuItem
+        Caption = 'Anti-Alias'
+        OnClick = AntiAlias1Click
+      end
+    end
+    object Help1: TMenuItem
+      Caption = '&Help'
+      object About1: TMenuItem
+        Caption = '&About...'
+        OnClick = About1Click
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'hou'
+    Filter = 'TeeHouse files (*.hou)|*.hou'
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    Title = 'Open TeeHouse file'
+    Left = 360
+    Top = 120
+  end
+  object PopupMenu2: TPopupMenu
+    Left = 76
+    Top = 121
+    object UnCheckAll1: TMenuItem
+      Caption = 'UnCheck All'
+      OnClick = UnCheckAll1Click
+    end
+    object CheckAll1: TMenuItem
+      Caption = 'Check All'
+      OnClick = CheckAll1Click
+    end
+  end
+  object PopupMenu3: TPopupMenu
+    Left = 76
+    Top = 169
+    object MenuItem1: TMenuItem
+      Caption = 'UnCheck All'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Check All'
+      OnClick = MenuItem2Click
+    end
+  end
+  object ChartPreviewer1: TChartPreviewer
+    Chart = Chart1
+    OnShow = ChartPreviewer1Show
+    Options = [cpoChangePrinter, cpoSetupPrinter, cpoResizeChart, cpoMoveChart, cpoChangeDetail, cpoChangePaperOrientation, cpoChangeMargins, cpoProportional, cpoAsBitmap]
+    Left = 349
+    Top = 49
+  end
+end

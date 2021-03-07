@@ -1,0 +1,92 @@
+inherited ExportEmailForm: TExportEmailForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'All exporting formats and options allow "Send by email", using t' +
+        'he'
+      '"Send" button at the TeeChart Export Dialog.'
+      
+        'Warning: Works only in systems with standard Mail API installed ' +
+        '(Outlook, etc).'
+      ''
+      
+        'Example: Click "Export" to show the Export dialog. Then click "S' +
+        'end".'
+      '')
+  end
+  inherited Chart1: TChart
+    object Series1: TDeltaPointSeries
+      Marks.Arrow.Style = psDot
+      Marks.ArrowLength = 45
+      Marks.DrawEvery = 3
+      Marks.Visible = True
+      SeriesColor = clRed
+      ClickableLine = False
+      Pointer.HorizSize = 16
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 16
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      EqualImage.Data = {
+        07544269746D6170F6000000424DF60000000000000076000000280000001000
+        0000100000000100040000000000800000000000000000000000100000001000
+        000000000000000080000080000000808000800000008000800080800000C0C0
+        C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+        FF0000000000000000000FFFFFFFFFFFFFF00FFFFFFFFFFFFFF00F000F0000FF
+        FFF00F0E00BFBF0FFFF00F0E0BFBF000FFF00F0E0FBFBFB0FFF00F0E0BFBF000
+        00F00F0E0FBFBFBFB0F00F0E0BF0000000F00F0000BFB0FFFFF00FFFFF000FFF
+        FFF00FFFFFFFFFFFFFF00FFFFFFFFFFFFFF00FFFFFFFFFFFFFF0000000000000
+        0000}
+      GreaterImage.Data = {
+        07544269746D6170F6000000424DF60000000000000076000000280000001000
+        0000100000000100040000000000800000000000000000000000100000001000
+        000000000000000080000080000000808000800000008000800080800000C0C0
+        C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+        FF0000000000000000000FFFFFFFFFFFFFF00FFF00000000FFF00FFF0EEEEEE0
+        FFF00FFF00000000FFF00FFFF0BFBFB0FFF00FFF0BFBFBFB0FF00FFF0FBFBF0F
+        0FF00FFF0BFBFB0B0FF00FFF0F0F0F00FFF00FFFF00B0B0FFFF00FFFFFF00F0F
+        FFF00FFFFFFF0B0FFFF00FFFFFFF000FFFF00FFFFFFFFFFFFFF0000000000000
+        0000}
+      ImageStyle = disHands
+      LowerImage.Data = {
+        07544269746D6170F6000000424DF60000000000000076000000280000001000
+        0000100000000100040000000000800000000000000000000000100000001000
+        000000000000000080000080000000808000800000008000800080800000C0C0
+        C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+        FF0000000000000000000FFFFFFFFFFFFFF00FFFFFFFFFFFFFF00FFFF000000F
+        FFF00FFF09999990FFF00FF0999999990FF00F099099990990F00F0999000099
+        90F00F099999999990F00F099009900990F00F099009900990F00FF099999999
+        0FF00FFF09999990FFF00FFFF000000FFFF00FFFFFFFFFFFFFF0000000000000
+        0000}
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Export...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 112
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'e-&Mail...'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+end

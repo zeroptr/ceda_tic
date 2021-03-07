@@ -1,0 +1,136 @@
+inherited CommanderFullRotation: TCommanderFullRotation
+  Left = 523
+  Top = 362
+  Width = 515
+  Height = 452
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 507
+  end
+  inherited Memo1: TMemo
+    Width = 507
+    Lines.Strings = (
+      
+        'When TeeCommander FullRotation is True the Chart can be rotated ' +
+        'through 360'#186' in both planes.')
+  end
+  inherited Chart1: TChart
+    Top = 189
+    Width = 507
+    Height = 236
+    BackWall.Dark3D = False
+    BackWall.Pen.Color = clGray
+    BackWall.Transparent = False
+    Border.Visible = True
+    BottomWall.Color = clGray
+    BottomWall.Dark3D = False
+    BottomWall.Pen.Color = clGray
+    LeftWall.Color = clSilver
+    LeftWall.Dark3D = False
+    LeftWall.Pen.Color = clGray
+    Legend.Font.Height = -13
+    Legend.Shadow.HorizSize = 0
+    Legend.Shadow.VertSize = 0
+    RightWall.Dark3D = False
+    RightWall.Pen.Color = clGray
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = clBlack
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.Grid.Visible = False
+    BottomAxis.GridCentered = True
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.MinorTicks.Visible = False
+    BottomAxis.Ticks.Color = clBlack
+    BottomAxis.TicksInner.Visible = False
+    DepthAxis.Axis.Width = 1
+    DepthAxis.Grid.Color = clBlack
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Height = -13
+    DepthAxis.MinorTicks.Visible = False
+    DepthAxis.Ticks.Color = clBlack
+    DepthAxis.TicksInner.Visible = False
+    DepthTopAxis.Axis.Width = 1
+    DepthTopAxis.Grid.Color = clBlack
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Height = -13
+    DepthTopAxis.MinorTicks.Visible = False
+    DepthTopAxis.Ticks.Color = clBlack
+    DepthTopAxis.TicksInner.Visible = False
+    Frame.Color = clGray
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clBlack
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Height = -13
+    LeftAxis.MinorTicks.Visible = False
+    LeftAxis.Ticks.Color = clBlack
+    LeftAxis.TicksInner.Visible = False
+    RightAxis.Axis.Width = 1
+    RightAxis.Grid.Color = clBlack
+    RightAxis.Grid.Style = psSolid
+    RightAxis.LabelsFont.Height = -13
+    RightAxis.MinorTicks.Visible = False
+    RightAxis.Ticks.Color = clBlack
+    RightAxis.TicksInner.Visible = False
+    TopAxis.Axis.Width = 1
+    TopAxis.Grid.Color = clBlack
+    TopAxis.Grid.Style = psSolid
+    TopAxis.Grid.Visible = False
+    TopAxis.LabelsFont.Height = -13
+    TopAxis.MinorTicks.Visible = False
+    TopAxis.Ticks.Color = clBlack
+    TopAxis.TicksInner.Visible = False
+    BevelOuter = bvNone
+    Color = clWhite
+    ColorPaletteIndex = 1
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Transparent = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        001900000000000000001C8B4000000000007889400000000000688A40000000
+        0000EC8D4000000000005E904000000000006C91400000000000069340000000
+        0000AA9440000000000080964000000000009897400000000000C69640000000
+        0000269640000000000096944000000000006093400000000000C09240000000
+        00001093400000000000D2944000000000004C93400000000000D49240000000
+        00003A9140000000000054904000000000004A904000000000001C9140000000
+        00006890400000000000B89040}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 507
+    object cbFullRotation: TCheckBox
+      Left = 17
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Full rotation'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbFullRotationClick
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 156
+    Width = 507
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 3
+  end
+end

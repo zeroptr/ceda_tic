@@ -1,0 +1,48 @@
+inherited ValueListModified: TValueListModified
+  Left = 317
+  Top = 238
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Series ValueLists (TChartValueList object) has a new property:  ' +
+        'Modified : Boolean'
+      'Setting Modified to True means data has been changed. The next'
+      
+        'time the Chart repaints, axes will adjust their Min and Max to V' +
+        'alueList new values.'
+      
+        'Note: This is only necessary when accessing Series Values direct' +
+        'ly.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 185
+      Height = 25
+      Caption = '&Modify Values directly'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

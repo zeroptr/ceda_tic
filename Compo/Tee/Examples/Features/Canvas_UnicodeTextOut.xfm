@@ -1,0 +1,31 @@
+inherited CanvasUnicodeTextOut: TCanvasUnicodeTextOut
+  Width = 691
+  Height = 512
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 683
+  end
+  inherited Memo1: TMemo
+    Width = 683
+    Lines.Strings = (
+      
+        'You can output Unicode characters directly to the Canvas. You ne' +
+        'ed to encode the characters. Use A TChart paint event such as '
+      'OnAfterDraw to write the text.'
+      'Example:'
+      '  UnicodeString[ 1] := WideChar($0152);'
+      '  UnicodeString[ 2] := WideChar($03E0);'
+      
+        '  TextOutW(Chart1.Canvas.Handle, 10, 10, PWideChar(UnicodeString' +
+        '), Length(UnicodeString));')
+  end
+  inherited Chart1: TChart
+    Width = 683
+    Height = 329
+    OnAfterDraw = Chart1AfterDraw
+  end
+  inherited Panel1: TPanel
+    Width = 683
+  end
+end

@@ -1,0 +1,85 @@
+inherited FastLineTreatNulls: TFastLineTreatNulls
+  Width = 648
+  Height = 493
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 640
+  end
+  object Splitter1: TSplitter [1]
+    Left = 365
+    Top = 164
+    Height = 302
+    Align = alRight
+  end
+  inherited Memo1: TMemo
+    Width = 640
+    Lines.Strings = (
+      'Three different ways to treat null values in FastLine series:'
+      ''
+      
+        'Series1.TreatNulls := tnDontPaint;  // <--- consider null points' +
+        ' "empty"'
+      ''
+      
+        'Series1.TreatNulls := tnSkip;  // <--- jump lines to next non-nu' +
+        'll point'
+      ''
+      
+        'Series1.TreatNulls := tnIgnore;  // <--- consider null points as' +
+        ' "zero" or any other "Y" value.')
+  end
+  inherited Chart1: TChart
+    Top = 164
+    Width = 365
+    Height = 302
+    View3D = False
+  end
+  inherited Panel1: TPanel
+    Width = 640
+    Height = 49
+    object Label1: TLabel
+      Left = 302
+      Top = 20
+      Width = 64
+      Height = 13
+      Caption = 'Point 30th, Y:'
+    end
+    object RadioGroup1: TRadioGroup
+      Left = 19
+      Top = 3
+      Width = 263
+      Height = 39
+      Caption = 'Treat nulls:'
+      Columns = 3
+      ItemIndex = 2
+      Items.Strings = (
+        'DontPaint'
+        'Skip'
+        'Ignore')
+      TabOrder = 0
+      OnClick = RadioGroup1Click
+    end
+    object Edit1: TEdit
+      Left = 373
+      Top = 17
+      Width = 56
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+      OnChange = Edit1Change
+    end
+  end
+  object ChartGrid1: TChartGrid
+    Left = 368
+    Top = 164
+    Width = 272
+    Height = 302
+    Align = alRight
+    Options = [goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing, goColSizing, goEditing, goTabs, goThumbTracking]
+    TabOrder = 3
+    Chart = Chart1
+    ShowColors = True
+    ShowLabels = False
+  end
+end

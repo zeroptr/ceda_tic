@@ -1,0 +1,286 @@
+// IBA_LocateCursor.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_LocateCursor.Create( AOwner: TComponent );
+begin
+  inherited Create( AOwner );
+  FLocateLinks := TIB_StringList.Create;
+  FReadOnly := true;
+end;
+
+destructor TIB_LocateCursor.Destroy;
+begin
+  Destroying;
+  FLocateLinks.Free;
+  FLocateLinks := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_LocateCursor.FreeServerResources;
+begin
+  Close;
+  inherited FreeServerResources;
+end;
+
+procedure TIB_LocateCursor.SetLocateLinks( AValue: TIB_StringList );
+begin
+  FLocateLinks.Assign( AValue );
+end;
+
+procedure TIB_LocateCursor.SetLocateKeyFields( const AValue: string );
+begin
+  if LocateKeyFields <> AValue then
+  begin
+    FLocateKeyFields := AValue;
+    InvalidateSQL;
+  end;
+end;
+
+procedure TIB_LocateCursor.SetLocateKeyValues( AValue: Variant );
+begin
+//!! Need to make sure that NULL values are considered.
+//!! If a value is changing from NULL to NOT NULL then InvalidateSQL.
+  FLocateKeyValues := AValue;
+end;
+
+procedure TIB_LocateCursor.SetLocateNearest( AValue: boolean );
+begin
+  if LocateNearest <> AValue then
+  begin
+    FLocateNearest := AValue;
+    InvalidateSQL;
+  end;
+end;
+
+procedure TIB_LocateCursor.SetLocateOptions( AValue: TIB_LocateOptions );
+begin
+  if LocateOptions <> AValue then
+  begin
+    FLocateOptions := AValue;
+    InvalidateSQL;
+  end;
+end;
+
+function TIB_LocateCursor.GetParamName( ALink: string ): string;
+var
+  tmpCol: TIB_Column;
+begin
+  tmpCol := BDataset.FieldByName( ALink );
+  Result := '';
+  if SQLDialect < 3 then
+    if tmpCol.Relname <> '' then
+      Result := '_' + stLitCriteria( tmpCol.RelName ) +
+                '_' + stLitCriteria( tmpCol.FieldName )
+    else
+      Result := '_' + stLitCriteria( tmpCol.FieldName );
+  Result := IB_LOCATE_PARAMETER + IntToStr( tmpCol.FieldNo ) + Result;
+  if Length( Result ) > 32 then
+    SetLength( Result, 32 );
+  Result := IB_Connection.mkVarIdent( Trim( Result ));
+end;
+
+procedure TIB_LocateCursor.SysPrepareSQL;
+var
+  ii: integer;
+  tmpItem: string;
+  tmpCol: TIB_Column;
+  tmpStr: string;
+  tmpOper: string;
+  tmpParam: string;
+  tmpKey: variant;
+  tmpOrdNo: integer;
+  tmpOrdStr: string;
+  newOrdSQL: string;
+begin
+  inherited SysPrepareSQL;
+  ExtractFieldsIntoList( LocateKeyFields, LocateLinks );
+  FLocateMustBeOnServer := false;
+  if LocateNearest then
+    newOrdSQL := 'ORDER BY '
+  else
+    newOrdSQL := '';
+  SQLWhereLow.Add( '(' );
+  for ii := 0 to LocateLinks.Count - 1 do
+  begin
+    tmpCol := BDataset.FieldByName( LocateLinks[ ii ] );
+    tmpParam := '?' + ParamName[ tmpCol.FullFieldName ];
+    if BDataset.SysFieldNames.Count = BDataset.FieldCount then
+      tmpItem := Trim( GetCharValues( BDataset.SysFieldNames[tmpCol.FieldNo] ))
+    else
+      tmpItem := tmpCol.FullFieldName;
+    if ( LocateLinks.Count > 1 ) or VarIsArray( LocateKeyValues ) then
+      tmpKey := LocateKeyValues[ ii ]
+    else
+      tmpKey := LocateKeyValues;
+
+    if VarIsNull( tmpKey ) or VarIsEmpty( tmpKey ) then
+    begin
+      tmpParam := '';
+      tmpOper := ' IS NULL ';
+      if LocateNearest then
+        raise Exception.Create( 'Cannot use LocateNearest with NULL' );
+    end
+    else
+    if LocateNearest then
+    begin
+      tmpOrdNo := BDataset.SQLOrderLinks.LinkIndex[ tmpCol.BestFieldName ];
+      tmpOrdStr := BDataset.SQLOrderLinks.LinkValues[ tmpCol.BestFieldName ];
+      if ii > 0 then
+        newOrdSQL := newOrdSQL + #13#10'       , ';
+      if not FLocateMustBeOnServer and
+         ( tmpOrdNo = ii ) and ( tmpOrdStr = 'DESC' ) then
+      begin
+        newOrdSQL := newOrdSQL + tmpItem + ' DESC';
+        tmpOper := ' <= ';
+      end
+      else
+      if not FLocateMustBeOnServer and
+         ( tmpOrdNo = ii ) and ( tmpOrdStr = 'ASC' ) then
+      begin
+        newOrdSQL := newOrdSQL + tmpItem + ' ASC';
+        tmpOper := ' >= ';
+      end
+      else
+      begin
+        newOrdSQL := newOrdSQL + tmpItem + ' ASC';
+        tmpOper := ' >= ';
+        FLocateMustBeOnServer := true;
+      end;
+    end
+    else
+      tmpOper := ' = ';
+    if tmpCol.IsText and ( tmpParam <> '' ) then
+    begin
+      if ( lopPartialKey in LocateOptions ) and not LocateNearest then
+      begin
+        if tmpKey = '' then
+          tmpOper := ' >= '
+        else
+          tmpOper := ' STARTING WITH ';
+      end;
+      if lopCaseInsensitive in LocateOptions then
+      begin
+        tmpStr := tmpCol.NoCaseFieldName;
+        if tmpStr = '' then
+          if tmpCol.CharCase = ccUpper then
+            tmpStr := tmpCol.FullFieldName;
+        if tmpStr = '' then
+        begin
+          tmpItem := 'UPPER( ' + tmpItem + ' )';
+          tmpParam := 'UPPER( ' + tmpParam + ' )';
+        end
+        else
+        begin
+          tmpItem := tmpStr;
+          tmpParam := 'UPPER( ' + tmpParam + ' )';
+        end;
+      end;
+    end;
+    SQLWhereLow.Add( '(' );
+    if ( ii = LocateLinks.Count - 1 ) or not LocateNearest then
+    begin
+      SQLWhereLow.Add( '(' );
+      SQLWhereLow.Add( tmpItem + tmpOper + tmpParam );
+      SQLWhereLow.Add( ')' );
+    end
+    else
+    begin
+      if Pos( '<', tmpOper ) > 0 then
+        tmpOper := ' < '
+      else
+        tmpOper := ' > ';
+      SQLWhereLow.Add( '(' );
+      SQLWhereLow.Add( tmpItem + tmpOper + tmpParam );
+      SQLWhereLow.Add( ')' );
+      SQLWhereLow.Add( 'OR' );
+      SQLWhereLow.Add( '(' );
+      SQLWhereLow.Add( '(' );
+      tmpOper := ' = ';
+      SQLWhereLow.Add( tmpItem + tmpOper + tmpParam );
+      SQLWhereLow.Add( ')' );
+      SQLWhereLow.Add( 'AND' );
+    end;
+  end;
+  for ii := 0 to LocateLinks.Count - 1 do
+  begin
+    SQLWhereLow.Add( ')' );
+    if ( ii <> LocateLinks.Count - 1 ) and LocateNearest then
+      SQLWhereLow.Add( ')' );
+  end;
+  SQLWhereLow.Add( ')' );
+  if LocateNearest then
+  // Shouldn't take out inherant ORDER BY unless necessary.
+  // Otherwise, the Locate may not end up on the first occurance of the
+  // desired record in the dataset.
+    SQLOrder.Text := newOrdSQL;
+  OrderingItemNo := 0;
+end;
+
+procedure TIB_LocateCursor.SysBeforeOpen;
+var
+  ii: integer;
+  tmpParam: TIB_Column;
+  tmpOfs: integer;
+begin
+  inherited SysBeforeOpen;
+  for ii := 0 to ParamCount - 1 do
+  begin
+    tmpParam := BDataset.FindParam( Params[ ii ].FullFieldName );
+    if Assigned( tmpParam ) then
+      Params[ ii ].Assign( tmpParam );
+  end;
+  if ( LocateLinks.Count > 1 ) or VarIsArray( LocateKeyValues ) then
+  begin
+    tmpOfs := VarArrayLowBound( LocateKeyValues, 1 ); 
+    for ii := 0 to LocateLinks.Count - 1 do
+    begin
+      tmpParam := FindParam( ParamName[LocateLinks[ii]] );
+      if Assigned( tmpParam ) then
+        tmpParam.AsVariant := LocateKeyValues[ii+tmpOfs];
+    end;
+  end
+  else
+  if ( LocateLinks.Count = 0 ) then
+    raise EIB_DatasetError.Create( 'No LocateLinks entries' )
+  else
+  begin
+    tmpParam := FindParam( ParamName[LocateLinks[0]] );
+    if Assigned( tmpParam ) then
+      tmpParam.AsVariant := LocateKeyValues;
+  end;
+end;
+

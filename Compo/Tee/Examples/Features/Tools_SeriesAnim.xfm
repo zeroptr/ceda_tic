@@ -1,0 +1,99 @@
+inherited SeriesAnimDemo: TSeriesAnimDemo
+  Left = 420
+  Top = 348
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 58
+  end
+  inherited Memo1: TMemo
+    Height = 58
+    Lines.Strings = (
+      'The SeriesAnimation tool displays an animated growing chart.'
+      ''
+      'ChartTool1.Execute; ')
+  end
+  inherited Chart1: TChart
+    Top = 101
+    Height = 236
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Series Animation tool')
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Barra'
+    end
+    object ChartTool1: TSeriesAnimationTool
+      Series = Series1
+      StartAtMin = False
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 60
+    object Label1: TLabel
+      Left = 96
+      Top = 14
+      Width = 30
+      Height = 13
+      Caption = '&Steps:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 232
+      Top = 14
+      Width = 18
+      Height = 13
+      Caption = '100'
+    end
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Animate !'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ScrollBar1: TScrollBar
+      Left = 131
+      Top = 13
+      Width = 94
+      Height = 16
+      LargeChange = 20
+      Max = 1000
+      Min = 1
+
+      Position = 100
+      SmallChange = 5
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+    object Button2: TButton
+      Left = 368
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button2Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 266
+      Top = 12
+      Width = 79
+      Height = 17
+      Caption = '&One by one'
+      TabOrder = 3
+      OnClick = CheckBox1Click
+    end
+  end
+end

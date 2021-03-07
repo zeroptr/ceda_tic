@@ -1,0 +1,1962 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>Iocomp Components Release Notes</TITLE>
+<META NAME="ProgId" CONTENT="FrontPage.Editor.Document">
+<LINK rel="stylesheet" type="text/css" href="/css/default.css"><META HTTP-EQUIV="Content-Language" CONTENT="en-us"></HEAD>
+<BODY LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff">
+
+<P><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"></P>
+<H1>Iocomp Components Release Notes</H1>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=353>
+<TR><TD WIDTH="28%" VALIGN="MIDDLE">
+<B><P ALIGN="RIGHT">Release:</B></TD>
+<TD WIDTH="72%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">4.0.0 Service Pack 0</TD>
+</TR>
+<TR><TD WIDTH="28%" VALIGN="MIDDLE">
+<B><P ALIGN="RIGHT">Installer Build:</B></TD>
+<TD WIDTH="72%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">75</TD>
+</TR>
+<TR><TD WIDTH="28%" VALIGN="MIDDLE">
+<B><P ALIGN="RIGHT">Release Date:</B></TD>
+<TD WIDTH="72%" VALIGN="MIDDLE">
+<P ALIGN="CENTER">17 January 2008</TD>
+</TR>
+</TABLE>
+
+<P>This document is organized into the following sections...</P>
+
+<UL>
+<LI><A HREF="#RevisionHistory">Revision History</A> </LI>
+<LI><A HREF="#InstallationInadditiontoRunningInstaller">Installation</A> </LI>
+<LI><A HREF="#OPC">OPC</A> </LI>
+<LI><A HREF="#OPC">Technical Support</A> </LI></UL>
+
+<HR></P>
+<FONT COLOR="#000080"><H2><A NAME="RevisionHistory">Revision History</A></H2>
+</FONT><P><HR></P>
+<H4>ActiveX and VCL/CLX Version 4.0.0 Service Pack 0</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">None.</LI>
+</OL>
+<H4><BR>
+</span>New Features:</H4>
+
+<OL>
+
+<LI>Added Support For Borland's Turbo Delphi.</LI>
+<LI>Added Support For Borland's Turbo C++.</LI>
+<LI>Added Support For Borland's RAD Studio 2007.</LI>
+<LI>Added Support for Borland's Delphi 2007.</LI>
+<LI>Added Support For Borland's C++ Builder 2007.</LI>
+<LI>Added PointerFillEnabled and PointerFillColor properties to the iSlider 
+control.</LI>
+<LI>Added the following events to the iPlot and iXYPlot controls...<ul>
+	<li>OnGetMouseCursorChannel</li>
+	<li>OnGetMouseCursorXAxis </li>
+	<li>OnGetMouseCursorYAxis </li>
+	<li>OnGetMouseCursorDataCursor</li>
+	<li>OnGetMouseCursorDataView </li>
+	<li>OnGetMouseCursorLegend </li>
+	<li>OnGetMouseCursorLimit </li>
+	<li>OnGetMouseCursorTable </li>
+	<li>OnGetMouseCursorAnnotation</li>
+</ul>
+</LI>
+</OL>
+
+<P><P><HR></P>
+<H4>ActiveX and VCL/CLX Version 3.1.0 Service Pack 5</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed property editor lockup issues 
+in ActiveX containers when using the Color, Font, and etc dialogs.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed scrolling issue with the plot 
+legend. Would occur when the plot control was first resized such that not all 
+legend items could be displayed and the scroll bars appeared. Then the user 
+would need to <br>scroll the list down one or more items. When the plot control 
+was then resized large enough to fit all legend items, the list would still be 
+scrolled and the scroll buttons would disappear.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Added missing WordWrap checkbox in 
+the iLabel property editor.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed the Plot axis Master-UI-Input 
+issue that caused other axes to not respond to mouse-wheel movements.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed Plot Annotation bug that would 
+occur when the X-Axis was in DateTime mode. There was an error in the span 
+pixels calculation for the width of the annotation.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed PlotAnnotation OuterMargin 
+being ignored when the style property is set to ipasTextBox and multi-line text 
+is displayed.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed issue with the plot control 
+axis labeling where when in the Prefix mode, the 0.0 value tick label would show 
+up as 2.78f (0.000000000000278) due to floating point storage/rounding issues. 
+The new code detects this rounding issue and displays a hard-coded &quot;0.0&quot; string.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed bug on the iXYPlot control 
+data-cursor that would result in small inaccuracies with the returned X&amp;Y 
+values.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed bug with Iocomp controls that 
+support saving strings properties to file and contained multi-line text. The 
+symptoms would be when reloading the properties, multi-line string properties 
+would only load the first line and all other lines would be dropped. </LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed OnPositionOverMax and 
+OnPositionUnderMin event not firing on Position/Scale type components.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed resource leak in iLedRound 
+control. Would result in a HRGN object being leaked each time the Led was drawn.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed ALT key trapping problem on all 
+controls in the ActiveX version.</LI>
+</OL>
+<H4><BR>
+</span>New Features:</H4>
+
+<OL>
+
+<LI>Added SpanMinimum, MaxMargin, and MinMargin properties to the axes Tracking 
+features. Use SpanMinimum to limit the minimum value for the Span. Use the 
+MaxMargin and MinMargin properties to provide a margin above or below the data. These properties are also used when performing a 
+	ZoomToFit operation.</LI>
+<LI>Added the ResetStartTimeOnFirstDataPoint property to the iPlotChannel 
+	object. This property is useful if you are adding data with an elapsed time 
+	using the AddYElapsedTime or AddYElapsedSeconds methods and you want the 
+	first data-point to start at zero. </LI>
+<LI>Added AllowOutOfOrderXValues and DrawOutOfOrderXValues properties to the 
+	Plot control Channel type (iPlotChannel for VCL and iPlotChannelX for 
+	ActiveX). The iPlotChannel is designed assuming that the X-Values are 
+	incremental. This allows for high-speed drawing of the channel data using 
+	the y = f(x) formula. For a default plot control setup, you will not receive 
+	an error if you add data-points with an out-of-order X-Value. Set the 
+	AllowOutOfOrderXValues property to False so that an exception is raised when 
+	an out-of-order X-Value is added. If you need to have out-of-order x-values, 
+	set the DrawOutOfOrderXValues property to True, but you will loose the 
+	high-speed drawing optimization capability.</LI>
+<LI>Added the following events to the Plot control...<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelXAxis <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelYAxis <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelDataView <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelLegend <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelChannel <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelLimit <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelDataCursor<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	OnMouseWheelAnnotation<br>
+	</LI>
+	<br>
+<LI>Added a CanFocus property to the follow plot sub-objects...<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XAxis 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; YAxis <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataView 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Legend 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Channel 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Limit <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataCursor<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Annotation</LI><br>
+<br>
+<LI>Added ClickRectLeft, ClickRectRight, ClickRectTop, and ClickRectBottom 
+	properties to the iPlotAnnotation object (All properties are in pixels). 
+	These properties where added to allow you to determine the extents of 
+	annotations like the Text and TextBox which have their extents determined by 
+	the Text, Font, and etc. attributes. These new properties are not calculated 
+	until the plot is repainted. If you need to position another object based on 
+	these property values immediately, you will need to call the ReCalcLayout 
+	method to force a recalculation of all pixel based property values.</LI>
+<LI>Added UseCachedInerpolatedData property to the plot control 
+	iPlotDataCursor object. This property is used to speed up calls to the 
+	GetInterpolatedYValue method. When this property is set to False, each call 
+	to the GetInterpolatedYValue method requires a ReCalcLayout method call. If 
+	you are in a loop calling GetInterpolatedYValue many times, performance can 
+	suffer significantly. Typically, this scenario applies when using a curve 
+	fitting interpolation style like Cubic-Spline, Polynomial, and etc. where 
+	you want to iterate over the visible data to get the displayed interpolated 
+	values. For this case, set UseCachedInerpolatedData to True, make any other 
+	display settings, and then call the ReCalcLayout method once before looping 
+	and calling GetInterpolatedYValue. Note: You are restricted to visible data 
+	when using this technique. </LI>
+<LI>Added Scalar and Offset properties to all opc-items. Used for scaling 
+	and or applying an offset correction to an opc-item's data. On new opc-data 
+	from the opc-server, the data is multiplied by the scalar before the offset 
+	is applied. This feature is only support on opc data that is of type real or 
+	integer. The scalar and offset is not applied to data with types like 
+	Boolean, String, and etc. The PlotChannel adds an OPCScalar and OPCOffset 
+	property that is used for the y-value. The XYPlotChannel adds an OPCScalar, 
+	OPCOffset, OPCScalar2 and OPCOffset2 property. The OPCItemName, OPCScalar, 
+	OPCOffset are used for the x-value and the OPCItem2Name, OPCScalar2, 
+	OPCOffset2 are used for the Y-value.</LI>
+<LI>Added options to allow showing and customization of data-points hints to 
+	the user. Set the channel ShowDataPointHints property to True to allow a 
+	hint box to be shown next to the data-point. The plot must also be the 
+	select mode and the data-point markers must also be visible for this option 
+	to be enabled. By default, the x&amp;y value for the data-point will be shown 
+	and will be formatted using the respective axes labeling formatting. To 
+	provide your own formatting, use the OnDataPointCustomizeHint event and 
+	change the AText parameter to the desired text you want displayed.</LI>
+<LI>Added OnMouseDownDataPoint, OnMouseMoveDataPoint, and OnMouseUpDataPoint 
+	events to the plot channel objects. These events will only fire when the 
+	channel is enabled, the plot is in the select mode, and data-point markers 
+	are shown on the channel.</LI>
+<LI>Added Image property to the Plot Annotation object. When this property 
+	is set to a non null value, the ImageIndex and ImageListIndex properties are 
+	ignored even if they point to a valid image in one of the three different 
+	imagelists. Note: The Style of the annotation must also be set to 
+	&quot;ipasImage&quot; for the image to be displayed. The lower left pixel of the image 
+	is used to set the transparent color of the image. If you do not want the 
+	image to be transparent, make sure to set this pixel to a color that does 
+	not match any other color in the image. You can also use the new 
+	ImageLoadFromFile method to load the image directly from a file. Also added 
+	an ImageClear method to make it easy to clear out the image in many 
+	different ActiveX development environments.</LI>
+<LI>Added None to the TiPlotAxesControlStyle which is used by the 
+	PlotDataView AxesControlMouseStyle and AxesControlWheelStyle properties. 
+	These new enumeration allows you to independently turn of the DataView Mouse 
+	and Wheel axes control.</LI>
+<LI>Added ability to load the iSwitchLed Glyph property image inside of the 
+	Iocomp design-time property editor. </LI>
+<LI>Added ability to load the iRotationDisplay Picture property image inside 
+	of the Iocomp design-time property editor.</LI>
+<LI>Added property ShowDisabledState to the iSwitchRotary, iSwitchSlider, 
+	iSlider, and iKnob control. This property allows you to control whether the 
+	control draws itself in a disabled state when the Enabled property is set to 
+	False. This feature is helpful when you have background colors that do not 
+	contrast will be disabled text and borders that are drawn using black and 
+	gray colors.</LI>
+<LI>Added Image rotation capability to the iObjectCanvas control. Use the 
+	GetObjectImageRotation and SetObjectImageRotation methods on the 
+	iObjectCanvas to Get or Set the rotation of the image object.</LI>
+<LI>Added new PlotAnnotation style called ipasRectangle2. The ipasRectangle2 
+	style uses the X, Y, X2, and Y2, properties of the annotation instead of the 
+	X, Y, Width, and Height like on the ipasRectangle style. The main reason for 
+	this addition is to eliminated the wobble in the annotation when resizing 
+	it. The wobble occurs due to aliasing of the mouse movements along with 
+	dividing it evenly into the new Width and or Height value.</LI>
+<LI>Added a new property to the PlotAnnotation and PlotLimit called 
+	SelectModeOnlyInteraction. This property is set to true by default meaning 
+	that the plot object will not be mouse interactive will the plot data-view 
+	is not in the select mode. Setting this property to a false will cause the 
+	object to be interactive in any data-view mode (Select, Zoom-box, or 
+	Data-Cursor). The main benefit of this property is to allow these objects to 
+	generate mouse-move events regardless of the mode of the data-view.</LI>
+<LI>Upgrade the AngularGauge to hide the last tick label when the 
+	ArcRangeDegrees is set to 360 degrees. Before this upgrade, you would have 
+	the Min label overlapped by the Max label. Only the Min label will now be 
+	shown.</LI>
+<LI>Added 2 additional color sections to the iLedBar and iLedSpiral 
+	controls. There are 4 new properties called SectionColor4, SectionColor5, 
+	SectionEnd3, and SectionEnd4. The SectionCount property upper limit has been 
+	changed from 3 to 5 to support the two addition color sections. </LI>
+<LI>Added VK_APPS key support to plot object pop-up menu support. The pop-up 
+	menu will now pop-up when hitting the menu-list keyboard key.</LI>
+<LI>Addded OnAnnotationMoveUser event to the plot controls. This event will 
+	fire anytime the user moves an annotation and the index of the annotation is 
+	passed in the event handler parameters.</LI>
+<LI>Addded OnAnnotationResizeUser event to the plot controls. This event 
+	will fire anytime the user moves an annotation and the index of the 
+	annotation is passed in the event handler parameters.</LI>
+<LI>Added the following properties, methods, and events which were present 
+	on the Plot control main VCL interface, but were missing on the ActiveX 
+	interface...<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<b>Properties</b> :&nbsp;&nbsp;PrinterPaperHeightCentimeter, PrinterPaperHeightInches, 
+	PrinterPaperHeightPixels, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrinterPaperWidthCentimeters, PrinterPaperWidthInches, 
+	PrinterPaperWidthPixels, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrintXStart, PrintXStop.<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Methods</b> :&nbsp;&nbsp;&nbsp; 
+	PreviewChart, PrintAdjustXSpanToMinutesPerMillimeter, PrintSizeToFillPage.<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Events</b>&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;&nbsp; OnBeforePrintPage</LI><br>
+<br>
+<LI>Add CloseAllServerConnections method to the iOPCManager component. This 
+	method allows you to force all OPCServer connections to close. This method 
+	is useful when the DCOM connection to the OPC server has been lost and you 
+	wish to terminate all connections from the iOPCManger's point of view. After 
+	this method has been called, re-add your opc-items, or call the Activate 
+	method on the existing opc-items have the connect re-established. </LI>
+<LI>Added TextLineAlignment property to the plot annotation sub-object. This 
+	property allows you to specify how multiple lines of text are aligned 
+	horizontally in the annotation. Applies to the Text and TextBox style of 
+	annotation.</LI>
+<LI>Added the ability for the user to zoom-box while in the scroll/zoom mode 
+	by using the right mouse button. Before, the user had to switch the plot 
+	control into the zoom-box mode to be able zoom into a specific area using 
+	the left mouse button. The user can now perform a zoom-box operation using 
+	the right mouse button while in the scroll/zoom mode. The left mouse button 
+	is still used to scroll/zoom as before. The user must move the mouse more 
+	than 5 pixels in either direction to initiate the zoom-box operation. If the 
+	user moves the mouse less then 5 pixels in either direction while the mouse 
+	is down, then releases the mouse, the pop-up menu will still appear as 
+	before. </LI>
+<LI>Added the AxesControlAllowInSelectMode property to the Plot Data-View 
+	object. This property allows scrolling and zooming of the plot control while 
+	in the Select mode (Also assuming the AxesControlEnabled property is set to 
+	True). Before, you had to turn off the select mode to be able to scroll or 
+	zoom the view (Also assuming the Zoom-Box mode has not selected). The new 
+	right-click zoom-box mode is supported by this option. </LI>
+<LI>Added Visible, BackGroundColor, FontColor, and UseControlFontColor 
+	properties to the Keyboard control button properties. With these properties, 
+	you can hide or customize the look of a specific keyboard button.</LI>
+<LI>Added support for adding 2 or more OPC-Items using the same property 
+	name on the control. Typically, this option would be used to control 2 
+	different digital signal's on the OPC-Server.</LI>
+<LI>Added OPCItem2Name, OPCScalar2, and OPCOffset2 properties to the Plot 
+	control channel object. These properties give you the ability to have a 
+	separate OPC item for the X and Y value for each data-point and also to 
+	scale and offset the value. Normally, the OPCItemName property is used to 
+	specify the OPC-Item for the Y-Value and the X-Value is generated based on 
+	the OPCXValueSource property setting. When having the X &amp; Y value sourced 
+	from an OPC-Item, use the OPCItemName property to specify the OPC-Item for 
+	the data-point X-Value and use the OPCItem2Name property to specify the 
+	OPC-Item for the data-point Y-Value.</LI>
+<LI>Added ability for the Plot control Label object to support images. Use 
+	the ImageListIndex and ImageIndex property to use an image from one of the 3 
+	internal ImageList's in the plot control. Or use the Image property or 
+	ImageLoadFromFile method to load an image through code dynamically. Use the 
+	ImageClear method to dynamically clear the image. The image will be centered 
+	horizontally using the Alignment property of the label. The MarginLeft 
+	property is used if the Alignment is set to iahLeft. The MarginRight 
+	property is used if the Alignment is set to iahRight. Both the MarginLeft 
+	and MarginRight properties are ignored if the Alignment is set to iahCneter.</LI>
+</OL>
+
+<P><P><HR></P>
+<H4>ActiveX and VCL/CLX Version 3.0.8 Service Pack 4</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed property editor bug that would cause lockups in several different development environments when click on Color, Font, Picture, and etc. dialogs.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed tabbing problems with the ActiveX controls in Visual C++.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed OPC Item browsing bug where an Access Violation would occur when trying to browse more than 512 items in a given branch.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed Plot data-cursor bug where delta cursors would always report 0 for the measured value. 
+</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed XYPlot data-cursor bug where the data-cursor would always measure the first channel regardless of what channel was selected.</LI>
+<LI>
+<p style="margin-top: 0; margin-bottom: 0">Fixed drawing error bug in the iPhonePad and iKeyBoard control where some buttons would draw using the disabled control even if they were not disabled.</LI>
+</OL>
+<H4><BR>
+</span>New Features:</H4>
+<blockquote>
+	<H4>iLinearGauge</H4>
+	<BLOCKQUOTE>
+		<LI>Added GetPointersFocused and SetPointersFocused methods.</LI>
+	</BLOCKQUOTE>
+	<H4>iLable</H4>
+	<BLOCKQUOTE>
+		<LI>Added WordWrap property for multi-line support.</LI>
+	</BLOCKQUOTE><B>
+	<BLOCKQUOTE>iPlot and iXYPlot 
+	</BLOCKQUOTE></B>
+	<BLOCKQUOTE>
+		<LI>Added OnAddChannel event.</LI>
+		<LI>Added OnAddXAxis event.</LI>
+		<LI>Added OnAddYAxis event.</LI>
+		<LI>Added OnAddDataCursor event.</LI>
+		<LI>Added OnAddDataView event.</LI>
+		<LI>Added OnAddLegend event.</LI>
+		<LI>Added OnAddLimit event.</LI>
+		<LI>Added OnAddTable event.</LI>
+		<LI>Added OnAddAnnotation event.</LI>
+		<LI>Added OnRemoveChannel event.</LI>
+		<LI>Added OnRemoveXAxis event.</LI>
+		<LI>Added OnRemoveYAxis event.</LI>
+		<LI>Added OnRemoveDataCursor event.</LI>
+		<LI>Added OnRemoveDataView event.</LI>
+		<LI>Added OnRemoveLegend event.</LI>
+		<LI>Added OnRemoveLimit event.</LI>
+		<LI>Added OnRemoveTable event.</LI>
+		<LI>Added OnRemoveAnnotation event.</LI>
+	</BLOCKQUOTE>
+</blockquote>
+
+<P><HR></P>
+<H4>ActiveX and VCL/CLX Version 3.0.6 Service Pack 3</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed bug in PieChart and PercentBar where slices less than 1% would not draw.</LI>
+<LI>Fixed name conflict problem with Visual C++ wrapper generator. The ItemCount property would conflict with the GetItemCount method. changed GetItemCount method name to Get__ItemCount (note: Get is followed by a double underscore).</LI>
+<LI>Fixed hit test code for all plot objects. Plot objects on the bottom would respond to the hit-test first. Plot objects on top now respond to the hit-test first.</LI>
+<LI>Fixed Zoom-To-fit bug on the PlotAxis class. When the channels assigned to the axes had no data, calling the ZoomToFit method on the axis would cause the Span to be set to zero. The ZoomToFit method has been changed to not modify the Span in this case.</LI>
+<LI>Fixed X-Axis label formatting bug that caused the application/process to lock up. when the Data-Time mode was enabled on the axis and the increment in labels was in days, months, or years, for some cases, the label generation code would enter an endless loop causing the application/process to lock up.</LI>
+<LI>Fixed clipping problem when printing the plot control with a gradient background.</LI>
+<LI>Fixed bugs on Plot Data-Cursor that would result in a null being displayed if the pointer was exactly over the first or last data-point in a channel.</LI>
+<LI>Fixed Zoom-To-Fit bug on the axes that would occur when all data-points had the same value. Would result in the application/process locking up.</LI>
+<LI>AnalogOutput would always display a "." character for the decimal separator. No Fixed to use the International settings on the operating system.</LI>
+<LI>Fixed iPaintToDC method on all controls to use the correct X &amp; Y offset.</LI>
+<LI>Fixed data-cursor problems in displaying the correct values when the axes were configured for logarithmic display.</LI>
+</OL>
+<H4>Distribution Changes:</H4>
+<H4><span style="font-weight: 400">The "iOPC.dll" has now been renamed to "iOPC2.dll". The new "iOPC2.dll" has interface changes to make it compatible with our .Net components/controls. Version 3 SP3 for ActiveX &amp; VCL and Version 3 SP2 for .Net must now use the new iOPC2.dll during development and distribution. If you have OPC applications developed with our ActiveX or VCL controls prior to Version 3 SP3, you must still distribute them with the older "iOPC.dll". It is recommended that both dll's be distributed to the System32 directory on the client machine and they can coexist together.<BR>
+<BR></span>New Features:</H4>
+<blockquote>
+	<H4>iAngularGauge</H4>
+	<BLOCKQUOTE>
+		<LI>Added a new property: FaceBevelSize</LI>
+		<LI>Added a new property: FaceBevelStyle</LI>
+		<LI>Added a new property: FaceColor</LI>
+		<LI>Added a new property: FaceStyle</LI>
+		<LI>Added a new property: Hub3D</LI>
+		<LI>Added a new property: ShowFace</LI>
+	</BLOCKQUOTE><B>iEditCustom</B><BLOCKQUOTE>
+		<LI>Added a new property: AcceptOnLostFocus</LI>
+	</BLOCKQUOTE><B>iGaugeComponent</B><BLOCKQUOTE>
+		<LI>Added a new method: SetPointersPositionNoEvent</LI>
+	</BLOCKQUOTE><B>iKnob</B><BLOCKQUOTE>
+		<LI>Added a new property: Color</LI>
+	</BLOCKQUOTE><B>iLedBar</B><BLOCKQUOTE>
+		<LI>Added a new property: FillReferenceEnabled</LI>
+		<LI>Added a new property: FillReferenceValue</LI>
+	</BLOCKQUOTE><B>iLinearGauge</B><BLOCKQUOTE>
+		<LI>Added a new property: AllowFocus</LI>
+		<LI>Added a new property: KeyArrowStepSize</LI>
+		<LI>Added a new property: KeyPageStepSize</LI>
+		<LI>Added a new property: MouseWheelStepSize</LI>
+		<LI>Added a new property: PixelsMax</LI>
+		<LI>Added a new property: PixelsMin</LI>
+	</BLOCKQUOTE><B>iOPCItem</B><BLOCKQUOTE>
+		<LI>Added a new method: GetDataNow</LI>
+		<LI>Added a new property: UpdateSuspended</LI>
+	</BLOCKQUOTE><B>iPositionComponent</B><BLOCKQUOTE>
+		<LI>Added a new property: MinMaxStyle3D</LI>
+	</BLOCKQUOTE>
+</blockquote>
+
+<B>
+<BLOCKQUOTE>iSlider</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: PixelsMax</LI>
+		<LI>Added a new property: PixelsMin</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iSwitchLed</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: MomentaryStyle</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>
+	<p>iSwitchRotary</p>
+</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: FaceBevelSize</LI>
+		<LI>Added a new property: FaceBevelStyle</LI>
+		<LI>Added a new property: FaceColor</LI>
+		<LI>Added a new property: FaceStyle</LI>
+		<LI>Added a new property: OuterMargin</LI>
+		<LI>Added a new property: PointerFaceBevelSize</LI>
+		<LI>Added a new property: PointerFaceBevelStyle</LI>
+		<LI>Added a new property: PointerFaceColor</LI>
+		<LI>Added a new property: ShowFace</LI>
+		<LI>Added a new property: ShowPointerFace</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iThermometer</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: IndicatorUserCanMove</LI>
+		<LI>Added a new property: PixelsMax</LI>
+		<LI>Added a new property: PixelsMin</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iAngularLogGauge</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: AutoSize</LI>
+		<LI>Added a new property: FaceBevelSize</LI>
+		<LI>Added a new property: FaceBevelStyle</LI>
+		<LI>Added a new property: FaceColor</LI>
+		<LI>Added a new property: FaceStyle</LI>
+		<LI>Added a new property: Hub3D</LI>
+		<LI>Added a new property: OuterMargin</LI>
+		<LI>Added a new property: ShowFace</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iLogGauge</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: PixelsMax</LI>
+		<LI>Added a new property: PixelsMin</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iTank</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: AutoTankShadowColor</LI>
+		<LI>Added a new property: TankShow</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotAnnotation</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: OuterMargin</LI>
+		<LI>Added a new property: PolyPointAdd</LI>
+		<LI>Added a new property: PolyPointsClear</LI>
+		<LI>Added a new property: PolyPointsCount</LI>
+		<LI>Added a new property: PolyPointX</LI>
+		<LI>Added a new property: PolyPointY</LI>
+		<LI>Added a new property: ReferencePositionX</LI>
+		<LI>Added a new property: ReferencePositionY</LI>
+		<LI>Added a new property: ReferenceSizeX</LI>
+		<LI>Added a new property: ReferenceSizeY</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotAxis</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: TrackingIncrementStyle</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotChannel</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new method: CalcIndex</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotChannelCustom</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: ClipToAxes</LI>
+		<LI>Added a new property: UserCanMoveDataPointsStyle</LI>
+		<LI>Added a new property: UserCanMoveDataPoints</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotComponent</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new method: AnnotationDefaultReference</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotCustom</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: AnnotationDefaultReferencePositionX</LI>
+		<LI>Added a new property: AnnotationDefaultReferencePositionY</LI>
+		<LI>Added a new property: AnnotationDefaultReferenceSizeX</LI>
+		<LI>Added a new property: AnnotationDefaultReferenceSizeY</LI>
+		<LI>Added a new method: RefreshLayoutManager</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotDataCursor</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new method: GetInterpolatedYValue</LI>
+		<LI>Added a new property: SnapToDataPoint</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotLegend</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: LineColumnHeight</LI>
+		<LI>Added a new property: LineColumnWidth</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotObject</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new method: DoEditMenuItemClick</LI>
+		<LI>Added a new method: HitTest</LI>
+		<LI>Added a new property: UserCanEdit</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iPlotTable</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: RowDisplayStartIndex</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iScopeTimeBase</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new method: AddSecPerDiv</LI>
+		<LI>Added a new method: RemoveAllSecPerDiv</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>
+<BLOCKQUOTE>iXYPlotChannel</BLOCKQUOTE>
+<OL>
+
+</B>
+	<BLOCKQUOTE>
+		<LI>Added a new property: OPCItem2Name</LI>
+	</BLOCKQUOTE>
+</OL>
+
+<B>Additional New Features:<BLOCKQUOTE>General</BLOCKQUOTE>
+<BLOCKQUOTE><span style="font-weight: 400"></B>iAngularGauge, iLinearGauge, iLogGauge, iAngularLogGauge, iSlider, iThermometer, iSwitchRotary, and iSwitchSlider controls now show their scales disabled when the Enabled property is set to False.<BR>
+	<BR></span><B>Plot Control<BR><span style="font-weight: 400"></span></B>
+	<span style="font-weight: 400">1) All text based Plot Annotations have been upgraded to support text alignment and text rotation.<BR>2) Improved speed for property and data-file loading.<BR>3) Added all US and International printing paper sizes.</span></BLOCKQUOTE><HR SIZE=0></P>
+<H4>ActiveX and VCL/CLX Version 3.0.4 Service Pack 2</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed Plot Pack Table bug which would incorrectly size the height of horizontal tables.</LI>
+<LI>Fixed Plot Pack axis tracking bug introduced in Version 3.0.2 SP1 which would prevent correct tracking when the tracking style was set to Expand/Collapse.</LI>
+<LI>Fixed bug in table sizing if located on top or bottom of the DataView.</LI>
+<LI>Fixed bug in the iPlotAxis Zoom-To-Fit feature that was using non-visible points to determine the new min and span.</LI>
+<LI>Fixed bug in all components that would prevent a window shutdown while the components were running.</LI>
+<LI>Fixed bug in Plot Pack Property editor regarding the addition of labels through the layout manager.&nbsp; The incorrect label would be loaded when selecting "Edit..." through the layout manager.</LI>
+<LI>Fixed LoadPropertiesFromFile and Save PropertiesFromFile where the RingBuffer property would be 0 regardless of your current setting or the setting stored from the SavePropertiesFromFile method when loading the properties when the channel is set to the FullFeature data style.</LI>
+<LI>Fixed bug in iEdit, iAnalogOutput, and iIntegerOutput components that caused the text displayed to be truncated when the text was wider than the width of the control.&nbsp; You would be unable to scroll back to edit the text that was not in view.</LI>
+<LI>Fixed DataView gridline bug when using non solid lines.&nbsp; Colored lines would sometimes be drawn between the dots or dashes.</LI>
+<LI>Fixed Plot Pack runtime property editor bug where radio group titles would not be translated.</LI>
+<LI>Fixed bug with ActiveX property editors under the Citect SCADA development environment where the property editor would lockup when clicking on buttons when there was a list box on the same property editor tab.</LI>
+<LI>Fixed ActiveX bug where SetWindowPos() call in Visual C++ would generate an exception.</LI>
+<LI>Fixed bug in iObjectCanvas where overlapped objects would be misidentified in the OnClickObject event.&nbsp; The lowest ZOrder object would be identified in the OnClickObject event as being clicked, even though an object with a higher ZOrder that overlapped the object.</LI>
+<LI>Fixed Plot Pack Data Cursor bug where a hidden hint would still be "clickable", interfering with selection of the DataCursor line.</LI></OL>
+
+<H4>New Features:</H4>
+<OL>
+
+<LI>Upgraded Plot Component Compact Interval Data Style to support Ring Buffer. </LI>
+<LI>Upgraded Plot Component Compact Interval Data Style to support relocating the origin X-Value of the Data Set by modifying the DataX[0] property of the channel.&nbsp; The DataX value of the first data point (i.e. DataX[0]) dictates the origin of the data set for that channel when using the Compact Interval Data Style, since the interval between each data point is fixed to save memory space.&nbsp; Modifying DataX[0], however, doesn't change the fixed interval set after adding the first two data points.&nbsp; To change the interval, clear the channel and re-add all channel data.</LI>
+<LI>Improved Plot Pack draw performance for multiple Y-Axes.</LI>
+<LI>Added DataFile Column Separator property to allow for text tabs or commas.</LI>
+<LI>Added DataFile Format property to allow for Text or Compact Interval (optimized for the Compact Interval Data Type) formatted files.</LI>
+<LI>Added OnResize to the TiPlot and TiXYPlot VCL Event Handlers.</LI>
+<LI>Added A3, A4, and A5 paper size support to the built-in Plot pack printing feature.</LI>
+<LI>Added ability to change Compact Interval start reference after data has already been added to the channel by setting the X-Value of the first data point.</LI>
+<LI>Added ChannelNameColorStyle to the iPlotLegend object.&nbsp; Allows the channel name text that is displayed to track other object colors.&nbsp; Possible values are Font, Channel Color, X-Axis Font Color, or Y-Axis Font Color.</LI>
+<LI>Added PointerColor and PointerHighlightColor properties to the iSwitchRotary and the iSwitchSlider components.</LI>
+<LI>Added GetPointersVisible and SetPointersVisible to all Gauge Components.</LI>
+<LI>Added to the Plot components two new properties: LastPropertiesFileName, LastDataFileName and three additional events: OnAfterSaveProperties, OnAfterLoadData, and OnAfterSaveData.&nbsp; Using these new three events in addition to the existing event: OnAfterLoadProperties, you can be notified when the user has saved/loaded data or property files.&nbsp; The two new properties are useful for determining the filename used during the load or save operation.</LI>
+<LI>Updated iImageDisplay to not draw the image as "disabled" when the Enabled property is set to FALSE.</LI>
+<LI>Updated iPlotAxis to include a new ZoomToFitFast method, and a new TrackingStyle called ExpandCollapseFast.&nbsp; The older ZoomToFit and ExpandCollapse features would iterate through the entire data set to find the high and low point of the data when scaling.&nbsp; The new Fast methods use the RunningXMax, RunningXMin, RunningYMin, and/or RunningYMin methods of the channel object which cache the historical Max/Min values, thereby greatly speeding up the ZoomToFit and ExpandCollapse features. <B>Warning</B>: do not use this new feature if you modify historical data <U>unless</U> you manually call the appropriate GetXMax/GetXMin or GetYMax/GetYMin functions to force an update of the corresponding running totals. (e.g. if you modify the Y-value of a previous data point, you must call GetYMax and GetYMin to update the "RunningYMax" and "RunningYMin" for the new "Fast" features to work correctly. ).</LI>
+<LI>Updated iPlotLegend with two new properties: ViewStartIndex and ViewStopIndex. These properties are useful when needing to know the topmost and bottommost indexes of the visible channels in the Legend.&nbsp; For example, if you have 100 channels in the chart, and the Legend is currently showing channel 52-60, then ViewStartIndex=51 and ViewStopIndex=59.</LI>
+<LI>Added Transparent and Stretch properties and features to the iImageDisplay component.</LI>
+<LI>Added Stretch property to iRotationDisplay component.</LI>
+<LI>Upgraded iSwitchPanel AutoSize to take the height into consideration in addition to the width when adjusting the KnobRadius property.</LI>
+<LI>Added OnClickPointer event hander to the iAngularGauge, iLinearGauge, iAngularLogGauge, and iLogGauge components.&nbsp; (Not currently supported under CLX).</LI>
+<LI>Added PointerBitmap property and ispsBitmap enumeration to the PointerStyle property of the iSlider and iSwitchSlider components.</LI>
+<LI>Added SetValueNoEvent method, ValueMax property, and ValueMin property to the iIntegerOutput component.</LI>
+<LI>Updated Precision property on the iAnalogDisplay and iAnalogOutput components to support -1 to indicate the "G" formatting style.&nbsp; The "G" formatting style will format numbers as the shortest possible string.&nbsp; It will display the value either as a whole number or exponent, whichever is shortest.&nbsp; If the precision is unknown at design-time this will ensure that all digits to the right of the decimal place are shown.</LI>
+<LI>Added OnAfterOpenEditor and OnAfterCloseEditor event handlers to the Plot Pack components to notify when the run-time property editor is opened and closed.</LI>
+<LI>Added an Arc object to the iObjectCanvas component.&nbsp; The following methods have been added to support this new object type...<BR>
+AddArc<BR>
+SetObjectAngles <BR>
+SetObjectStartAngle<BR>
+SetObjectStopAngle <BR>
+GetObjectStartAngle<BR>
+GetObjectStopAngle </LI>
+<LI>Plot Pack iPlotChannel object was updated to support a new interpolation style: Differential Terminated.&nbsp; This style is the same as the Differential interpolation style, except there is no line drawn from the last data point out to infinity.</LI>
+<LI>Added RotationDesiredSpacing property to the iSwitchRotary component.&nbsp; Supports 22.5, 45, or 90 degree specification.&nbsp; The desired portion means that it will only use the angle specified if the "number of positions" * "desired angle" &lt;= "360 degrees".</LI>
+<LI>Added Candlestick option to the iPlot Channel High-Low feature.&nbsp; Below is a list of new properties added to support this new feature...<BR>
+HighLowStyle<BR>
+HighLowShadowColor <BR>
+HighLowBullishColor<BR>
+HighLowBearishColor</LI>
+<LI>Upgraded iCompass and iDualCompass to allow changing of the direction captions. Added the following properties...<BR>
+NCaption<BR>
+SCaption<BR>
+ECaption<BR>
+WCaption<BR>
+NECaption<BR>
+NWCaption<BR>
+SECaption<BR>
+SWCaption</LI>
+<LI>Upgraded Plot Pack Axes labeling to support rotated text.&nbsp; Can be set to 0, 90, 180, and 270 degree rotation.</LI>
+<LI>Upgraded iObjectCanvas component to support polygons.&nbsp; Below are the following methods added to support this feature...<BR>
+AddPolygon<BR>
+ObjectAddPolyPoint <BR>
+ObjectClearPolyPoints</LI>
+<LI>Added Print Preview support to the Plot Pack printing feature.</LI>
+<LI>Added Plot Pack OnBeforeDataCursorUpdate event.&nbsp; Allows customization of formatting or other customization before the actual strings are generated for display on the cursor.</LI>
+<LI>Added PNG image support to all components: SaveImageToPNG and GetBytesPNG methods.&nbsp; Plot pack save dialog updated to support PNG.</LI>
+<LI>Added JPEG image support to CLX components under Linux.</LI>
+<LI>Added Plot Pack printing support for CLX components under Linux.</LI>
+<LI>Added new iOPCManager non-visual component for use in conjunction with our OPC-enabled components.&nbsp; Allows combining of OPC connections to servers through a common connection. Previously, each individual component would make its own connection to the OPC server and its own group.&nbsp; The new iOPCManager along with the new iOPC.dll improves performance by utilizing Shared Server Connections and now adds support fro adding groups that can be shared among OPC Items of our components.&nbsp; The iOPCManager component has a visual property editor for adding/removing groups as well as properties and methods that can be used to modify groups at runtime.&nbsp; Two new events, OnAfterGroupUpdate and OnBeforeGroupUpdate provide notification of updates that occur among the OPC Items utilizing a particular group.</LI>
+<LI>Added multi-line support to the Plot Pack Data Cursor Hint.&nbsp; Use chr(13) for manual line breaks.</LI>
+<LI>Added the following to OPCItems...<BR>
+ActivateSuspend method<BR>
+GroupName property</LI>
+<LI>Added OPC DeleteItem method for deleting individual OPC Items at runtime.</LI>
+<LI>Added new TextBox style (differs from TextRectangle) to Plot Pack annotations.&nbsp; </LI>
+<LI>Added 24 new event handlers to plot pack.<BR>
+MouseDown<BR>
+MouseMove<BR>
+MouseUp<BR>
+...events for all 8 basic Plot Objects: Channels, X-Axes, Y-Axes, Tables, DataView, DataCursors, Legend, and Annotations.</LI>
+<LI>Added transparency support to Tank.</LI>
+<LI>Added three new styles to Tank: Cutout2, Large Window, and Custom.</LI>
+<LI>Tank Custom cutout style uses two new methods: CustomPointsAdd, CustomPointsClear.&nbsp; Use CustomPointsAdd to add at least three points to make a closed polygon.&nbsp; Added points are in the range of 0-100, representing percentage (%) of the width and height of the component.&nbsp; It is recommended to restrict points between 10-90% when the tank is shown.</LI>
+<LI>Added vertical and horizontal orientation to Tank.</LI>
+<LI>Added scale reverse to Tank.</LI>
+<LI>Added OPCActivateSuspend, OPCActive, OPCUpdateSuspend, and OPCUpdateResume to the iPlot and iXYPlot component Channel objects.</LI>
+<LI>Added HitTest method to all Plot Pack sub-objects (channel, y-axis, x-axis, annotation, label, etc.).&nbsp; Allows you to test each sub-object and determine if an x/y coordinate exists within the sub-object or not.</LI>
+<LI>Added Theme support to the CLX version of the components under both Windows and Linux.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL/CLX Version 3.0.2 Service Pack 1</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed problem in iPlot and iXYPlot with adding null data points and the ring buffer.&nbsp; In previous versions if you had enabled the ring-buffer and were adding null data points to the channel, data would sometimes be corrupted.</LI>
+<LI>Fixed bug in iSwitchLED where the accelerator key(&amp; placed before accelerator key), though it would still function, would not be shown with an underline but would show the "&amp;" character instead. </LI>
+<LI>Fixed several issues with the CLX version of the Instrumentation and Plot Pack components.</LI>
+<LI>Help file corrections.&nbsp; Fixed VCL/CLX help file integration issue with Delphi and C++ Builder where event help topics would not come up properly in the object inspector when you press F1.</LI>
+<LI>Fixed Plot Pack LoadPropertiesFromFile method where Label objects were not properly loaded.&nbsp; If you would load properties from a file, you would get a miss positioned, extra label object than expected.</LI>
+<LI>Fixed memory leak in Plot Pack components which would occur only when the component was destroyed.</LI>
+<LI>Fixed border style bug in iPanel component.&nbsp; The border style property would not properly stream this style property.</LI>
+<LI>Fixed font size issues with the CLX component property editors under Linux.</LI></OL>
+
+<H4>New Features:</H4>
+<OL>
+
+<LI>Added Table support for Plot Pack Components.&nbsp; Allows you to position custom tables anywhere around the DataView.&nbsp; Allows unlimited number of rows and columns with individual formatting for each column.&nbsp; Supports scrolling if the number of rows exceeds the display area.&nbsp; Allows you to specify the text in each cell.</LI>
+<LI>Upgraded iAnalogOutput key-filter to support the current regional setting for the decimal separator character.</LI>
+<LI>Upgraded iLedMatrix indicator caption to support multiple lines of text.&nbsp; Accepts line feed, carriage return, or both to indicate a break in the line.</LI>
+<LI>Added methods and properties for customizing the tick labels on the Plot Pack Axes.&nbsp; Now supports a custom mode where you can add your own custom labels (specify the text) at specified locations.</LI>
+<LI>Added RecalcLayout to recalculate all coordinates of all Plot sub-objects without having to wait for the next repaint.</LI>
+<LI>Added TransferChannelData method to Plot components to allow transferring of data from one channel to another.&nbsp; Used to allow easy transfer of basic (Only X, Y, null, and empty properties.&nbsp; All other data point and channel properties are not transferred) data from one channel to another. {Appends Data.&nbsp; Need to clear out destination channel for exact copy}.</LI>
+<LI>Upgraded Plot Pack Annotations to support individual clip to axis property.</LI>
+<LI>Upgraded LineX and LineY Plot Annotations to extend to the full extent of the DataView by utilizing the new Annotation-specific clip to axes property.</LI>
+<LI>Upgraded iPlot Plot Pack Channel to support High Low graphs/data points.&nbsp; You must have the Channel Data Style set to Full Feature to utilize this feature. Added the following methods and properties...<BR>
+AddHighLow<BR>
+DataHigh<BR>
+DataLow<BR>
+DataOpen<BR>
+DataClose <BR>
+HighLowEnabled <BR>
+HighLowBarColor <BR>
+HighLowBarWidth <BR>
+HighLowOpenShow <BR>
+HighLowOpenColor <BR>
+HighLowOpenWidth <BR>
+HighLowOpenHeight<BR>
+HighLowCloseShow <BR>
+HighLowCloseColor <BR>
+HighLowCloseWidth <BR>
+HighLowCloseHeight</LI>
+<LI>Added ForceStacking property to Axes.&nbsp; During normal layout, only touching ends of stacked axes would take the Stacking End Margin spacing into account.&nbsp; By setting this property to True, then all axes will use the Stacking End Margins on all ends.&nbsp; This was done to ensure that outer, stacked axes will have the same end margins as all axes in the same ZOrder.&nbsp; If this property is set to False (the default), then the axes will behave as previously indicated.</LI>
+<LI>Added PasswordChar property to iEdit to support display of password characters.</LI>
+<LI>Added the following events to all visual ActiveX controls that were missing them...<BR>
+OnMouseDown<BR>
+OnMouseMove<BR>
+OnMouseUp<BR>
+OnKeyDown<BR>
+OnKeyPress<BR>
+OnKeyUp</LI>
+<LI>Added the following events to all visual VCL/CLX controls that were missing them...<BR>
+OnMouseDown<BR>
+OnMouseMove<BR>
+OnMouseUp<BR>
+OnKeyDown<BR>
+OnKeyPress<BR>
+OnKeyUp<BR>
+OnEnter<BR>
+OnExit</LI>
+<LI>Added Mouse Wheel Zooming support to the Plot Pack Axes.</LI>
+<LI>Added CTRL key support to the Plot Pack Axes and DataView as a NOT operator to switch between scrolling and zooming when clicking and dragging the axes.</LI>
+<LI>Added SHIFT key support to the Plot Pack.&nbsp; If the MouseStyle (or WheelStyle) is not set to Both, then the SHIFT key will switch between the X-Axis or Y-Axis style.&nbsp; If the MouseStyle (or WheelStyle) is set to Both, then the SHIFT key is ignored.&nbsp; Simultaneous use of both the SHIFT key and CTRL key is supported.</LI>
+<LI>Plot Pack DataView upgraded to support mouse movements and mouse wheel movements to support scrolling and zooming of the axes.&nbsp; This is similar to the zooming and scrolling feature in our older iStripChart control.&nbsp; Added the following properties to the DataView...<BR>
+AxisControlEnabled (Default = False)<BR>
+AxisControlMouseStyle (X-Axis, Y-Axis, or Both, Default = Both)<BR>
+AxisControlWheelStyle (X-Axis, Y-Axis, or Both, Default = X-Axis)</LI>
+<LI>Upgraded Right-Clicking Plot Pack code to support right-clicking channel trace lines to bring up the channel pop-up menu.&nbsp; Supports clicking anywhere on the trace line and within 10 pixels of the trace line.</LI>
+<LI>Added OnXAxisMinSpanChange and OnYAxisMinSpanChange events to iPlot and iXYPlot.</LI>
+<LI>Updated help files for all new properties, methods, and events.</LI>
+<LI>Improved HTML help file and Linux HTML help file by removing non-converted "See Also" links and removing unnecessary double-line breaks.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL/CLX Version 3.0.0 Service Pack 0</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed OptionSaveAllProperties property on Plot Pack components.&nbsp; The property was previously ignored when saving properties to a file.</LI>
+<LI>Fixed ModeComboBox where if you selected an item and then deleted all items, the ItemIndex property would still point to the deleted item which would cause errors when accessed.</LI>
+<LI>Fixed tabbed-dialog bug in Visual C++ where the application would crash if one of our components was on the tabbed-dialog and you alt-tabbed to another application and then back to the Visual C++ application.</LI>
+<LI>Fixed Plot Pack bug where if you delete an Axis and then re-add the same type of Axis, the Channel's associated axis pointer would not reconnect to the new axis until the next repaint. This would result in functions such as ZoomToFit on the Axis not working correctly until after a control repaint.&nbsp; </LI>
+<LI>Fixed Plot Pack bug where an extra margin would have been incorrectly added for any plot object placed in-between the DataView and an axis, and that object had its Visible property set to FALSE.</LI>
+<LI>Fixed iXYPlotX Plot Pack ActiveX bug where the Image List and Translations were not being streamed.</LI>
+<LI>Fixed Help File integration into Borland Delphi and Borland C++ Builder Versions 6 and higher.</LI>
+<LI>Fixed bug in Strip Chart where the Auto Scale would malfunction, shifting data out of view if the AutoScaleHysterisis property was non-zero and AutoScale was enabled.</LI></OL>
+
+<H4>Plot Pack New Features:</H4>
+<OL>
+
+<LI>Added the following properties to the Plot Pack Legend object to allow control of the Legend Column Captions... </LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=294>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnTitle </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnXAxisTitle</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnYAxisTitle</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnXValue </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnYValue </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnYMax </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnYMin </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CaptionColumnYMean</B></TD>
+</TR>
+</TABLE>
+
+<LI>Added the following methods to the Plot Pack components to allow runtime clearing and adding images to the built-in image list: </LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=371>
+<TR><TD VALIGN="MIDDLE">
+<B><P>ImageListClear</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>ImageListLoadFromResourceID </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>ImageListLoadFromResourceName</B></TD>
+</TR>
+</TABLE>
+
+<LI>Added runtime-only property MouseDownHandle to the Object Canvas component to be used in conjunction with the following existing event handlers to allow manipulation of objects.</LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=230>
+<TR><TD VALIGN="MIDDLE">
+<B><P>OnMouseDownDisplay</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>OnMouseMoveDisplay</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>OnMouseUpDisplay </B></TD>
+</TR>
+</TABLE>
+
+<LI>Added Additional Plot Channel Data Style: ipdsFullFeature.&nbsp; This new style enables extended feature enhancement options of the channel object.</LI>
+<LI>Added the following Plot Pack iPlotChannelCustom object (iPlot and iXYPlot) properties for manipulation of individual data points (when data style is set to ipdsFullFeature)...</LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=256>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataMarkerShowing </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataMarkerSize </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataMarkerPenColor </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataMarkerPenStyle </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataMarkerPenWidth </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataMarkerBrushColor</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataMarkerBrushStyle</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataTraceLineColor</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataTraceLineWidth</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataTraceLineStyle</B></TD>
+</TR>
+</TABLE>
+
+<LI>Added the following Plot Pack iPlotChannel object (iPlot component only) properties for manipulation of individual data points (when data style is set to ipdsFullFeature)...</LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=217>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarVisible </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarReference </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarWidth </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarPenColor </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarPenWidth </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarPenStyle </B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarBrushColor</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataBarBrushStyle</B></TD>
+</TR>
+</TABLE>
+
+<LI>Updated Plot Pack channel fill routines to support digital channel option as well as cubic-spline,&nbsp; polynomial, rational, and differential interpolation styles.</LI>
+<LI>Updated Plot Pack cursor to support cubic-spline, polynomial, and rational interpolation styles.&nbsp; Data Cursors already supported digital and differential interpolation styles.</LI>
+<LI>Added Layer Ordering&nbsp; support to all Plot Pack objects.&nbsp; Currently only has an effect on objects that are displayed in the DataView area (e.g. channels, annotations, limits, Axes setup as Cartesian, etc,).&nbsp; DataCursors are currently always&nbsp; forced to the topmost layer and cannot be changed.&nbsp; The highest layer number are drawn on top of lower layer numbers.&nbsp; If the layer numbers are the same, then the Iocomp internal layering order is preserved (i.e. the old layering order is used from previous versions).&nbsp; By default, all objects are set to a layer order of 100 for backwards compatibility.</LI>
+<LI>Stats page upgraded to clear itself when changing channel objects in the runtime property editor.&nbsp; It would previously show the previous channel's information.&nbsp; The page is not refreshed automatically since auto refresh may cause a performance decrease when refreshing information concerning very large datasets.</LI>
+<LI>Layout Viewer upgrade to support automatic resizing of objects when attempting to stack using drag and drop.&nbsp; You can simply drag and drop a plot object on another of the same type to have them proportionally sized and stacked automatically. Previously you needed to manually size the objects before you could stack them in the Layout Viewer.</LI>
+<LI>Added <B>PrinterName</B> property to the Plot Pack components to specify which printer to use when using the built-in printing facilities.</LI>
+<LI>Upgraded Plot Pack Run-time Property Editor Channel Stats page speed.</LI>
+<LI>Added new <B>OnDataCursorCustomizeHint</B> event to the Plot Pack components.</LI>
+<LI>Added <B>FlatButtons</B> and <B>SmallButtons</B> properties to the Plot Pack components Toolbar object.&nbsp; Provides smaller and/or flat-button-styled buttons in the built-in toolbar.</LI>
+<LI>Upgraded the Plot Pack Layout Viewer in design-time property editor with new right-click, context sensitive menu to provide add, delete, hide, and show functions to Layout Viewer Plot Objects.</LI>
+<LI>Plot Pack Data Cursor object upgraded to support pointing to all channels in addition to pointing to individual channels.&nbsp; When pointing to all channels, the Data Cursor is hidden, and by default, all channel cursor data is displayed in the Legend.&nbsp; Optionally you can turn off the display of the data in the legend and display the data in your own legend by reading the data directly from each channel.</LI>
+<LI>Added the following properties to the Plot Pack Data Cursor object...</LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=624>
+<TR><TD VALIGN="MIDDLE">
+<B><P>ChannelAllowAll</B> - Allows the user to specify that the Data Cursor points to all channels using the popup menu on the Data Cursor.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>ChannelShowAllInLegend</B> - Specifies whether the Legend is used to display the Data Cursor X and Y values when ALL channels have been selected by the Data Cursor.&nbsp; The X and Y value columns will automatically be shown if the Legend object and the Data Cursor objects are visible and the Data Cursor's Channel reference is set to "All", even if the X and Y columns have been hidden.</TD>
+</TR>
+</TABLE>
+
+<LI>Added the following new properties to the Plot Pack Channel object for use with the Data Cursor "All" Channel mode...</LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=624>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataCursorXText</B> - Read only property that obtains the text that would be displayed in the data cursor hint for the X-Value.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataCursorYText</B> - Read only property that obtains the text that would be displayed in the data cursor hint for the YValue.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataCursorXValue</B> - Read only property that obtains the numeric value that would be displayed in the data cursor hint for the X-Value.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataCursorYValue</B> - Read only property that obtains the numeric value that would be displayed in the data cursor hint for the Y-Value.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>DataCursorStatus</B> - Read only property that specifies whether the X and Y-Values are valid, null, or empty.</TD>
+</TR>
+</TABLE>
+
+<LI>Upgraded Plot Pack Legend to support horizontal and vertical orientation.&nbsp; Upgraded Legend object to support multiple columns, automated column wrapping and automated scrolling.&nbsp; New properties include...</LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=624>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapColDesiredCount</B>&nbsp; - Specifies the number of legend columns to reserve for the legend.&nbsp; If you specify a value of 3, then three columns will be reserved even if they are not filled with channel entries. This is useful when you will be varying the number of channels, but want to keep the legend at a certain size and specified number of columns.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapColAutoCountEnabled</B>&nbsp; - Specifies whether the legend automatically adjusts the number of columns to take up the least amount of space within the control.&nbsp; If increasing the number of columns decreases the "footprint" of the legend, then the legend will automatically increase the number of displayed columns.&nbsp; After the maximum has been exceeded, then scroll bars will appear..</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapColAutoCountMax</B>&nbsp; - Specifies the maximum number of columns that should be allotted when WrapColAutoCountEnabled is set to TRUE.&nbsp; This actual number of columns will be equal or less than this value depending on space requirements and the number and makeup of legend entries.&nbsp; This property in effect causes the legend to display the scroll bars if the maximum number of columns is reached, and the number of channel legend entries exceeds the available space.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapColSpacingMin</B>&nbsp; - Specifies the minimum amount of spacing between legend entries (not the spacing between the channel name, channel X-Value, channel Data Marker, etc. columns).&nbsp; When WrapColSpacingAuto is FALSE, then this value is the fixed spacing between columns.&nbsp; When WrapColSpacingAuto is TRUE, then the spacing will be adjusted to fully justify the legend entries within the bounds of the legend, but the spacing will never be less than the minimum spacing specified.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapColSpacingAuto</B>&nbsp; - Specifies whether the spacing between the legend column entries is automatically adjusted by the legend.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapRowDesiredCount</B>&nbsp; - Specifies the number of legend rows to reserve for the legend.&nbsp; If you specify a value of 10, then three rows will be reserved even if they are not filled with channel entries.&nbsp; This is useful when you will be varying the number of channels, but want to keep the legend at a certain size and specified number of rows.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapRowAutoCountEnabled</B>&nbsp; - Specifies whether the legend automatically adjusts the number of rows to take up the least amount of space within the control.&nbsp; If increasing the number of rows decreases the "footprint" of the legend, then the legend will automatically increase the number of displayed rows up to the maximum specified by WrapRowAutoCountMax.&nbsp; After the maximum has been exceeded, then scroll bars will appear..</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapRowAutoCountMax</B>&nbsp; - Specifies the maximum number of rows that should be allotted when WrapRowAutoCountEnabled is set to TRUE.&nbsp; This actual number of columns will be equal or less than this value depending on space requirements and the number and makeup of legend entries.&nbsp; This property in effect causes the legend to display the scroll bars if the maximum number of rows is reached, and the number of channel legend entries exceeds the available space.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapRowSpacingMin</B>&nbsp; - Specifies the minimum amount of spacing between legend entries.&nbsp; When WrapRowSpacingAuto is FALSE, then this value is the fixed spacing between columns.&nbsp; When WrapColSpacingAuto is TRUE, then the spacing will be adjusted to fully justify the legend entries within the bounds of the legend, but the spacing will never be less than the minimum spacing specified.</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>WrapRowSpacingAuto</B>&nbsp; - Specifies whether the spacing between the legend entry rows is automatically adjusted by the legend.</TD>
+</TR>
+</TABLE>
+
+<P><BR>
+<B><I>Important New Legend Properties Note and Discussion</B></I> - Col is used in the property names to distinguish between the references to Column in other properties of the legend.&nbsp; When we refer to the property ColumnSpacing or ColumnTitlesVisible, we are referring to the internal columns of each legend entry such as "Marker", "Line", "Title" , "X-Value", "Max", "Min", "Mean", etc..&nbsp; The properties using "Col" refer to the multiple-column feature that we have just added where multiple columns of channels (and their associated displayed information) can be displayed instead of a single column in the legend.&nbsp; For example, when a legend is horizontal, you will probably have an average of 5 columns of channels displayed.&nbsp; <BR>
+<BR>
+This features has also been added in such a way as to be backwards compatible with previous versions of our Plot Pack components.&nbsp; Therefore, the new properties above will default to emulate the behavior of the original legend.&nbsp; However, to take full advantage of the "automated" nature of the new legend, we recommend that you set the following properties to the following values.&nbsp; In a future service pack release of Version 3.x, we will set the defaults to these values, be can't right now due to backwards compatibility concerns...</P>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=624>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapColDesiredCount = 1</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapColAutoCountEnabled = True </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapColAutoCountMax = 3 (for Vertical Legends) or WrapColAutoCountMax = 100 (for Horizontal Legends)</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapColSpacingMin = 2</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapColSpacingAuto&nbsp; = True</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapRowDesiredCount = 1</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapRowAutoCountEnabled = True</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapRowAutoCountMax = 100 (for Vertical Legends) or WrapRowAutoCountMax = 5 (for Horizontal Legends)</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapRowSpacingMin = 0.25</TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>WrapRowSpacingAuto = True</TD>
+</TR>
+</TABLE>
+
+<LI>Added new OPC event handler to all OPC-enabled components: OnBeforeNewOPCData.&nbsp; This event passes the index of the OPC item and the variant data value by reference (pointer reference) so that you can modify or scale the value before it is passed to the component and before the standard event handlers are called.</LI>
+<LI>Added independent Cursor and Legend data point value formatting to the Plot Pack axis objects.&nbsp; Each channel is associated with a Y-Axis and X-Axis.&nbsp; Each axis is responsible for specifying the formatting of displayed data for values associated for that axis.&nbsp; This goes for channel data displayed in other objects, such as in the cursor and/or legend objects.&nbsp; By default, all objects display X and Y values formatted as shown in the respective axis.&nbsp; For example, if the X-Axis is formatted as date/time "hh:nn:ss", then X-values displayed in the Data Cursor are displayed formatted the same way.&nbsp; You can now override this default formatting, and specify that the formatting be different when displayed in either the Legend or Data Cursor Objects. The following new properties in the X and Y-Axis objects...<BR>
+&nbsp;</LI>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=320>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CursorUseDefaultFormat</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CursorFormatStyle</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CursorDateTimeFormat</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CursorPrecisionStyle</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CursorPrecision</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CursorMinLength</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>CursorMinLengthAutoAdjust</B></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>LegendUseDefaultFormat</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>LegendFormatStyle</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>LegendDateTimeFormat</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>LegendPrecisionStyle</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>LegendPrecision</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>LegendMinLength</B> </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<B><P>LegendMinLengthAutoAdjust</B></TD>
+</TR>
+</TABLE>
+
+<P>The following properties serve as the "Default Formatting" for the Legend and Cursor Objects when the UseDefaultFormat properties are set to TRUE...</P>
+<TABLE BORDER CELLSPACING=1 BORDERCOLOR="#000000" WIDTH=320>
+<TR><TD VALIGN="MIDDLE">
+<P>LabelsPrecision </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>LabelsPrecisionStyle </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>LabelsFormatStyle </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>DateTimeFormat </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>LabelsMinLength </TD>
+</TR>
+<TR><TD VALIGN="MIDDLE">
+<P>LabelsMinLengthAutoAdjust</TD>
+</TR>
+</TABLE>
+
+<LI>Updated installer to support Delphi 7 VCL and CLX components.</LI>
+<LI>Upgraded Plot Pack to correctly display long labels in the X and Y-axes so that they are not "cropped" when near the edge of the component.&nbsp; This has resulted in a change in the layout of the plot component objects, particularly the Legend and Label objects.&nbsp; Now, the Label object and Legend object top/bottom/left/right margin properties are strictly interpreted.&nbsp; This will result in the gap between the Legend and the Data View as well as Labels and the Data View shrinking to be exactly the margin specified by the top/bottom/left/right margin properties. <BR>
+<BR>
+Since the default top/bottom/left/right margins for the Legend are set at a default of one character, the margin between the Data View and the Legend will now be exactly one character.&nbsp; Since the default top/bottom/left/right margins for the Label is set at a default of zero characters, the margin between the Data View and the label will now be exactly 0 characters (plus font specific kerning).&nbsp; This means that with most fonts, there will be a kerning gap (extra space added below the baseline to accommodate characters that are generally drawn below the baseline such as "j" or "g"), but letters&nbsp; that go below the kerning baseline will now touch the Data View.&nbsp; To fix this, we recommend setting the margin nearest the Data View to 0.25 characters (or alternatively setting all margins for all labels to 0.25 characters).&nbsp; This change should not affect most users in a negative way, but will slightly change the visual layout of some objects.</LI>
+<LI>iObjectCanvas now supports loading images into a built-in image list that can also stream into your form.&nbsp; You can also load image lists from resources using name or ID.</LI>
+<LI>Added GetDisplayXToPixelsX and GetDisplayYToPixelsY to iObjectCanvas.&nbsp; Allows conversion between the component's display units and pixels on the component.</LI>
+<LI>Added new iImageDisplay component.&nbsp; Allows loading of multiple bitmap frames, and controllable animation framerate.</LI>
+<LI>Updated Plot Pack component backgrounds to support gradient colors.</LI>
+<LI>Added new iPipe component.&nbsp; Includes 3d straight pipe and animation capabilities.</LI>
+<LI>Added new iPipeJoint component. To be used with the iPipe component.</LI>
+<LI>Added new iIntegerOutput component.&nbsp; Similar to iAnalogOutput, but supports Integer only output.&nbsp; Supports Integer, Hex, Binary, and Octal formatting styles.</LI>
+<LI>Added new iScope Component.&nbsp; True Analog/Digital Oscilloscope component with built-in Trigger.</LI>
+<LI>New VCL/CLX, ActiveX WinHelp, and ActiveX HTML Help for MSDN (Pre January 2002 
+Edition) Files including many corrections.</LI>
+<LI>Added new iLCDMatrix component.&nbsp; Includes 5x7 built-in character font for displaying 5x7 dot-matrix display text.&nbsp;&nbsp;&nbsp; Also supports loading external character sets of custom size.&nbsp; Several additional 5x8 character sets are included.&nbsp; An external font editor is available for download from our website.</LI>
+<LI>Added new iMotor component.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL/CLX Version 2.1.2 Service Pack 6</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed "Interface Not Supported" exception in Visual Basic.NET and C#.NET that occurred with the Plot Pack. </LI>
+<LI>Fixed problem where popup dialogs and runtime property editors would block other threads from accessing the component while they were visible.&nbsp; Unnecessary Lock and Unlocks by these dialogs were removed.</LI>
+<LI>Redesigned the Iocomp Theme Panel component in the Iocomp Design-Time property editors to fix a bug under Windows 95/98/ME operating systems when applying changes.&nbsp; Nested panel components within the theme panel were causing conflicts with the Windows API combo boxes that were used.</LI>
+<LI>Redesigned the Iocomp Theme Panel auto-centering code for compatibility under CLX.</LI>
+<LI>Fixed bug in iModeComboBox VCL component where the OnChange and OnChangeUser events would not fire under Delphi 4-5 and C++ Builder 4-5.</LI>
+<LI>Fixed bug in Plot Pack Annotations when used with logarithmic axes.&nbsp; The annotation would size logarithmically instead of linearly when doing manual sizing with the mouse at runtime.</LI>
+<LI>Fixed ActiveX compatibility issues with Microsoft Visual Studio.NET.&nbsp; Components now successfully stream and function with managed VB.NET and C#.NET applications.&nbsp; ActiveX components already were compatible with Visual C++ .NET.&nbsp; See the Iocomp ActiveX Release Notes for any issues with porting older Visual Basic 5/6 applications to VB.NET using our ActiveX components.</LI>
+<LI>Fixed absolute positioning bug in Internet Explorer.&nbsp; Component would always be positioned at the origin (upper left-hand corner) of the web page if absolute positioning was used with our components.</LI>
+<LI>Fixed misspelling for default filename in the Plot Pack Save JPEG/BITMAP/Metafile dialog.</LI>
+<LI>Limited DateTime format dates to years between 1400 to 9000.&nbsp; This resolves zooming errors that occurred when trying to zoom past these limits.</LI>
+<LI>Fixed multiple pointer streaming issue in the ActiveX Gauge Components.&nbsp; If multiple pointers were setup at Design-Time, they would not be streamed correctly to the form. </LI>
+<LI>Fixed problem with Plot Pack zooming when using Logarithmic scales.</LI>
+<LI>Fixed Plot Pack Differential Interpolation drawing algorithm problem.&nbsp; The last data point should draw to infinity.&nbsp; If the last data point went out of view, the infinity line would incorrectly disappear.</LI>
+<LI>Fixed problem where an additional pointer would be added to our gauge components every time you loaded the project in Visual Basic.</LI>
+<LI>Fixed Theme problem where width and height of preview component would be switched if the orientation of the component was opposite of the default setting.</LI>
+<LI>Fixed GetBytesJPEG memory leak and speed issues.</LI>
+<LI>Fixed recursive painting bug when using stacked axes in the Plot Pack.&nbsp; This only became obvious with large, viewable data sets.</LI>
+<LI>Fixed OPCItem browser limitation of 256 computers when browsing a Windows computer domain.&nbsp; The limit has been upgraded to support approximately 1000 computers per domain when browsing.</LI>
+<LI>Fixed bug during development under Windows 95a/b where the component would appear to be unlicensed.&nbsp; This did not affect deployed applications under Windows 95a/b, only development.</LI>
+<LI>Fixed runtime property editor bug with plot pack when running under large fonts.&nbsp; Form would not automatically scale properly to large fonts.</LI>
+<LI>Fixed memory leak in iKeyboard drawing algorithm.</LI>
+<LI>Corrected ActiveX sizing problem in RSView.</LI>
+<LI>Fixed iObjectCanvas OnClickObject event.&nbsp; The event handler was not firing correctly.</LI></OL>
+
+<H4>New Features:</H4>
+<OL>
+
+<LI>Added to iPlotChannelCustom, DrawStartIndex and DrawStopIndex that inform you of the data point indexes that are currently visible in the Data View.</LI>
+<LI>Added OnBeforeLoadProperties and OnAfterLoadProperties events added to Plot Pack Components.</LI>
+<LI>Added Width, Height, Left, and Top properties for ActiveX containers that do not provide these properties by default.&nbsp; These properties are specified in pixels.&nbsp; If the container overrides these properties&nbsp; then the container will be responsible for these properties.&nbsp; For example, Visual Basic overrides these properties and replaces them with its own container properties.&nbsp; Its container properties are specified in Twips by default and not in Pixels.</LI>
+<LI>Added UserCanAddRemoveChannels property.&nbsp; This property controls whether the Add/Remove buttons are shown in the Runtime Property Editor.</LI>
+<LI>Added SaveAnnotationsToFile and LoadAnnotationsFromFile methods to the Plot Pack Components.&nbsp; This method should be called after loading properties from a file since the loading of properties clears out the entire control.</LI>
+<LI>Added ZoomToFit context sensitive menu item and method to the X and Y-Axis Objects </LI>
+<LI>Added OnBeforeZoomBox event to Plot Pack Components.&nbsp; <BR>
+<I><U>VCL and CLX Components</I></U>: Passes two parameters by pointer that you can modify, ZoomRect and Cancel.&nbsp; ZoomRect has the pixel coordinates of the zoom box that can be easily converted to Axes values.&nbsp; Cancel allows you to cancel the Zoom Box if you wish.<BR>
+<I><U>ActiveX Components</I></U>: Passes five parameters by pointer that you can modify, Left, Right, Top, Bottom, and Cancel. The four coordinate parameters have the pixel coordinates of the zoom box that can be easily converted to Axes values.&nbsp; Cancel allows you to cancel the Zoom Box if you wish.</LI>
+<LI>Added four new methods to Plot Pack Annotation Object: PositionXToPixels, PositionYToPixels, PixelsXToPosition, PixelsYToPosition for converting pixel coordinates to position values. </LI>
+<LI>Added one new method to Plot Pack Annotation Object: UserCanSize which allows the application end-user to resize the rectangle annotation objects.</LI>
+<LI>Added two new styles to the Plot Pack Channel Data Marker Styles: VerticalLine and HorizontalLine.</LI>
+<LI>Updated Plot Pack Axes Tracking Style characteristics for SmoothScroll.&nbsp; Before, this style would only scroll when the new value was greater than the max of the axis.&nbsp; The new characteristic is to scroll when the new value is greater than the max or less than the min. </LI>
+<LI>Added new event handler to the Plot Pack: OnAnnotationCoordinatesChange and OnAnnotationCoordinatesChangeFinished events which allows you to handle changes of the X, Y, X2, Y2, Width, Height, or any other future position/size property of Annotation.&nbsp; This event is generally used in conjunction with the UserCanMove and UserCanSize properties which allows your application end-users to move and size Annotation Objects.&nbsp; The event will fire from user generated events as well as changes to the position/size of annotations by your code. </LI>
+<LI>Added Bar support to the iPlot component channel object. </LI>
+<LI>Added LabelsVisible property to the Axis Objects (X and Y-Axes) of the Plot Components.&nbsp; This property allows you to hade the axes labels, showing only the axes tick marks </LI>
+<LI>Added the following Grid Line properties to the DataView object of the Plot Pack: <BR>
+GridLineXMajorCustom<BR>
+GridLineXMajorColor <BR>
+GridLineXMajorWidth <BR>
+GridLineXMajorStyle <BR>
+GridLineXMinorCustom<BR>
+GridLineXMinorColor <BR>
+GridLineXMinorWidth <BR>
+GridLineXMinorStyle <BR>
+<BR>
+GridLineYMajorCustom<BR>
+GridLineYMajorColor <BR>
+GridLineYMajorWidth <BR>
+GridLineYMajorStyle <BR>
+GridLineYMinorCustom<BR>
+GridLineYMinorColor <BR>
+GridLineYMinorWidth <BR>
+GridLineYMinorStyle&nbsp; </LI>
+<LI>Added FocusHandle property to keyboard control.&nbsp; Allows setting the window handle of the component that will receive keystrokes. </LI>
+<LI>All ActiveX components upgraded to include Width, Height, Enabled, and Visible properties.&nbsp; Non-visible components (such as the timer components) do not contain these properties.&nbsp; These properties are provided for ActiveX containers that do not already supply their own version of these properties. </LI>
+<LI>Added Image Annotation style.&nbsp; Includes built-in image list for use with Annotations and other future uses. </LI>
+<LI>Added three built-in custom image lists that you can use with Image Annotations.&nbsp; Images must be loaded at design-time. </LI>
+<LI>Upgraded Plot Pack Data Cursor to convert Carriage Return and Line Feed characters to a single space in the Data Cursor Tool Tip to avoid strange characters. </LI>
+<LI>Added new OPC methods to Instrumentation and Professional Pack Components. <BR>
+OPCItemUpdateSuspend which allow deactivation of updates from the server.<BR>
+OPCItemUpdateResume which allow re-activation of updates from the server after suspension by using OPCItemUpdateSuspend.<BR>
+GetOPCItemData<BR>
+GetOPCItemTimeStamp<BR>
+GetOPCItemQuality<BR>
+SetOPCItemData </LI>
+<LI>Added new OPC event: OnOPCData which will notify you every time an update is received from the OPC Server.&nbsp; The standard component events (such as OnPositionChange in the iKnob control) are only fired when an update that changes the current component property. </LI>
+<LI>Added to MarkersTurnOffLimit iPlotChannelCustom object.&nbsp; This allows you to suppress the drawing of DataMarkers according to the limit set here.&nbsp; If the number of DataMarkers to display is greater than this value, all DataMarkers for the channel will not be drawn.&nbsp; This speeds up drawing operations when displaying large numbers of data points on the screen. </LI>
+<LI>Added CopyToClipBoardFormat property to Plot Pack.&nbsp; Possible selections are Bitmap, Metafile, and JPEG. </LI>
+<LI>Added the following event handlers to the Plot Pack.&nbsp; Each event passes four parameters: Index of the Object, Cancel Flag By Reference, ScreenX in Pixels, and ScreenY in Pixels.<BR>
+OnPopupMenuChannel<BR>
+OnPopupMenuXAxis<BR>
+OnPopupMenuYAxis<BR>
+OnPopupMenuToolBar<BR>
+OnPopupMenuLegend<BR>
+OnPopupMenuLimit<BR>
+OnPopupMenuAnnotation </LI>
+<LI>Added Cartesian Coordinate Axes support to the Plot Pack components.&nbsp; Added three new properties to the Axis objects...<BR>
+CartesianStyle<BR>
+CartesianChildRefAxesName<BR>
+CartesianChildRefValue </LI>
+<LI>Updated Plot Pack Digital Channel to support FastDraw. </LI>
+<LI>Added new property to Axis object: GridLinesVisible. </LI>
+<LI>Upgraded CubicSpline and Interpolation Trace styles to support empty and null data points.&nbsp; Empty data points will be skipped.&nbsp; Null Data points will generate a break in the trace line. </LI>
+<LI>Added the following new properties and methods to the iPlotChannelCustom (channel object for all Plot Components)...<BR>
+<BR>
+DataPointSize - the number of bytes used by each data point added to the chart.<BR>
+MaxDataPoints - the maximum theoretical number of data points that you can fit into the chart.&nbsp; For 32-bit Windows, this represents the maximum theoretical number of data points that will fit into the 2GBprocess memory limitation ( minus the 
+applications' memory footprint)&nbsp; imposed by Windows.<BR>
+Capacity - the number of data points that have been <BR>
+MemoryUsed - the currently allocated memory used by the data buffer.&nbsp; This value is in bytes.<BR>
+<BR>
+DataStyle - specifies the features available to the data points.&nbsp; The Compact Style uses 8 bytes per data point, and stores X and Y data point data with Single Precision.&nbsp; This style loses features regarding individual data marker styles in exchange for a smaller memory footprint.&nbsp; The Standard Style uses 24 bytes per data point, and stores X and Y data point data with Double Precision.&nbsp; The Standard Style allows for use of the individual data point data marker styles.&nbsp; The Full Feature Style has extended features that is open for future expansion </LI>
+<LI>iAnalogOutput, iAnalogDisplay, and iEdit have the following properties added...<BR>
+ErrorActive - When True, then the following three properties control the display of the error drawn on the control.<BR>
+ErrorFont<BR>
+ErrorText<BR>
+ErrorBackgroundColor </LI>
+<LI>Added GetOPCItemActive to the ActiveX components. </LI>
+<LI>Added AutoError to the OPC item.&nbsp; For VCL components, access the OPC item object to access AutoError.&nbsp; For ActiveX, use the GetOPCItemAutoError and SetOPCItemAutoError methods.&nbsp; If AutoError is True, then if the quality of the OPC data received from the OPC Server is not good, then the ErrorActive property of the component will be set to True.&nbsp; If the OPC Server data is good, then the ErrorActive property of the component will be set to False.&nbsp; When the OPC item is connected to the server, and AutoError is set to True, the ErrorActive property is automatically set to True indicating that the component is in an invalid state. </LI>
+<LI>Optimized LoadDataFromFile method in the Plot Pack to be 500% faster than previous versions. </LI>
+<LI>Optimized Code for speed on Data, Axis, and FastDraw features of the Plot Pack. </LI>
+<LI>Added Compact Interval data type to Plot Pack.&nbsp; This style allows for the storage of single-precision fixed x-interval data points resulting in the ability to store approximately 538 million data points total in the chart (this represents the 2GB limit of applications running under Windows.&nbsp; This value depends on memory usage in other parts of your application, and the physical and virtual memory of your computer). </LI>
+<LI>Upgraded iEdit and iAnalogOutput to inherit from our own custom iEditCustom control.&nbsp; Since these controls no longer inherit from the Windows API or QT API Edit-box control, they no longer have the bugs and inconsistencies that come along with the API controls. </LI>
+<LI>Upgraded iModeComboBox&nbsp; control to inherit from our own custom combo box control.&nbsp; Since this control no longer inherits from the Windows API or QT API combo-box control, it no longer has the bugs and inconsistencies that come along with the API control. </LI>
+<LI>Added new TextRectangle Annotation style to the Plot Pack components.&nbsp; Allows the display of a text string inside of a sizeable rectangle. </LI>
+<LI>Added AddXYArray method to Plot Pack Channel object.&nbsp; Allows the addition of 2-dimensional Variant Arrays to Channel that contain X and Y coordinate data. </LI>
+<LI>Limits upgraded to support streaming. </LI>
+<LI>Annotations now clip to axes.&nbsp; Beneficial when you have stacked axes and you don't want annotations dragging or bleeding into other axis regions. </LI>
+<LI>Added PrintDocumentName property to Plot Pack components to specify the name of the document that is displayed on compatible printers when the chart is being printed.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL/CLX Version 2.1.0 Service Pack 5</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed Plot Pack problem where a call to ClearAllElements method of the Limit objects would not result in the component being repainted.</LI>
+<LI>Fixed OPC problem where the initial callback would sometimes be ignored during connection to an OPC server and would only affect static data on the OPC server.</LI>
+<LI>Fixed problem where the Legend Y-Value would incorrectly display the X-Value column data.</LI>
+<LI>Fixed ActiveX bug where license errors would occur if you were not logged in as Administrator on a Windows NT4/2000/XP workstation at Design-Time.&nbsp; Does not affect Run-Time.</LI>
+<LI>Fixed iKeyboard problem where SecondRowMargin property was ignored during the automatic height calculations of individual keys.</LI>
+<LI>Fixed Plot Pack Interface memory leak.&nbsp; When Plot Pack sub object interfaces were released, the connection point object was not released resulting in a memory leak.</LI>
+<LI>Fixed rounding error in iOdometer.&nbsp; Values would sometimes be incorrectly rounded due to differences in floating point calculation results from different processor manufacturer and models.</LI>
+<LI>Fixed AddLimit property of gauge components.&nbsp; Pointer Size and Pointer Margin properties were reversed.&nbsp; No interface change, only correction of incorrect property assignment.</LI>
+<LI>Fixed Limit events that were not functional in gauge components</LI>
+<LI>Fixed OnPositionChange event that was not functional in gauge components.</LI>
+<LI>Fixed Data Cursor "Divide By Zero" error in Plot Pack which would occur with tightly packed data points (multiple data points that would fit into a single pixel).</LI>
+<LI>Fixed ActiveX ZOrder problem in Excel where the ZOrder would not be preserved from last save.</LI>
+<LI>Fixed transparency problems with iKnob, iSwitchLever, iCompass, iSlidingScale, and iSlidingCompass components that utilize gradients.</LI>
+<LI>Fixed resizing issues in RSView and Microsoft Word.&nbsp; Components would change size when switching between design-time and run-time.</LI>
+<LI>Fixed AddLimit method in gauge components.&nbsp; Pointer Size and Pointer Margin parameters were flipped.</LI>
+<LI>Fixed limit events in Gauge components; events were not firing.</LI>
+<LI>Fixed OnPositionChange event in Gauges, event was not firing.</LI>
+<LI>Fixed the over/under-range triangles in the Seven Segment components.&nbsp; Would not display over/under-range triangles unless value was 1 above or below the max and min displayable range.</LI>
+<LI>Fixed ActiveX painting corruption in iThermometer, iLinearGauge, iLogGauge, iSlidingScale, and iSlidingCompass when switching between horizontal and vertical orientations.</LI>
+<LI>Fixed decay feature in iSpectrumDisplay component.&nbsp; Decay had not been functioning since Service Pack 2.</LI>
+<LI>Fixed iOdometer visual rotation "blip" problem when TenthsDigitCount = 0.</LI>
+<LI>Fixed SavePropertiesToFile method in Plot Pack.&nbsp; Would previously only save one cursor even if you had multiple cursors in the chart.</LI>
+<LI>Fixed OnPositionChange property.&nbsp; Would not fire if changed by an OPC Server.</LI>
+<LI>Fixed HP VEE/Agilent VEE compatibility problem.&nbsp; Plot Pack Mouse events were blocked by VEE during high CPU load.&nbsp; Symptom: Axis would continue to move once mouse was released if there was a large CPU load.</LI></OL>
+
+<H4>New Features:</H4>
+<OL>
+
+<LI>Added iEdit component with OPC string support.</LI>
+<LI>Improved OPC browser panel.&nbsp; Browsing for computers is now hierarchical according to domain.&nbsp; Included look-ahead feature on OPC items to see if sub items exist below each item in the visible list.</LI>
+<LI>Plot Pack now supports OPC connections to channels objects.</LI>
+<LI>Keyboard upgraded to support Numeric Keypad style.</LI>
+<LI>Add SelectActive property to Plot Pack Toolbar interface.&nbsp; This property allows you to tell if the select tool is active.</LI>
+<LI>Added OPC support to the iPanel, iPieChart, iPercentBar, iLedMatrix, and iSpectrumDisplay components.</LI>
+<LI>Updated Switch Rocker 3-way to write Value property to OPC Server.</LI>
+<LI>Updated iKeypad to ensure keys are not transparent when using the transparent background feature.</LI>
+<LI>Added CachedDrawing feature to Property Editor of iLedMatrix</LI>
+<LI>Upgraded iSlider and iKnob to only write to an OPC server after a change has finished (i.e. after the&nbsp; mouse button has been released).</LI>
+<LI>Updated 7-Segment Analog to Round values instead of Trunc.&nbsp; This will synchronize the behavior with our other double-value display components.&nbsp; Clock components will continue to Trunc double values.</LI>
+<LI>Added two new Annotation Reference styles: iprtXChannelYDataView allowing the annotation's X coordinate to move with the channel and the Y coordinate to be fixed to the DataView and iprtXDataViewYChannel, allowing for the annotation's X coordinate to be fixed to the DataView and the Y coordinate to move with the channel.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL/CLX Version 2.0.8 Service Pack 4</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed Internet Explorer error where the visible, width, and height properties would no longer function in VBScript.</LI>
+<LI>Fixed iSwitchLed and iThermometer property editor bugs under ActiveX which were preventing the property editors from allowing the user to hit the OK button or to navigate to development environment specific property editor tabs. </LI>
+<LI>Fixed bug in Plot Pack Data Cursors where clicking on one cursor would cause all other data cursors to be assigned to the same channel.</LI>
+<LI>Fixed problem when using MoveWindow in Visual Basic to move component causes components to redraw incorrectly. Usually happened when component was moved off the form and then back onto the form. Components would appear to disappear in some situations.</LI>
+<LI>Several issues regarding resizing, moving, disappearing components, and IE display issues have been fixed in our ActiveX components.</LI>
+<LI>Increased compatibility of moving and resizing ActiveX components in ActiveX containers.</LI>
+<LI>Fixed Themes lockup bug in Visual Basic running under Windows 95/98/ME.</LI>
+<LI>Fixed OPC where some servers would callback to the component after the event handlers for the OPC connection were disconnected.</LI>
+<LI>Fixed problem where legend would not display existing channels if removed and then re-added.</LI>
+<LI>Fixed legend up/down button scrolling issue.</LI>
+<LI>Fixed problem where translations would not persist (stream out).</LI>
+<LI>Fixed problem in iAngularGauge where If SectionEnd is less than PositionMin then the entire section would be filled with that section's color.</LI>
+<LI>Fixed OPC Boolean property support. Now supports strings "TRUE" and "FALSE" (case insensitive) that come from OPC Servers.</LI></OL>
+
+<H4>New Features:</H4>
+<OL>
+
+<LI>Added Axis Linking Support in Plot Pack.</LI>
+<LI>Added FocusControl support to the iLabel component for VCL applications.</LI>
+<LI>Added GetBytesJPEG method for use in obtaining a JPEG image for use in Microsoft IIS server ASP web pages to all component except for iTimers, iThreadTimers, iAnalogOuput, and iModeComboBox.</LI>
+<LI>Added multiple Label support to Plot Pack. Title properties depreciated in favor of multiple Label support, but are provided for backwards compatibility.</LI>
+<LI>Added multiple pointer support to iAngularGauge, iLinearGauge, iAngularLogGauge, and iLogGauge. Original position and other pointer specific properties provided for single-pointer applications and backwards compatibility.</LI>
+<LI>Added LoadPropertiesFromFile and SavePropertiesToFile methods to all components except for TiTimers and TiThreadTimers. Allows streaming of component properties to a text file for later retrieval.</LI>
+<LI>Added "High" and "Low" to Plot Pack Data Cursor to signify Digital High and Digital Low values in Digital Channels.</LI>
+<LI>Added LinkedCell to various components for use with this feature in Microsoft Excel.</LI>
+<LI>Added OnClickIndicator event to iLedMatrix. The row and column are passed in the event handler to indicate which indicator was clicked.</LI>
+<LI>Added new iTank, iValve, iModeComboBox, and iSwitchPanel components.</LI>
+<LI>Added CLX component versions of all of our components for use with Delphi 6 for Windows and Kylix 1-2 for Linux.</LI>
+<LI>Improved OPC property editor dialog to remember the previous Computer Name, OPC Server Name, and Update Rate for quicker setup of multiple items.</LI>
+<LI>Added Mouse Wheel support to the Knob, Slider, Switch Slider, and Switch Rotary components.&nbsp; Uses the KeyPageStepSize property to respond to Mouse Wheel scrolls.</LI>
+<LI>Added OnMouseDownDisplay, OnMouseMoveDisplay, and OnMouseUpDisplay events to the Object Canvas to provide similar events to OnMouseDown, OnMouseMove, and OnMouseUp but providing the Cartesian coordinates of the Mouse instead of Pixel coordinates.</LI>
+<LI>Added GetPixelsXToDisplayX and GetPixelsYToDisplayY methods to provide a mechanism to convert between the 0,0 upper-left-hand corner pixel coordinates provided by the Windows API or QT API and the Object Canvas' 0,0 Cartesian Coordinates.</LI>
+<LI>Added FontColor property to ActiveX interface for the iModeComboBox component.</LI>
+<LI>Added CachedDrawing property to components that use background caching for improved performance. This property should be left on unless the ActiveX container doesn't properly support background caching (such as Microsoft Internet Explorer).</LI>
+<LI>Added Mouse Wheel support to iKnob, iSlider, iSwitchSlider, and iSwitchRotary.</LI>
+<LI>Added MouseWheelStepSize property to iKnob and iSlider.</LI>
+<LI>Added RunningMin, RunningMax, and RunningMean properties. These property values are only valid for continuous values. These values are invalid if you add Null or Empty data points to the channel. If you modify previous data points, these values will also become invalid, but you can force them to revalidate by calling the Get method variations of these properties: GetYMax, GetYMean, and GetYMin methods.</LI>
+<LI>Added ChannelNameMaxWidth property to specify the maximum width of the Channel Name column to allow word wrapping of long channel names.</LI>
+<LI>Added New Legend Columns. Use the ShowColumnYMax, ShowColumnYMin, ShowColumnYMean. These values display the running Max, Min, and Mean of the channel.</LI>
+<LI>Added PositionToPercent and PercentToPosition methods to Plot Pack Axis objects.</LI>
+<LI>Added OnClickDataPoint and OnClickAnnotation events to Plot Pack components.</LI>
+<LI>Added Cubic Spline, Polynomial (n-1), Rational, Differential, and Straight Line (older default) Interpolation curve fitting options to Plot Pack Channel Object.</LI>
+<LI>Added UserCanMove property to Plot Pack Annotation objects, allowing end-user to visually move annotations on the component.</LI>
+<LI>Added ShowSelectButton toolbar button to turn on and off the select cursor which allows users to click on data points and annotation objects.</LI>
+<LI>Added DigitBorderShow, DigitBorderColor, TenthsDigitCount, and ShowDecimalPoint properties to the iOdometer control.</LI>
+<LI>Upgraded ActiveX help file to Microsoft HTML-style help system. </LI>
+<LI>Added AutoSelect property to the iAnalogOutput control.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 2.0.6 Service Pack 3b</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Fixed Streaming issue with Font properties on sub objects (e.g. Font property of Channel, axes, legend, etc.) when using Load Method of the plot component. Problem existed reading in font sub properties.</LI>
+<LI>Fixed LineX and LineY annotation styles would not correctly draw if ReferenceStyle was set to DataView.</LI>
+<LI>If the MinMaxUserCanMove property set to true, the Max pointer would not be moveable if the Min pointer was not visible in angular gauge.</LI>
+<LI>Fixed bug in iSwitchLed resulting in CaptionMargin property having no effect when CaptionAlignment was set to OppositeSide.</LI>
+<LI>Fixed Plot Pack components where zoom box would match the axes title font color.</LI>
+<LI>Fixed LineX annotation bug in Plot Pack where Y and Y2 values would be swapped.</LI>
+<LI>Fixed iSevenSegmentClock issue where control would not properly fire the countdown event if the clock ran past midnight and would instead start counting up after reaching 0 and would not fire the event.</LI>
+<LI>Fixed iLEDRectangle where text caption would overlap the 3D border margins.</LI>
+<LI>Fixed Internet Explorer bug where scrolling our ActiveX controls out of view would cause unexpected resizing in all web pages or painting problems when scrolled past another frame.</LI></OL>
+
+<H4>New Features:</H4>
+<OL>
+
+<LI>ScaleMax and ScaleMin added to Spectrum Display.</LI>
+<LI>Knob upgraded to allow turning off keyboard support.</LI>
+<LI>Added DataEmpty property, AddXEmpty method to iPlot, AddEmpty method to iXYPlot, and FastDrawEnabled property.</LI>
+<LI>Added cursor keyboard support to Plot Pack components.</LI>
+<LI>Added FastDrawEnabled property to Plot Pack components. Speeds up drawing to screen with large data sets.</LI>
+<LI>Added Glyph support to iSwitchLED and border support.</LI>
+<LI>Integrated OPC client features into components. Please note that a nominal distribution fee applies if you utilize the OPC features of our components. OPC Features are not supported under CLX Applications for Delphi 6 and Kylix 1 for Linux. OPC or OLE for Process Control is a communications standard for communicating with factory floor automation hardware via the network.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 2.0.4 Service Pack 2</H4>
+<H4>Bug Fixes:</H4>
+<OL>
+
+<LI>Plot Pack: The index in the data array is offset by one if the log is started before no data has been added to the chart.</LI>
+<LI>Instrumentation: SwitchRocker3Way descendent for BackGroundColor property should have a capital "G".</LI>
+<LI>Instrumentation: Seven Segment Clock control displays incorrect hour values.</LI>
+<LI>If component loses focus before receiving a mouse-up event, then the component remains "stuck" believing that the mouse button is in a down state.</LI>
+<LI>Instrumentation: Odometer displays incorrect values.</LI>
+<LI>Plot: Cannot select channel at top of legend if scroll arrow up is enabled.</LI>
+<LI>Plot: When adding or removing plot objects, the component would not request a repaint.</LI>
+<LI>Instrumentation: Strip Chart would freeze in Internet Explorer if two strip charts (each in one window) were running in two IE windows running in the same process.</LI>
+<LI>Instrumentation: Upgrade ActiveX property editors to support a single ActiveX property editor tab to fix Theme Panel bug in Visual Basic.</LI></OL>
+
+<H4>New Features:</H4>
+<OL>
+
+<LI>Instrumentation: Add Auto Size capability to Angular Gauge</LI>
+<LI>Instrumentation: Add keyboard component with US support.</LI>
+<LI>Instrumentation: Upgrade Spectrum Display to allow setting a bar color per bar</LI>
+<LI>Instrumentation: Add comma support for international values in Seven Segment Character and Seven Segment Analog if decimal separator is defined as comma (",")</LI>
+<LI>Instrumentation: Add text alignment feature to Panel control</LI>
+<LI>Instrumentation: Upgrade LED Spiral to support pointer style</LI>
+<LI>Instrumentation: Add OnCustomizeTickLabel event to compass and dual compass</LI>
+<LI>Instrumentation: Add text alignment feature to Panel control</LI>
+<LI>Plot: Add peak to peak, time, and frequency dual cursor for measuring between points in a particular channel.</LI>
+<LI>Plot: Upgrade cursor to show null data points as well as empty data points</LI>
+<LI>Plot: Upgrade AutoLabels to support other 1-2-5-type rules on DateTime format</LI>
+<LI>Plot: Expand 1-2-5 rules.</LI>
+<LI>Plot: Add tag property to plot components for storing user data</LI>
+<LI>Plot: Add "Desired Increment" to scales to allow for greater control over AutoScale and 1-2-5 rule</LI>
+<LI>Plot: Update AutoLabel to support Date/Time (Julian Dates Only) and Price32nds (Bond Market Scale). These scales should scale property to be "Human Readable".</LI>
+<LI>Plot: Update Time Calculator to support Price32nds</LI>
+<LI>Plot: Extend Log10 scales to support AutoScale</LI>
+<LI>Plot: Upgrade to support multiple cursors, delta cursors, and inverse delta cursors.</LI>
+<LI>Plot: Upgrade to support unlimited limit lines.</LI>
+<LI>Plot: Upgrade to support zoom factor scaling for zoom toolbar buttons</LI>
+<LI>Plot: Allow control over popup menus and add enabled property to disable individual plot object UI</LI>
+<LI>Plot: Make annotations visible in Plot Components when X/Y Axes are reversed.</LI>
+<LI>Plot: Add tag property to plot components for storing user data</LI>
+<LI>Plot: Allow individual control of markers per data point in addition to per channel.</LI>
+<LI>Plot: Update save dialogs to support JPG, BMP, and EMF file formats</LI>
+<LI>Plot: Update AutoLabel to support Date/Time (Julian Dates Only) and Price32nds (Bond Market Scale).</LI>
+<LI>Plot: Update Time Calculator to support Price32nds.</LI>
+<LI>Plot: Add Data Array support to channel interface to allow addition of data using a one dimensional array.</LI>
+<LI>Plot: Allow four different angles of rotation for text annotations</LI>
+<LI>Plot: Add two new line annotation styles: LineX and LineY for drawing lines perpendicular to the X and Y Axis</LI>
+<LI>ALL: Update all USE statements in VCL source code to support Linux/Windows</LI>
+<LI>ALL: Add BMP, EMF, and JPG export capabilities for ASP web page and other export uses.</LI>
+<LI>Plot: Load Data file now supports loading either data saved with SaveData method or logging feature</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 2.0.2 Service Pack 1</H4>
+<OL>
+
+<LI>Updated Help Files</LI>
+<LI>Updated Plot Pack Manual PDF (available at 
+<a target="_blank" href="http://www.iocomp.com/documentation">http://www.iocomp.com/documentation</a>) </LI></OL>
+
+<H4>Plot Pack Updates</H4>
+<OL>
+
+<LI>Fixed memory leak when using Plot Pack component sub objects (ActiveX only).</LI>
+<LI>Fixed error in code where each plot component would create the runtime property editor when the component is created, and not destroy the runtime property editor after it was show in the component. The result would be that each plot component would consume large amounts of system resources. Under Windows 95/98 systems you could only use 2 plot components, and Windows NT/2000 systems you could only use 3-4 plot components depending on system resource use.</LI>
+<LI>Fixed problem in runtime property editor. Layout editor would not function properly if other properties in the runtime property editor were changed.</LI>
+<LI>Fixed Visual C++ bug where having more than one plot component on form causes Visual C++ to give errors when running application. Random access violations occur when you have opened the property editors.</LI>
+<LI>Fixed Datax, DataY, and DataNull properties. They previously had no effect.</LI>
+<LI>Added Save to Tab Delimited File support to Plot Components.</LI>
+<LI>Added automated logging per component and per channel.</LI>
+<LI>Added Mouse Events to Plot Component main interface.</LI>
+<LI>Added External Toolbar Support.</LI>
+<LI>Added BeginUpdate, EndUpdate, Print, CopytoClipboard, Save, GetSnapShotPicutre, RepaintAll, Lock, and Unlock methods added to Plot Pack.</LI>
+<LI>Added Date/Time calculator for property editor min and span properties.</LI>
+<LI>Added AddDataArray method for adding synchronous data from a one or two dimensional array.</LI>
+<LI>Added Digital Channel support.</LI>
+<LI>Added HideAllMenuItems property.</LI>
+<LI>Added Expand/Collapse to Scale Format Style.</LI>
+<LI>Added SetLimitLinesOnTop method.</LI>
+<LI>Added SetGridLinesOnTop method.</LI>
+<LI>Added support for PixelsToPosition method to support invisible axes.</LI>
+<LI>The following Data and Property streaming methods were added to support saving and loading of channel data and both channel and component properties. Added to both channel and main plot component interfaces.<BR>
+<BR>
+SaveDataToFile<BR>
+SavePropertiesToFile<BR>
+LoadDataFromFile<BR>
+LoadPropertiesFromFile</LI></OL>
+
+<P>&nbsp;</P>
+<H4>Instrumentation and Professional Component Updates</H4>
+<OL>
+
+<LI>iSwitchLed upgraded for word-wrap (New Property WordWrap)</LI>
+<LI>Spectrum display upgraded to support setting individual colors for each bar.</LI>
+<LI>Angular Gauges now support degree range between 0 and 360 (previously 0 to 355).</LI>
+<LI>Phone Pad upgraded to support individually changing captions for each button to a custom value.</LI>
+<LI>Added show property for each button in the Phone Pad component.</LI>
+<LI>Spectrum Display streaming problem in Visual Basic fixed. NOTE! The BarValue property has been removed from the ActiveX interface. If you were using this property before, use the SetBarValue method instead.</LI>
+<LI>Analog Output now responds to arrow keys instead of treating them as tab keys.</LI>
+<LI>The following Control and Warning Limit properties were added to iStripChart...<BR>
+GetChannelControlLimitUpperLineWidth<BR>
+SetChannelControlLimitUpperLineWidth<BR>
+GetChannelControlLimitLowerLineWidth<BR>
+SetChannelControlLimitLowerLineWidth<BR>
+GetChannelWarningLimitUpperLineWidth<BR>
+SetChannelWarningLimitUpperLineWidth<BR>
+GetChannelWarningLimitLowerLineWidth<BR>
+SetChannelWarningLimitLowerLineWidth</LI>
+<LI>Wordwrap property added to iSwitchLed</LI>
+<LI>Added SaveToBitmap method to iStripChart</LI>
+<LI>Added Focus method to iStripChart</LI>
+<LI>Fixed streaming problem with Switch Slider, Rotary Switch, LEDSpiral and the VB built-in.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 2.0.0 Hot Fix #2</H4>
+<OL>
+
+<LI>Fixed ActiveX interface problem with the Plot Pack Channel Object. Affected Internet Explorer and HP/Agilent VEE Users Only.</LI>
+<LI>Fixed Anti-Alias code for sliding scale components which would not work correctly wish very small component sizes.</LI>
+<LI>Fixed Visual Basic lockup problem with nested Plot Pack property editors.</LI>
+<LI>Fixed memory leak in Dual Compass component.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 2.0.0 Hot Fix #1</H4>
+<OL>
+
+<LI>Fixed missing FontColor property on the Plot Pack Annotation object.</LI>
+<LI>Fixed problem where changing Pen width of Plot Pack Annotation object would change pen width of x-axis elements.</LI>
+<LI>Fixed problem where changing Title Font through object inspector would cause an access violation in Delphi or C++ Builder when using VCL components.</LI>
+<LI>Fixed problem with VCL Property Editor Textbox Error where some lower case keys were being interpreted as control characters</LI>
+<LI>Fixed trace line algorithm problem causing artifacts to be drawn in Plot Pack Data View Area.</LI>
+<LI>Updated Plot Pack clipping code which resulted in incorrect clipping of some data points.</LI>
+<LI>Updated Plot Pack Fill routine upgraded to handle reverse XY axes</LI>
+<LI>Added New property to disable users from accessing the Plot Pack Run-Time Property Editors through right mouse clicks. PropertyName: UserCanEditObjects</LI>
+<LI>Fixed Intermittent assertion error on component creation in Microsoft Visual C++, due to the Control Window ID being changed. The problem is more apparent as more Iocomp ActiveX controls are used.</LI>
+<LI>Fixed error in Seven Segment Analog component where incorrect values would be displayed.</LI>
+<LI>Fixed error where changing Y-Axis Label separation would change X-Axis Label separation property in VCL Plot Component Property Editor.</LI>
+<LI>Fixed error if X-Axis in Plot Component was shown above DataView area, the chart title would be misaligned.</LI>
+<LI>Fixed situation here clicking on Font button in Plot Pack property editor under labels would freeze Visual Basic.</LI></OL>
+
+<P><HR></P>
+<H4>ActiveX and VCL Version 2.0.0</H4>
+<OL>
+
+<LI>Fixed problem in StripChart SetBufferSize that may not report an error if the buffer size can not be allocated.</LI>
+<LI>Fixed KeyUp problem in ActiveX for the SwitchRotary and SwitchSlider. Would still indicate that the Arrow key was down even 
+though it had been released.</LI>
+<LI>Fix problem with iObjectCanvas that would cause Ellipse and Rectangle to disappear if zooming out to far.</LI>
+<LI>Fixed multiple OCX loading bug in Visual C++ under Windows 95/98 (Reflector Window Problem).</LI>
+<LI>Fixed bug in the iAnalogOutput that caused the Tab key to not move focus to the next control under Visual C++ applications</LI>
+<LI>OnChangeUser Event Handler Added to iAnalogOutput.</LI>
+<LI>OnPositionChangeUser Event Handler Added to iKnob.</LI>
+<LI>TickLabelAlignment property Added to iAngularGauge.</LI>
+<LI>OnPositionChangeUser Event Handler Added to iSlider.</LI>
+<LI>OnChangeUser Event Handler Added to iSwitchLed.</LI>
+<LI>OnChangeUser Event Handler Added to iSwitchToggle.</LI>
+<LI>OnPositionChangeUser Event Handler Added to iSwitchRotary.</LI>
+<LI>OnPositionChangeUser Event Handler Added to iSwitchSlider.</LI>
+<LI>OnValueXChangeUser Event Handler Added to iSwitchQuad.</LI>
+<LI>OnValueYChangeUser Event Handler Added to iSwitchQuad.</LI>
+<LI>OnChangeUser Event Handler Added to iSwitchLever.</LI>
+<LI>OnChangeUser Event Handler Added to iSwitchRocker.</LI>
+<LI>OnValueChangeUser Event Handler Added to iSwitchRocker3Way.</LI>
+<LI>Theme capability added to all Professional and Instrument Pack components.</LI>
+<LI>Fixed Theme Panel crash with Visual Basic 5/6 under Windows 95/98</LI>
+<LI>iSevenSegmentClock now supports hour values up to 99 hours. Maximum displayed value is 23 hours. Day and year support will be added in a future release.</LI></OL>
+
+<B><I><BLOCKQUOTE>New Components Added</BLOCKQUOTE>
+</I><BLOCKQUOTE>Instrument Pack:</BLOCKQUOTE>
+
+<UL>
+
+<UL>
+</B><BLOCKQUOTE><LI>iLabel Component </LI></BLOCKQUOTE></UL>
+</UL>
+
+<B><BLOCKQUOTE>Professional Pack:</BLOCKQUOTE>
+
+<UL>
+
+<UL>
+</B><BLOCKQUOTE><LI>iSpectrumDisplay Component </LI></BLOCKQUOTE>
+<BLOCKQUOTE><LI>iPhonePad Component </LI></BLOCKQUOTE>
+<BLOCKQUOTE><LI>iDualCompass Component </LI></BLOCKQUOTE>
+<BLOCKQUOTE><LI>iSlidingScale Component </LI></BLOCKQUOTE>
+<BLOCKQUOTE><LI>iSlidingCompass Component </LI></BLOCKQUOTE>
+<BLOCKQUOTE><LI>iThreadTimers Component </LI></BLOCKQUOTE></UL>
+</UL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.1.6 (Service Pack 7)</H4>
+<OL>
+
+<LI>Fixed iAngularGauge and iAngularLogGauge SectionColor fill bug.</LI>
+<LI>Fixed Multiple Iocomp OCX DAX error problem in VB.</LI>
+<LI>Fixed StripChart Grid Scrolling Drawing bug (1 line missing).</LI>
+<LI>Added AutoCenter property to iAngularGauge.</LI>
+<LI>Added CenterLabelWordWrap property to iLedRectangle.</LI>
+<LI>Added CenterLabelEndsMargin property to iLedRectangle.</LI>
+<LI>Added CenterLabelAlignment property to iLedRectangle.</LI>
+<LI>Added AutoSize to iLedSpiral.</LI>
+<LI>Added OuterMargin to iLedSpiral.</LI>
+<LI>Added RangeDegrees to iLedSpiral.</LI>
+<LI>Added StartDegrees to iLedSpiral.</LI>
+<LI>Added MouseControlStyle to iSwitchRotary.</LI>
+<LI>Added YAxisLabelWidthFixed Property to iStripChart.</LI>
+<LI>Added YAxisLabelWidth Property to iStripChart.</LI>
+<LI>Added YAxisReverseScale Property to iStripChart.</LI>
+<LI>Added SetBufferSize Method to iStripChart.</LI>
+<LI>Added AddData Method to iStripChart.</LI>
+<LI>Added AutoSize to iKnob.</LI>
+<LI>Added OuterMargin to iKnob.</LI>
+<LI>Added FrameUpdateRate to all components except iAnalogOutput and iTimers.</LI>
+<LI>Linked Cells now supported under Excel.</LI>
+<LI>Added Database Support to all components except (Pie Chart, Percent Bar, Timers, Strip Chart, Object Canvas, Panel, LED Matrix, Switch Quad, Switch Rocker 3-Way, Rotation Display, and Gradient).</LI>
+<LI>Fixed design-time drawing bug in Excel and Simplicity.</LI>
+<LI>Fixed recursion problem in Simplicity when double-clicking on component.</LI>
+<LI>Fixed component destruction bug in PowerBuilder.</LI>
+<LI>Fixed GetChannelMax and GetChannelMin bug which caused the last data point to be ignored.</LI>
+<LI>Updated Help Files.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.1.4 (Service Pack 6)</H4>
+<OL>
+
+<LI>Fixed MinMaxPointerMargin property change error which resulted in the Scale not being redraw in its new position.</LI>
+<LI>Fixed iSwitchSlider and iSwitchRotary Position streaming error that would have limited it to a maximum value of 2.</LI>
+<LI>Fixed iSevenSegmentClock bug where the OnCountDownComplete event would unrepentantly fire and the timer would be disabled if the counter was enabled at runtime with the time set to 0 and the direction set to Up.</LI>
+<LI>Fixed drawing error in knob control that would occur with some NT video drivers.</LI>
+<LI>Fixed iAnalogOutput SetFocus and KillFocus problems in ActiveX.</LI>
+<LI>Upgraded iOdometer control to rotate all digits. WARNING: you may need to expand the width of the control to 
+accommodate the new painting routines.</LI>
+<LI>Added BackGroundColor property to the SwitchQuad control.</LI>
+<LI>Added Transparent property to the following controls...<BR>
+iLinearGauge<BR>
+iAngularGauge<BR>
+iLogGauge<BR>
+iAngularLogGauge<BR>
+iKnob<BR>
+iSlider<BR>
+iThermometer<BR>
+iLedBar<BR>
+iLedSpiral<BR>
+iSwitchQuad<BR>
+iSwitchLever<BR>
+iSwitchRocker<BR>
+iSwitchRocker3Way<BR>
+iSwitchRotary<BR>
+iSwitchSlider<BR>
+iSevenSegmentCharacter<BR>
+iSevenSegmentAnalog<BR>
+iSevenSegmentBinary<BR>
+iSevenSegmentHexadecimal<BR>
+iSevenSegmentInteger<BR>
+iSevenSegmentClock<BR>
+iSevenSegmentClockSMPTE<BR>
+iLedRound<BR>
+iLedArrow<BR>
+iLedDiamond<BR>
+iLedMatrix<BR>
+iOdometer<BR>
+iPieChart<BR>
+iPercentBar<BR>
+iObjectCanvas<BR>
+iCompass<BR>
+iRotationDisplay</LI>
+<LI>&nbsp;Added the following events to the iStripChart control...<BR>
+OnKeyPress<BR>
+OnKeyDown<BR>
+OnKeyUp</LI>
+<LI>Added BeginUpdate and EndUpdate methods to all controls except iAnalogOutput and iTimers.</LI>
+<LI>Added PrecisionStyle property to all Scale components.</LI>
+<LI>Added AutoScale to all Scale components implemented via the four following properties...<BR>
+AutoScaleEnabled<BR>
+AutoScaleDesiredTicks<BR>
+AutoScaleMaxTicks<BR>
+AutoScaleStyle</LI>
+<LI>Added the following properties to the iStripChart control...<BR>
+ChannelVisibleInLegend<BR>
+InterpolateMissingDataPoints<BR>
+YAxisShow</LI>
+<LI>Added OnCustomizeTickLabel to all Scale based components.</LI>
+<LI>Added limits to all scale based components and implement the following interfaces...<BR>
+Added LimitUpperValue Property<BR>
+Added LimitLowerValue Property<BR>
+Added LimitPointerSize Property<BR>
+Added LimitPointerMargin Property<BR>
+Added LimitUpperPointerColor Property<BR>
+Added LimitLowerPointerColor Property<BR>
+Added LimitShowUpperPointer Property<BR>
+Added LimitShowLowerPointer Property<BR>
+Added LimitDrawScaleSide Property<BR>
+Added LimitCount Property<BR>
+Added AddLimit Method<BR>
+Added RemoveLimit Method<BR>
+Added RemoveAllLimits Method<BR>
+Added OnPositionOverLimit Event<BR>
+Added OnPositionUnderLimit Event</LI>
+<LI>Added MouseControlStyle to iSlider control.</LI>
+<LI>Added Lock and Unlock methods to all controls (Except iTimers) to simplify Multiple Thread Management.</LI>
+<LI>Added AutoCenter property to iThermometer.</LI>
+<LI>Updated help files and fixed minor bugs and other issues in the ActiveX and VCL help files.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.1.2 (Service Pack 5)</H4>
+<OL>
+
+<LI>iLedRectangle - Fixed Property Editor, CenterLabelFontInactiveColor incorrectly sets the CenterLabelFontActiveColor.</LI>
+<LI>Fixed iSevenSegmentClockSMPTE VCL property editor not enabling OK or Cancel button when Hour/Min/Sec property is updated.</LI>
+<LI>Fixed ActiveX printing problems.</LI>
+<LI>iSlider and iKnob modified to now change the indicator state in response to keyboard control.</LI>
+<LI>iAnalogOutput Additions<BR>
+Added BeepOnError property.<BR>
+Added UndoOnError property.<BR>
+Added FilterStyle property.<BR>
+Added OnBeforeChange event.</LI>
+<LI>Added ShowReflection property to iLedRound.</LI>
+<LI>Added ShowReflection property to iLedRectangle.</LI>
+<LI>Added IndicatorShowReflection property to iLedMatrix.</LI>
+<LI>Fixed BackGroundPicture streaming problem in VB for components with Background picture property.</LI>
+<LI>Added SegmentOffColor &amp; AutoSegmentOffColor to all Seven Segments components.</LI>
+<LI>Added AutoInactiveColor &amp; InactiveColor property to all LED components.</LI>
+<LI>Added ReverseScale property to the following components<BR>
+iLinearGauge<BR>
+iAngularGauge<BR>
+iLogGauge<BR>
+iAngularLogGauge<BR>
+iSlider</LI>
+<LI>Added HubColor property to the following components<BR>
+iAngularGauge<BR>
+iAngularLogGauge</LI>
+<LI>Strip Chart additions<BR>
+Added GetNow method<BR>
+Added Channel Warning Limit properties<BR>
+Added AutoScrollFirstStyle property<BR>
+Added Precision Style property<BR>
+Added DiscontinuousDataEnabled property<BR>
+SetChannelDataNull method.</LI>
+<LI>Seven Segment Clock additions<BR>
+Added CountDirection property<BR>
+Added CountTimerEnabled property<BR>
+Added OnCountDownComplete event<BR>
+Added SetTimeInSeconds method<BR>
+Added ResetToZero method</LI>
+<LI>Added new Compass Control to Professional Pack.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.1.0 (Service Pack 4)</H4>
+<OL>
+
+<LI>Added support for Borland C++ Builder 5.</LI>
+<LI>Added PositionIndicatorStyle property to iSwitchSlider.</LI>
+<LI>Fixed TabStop problem with VCL components.</LI>
+<LI>Fixed VCL property Editor Tab Order.</LI>
+<LI>Fixed streaming bug where CurrentMin not being set correctly.</LI>
+<LI>Fixed streaming bug that incorrectly streamed in Position property if Position was greater than the PositionMax default.</LI>
+<LI>Added CaptionAlignment property to iSwitchLed.</LI>
+<LI>Added the following features to the iStripChart (See Help File for specifics)... </LI></OL>
+<DIR>
+<DIR>
+
+<P>Printing Comment Lines<BR>
+Channel Min/Max/Mean<BR>
+Label Channels<BR>
+Added CopyToClipBoard method<BR>
+Added SnapShotPicture property<BR>
+Added SaveToMetaFile method<BR>
+Added CursorHideAllOtherChannels property<BR>
+Added EnableDataDrawMinMax property<BR>
+Added AutoScaleMinAdjustEnabled property<BR>
+Added AutoScaleMaxAdjustEnalbed property<BR>
+Added XAxisShow property<BR>
+Added GetNextChannelColor method<BR>
+Added AddIndexTimeNow method<BR>
+Added AddIndexTimeElapsedNow method<BR>
+Added ResetElapsedStartTime method<BR>
+Added EnableDataDrawMinMax property<BR>
+Added write method for CursorIndex property</P></DIR>
+</DIR>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.1.0 (Service Pack 3)</H4>
+<OL>
+
+<LI>Fixed runtime property editor lockup problem when opening color dialog.</LI>
+<LI>Fixed property editor display problem when system is using large fonts.</LI>
+<LI>Fixed iStripChart bitmap resource leak problem.</LI>
+<LI>Fixed iStripChart pen width problem when the last channel width is other than 1.</LI>
+<LI>Add the following features to the iStripChartX...<BR>
+Added PrinterOrientation property<BR>
+Added PrinterMarginLeft property<BR>
+Added PrinterMarginTop property<BR>
+Added PrinterMarginRight property<BR>
+Added PrinterMarginBottom property<BR>
+Added PrintChart method<BR>
+Added Printer Property Page<BR>
+Added MaxBufferSize property<BR>
+Added MinBufferSize property<BR>
+Added CursorIndex property<BR>
+Added OnCursorIndexChange event<BR>
+Added RestoreXYAxisOnPlotMode property<BR>
+Added ChannelVisible property</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX (Only) Version 1.0.8</H4>
+<P>1. Added OnMouseDown, OnMouseMove, and OnMouseUp events to all components.</P>
+<H4>VCL (Only) Version 1.0.8</H4>
+<P>&lt;None&gt;</P>
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.0.4 (Service Pack 2)</H4>
+<OL>
+
+<LI>Fixed iLinearGauge Font updating problem.</LI>
+<LI>Fixed MouseDown event firing in response to MouseUp Event in the following components...<BR>
+iKnob<BR>
+iSlider<BR>
+iSwitchLed<BR>
+iSwitchToggle<BR>
+iSwitchRotary<BR>
+iSwitchSlider<BR>
+iStripChart</LI>
+<LI>Fixed iSwitchLed Enable problem.</LI>
+<LI>Fixed iStripChart XAxisTitle display problem.</LI>
+<LI>Added GridBackGroundColor property to iStripChart.</LI>
+<LI>Added XAxisDateTimeEnabled &amp; XAxisDateTimeFormatString Property.</LI>
+<LI>Added BackGroundPicture to the following components...<BR>
+iKnob<BR>
+iAngularGauge<BR>
+iLinearGauge<BR>
+iSlider<BR>
+iThermometer<BR>
+iLedSpiral<BR>
+iSwitchSlider<BR>
+iSwitchRotary</LI>
+<LI>Added the following properties to iSevenSegmentCharacter and added property page to support new properties...<BR>
+SegmentBits<BR>
+UseSegmentBits<BR>
+SegAOn<BR>
+SegBOn<BR>
+SegCOn<BR>
+SegDOn<BR>
+SegEOn<BR>
+SegFOn<BR>
+SegGOn</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX (Only) Version 1.0.4</H4>
+<OL>
+
+<LI>Visual C++ Only : Property page values not updating when editing components (Fixed).</LI>
+<LI>Fixed Property Page tab order problems.</LI>
+<LI>Added ShowPropertyEditor to all components.</LI></OL>
+
+<P>&nbsp;</P>
+<H4>VCL (Only) Version 1.0.4</H4>
+<OL>
+
+<LI>StripChart Apply button not enabled for most property changes until after at least one channel is added (Fixed).</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.0.2 (Service Pack 1)</H4>
+<OL>
+
+<LI>Change iStripChart ZoomX and ZoomY methods to zoom based on a 100% reference. The previous code was zooming based on a 0% reference and required positive percentages to zoom out and negative percentages to zoom in. Now functions as intended. To zoom out 100%, specify 2.00. To zoom in 100%, specify 0.50.</LI>
+<LI>Fixing painting problem on iSwitchSlider and iSwitchRotary when modifying labels through code.</LI>
+<LI>Fixed access violation caused when using the OnPositionChange event handler. Removed code that could possible execute the event handler before other components had been created on the Form causing an access violation.</LI>
+<LI>Source code files are now distributed with VCL components. </LI></OL>
+
+<H4>ActiveX Only 1.0.2</H4>
+<OL>
+
+<LI>Removed all unused Properties and Methods that would not allow ActiveX components to properly install in Borland products.</LI>
+<LI>Removed Hidden attribute on all read only properties. Would cause the read only properties to be missing in the Visual C++ wrappers.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H4>ActiveX and VCL Version 1.0.1 (Hot Fix #1)</H4>
+<OL>
+
+<LI>Updated Help Files with examples for all Methods and Events.</LI></OL>
+
+<P><HR></P>
+<FONT COLOR="#000080"><H2><A NAME="InstallationInadditiontoRunningInstaller">Installation </A></H2>
+</FONT><H2>ActiveX Users</H2>
+<OL>
+
+<LI>If you are upgrading from version 2.x, it is recommended to first install Version 2.x SP7 (or higher), open, modify, and save your existing projects. This step will ensure that there are no compatibility problems with default component properties that are changed in this version. </LI>
+<LI>Visual C++ users must regenerate wrappers for components in existing projects to utilize new features/methods.</LI>
+<LI>ActiveX CAB files that have been digitally signed by Iocomp Software are available for download from our website at 
+<a target="_blank" href="http://www.iocomp.com/download">http://www.iocomp.com/download</a>.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H2>VCL Users</H2>
+<OL>
+
+<LI>If you are upgrading from version 2.x, it is recommended to first install Version 2.x SP7 (or higher), open, modify, and save your existing projects. This step will ensure that there are no compatibility problems with default component properties that are changed in this version.</LI>
+<LI>Rebuild Library/Package for changes to take effect. This installer will reinstall new package files and will automatically recompile the Library/Package for you.&nbsp; If the automatic recompilation fails, you can manually recompile the packages.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H2>CLX Users [Delphi 6/7 and C++ Builder 6 for Windows]</H2>
+<OL>
+
+<LI>Our VCL and CLX components are split into two different packages. The installer will automatically compile and install the packages for you. If the automatic compile and install fails, you will need to manually compile both packages to use both the VCL and CLX versions of our components in Delphi 6/7 or C++ Builder 6.</LI></OL>
+
+<P><HR SIZE=0></P>
+<H2>CLX Users [Kylix for Linux]</H2>
+<FONT COLOR="#008000"><H3>Installing with the Linux Installer</H3>
+</FONT><FONT COLOR="#0000ff"><H4>Quick Installation Instructions</H4>
+<OL>
+
+</FONT><LI>Install and setup Kylix on your system. <B>Note</B> : Please do not run Kylix while logged in as ROOT. There are known issues with doing anything in KDE/GNOME/KYLIX while logged in as ROOT. Either log in as a general user or log in as a user with root privileges when using Kylix.</LI>
+<LI>Open a shell and navigate to the folder where you downloaded our Linux installer.&nbsp; Execute "./setup" file to execute the installer.</LI>
+<LI>Follow the wizard in the installer to install our CLX component source code. You will need the keycodes for your purchased product to complete the installation.</LI>
+<LI>All components are automatically installed into the IDE.&nbsp; Installation is Complete!</LI>
+<LI>Help Files are in the form of a local website, located inside the Iocomp Components folder you chose during installation.&nbsp; Use your favorite web browser to view them.</LI>
+<LI>If you have any bug reports or problems, please contact Iocomp Support directly or fill out a bug report online.</LI></OL>
+
+<P><HR SIZE=0></P>
+<FONT COLOR="#000080"><H2><A NAME="OPC">OPC</A></H2>
+</FONT><P>OPC deployment licensing is now enforced by our installer.&nbsp; If you previously purchased an OPC Deployment license, and have not entered the OPC Deployment License into the keycode manager during installation, you will need to do the following to properly install the OPC Features...</P>
+<OL>
+
+<LI>Re-run our installer from the Add/Remove Control Panel</LI>
+<LI>Select "Modify", click the NEXT button, and then enter your OPC Distribution keycode where requested.</LI>
+<LI>Continue and complete the installation, asking questions as needed.</LI>
+<LI>You do not have to re-compile your Delphi or C++ Builder packages to install OPC.</LI></OL>
+
+<P>If you did not purchase an OPC Deployment license and are using the OPC features of our components, you will be able to use the OPC features in "evaluation-mode" which will allow you 10 minutes of OPC communication per run of your application.&nbsp; This will be indicated by the appearance of "Evaluation" in the OPC property page tab of our component custom property editors.</P>
+<P>A new "iOPC.dll" file will be installed in your Window's System32 folder.&nbsp; This file contains the OPC features of our components.&nbsp; You can determine if the iOPC.dll is the Full or Evaluation version by right-clicking and viewing the Version Properties of the file.&nbsp; The "Description" will contain the words "Iocomp OPC DLL (Evaluation)" if you are using the Evaluation Version.&nbsp; This file must be distributed along with your application and any required OPC core 
+dll's.&nbsp; </P>
+<B><FONT COLOR="#ff0000"><P>Note: Version Service Pack 3 and above must use the iOPC2.dll in order for the controls to properly use the OPC connectivity features of our controls.</P>
+</B></FONT><P>Please refer to the OPC Install Notes located in the Iocomp Product Directory.&nbsp; An "OPC Distributables" folder has been provided in the Iocomp Product Directory with all files that will need to be distributed to your clients.&nbsp; Also see the 
+<a target="_blank" href="http://www.opcfoundation.org/">OPC Foundation's website</a> for official distribution packages for the required OPC core files.</P>
+<P><HR SIZE=0></P>
+<FONT COLOR="#000080"><H2><A NAME="TechnicalSupport">Technical Support</A></H2>
+</FONT><P>For support, please contact us at <A HREF="mailto:support@iocomp.com">support@iocomp.com</A> or visit our web site at 
+<a target="_blank" href="http://www.iocomp.com/support">http://www.iocomp.com/support</a> for telephone and other support options.</P>
+<P><HR></P>
+<P>Copyright &copy;1998-2008 Iocomp Software Incorporated. Iocomp and the Iocomp Logo are registered trademarks of Iocomp Software Inc. Borland is a registered trademark of the Borland Corporation. Windows, Microsoft, and ActiveX are registered trademarks of the Microsoft Corporation. Linux is a trademark of Linus Torvalds. All other trademarks are registered by their respective owners.</P>
+<P>&nbsp;</P></BODY>
+</HTML>

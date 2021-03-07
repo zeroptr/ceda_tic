@@ -1,0 +1,411 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>High Contrast Compass [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>0</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<CenterDisplayBackGroundColor>16777215</CenterDisplayBackGroundColor>
+<CenterDisplayFont.Color>-2147483640</CenterDisplayFont.Color>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<ECaption>E</ECaption>
+<InnerColor>0</InnerColor>
+<LabelBottomFont.Color>16777215</LabelBottomFont.Color>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.5</LabelBottomMargin>
+<LabelBottomText>Label</LabelBottomText>
+<LabelTopFont.Color>16777215</LabelTopFont.Color>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.5</LabelTopMargin>
+<LabelTopText>Label</LabelTopText>
+<NCaption>N</NCaption>
+<NECaption>NE</NECaption>
+<NWCaption>NW</NWCaption>
+<OuterMargin>5</OuterMargin>
+<Pointer1Color>0</Pointer1Color>
+<Pointer1Width>3</Pointer1Width>
+<Pointer2Height>0.5</Pointer2Height>
+<Pointer2Width>0.5</Pointer2Width>
+<ScaleBackGroundColor>12648447</ScaleBackGroundColor>
+<ScaleFont.Color>-2147483640</ScaleFont.Color>
+<ScaleFont.Name>MS Sans Serif</ScaleFont.Name>
+<ScaleFont.Size>8</ScaleFont.Size>
+<ScaleFont.Style>1</ScaleFont.Style>
+<ScaleLabelMargin>0.25</ScaleLabelMargin>
+<SCaption>S</SCaption>
+<SECaption>SE</SECaption>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>1</ShowPointer1>
+<ShowPointer2>1</ShowPointer2>
+<SWCaption>SW</SWCaption>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+<WCaption>W</WCaption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Wind/KTS Display</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>0</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<CenterDisplayBackGroundColor>16777215</CenterDisplayBackGroundColor>
+<CenterDisplayFont.Color>-2147483640</CenterDisplayFont.Color>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<ECaption>E</ECaption>
+<InnerColor>0</InnerColor>
+<LabelBottomFont.Color>16777215</LabelBottomFont.Color>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.5</LabelBottomMargin>
+<LabelBottomText>KTS</LabelBottomText>
+<LabelTopFont.Color>16777215</LabelTopFont.Color>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.5</LabelTopMargin>
+<LabelTopText>WIND</LabelTopText>
+<NCaption>N</NCaption>
+<NECaption>NE</NECaption>
+<NWCaption>NW</NWCaption>
+<OuterMargin>5</OuterMargin>
+<Pointer1Color>0</Pointer1Color>
+<Pointer1Width>3</Pointer1Width>
+<Pointer2Height>0.5</Pointer2Height>
+<Pointer2Width>0.5</Pointer2Width>
+<ScaleBackGroundColor>12648447</ScaleBackGroundColor>
+<ScaleFont.Color>-2147483640</ScaleFont.Color>
+<ScaleFont.Name>MS Sans Serif</ScaleFont.Name>
+<ScaleFont.Size>8</ScaleFont.Size>
+<ScaleFont.Style>1</ScaleFont.Style>
+<ScaleLabelMargin>0.25</ScaleLabelMargin>
+<SCaption>S</SCaption>
+<SECaption>SE</SECaption>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>1</ShowPointer1>
+<ShowPointer2>1</ShowPointer2>
+<SWCaption>SW</SWCaption>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+<WCaption>W</WCaption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Blue/Gray Compass</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<CenterDisplayBackGroundColor>-2147483633</CenterDisplayBackGroundColor>
+<CenterDisplayFont.Color>-2147483640</CenterDisplayFont.Color>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<ECaption>E</ECaption>
+<InnerColor>-2147483633</InnerColor>
+<LabelBottomFont.Color>0</LabelBottomFont.Color>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.1</LabelBottomMargin>
+<LabelBottomText>Label</LabelBottomText>
+<LabelTopFont.Color>0</LabelTopFont.Color>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.1</LabelTopMargin>
+<LabelTopText>Label</LabelTopText>
+<NCaption>N</NCaption>
+<NECaption>NE</NECaption>
+<NWCaption>NW</NWCaption>
+<OuterMargin>5</OuterMargin>
+<Pointer1Color>4227327</Pointer1Color>
+<Pointer1Width>3</Pointer1Width>
+<Pointer2Height>0.33</Pointer2Height>
+<Pointer2Width>0.33</Pointer2Width>
+<ScaleBackGroundColor>8388608</ScaleBackGroundColor>
+<ScaleFont.Color>16777215</ScaleFont.Color>
+<ScaleFont.Name>MS Sans Serif</ScaleFont.Name>
+<ScaleFont.Size>8</ScaleFont.Size>
+<ScaleFont.Style>1</ScaleFont.Style>
+<ScaleLabelMargin>0.85</ScaleLabelMargin>
+<SCaption>S</SCaption>
+<SECaption>SE</SECaption>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>1</ShowPointer1>
+<ShowPointer2>1</ShowPointer2>
+<SWCaption>SW</SWCaption>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+<WCaption>W</WCaption>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Automobile [Default]</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<CenterDisplayBackGroundColor>16777215</CenterDisplayBackGroundColor>
+<CenterDisplayFont.Color>-2147483640</CenterDisplayFont.Color>
+<InnerColor>0</InnerColor>
+<LabelBottomFont.Color>16777215</LabelBottomFont.Color>
+<LabelTopFont.Color>16777215</LabelTopFont.Color>
+<Pointer1Color>0</Pointer1Color>
+<ScaleBackGroundColor>12648447</ScaleBackGroundColor>
+<ScaleFont.Color>-2147483640</ScaleFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>GrayScale</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<CenterDisplayBackGroundColor>12632256</CenterDisplayBackGroundColor>
+<CenterDisplayFont.Color>-2147483640</CenterDisplayFont.Color>
+<InnerColor>12632256</InnerColor>
+<LabelBottomFont.Color>16777215</LabelBottomFont.Color>
+<LabelTopFont.Color>16777215</LabelTopFont.Color>
+<Pointer1Color>16777215</Pointer1Color>
+<ScaleBackGroundColor>8421504</ScaleBackGroundColor>
+<ScaleFont.Color>16777215</ScaleFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<CenterDisplayBackGroundColor>16777215</CenterDisplayBackGroundColor>
+<CenterDisplayFont.Color>-2147483640</CenterDisplayFont.Color>
+<InnerColor>8421504</InnerColor>
+<LabelBottomFont.Color>16777215</LabelBottomFont.Color>
+<LabelTopFont.Color>16777215</LabelTopFont.Color>
+<Pointer1Color>65535</Pointer1Color>
+<ScaleBackGroundColor>12632256</ScaleBackGroundColor>
+<ScaleFont.Color>8388608</ScaleFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Scale Scheme</Name>
+<Scheme>
+<Name>Bold Scale [Default]</Name>
+<Properties>
+<ECaption>E</ECaption>
+<NCaption>N</NCaption>
+<NECaption>NE</NECaption>
+<NWCaption>NW</NWCaption>
+<ScaleFont.Name>MS Sans Serif</ScaleFont.Name>
+<ScaleFont.Size>8</ScaleFont.Size>
+<ScaleFont.Style>1</ScaleFont.Style>
+<ScaleLabelMargin>0.25</ScaleLabelMargin>
+<SCaption>S</SCaption>
+<SECaption>SE</SECaption>
+<SWCaption>SW</SWCaption>
+<WCaption>W</WCaption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Bold Scale Large Margin</Name>
+<Properties>
+<ECaption>E</ECaption>
+<NCaption>N</NCaption>
+<NECaption>NE</NECaption>
+<NWCaption>NW</NWCaption>
+<ScaleFont.Name>MS Sans Serif</ScaleFont.Name>
+<ScaleFont.Size>8</ScaleFont.Size>
+<ScaleFont.Style>1</ScaleFont.Style>
+<ScaleLabelMargin>0.5</ScaleLabelMargin>
+<SCaption>S</SCaption>
+<SECaption>SE</SECaption>
+<SWCaption>SW</SWCaption>
+<WCaption>W</WCaption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Normal Scale</Name>
+<Properties>
+<ECaption>E</ECaption>
+<NCaption>N</NCaption>
+<NECaption>NE</NECaption>
+<NWCaption>NW</NWCaption>
+<ScaleFont.Name>MS Sans Serif</ScaleFont.Name>
+<ScaleFont.Size>8</ScaleFont.Size>
+<ScaleFont.Style>0</ScaleFont.Style>
+<ScaleLabelMargin>0.25</ScaleLabelMargin>
+<SCaption>S</SCaption>
+<SECaption>SE</SECaption>
+<SWCaption>SW</SWCaption>
+<WCaption>W</WCaption>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Normal Scale Large Margin</Name>
+<Properties>
+<ECaption>E</ECaption>
+<NCaption>N</NCaption>
+<NECaption>NE</NECaption>
+<NWCaption>NW</NWCaption>
+<ScaleFont.Name>MS Sans Serif</ScaleFont.Name>
+<ScaleFont.Size>8</ScaleFont.Size>
+<ScaleFont.Style>0</ScaleFont.Style>
+<ScaleLabelMargin>0.5</ScaleLabelMargin>
+<SCaption>S</SCaption>
+<SECaption>SE</SECaption>
+<SWCaption>SW</SWCaption>
+<WCaption>W</WCaption>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Indicator Scheme</Name>
+<Scheme>
+<Name>Small Pointers [Default]</Name>
+<Properties>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.5</LabelBottomMargin>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.5</LabelTopMargin>
+<Pointer1Width>3</Pointer1Width>
+<Pointer2Height>0.5</Pointer2Height>
+<Pointer2Width>0.5</Pointer2Width>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>1</ShowPointer1>
+<ShowPointer2>1</ShowPointer2>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Pointers</Name>
+<Properties>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.5</LabelBottomMargin>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.5</LabelTopMargin>
+<Pointer1Width>5</Pointer1Width>
+<Pointer2Height>1</Pointer2Height>
+<Pointer2Width>0.5</Pointer2Width>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>1</ShowPointer1>
+<ShowPointer2>1</ShowPointer2>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Primary Pointer Only</Name>
+<Properties>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.5</LabelBottomMargin>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.5</LabelTopMargin>
+<Pointer1Width>3</Pointer1Width>
+<Pointer2Height>0.5</Pointer2Height>
+<Pointer2Width>0.5</Pointer2Width>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>1</ShowPointer1>
+<ShowPointer2>0</ShowPointer2>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Secondary Pointer Only</Name>
+<Properties>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.5</LabelBottomMargin>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.5</LabelTopMargin>
+<Pointer1Width>3</Pointer1Width>
+<Pointer2Height>0.5</Pointer2Height>
+<Pointer2Width>0.5</Pointer2Width>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>0</ShowPointer1>
+<ShowPointer2>1</ShowPointer2>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>No Pointers</Name>
+<Properties>
+<CenterDisplayFont.Name>MS Sans Serif</CenterDisplayFont.Name>
+<CenterDisplayFont.Size>8</CenterDisplayFont.Size>
+<CenterDisplayFont.Style>1</CenterDisplayFont.Style>
+<CenterDisplayHeight>1.5</CenterDisplayHeight>
+<CenterDisplayPrecision>1</CenterDisplayPrecision>
+<CenterDisplayWidth>8</CenterDisplayWidth>
+<LabelBottomFont.Name>MS Sans Serif</LabelBottomFont.Name>
+<LabelBottomFont.Size>8</LabelBottomFont.Size>
+<LabelBottomFont.Style>1</LabelBottomFont.Style>
+<LabelBottomMargin>0.5</LabelBottomMargin>
+<LabelTopFont.Name>MS Sans Serif</LabelTopFont.Name>
+<LabelTopFont.Size>8</LabelTopFont.Size>
+<LabelTopFont.Style>1</LabelTopFont.Style>
+<LabelTopMargin>0.5</LabelTopMargin>
+<Pointer1Width>3</Pointer1Width>
+<Pointer2Height>0.5</Pointer2Height>
+<Pointer2Width>0.5</Pointer2Width>
+<ShowCenterDisplay>1</ShowCenterDisplay>
+<ShowPointer1>0</ShowPointer1>
+<ShowPointer2>0</ShowPointer2>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

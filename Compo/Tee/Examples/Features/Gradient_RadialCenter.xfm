@@ -1,0 +1,88 @@
+inherited GradientRadial: TGradientRadial
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 82
+  end
+  inherited Memo1: TMemo
+    Height = 82
+    Lines.Strings = (
+      
+        'The center position of Radial gradients can be customized with t' +
+        'he'
+      'new Canvas RadialGradientOffset property:'
+      ''
+      
+        'Chart1.Walls.Back.Gradient.RadialX := 123 ;  // <-- pixels ( + o' +
+        'r - )'
+      
+        'Chart1.Walls.Back.Gradient.RadialY := - 321 ;  // <-- pixels ( +' +
+        ' or - )')
+  end
+  inherited Chart1: TChart
+    Top = 125
+    Height = 212
+    BackWall.Gradient.Direction = gdRadial
+    BackWall.Gradient.EndColor = clNavy
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Title.Text.Strings = (
+      'Radial gradient center offset')
+  end
+  inherited Panel1: TPanel
+    Top = 84
+    object Label1: TLabel
+      Left = 11
+      Top = 12
+      Width = 27
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Horiz:'
+      FocusControl = TrackBar1
+    end
+    object Label2: TLabel
+      Left = 168
+      Top = 12
+      Width = 22
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Vert:'
+      FocusControl = TrackBar2
+    end
+    object TrackBar1: TTrackBar
+      Left = 48
+      Top = 12
+      Width = 117
+      Height = 25
+      Max = 300
+      Min = -300
+
+      Frequency = 50
+      TabOrder = 0
+
+      OnChange = TrackBar1Change
+    end
+    object TrackBar2: TTrackBar
+      Left = 200
+      Top = 12
+      Width = 117
+      Height = 25
+      Max = 300
+      Min = -300
+
+      Frequency = 50
+      TabOrder = 1
+
+      OnChange = TrackBar2Change
+    end
+    object Button1: TButton
+      Left = 328
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+  end
+end

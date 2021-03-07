@@ -1,0 +1,6 @@
+// IBC_Memo.INT
+
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomMemo.IMP}
+{$UNDEF IB_AutoLabel}
+

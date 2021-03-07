@@ -1,0 +1,77 @@
+inherited LegendSeriesForm: TLegendSeriesForm
+  Caption = 'LegendSeriesForm'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Legend has a new property to determine which series is used.'
+      
+        'By default, the Legend chooses the first Active Series with Show' +
+        'InLegend:=True.'
+      'It only applies to Legend style "Values".'
+      ''
+      'Example:  Chart1.Legend.Series := Series5 ;')
+  end
+  inherited Chart1: TChart
+    Legend.ColorWidth = 30
+    Legend.LegendStyle = lsValues
+    Legend.Symbol.Width = 30
+    View3D = False
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = True
+      SeriesColor = clGreen
+      Pointer.InflateMargins = False
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 24
+      Top = 16
+      Width = 52
+      Height = 13
+      Caption = 'Use series:'
+    end
+    object RadioButton1: TRadioButton
+      Left = 88
+      Top = 16
+      Width = 65
+      Height = 17
+      Caption = '&Bar'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+      OnClick = RadioButton1Click
+    end
+    object RadioButton2: TRadioButton
+      Left = 152
+      Top = 16
+      Width = 65
+      Height = 17
+      Caption = '&Line'
+      TabOrder = 1
+      OnClick = RadioButton2Click
+    end
+  end
+end

@@ -1,0 +1,97 @@
+inherited MultiAxisScroll: TMultiAxisScroll
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'This chart contains 3 custom axes and several series associated'
+      
+        'to all axes.  The example shows how to restrict scroll to some a' +
+        'xes only.'
+      'Most of the code can be done visually at design-time.'
+      ''
+      'Try to scroll vertically using the right mouse button.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Visible = False
+    OnScroll = Chart1Scroll
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clGreen
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TCandleSeries
+      CloseValues.Name = 'Close'
+      CloseValues.Order = loNone
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      OpenValues.Name = 'Open'
+      OpenValues.Order = loNone
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+    end
+    object Series4: TVolumeSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clBlue
+      VolumeValues.Name = 'Y'
+      VolumeValues.Order = loNone
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 16
+      Top = 11
+      Width = 136
+      Height = 13
+      Caption = 'Enable vertical scroll on axis:'
+    end
+    object CheckBoxRed: TCheckBox
+      Left = 160
+      Top = 11
+      Width = 49
+      Height = 17
+      Caption = '&Red'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object CheckBoxBlue: TCheckBox
+      Left = 224
+      Top = 11
+      Width = 49
+      Height = 17
+      Caption = '&Blue'
+      TabOrder = 1
+    end
+    object CheckBoxGreen: TCheckBox
+      Left = 280
+      Top = 11
+      Width = 57
+      Height = 17
+      Caption = '&Green'
+      TabOrder = 2
+    end
+  end
+end

@@ -1,0 +1,5 @@
+// IBC_RichEdit.INT
+
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomMemo.IMP}
+{$UNDEF IB_AutoLabel}

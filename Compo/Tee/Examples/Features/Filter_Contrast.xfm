@@ -1,0 +1,107 @@
+inherited FilterContrast: TFilterContrast
+  Left = 543
+  Top = 223
+  Width = 560
+  Height = 465
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 544
+  end
+  inherited Memo1: TMemo
+    Width = 544
+    Lines.Strings = (
+      
+        'The Contrast Filter alters the contrast of the selected area whe' +
+        're the filter is applied. Amount and Percent '
+      'properties can be defined.'
+      ''
+      'Example :'
+      '  with ContrastFilter do'
+      '  begin'
+      '    Amount := 10;'
+      '    Percent:= False;'
+      '    ScrollBar1.Position:=Amount;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 544
+    Height = 273
+    Gradient.Direction = gdFromTopLeft
+    Gradient.EndColor = 11579647
+    Gradient.Visible = True
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = clSilver
+    Legend.Gradient.MidColor = clWhite
+    Legend.Gradient.Visible = True
+    Legend.Transparent = True
+    View3D = False
+    ColorPaletteIndex = 10
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      BarStyle = bsRectGradient
+      Gradient.Balance = 36
+      Gradient.Direction = gdLeftRight
+      Gradient.MidColor = clWhite
+      Gradient.StartColor = 4194304
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000E0504000000000000049400000000000005940000000
+        000080314000000000002057400000000000C04C40}
+    end
+    object ChartTool1: TAntiAliasTool
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 544
+    object Label1: TLabel
+      Left = 92
+      Top = 14
+      Width = 39
+      Height = 13
+      Caption = '&Amount:'
+      FocusControl = ScrollBar1
+    end
+    object Label2: TLabel
+      Left = 269
+      Top = 14
+      Width = 6
+      Height = 13
+      Caption = '0'
+    end
+    object ScrollBar1: TScrollBar
+      Left = 141
+      Top = 12
+      Width = 121
+      Height = 17
+
+      TabOrder = 0
+      OnChange = ScrollBar1Change
+    end
+    object cbPercent: TCheckBox
+      Left = 303
+      Top = 14
+      Width = 97
+      Height = 14
+      Caption = '&Percent'
+      TabOrder = 1
+      OnClick = cbPercentClick
+    end
+    object bFilters: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Filters...'
+      TabOrder = 2
+      OnClick = bFiltersClick
+    end
+  end
+end

@@ -1,0 +1,74 @@
+inherited FindMinMaxValues: TFindMinMaxValues
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'It'#39's easy to use the Series Value lists to find the minimum and ' +
+        'maximum'
+      'of a "window" of series points.'
+      ''
+      
+        'Click the button to set the axis min and max to fit a portion of' +
+        ' Series1.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Visible = False
+    Chart3DPercent = 20
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TColorLineTool
+      Pen.Color = clBlue
+      Value = 20
+      AxisID = 0
+    end
+    object ChartTool2: TColorLineTool
+      Pen.Color = clBlue
+      Value = 50
+      AxisID = 0
+    end
+    object ChartTool3: TColorLineTool
+      Pen.Color = clLime
+      AxisID = 2
+    end
+    object ChartTool4: TColorLineTool
+      Pen.Color = clLime
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 137
+      Height = 25
+      Caption = '&Find min and max'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 168
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Reset'
+      Enabled = False
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+end

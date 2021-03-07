@@ -1,0 +1,77 @@
+inherited AnnotationToolForm: TAnnotationToolForm
+  Left = 259
+  Top = 209
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      'The Annotation tool is a general purpose component to show'
+      
+        'text over Chart panels. It includes formatting properties and cu' +
+        'stom'
+      'positioning.')
+  end
+  inherited Chart1: TChart
+    Top = 90
+    Height = 247
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Annotation Tool Example')
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TAnnotationTool
+      Shape.CustomPosition = True
+      Shape.Left = 65
+      Shape.Top = 125
+      Text = 'Annotation 1'
+    end
+    object ChartTool2: TAnnotationTool
+      Shape.Color = 16744703
+      Shape.CustomPosition = True
+      Shape.Font.Color = clBlue
+      Shape.Left = 130
+      Shape.Top = 70
+      Text = 'Annotation 2'
+    end
+    object ChartTool3: TAnnotationTool
+      Position = ppRightTop
+      Shape.Color = 12582911
+      Text = 'Another one'#13'with multiple '#13'lines of text.'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 112
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Visible'
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+end

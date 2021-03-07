@@ -1,0 +1,71 @@
+
+{                                                                              }
+{ TIB_ListBox                                                                  }
+{                                                                              }
+
+{: This control allows a standard list box to be bound to a column.
+<br><br>
+The values of the list must be supplied by assigning them to the
+Items property manually.
+<br><br>
+To use a list defined from a query try making use of the IB_LookupList
+control. Otherwise, pre-load the values of the query into the Items property
+of this control at run-time.
+<br><br>
+If the value in the data column does not match an item in the list, the
+ItemIndex is set to -1.}
+TIB_CustomListBox = class(TCustomListBox)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.INT}
+{$UNDEF IB_AutoLabel}
+private
+  FItemValues: TStrings;
+  function GetValue: string;
+  procedure SetValue(const AValue: string);
+  procedure SetItems(AValue: TStrings);
+  procedure SetItemValues(AValue: TStrings);
+  procedure ValuesChanged( Sender: TObject );
+  procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+protected
+  procedure Click; override;
+// Moved to public by NVE 03/10/1999
+//  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  procedure KeyPress(var Key: Char); override;
+// Added by NVE 03/10/1999
+  procedure CreateWnd;override;
+  procedure CreateParams(var Params: TCreateParams); override;
+//
+  procedure Loaded; override;
+  property Value: string read GetValue write SetValue;
+public
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+// Moved to public by NVE 03/10/1999
+  procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  property Items write SetItems;
+{: This property provides a table of values to store in the database instead
+of the entries listed in the Items property.}
+  property ItemValues: TStrings read FItemValues write SetItemValues;
+end;
+
+TIB_ListBox = class(TIB_CustomListBox)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.PBL}
+{$UNDEF IB_AutoLabel}
+{$IFNDEF HELPSCAN}
+published
+  property Style; {Must be published before Items}
+  property Columns;
+  property IntegralHeight;
+  property ItemHeight;
+  property Items;
+  property ItemValues;
+  property Sorted;
+  property TabWidth;
+  property OnMeasureItem;
+// Added by NVE 03/10/1999
+  property OnDrawItem;
+{$ENDIF}
+end;
+
+// IBC_ListBox.IMP

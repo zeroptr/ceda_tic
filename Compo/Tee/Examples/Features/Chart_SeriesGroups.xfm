@@ -1,0 +1,198 @@
+inherited ChartSeriesGroups: TChartSeriesGroups
+  Left = 454
+  Top = 239
+  Width = 656
+  Height = 502
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 640
+  end
+  inherited Memo1: TMemo
+    Width = 640
+    Lines.Strings = (
+      
+        'Series can be grouped by creating a different groups, TSeriesGro' +
+        'ups contains several properies to create them and specify which '
+      'Series belongs to each Group.'
+      ''
+      'Example :'
+      '  with Chart1 do'
+      '  begin'
+      '    SeriesList.AddGroup('#39'Group A'#39');'
+      '    SeriesGroups.Items[0].Add(Series1);'
+      '    SeriesGroups.Items[0].Add(Series2);'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Width = 640
+    Height = 310
+    BackWall.Gradient.EndColor = 11118482
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Border.Color = 14645801
+    Border.Width = 7
+    Border.Visible = True
+    BottomWall.Gradient.EndColor = 16580349
+    BottomWall.Gradient.StartColor = 3114493
+    BottomWall.Gradient.Visible = True
+    Gradient.Direction = gdDiagonalDown
+    Gradient.EndColor = 11645361
+    Gradient.Visible = True
+    LeftWall.Gradient.EndColor = 2413052
+    LeftWall.Gradient.StartColor = 900220
+    LeftWall.Gradient.Visible = True
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = clYellow
+    Legend.Gradient.StartColor = clWhite
+    Legend.Gradient.Visible = True
+    Legend.Shadow.Transparency = 50
+    Chart3DPercent = 20
+    Shadow.Color = clBlack
+    Shadow.HorizSize = 10
+    Shadow.VertSize = 10
+    BevelOuter = bvNone
+    ColorPaletteIndex = 9
+    object Series1: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000508440000000000030814000000000002C8040000000
+        0000507E4000000000002077400000000000B87040}
+    end
+    object Series2: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        011900000000000000000000000000000000105E40ABAAAAAAAAAACA3F000000
+        0000C86840ABAAAAAAAAAADA3F0000000000B06240000000000000E43F000000
+        0000406040ABAAAAAAAAAAEA3F0000000000406040ABAAAAAAAAAAF03F000000
+        0000586640000000000000F43F0000000000346A40555555555555F73F000000
+        0000E06140AAAAAAAAAAAAFA3F0000000000785140FFFFFFFFFFFFFD3F000000
+        0000985940AAAAAAAAAAAA004000000000009859405555555555550240000000
+        0000586640000000000000044000000000008C6640ABAAAAAAAAAA0540000000
+        0000DC604056555555555507400000000000CC69400100000000000940000000
+        0000486F40ACAAAAAAAAAA0A4000000000004471405755555555550C40000000
+        00009C6A400200000000000E400000000000107140ADAAAAAAAAAA0F40000000
+        0000946840ACAAAAAAAAAA10400000000000746D400100000000801140000000
+        0000B0724056555555555512400000000000887540ABAAAAAAAA2A1340000000
+        0000E8734000000000000014400000000000D27440}
+    end
+    object Series3: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        011900000000000000000000000000000000547540ABAAAAAAAAAACA3F000000
+        0000187340ABAAAAAAAAAADA3F0000000000EC7440000000000000E43F000000
+        00008E7040ABAAAAAAAAAAEA3F0000000000627240ABAAAAAAAAAAF03F000000
+        00006C6B40000000000000F43F00000000000C7040555555555555F73F000000
+        00004C7340AAAAAAAAAAAAFA3F0000000000927140FFFFFFFFFFFFFD3F000000
+        0000D86C40AAAAAAAAAAAA00400000000000E06E405555555555550240000000
+        0000F8674000000000000004400000000000B06F40ABAAAAAAAAAA0540000000
+        0000787140565555555555074000000000003273400100000000000940000000
+        00002E7240ACAAAAAAAAAA0A400000000000E472405755555555550C40000000
+        00008875400200000000000E4000000000005E7140ADAAAAAAAAAA0F40000000
+        0000D27440ACAAAAAAAAAA10400000000000E873400100000000801140000000
+        00006E754056555555555512400000000000CA7240ABAAAAAAAA2A1340000000
+        0000D46B4000000000000014400000000000E47240}
+    end
+    object Series4: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Gradient.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010F00000000000000000000000000000000304940B76DDBB66DDBD63F000000
+        0000905740B76DDBB66DDBE63F0000000000AC6140499224499224F13F000000
+        0000D05A40B76DDBB66DDBF63F0000000000405D40254992244992FC3F000000
+        000088654049922449922401400000000000A46C400000000000000440000000
+        0000346A40B76DDBB66DDB064000000000006068406EDBB66DDBB60940000000
+        00000C70402549922449920C4000000000007C7240DCB66DDBB66D0F40000000
+        000024764049922449922411400000000000FC78402449922449921240000000
+        0000247640FFFFFFFFFFFF134000000000003E7640}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 640
+    object Label1: TLabel
+      Left = 11
+      Top = 17
+      Width = 37
+      Height = 13
+      Caption = '&Groups:'
+      FocusControl = cbGroups
+    end
+    object Label2: TLabel
+      Left = 168
+      Top = 17
+      Width = 30
+      Height = 13
+      Caption = '&Active'
+      FocusControl = cbActive
+    end
+    object cbGroups: TComboFlat
+      Left = 55
+      Top = 12
+      Width = 90
+      TabOrder = 0
+      OnChange = cbGroupsChange
+    end
+    object cbActive: TComboFlat
+      Left = 209
+      Top = 12
+      Width = 65
+      TabOrder = 1
+      OnChange = cbActiveChange
+      Items.Strings = (
+        'Yes'
+        'No'
+        'Some')
+    end
+    object bEdit: TBitBtn
+      Left = 303
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Edit'
+      TabOrder = 2
+      OnClick = bEditClick
+    end
+  end
+end

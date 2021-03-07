@@ -1,0 +1,190 @@
+inherited RotationCenter: TRotationCenter
+  Left = 233
+  Top = 244
+  Width = 482
+  Height = 404
+  Caption = 'RotationCenter'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 474
+  end
+  inherited Memo1: TMemo
+    Width = 474
+    Lines.Strings = (
+      
+        'The new Canvas RotationCenter property defines the offset in pix' +
+        'els '
+      'from the Chart center to rotate around it.  '
+      ''
+      'Example: Chart1.Canvas.RotationCenter.X:=100')
+  end
+  inherited Chart1: TChart
+    Top = 139
+    Width = 474
+    Height = 238
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Size = 10
+    Gradient.Direction = gdFromTopLeft
+    Gradient.EndColor = clGray
+    Gradient.Visible = True
+    LeftWall.Brush.Color = clWhite
+    LeftWall.Size = 10
+    LeftWall.Transparency = 50
+    Legend.Visible = False
+    RightWall.Size = 10
+    RightWall.Transparency = 50
+    RightWall.Visible = True
+    Title.Visible = False
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 127
+    View3DOptions.Zoom = 60
+    OnAfterDraw = Chart1AfterDraw
+    object Series1: TSurfaceSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      PaletteStyle = psStrong
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      UseColorRange = False
+      UsePalette = True
+      WireFrame = True
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+    object ChartTool1: TRotateTool
+      Inertia = 80
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+    object ChartTool2: TLegendPaletteTool
+      Axis = laDefault
+      Border.Visible = True
+      Pen.Visible = False
+      Series = Series1
+      Transparent = True
+      Width = 50
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 474
+    Height = 64
+    object Label1: TLabel
+      Left = 5
+      Top = 12
+      Width = 77
+      Height = 13
+      Caption = 'Rotation Center:'
+    end
+    object Label2: TLabel
+      Left = 89
+      Top = 12
+      Width = 10
+      Height = 13
+      Caption = '&X:'
+      FocusControl = TrackBar1
+    end
+    object Label3: TLabel
+      Left = 172
+      Top = 12
+      Width = 10
+      Height = 13
+      Caption = '&Y:'
+      FocusControl = TrackBar2
+    end
+    object Label4: TLabel
+      Left = 256
+      Top = 12
+      Width = 10
+      Height = 13
+      Caption = '&Z:'
+      FocusControl = TrackBar3
+    end
+    object TrackBar1: TTrackBar
+      Left = 98
+      Top = 8
+      Width = 73
+      Height = 25
+      Max = 100
+      Min = -100
+      Frequency = 20
+      TabOrder = 0
+      OnChange = TrackBar1Change
+    end
+    object TrackBar2: TTrackBar
+      Left = 181
+      Top = 8
+      Width = 73
+      Height = 25
+      Max = 100
+      Min = -100
+      Frequency = 20
+      TabOrder = 1
+      OnChange = TrackBar2Change
+    end
+    object TrackBar3: TTrackBar
+      Left = 265
+      Top = 8
+      Width = 73
+      Height = 25
+      Max = 100
+      Min = -100
+      Frequency = 20
+      TabOrder = 2
+      OnChange = TrackBar3Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 13
+      Top = 36
+      Width = 65
+      Height = 17
+      Caption = '&Animate'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 344
+      Top = 11
+      Width = 69
+      Height = 17
+      Caption = '3D A&xes'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+    end
+    object CheckBox3: TCheckBox
+      Left = 344
+      Top = 32
+      Width = 71
+      Height = 17
+      Action = SeriesActionActive1
+      Caption = '&Surface'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+    end
+  end
+  object Timer1: TTimer
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 24
+    Top = 138
+  end
+  object ActionList1: TActionList
+    Left = 88
+    Top = 137
+    object SeriesActionActive1: TSeriesActionActive
+      Category = 'Chart Series'
+      Series = Series1
+      Caption = '&Active'
+      Hint = 'Show / Hide Series'
+    end
+  end
+end

@@ -1,0 +1,54 @@
+package IBO40CRT_D4;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'IB Objects Core Runtime'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl40,
+  vclx40;
+
+contains
+  IB_Header in 'IB_Header.pas',
+  IB_Session in 'IB_Session.pas',
+  IB_Constants in 'IB_Constants.pas',
+  IB_Components in 'IB_Components.pas',
+  IB_Utils in 'IB_Utils.pas',
+  IB_Parse in 'IB_Parse.pas',
+  uRounding in 'uRounding.pas',
+  UnixPass in 'Unixpass.pas',
+  IB_Schema in 'IB_Schema.pas',
+  IBD_Login in 'IBD_Login.pas' {dlgLogin},
+  IBD_CancelQuery in 'IBD_CancelQuery.pas' {dlgCancelQuery},
+  IBD_Error in 'IBD_Error.pas' {dlgError},
+  IB_StoredProc in 'IB_StoredProc.pas',
+  IB_ConnectionSource in 'IB_ConnectionSource.pas',
+  IB_TransactionSource in 'IB_TransactionSource.pas',
+  IB_SessionProps in 'IB_SessionProps.pas',
+  IB_StatementSource in 'IB_StatementSource.pas',
+  IB_NodeList in 'IB_NodeList.pas',
+  IB_MaskInterface in 'IB_MaskInterface.pas';
+
+end.

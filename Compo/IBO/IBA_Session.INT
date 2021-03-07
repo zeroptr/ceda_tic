@@ -1,0 +1,554 @@
+
+{                                                                              }
+{ IB_Session                                                                   }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: Event type used to process the session timer notification.}
+TIB_SessionTimerEvent = procedure (     Sender: TComponent;
+                                    var IsDone,
+                                        IsWaiting,
+                                        Terminate: boolean ) of object;
+{: Event type defined to TIB_Session and TIB_SessionProps but used by
+TIB_DataLink to override retrieval of colors used in ColorScheme information.
+TIB_DataLink will already have set the standard color scheme color before this
+is called, simply override where necessary or leave as provided by standard
+processing. }
+TIB_GetDataLinkColorEvent = procedure(     Sender: TIB_Session;
+                                           DataLink: TIB_DataLink;
+                                       var StateColor: TColor ) of object;
+
+{ : This class is used in order to make the cursor behave more appropriately
+without the need to pepper code with the BeginBusy() and EndBusy calls.
+<br><br>
+It will attempt to buffer out the flickering effect when a process does many
+consecutive actions repeatedly.}
+{
+TIB_SessionCursorThread = class( TThread )
+private
+  FSession: TIB_Session;
+  FExecuting: boolean;
+  FSleepTicks: DWORD;
+  FBusyOnTicks: DWORD;
+  FYieldOnTicks: DWORD;
+  FBusyOffTicks: DWORD;
+  FYieldOffTicks: DWORD;
+protected
+  procedure Execute; override;
+  procedure DoTerminate; override;
+public
+  constructor Create( ASession: TIB_Session );
+  destructor Destroy; override;
+end;
+}
+
+{: This class serves as a critical foundation for IB Objects components. If you
+are not doing anything with multi-threading then it will not be necessary to
+instantiate this component yourself, since the system provides a default session
+for the main thread automatically.
+<br><br>
+This component can be used on a data module to isolate all data access
+components together in an isolated session.  This is especially suitable for
+an ISAPI web module that will have a web-module instance cached and used in a
+multi-threading environment.<br><br>
+IMPORTANT !!  When doing this, make sure that it is the first in the module's
+creation order and that ONLY ONE is placed on a module.
+<br><br>
+It is possible to override the default component with an alternative component
+session if you should need to have two threads accessing the same session. This
+should really only be necessary when binding to DLLs that contain IB Objects
+components that should act as though they were part of the main process.
+<br><br>
+See the various properties and methods for more information. Pay particularly
+close attention to the TimerInterval property.}
+TIB_Session = class(TIB_SessionBase)
+private
+{ General storage }
+  FIsDefaultSession: boolean;
+  FDefaultConnection: TIB_Connection;
+  FFocusedConnection: TIB_Connection;
+  FFocusedTransaction: TIB_Transaction;
+  FFocusedDataset: TIB_Dataset;
+  FFocusedDataSource: TIB_DataSource;
+  FStoreActive: boolean;
+  FBusyLevel: integer;
+  FYieldLevel: integer;
+  FLockCursorLevel: integer;
+  FUseCursor: boolean;
+  FBusyCursor: smallint;
+  FYieldCursor: smallint;
+  FOldCursor: smallint;
+  FAllowDefaultConnection: boolean;
+  FAllowDefaultTransaction: boolean;
+  FCursorNameSeed: cardinal;
+  cntComponents: integer;
+  FCallbackFreezeLevel: integer;
+{ Event Storage }
+  FOnBeginBusy: TNotifyEvent;
+  FOnEndBusy: TNotifyEvent;
+  FOnBeginYield: TNotifyEvent;
+  FOnEndYield: TNotifyEvent;
+  FOnSessionTimer: TIB_SessionTimerEvent;
+  FOnWakeup: TNotifyEvent;
+{ Timer Stuff }
+  FTimerCS: TRTLCriticalSection;
+  FTimerItems: TList;
+  FTimerItemIndex: integer;
+  FTimerHandle: HWND;
+  FTimerInterval: cardinal;
+  FTimerIsBusy: boolean;
+  FTimerIsDone: boolean;
+  FTimerIsWaiting: boolean;
+  FTimerTerminated: boolean;
+  procedure WndProc( var AMsg: TMessage );
+  procedure SetTimerInterval( AValue: cardinal );
+  function GetWakeup: TNotifyEvent;
+  procedure SetWakeup( AValue: TNotifyEvent );
+{ System Methods }
+  function GetIsBusy: boolean;
+  function GetIsYielding: boolean;
+  procedure BeginBusy( Yield: boolean );
+  procedure EndBusy;
+{ Property access methods }
+  procedure SetFocusedConnection( C: TIB_Connection );
+  procedure SetFocusedTransaction( T: TIB_Transaction );
+  procedure SetFocusedDataset( D: TIB_Dataset );
+  procedure SetFocusedDataSource( DS: TIB_DataSource );
+private
+  FEditingColor: TColor;
+  FInsertingColor: TColor;
+  FDeletingColor: TColor;
+  FSearchingColor: TColor;
+  FReadOnlyColor: TColor;
+  FSelectedColor: TColor;
+  FInvalidColor: TColor;
+  FPreparedColor: TColor;
+  FBrowsingColor: TColor;
+  FOnGetDataLinkColor: TIB_GetDataLinkColorEvent;
+protected
+  FInDa: PXSQLDA;
+  FOutDa: PXSQLDA;
+  FInCnt: integer;
+  FOutCnt: integer;
+protected
+  procedure Notification( AComponent: TComponent;
+                          Operation: TOperation); override;
+  procedure DoGetDataLinkColor(     DataLink: TIB_DataLink;
+                                var FieldColor: TColor );
+protected
+{ Event Dispatch Methods }
+  procedure DoBeginBusy;
+  procedure DoEndBusy;
+  procedure DoBeginYield;
+  procedure DoEndYield;
+  procedure DoWakeUp( Sender: TObject );
+public
+{ Focusing storage }
+  Session_Components: TList;
+  Session_Connections: TList;
+  Session_ConnectionLinks: TList;
+  Session_Transactions: TList;
+  Session_TransactionLinks: TList;
+  Session_Statements: TList;
+  Session_Datasets: TList;
+  Session_DataSources: TList;
+  Session_DataLinks: TList;
+{ Inherited Events }
+  procedure DoHandleError(       Sender: TObject;
+                           const errcode: longint;
+                                 ErrorMessage,
+                                 ErrorCodes: TStringList;
+                           const SQLCODE: longint;
+                                 SQLMessage,
+                                 SQL: TStringList;
+                             var RaiseException: boolean); override;
+{: Allow an external source to trigger a timer-based mechanism.
+<br><br>
+This also will activate all passive TIB_Process components, check for passive
+event alerters and check the transaction OAT status, taking actions to advance
+it if possible.
+<br><br>
+Each call to this routine will execute one item in the array of queued items.
+In order to ensure all pending items are taken care of call, this method
+repeatedly until it returns True for the IsDone parameter.
+<br><br>
+although it
+Even if IsDone becomes True and it has done all it can do, it may be useful to
+check also the IsWaiting parameter to see if some items may actually be waiting
+on other things to happen before the method can finish up what it needs to do.
+<br><br>
+The Application.OnIdle event handler is a very appropriate place to use this
+method, where it can hook into IBO's utilization of idle cpu cycles to process
+all of its passive work items. <br><br>
+The Session.WakeUp method has been designed to enable an asynchronous event to
+wake it up, even if the application goes idle, and let the processing of items
+proceed.
+The TIB_Events component has the capability to post an automatic signal to the
+idle CPU telling it to wake up and go to work again. It is not necessary to use
+the internal TTimer to check for events when using ProcessPassiveTasks and the
+idle CPU cycles.}
+  procedure ProcessPassiveTasks( var IsDone, IsWaiting, Terminated: boolean );
+{ Focusing methods }
+  procedure AnnounceConnection;
+  procedure AnnounceTransaction;
+  procedure AnnounceDataSource;
+{ Inherited methods }
+  constructor Create( AOwner: TComponent ); override;
+  destructor Destroy; override;
+{ Methods }
+
+{: This procedure is designed to retrieve the BDE settings for an alias that
+exists in a valid IDAPI configuration file.}
+  procedure GetAliasParams( const AliasName: String; List: TStrings );
+{: This method will return a reference to a TIB_Connection component based on
+its DataBaseName property.  It returns Nil if a matching Databasename is not
+found.}
+  function GetConnectionByName( const ADBName: string ): TIB_Connection;
+{: Used to temporarily disable the cursor twiddling.}
+  procedure BeginLockCursor;
+{: Used to re-enable the cursor twiddling after it has been disabled with a call
+to BeginLockCursor.}
+  procedure EndLockCursor;
+{: Call this to have an object evaluated to see if it belongs in the timer
+notification list, where it would stop or start receiving notifications
+appropriately.
+<br><br>
+Under most conditions this is called automatically for you.}
+  procedure ResetTimerNotification( AComponent: TIB_Component );
+{: This begins a nested bracket during which all callbacks will be suspended.}
+  procedure BeginCallbackFreeze;
+{: This ends a nested bracket during which callbacks have been suspended.}
+  procedure EndCallbackFreeze;
+
+{ Properties }
+
+{: Indicates the nested level of processes pending cancellation or completion.}
+  property BusyLevel: integer read FBusyLevel;
+{: Indicates whether callbacks have been frozen.
+<br><br>
+If it returns Zero, callbacks will be performed if CallbackInc is not -1.
+<br><br>
+See also the BeginCallbackFreeze and EndCallbackFreeze methods.}
+  property CallbackFreezeLevel: integer read FCallbackFreezeLevel;
+{: Level to which the cursor has been locked.}
+  property LockCursorLevel: integer read FLockCursorLevel;
+{: Indicates the nested level of processes pending cancellation or
+completion that have been started since the first call to BeginBusy() was
+made with Yield set True.}
+  property YieldLevel: integer read FYieldLevel;
+{: Indicates whether the IB_Session is currently engaged in a process.
+<br><br>
+It is very important to check this property when a form or the application is
+about to be closed.  All pending processes that are running should be properly
+terminated before allowing the components that are in an active process to be
+destroyed.
+<br><br>
+It may also be very useful to test this property in order to avoid starting
+up a subsequent process that may conflict with a current process.}
+  property IsBusy: boolean read GetIsBusy;
+{: Indicates whether the IB_Session is currently in a process that is yielding.
+<br><br>
+It can be very useful to check this property in a form's CloseQuery event, in
+case there could be a process running when the form close button is pressed.
+This way, the user could be prompted to wait or cancel the process and try
+closing the form again.
+<br><br>
+It could also be used to make sure that an export process will not be started if
+there is is one running already.  Similarly with reports, since reporting tools
+like Report Printer Pro allow the user to continue working with the interface
+while the report is running on the main thread.
+<br><br>
+The UI activity is all handled in "forked" processes originating from the
+Application.ProcessMessages call.  If Application.ProcessMessages is called
+between each n rows exported, fetched, reported on, etc., this is what I call a
+Yielding situation. The export, report, etc. process yields some processor
+cycles to the UI in order to process a button click or some other form of message
+ in a "forked process".}
+  property IsYielding: boolean read GetIsYielding;
+{: Determines the cursor that will appear on the screen when a process is
+active and there is no Yield indication.
+<br><br>
+The UseCursor property must be True for this to happen.}
+  property BusyCursor: smallint read FBusyCursor
+                                write FBusyCursor
+                                default -17; // crSQLWait
+{: Determines the cursor that will appear on the screen when a process is
+active and there is a Yield indication.  See IsYielding for a description of
+what is considered a Yielding situation.
+<br><br>
+The UseCursor property must be true for this to happen.}
+  property YieldCursor: smallint read FYieldCursor
+                                 write FYieldCursor
+                                 default -19; // crYield
+{: Determines whether the Screen.Cursor should be adjusted when a process
+becomes active.}
+  property UseCursor: boolean read FUseCursor write FUseCursor default false;
+{: This property indicates whether the session is currently processing a timer
+notification.}
+  property TimerIsBusy: boolean read FTimerIsBusy;
+{: Item in the TimerItems list that is currently receiving or due for attention.}
+  property TimerItemIndex: integer read FTimerItemIndex;
+{: The list of TIB_Component objects that are included in the timer list.}
+  property TimerItems: TList read FTimerItems;
+
+{ Class Methods }
+
+{: This class function is used to return which TIB_Session is being used for the
+current thread or process. It is a critical foundation upon which IB Objects
+depends.
+<br><br>
+By default, each new thread will automatically generate its own component
+session. So, if you are doing multi-threaded database access just make sure
+that each new thread has its own connection, transaction, etc. and that it
+does not access any resource of other threads. You do not need have a visible
+TSession in your Datamodule, as the VCL requires. IB Objects handles all of
+this for you automatically.
+<br><br>
+It is a different story altogether if you need multiple threads active in
+the same component session. It will be up to you as a developer to properly
+use multi-threading features such as Critical Sections, Mutexes, etc. in
+order to prevent multi-threading corruptions.
+<br><br>
+It is possible for multiple threads to share the same default component session
+by using the SetAlternateSession() before any session-dependent components are
+created. I have not yet attempted to do such a thing so take careful attention
+and don't be surprised if it is a can of worms. I think it would be an
+indication that something is wrong with your program design if it compelled you
+to resort to this.
+<br><br>
+Because this depends on thread local storage members, its behavior could be
+very difficult to trace and follow.}
+{$IFDEF ALLOW_DEFAULT_SESSION}
+  class function DefaultSession: TIB_Session;
+{$ENDIF}
+{: This class method is used to make two processes share a common default
+component session. This can be used in order to make DLL instances share the
+same component session as the main EXE that is calling into the DLL.
+<br><br>
+Without this, the global focusing mechanisms would not behave properly because
+they all operate within the context of a single component session.  The
+assumption is that all user interface manipulations should be done in the
+main process and not in sub-processes.
+<br><br>
+Any DLL containing IB Objects code that will interact with IB Objects code in
+the main process should export a procedure which will give it the DefaultSession
+of the main process.  The DLL can set this as its AlternateSession. This will
+make them all operate within the context of the very same component session.}
+{$IFDEF ALLOW_ALT_SESSION}
+  class procedure SetAlternateSession( ASession:TIB_Session );
+{$ENDIF}
+
+public
+
+{: Each session has a global focusing system where data aware controls
+announce to the session when they become focused. Beginning with the DataLink
+objects they announce their DataSource, which then announces its Dataset and
+then the Dataset announces its IB_Transaction and IB_Connection.
+<br><br>
+This property reflects the IB_Connection or IB_Database that is currently
+the focused instance for the session.}
+  property FocusedConnection: TIB_Connection read FFocusedConnection
+                                             write SetFocusedConnection;
+{: Each session has a global focusing system where data aware controls
+announce to the session when they become focused. Beginning with the DataLink
+objects they announce their DataSource, which then announces its Dataset and
+then the Dataset announces its IB_Transaction and IB_Connection.
+<br><br>
+This property reflects the IB_Transaction that is currently the focused instance
+for the session.}
+  property FocusedTransaction: TIB_Transaction read FFocusedTransaction
+                                               write SetFocusedTransaction;
+{: Each session has a global focusing system where data aware controls
+announce to the session when they become focused. Beginning with the DataLink
+objects they announce their DataSource, which then announces its Dataset and
+then the Dataset announces its IB_Transaction and IB_Connection.
+<br><br>
+This property reflects the IB_Cursor or IB_Query that is currently the focused
+instance for the session.}
+  property FocusedDataset: TIB_Dataset read FFocusedDataset
+                                       write SetFocusedDataset;
+{: Each session has a global focusing system where data aware controls
+announce to the session when they become focused. Beginning with the DataLink
+objects they announce their DataSource, which then announces its Dataset and
+then the Dataset announces its IB_Transaction and IB_Connection.
+<br><br>
+This property reflects the IB_DataSource that is currently the focused instance
+for the session.}
+  property FocusedDataSource: TIB_DataSource read FFocusedDataSource
+                                             write SetFocusedDataSource;
+
+published
+
+{: This property determines whether IBO will permit the default connection for
+the session to be automatically assigned to a statement or dataset that does not
+have its IB_Connection property explicitly assigned.}
+  property AllowDefaultConnection: boolean read FAllowDefaultConnection
+                                           write FAllowDefaultConnection;
+{: This property determines whether IBO will permit a default internal
+transaction to be automatically assigned to a statement or dataset that does not
+have its IB_Transaction property explicitly assigned.}
+  property AllowDefaultTransaction: boolean read FAllowDefaultTransaction
+                                            write FAllowDefaultTransaction;
+{: A statement or dataset or other connection-dependent component will attempt
+to reference this DefaultConnection upon demand if it does not have an
+IB_Connection or IB_Database component assigned then it .
+<br><br>
+By default, the first TIB_Connection instance becomes the DefaultConnection
+for the component session.  TIB_Database and TIBODatabase objects are
+considered as instances of TIB_Connection, since they are descendants of
+TIB_Connection.}
+  property DefaultConnection: TIB_Connection read FDefaultConnection
+                                             write FDefaultConnection;
+{: If ColorScheme is set to true for any IB_Dataset component then this is the
+color which will be used by all data aware controls that reference that dataset
+when it enters dssEditing state.}
+  property EditingColor: TColor read FEditingColor write FEditingColor;
+{: If ColorScheme is set to true for any IB_Dataset component then this is the
+color which will be used by all data aware controls that reference that dataset
+when it enters dssInserting state.}
+  property InsertingColor: TColor read FInsertingColor write FInsertingColor;
+{: If ColorScheme is set to true for any IB_Dataset component then this is the
+color which will be used by all data aware controls that reference that dataset
+when it enters dssDeleting state.}
+  property DeletingColor: TColor read FDeletingColor write FDeletingColor;
+{: If ColorScheme is set to true for any IB_Dataset component then this is the
+color which will be used by all data aware controls that reference that dataset
+when it enters dssSearching state.}
+  property SearchingColor: TColor read FSearchingColor write FSearchingColor;
+{: If ColorScheme is set to true for any IB_Dataset component then this is the
+color which will be used by all data aware controls that reference that dataset
+when it enters a state above dssBrowse state and the control is a ReadOnly
+control.}
+  property ReadOnlyColor: TColor read FReadOnlyColor  write FReadOnlyColor;
+{: When multi-selecting rows in a grid this is the color used for the
+selected rows.}
+  property SelectedColor: TColor read FSelectedColor write FSelectedColor;
+{: This is the color of a control when it is not attached to a datasource/dataset.}
+  property InvalidColor: TColor read FInvalidColor write FInvalidColor;
+{: This is the color of a control when it is attached to a prepared dataset.}
+  property PreparedColor: TColor read FPreparedColor write FPreparedColor;
+{: This is the color of a control when it is attached to a dataset that is
+browsing a record.}
+  property BrowsingColor: TColor read FBrowsingColor write FBrowsingColor;
+{: This property determines whether the following group of properties is to be
+stored in the DFM of the forms and datamodules. Leaving this set to False will
+avoid exceptions when loading forms that have dependencies in other forms
+and a live connection cannot be obtained. Setting it True is mostly for
+design-time convenience.
+<br>
+<br>TIB_Connection.Connected
+<br>TIB_Statement.Prepared
+<br>TIB_Dataset.Active}
+  property StoreActive: boolean read FStoreActive write FStoreActive;
+{: This property controls the frequency at which the session generates events to
+the components included in the passive processing queue.
+<br><br>
+It is an interval in milliseconds.  For example, for five seconds, enter 5000.
+This is the default value under normal circumstances. (GUI apps with a mainform)
+For explicit sessions the default is 0 which disables the timer, to avoid
+problems with some models of threading which may not work with the timer.
+<br><br>
+This property will be initialised to 5000 in the primary/process thread and to
+0 in any secondary threads.
+<br><br>
+If you are creating a DataModule for use in secondary threads, setting the value
+to either 0 or 5000 will result in no timer active in the secondary thread.
+This is recommended, for the reason described above.  What you should do is to
+make the thread which owns the session call the DoTimer method directly, as a
+part of its own loop or workload.
+<br><br>
+For example, I wrote a service application in which there is a loop that checks
+for items to process before being put to sleep.  It calls the session.DoTimer
+method immediately before being put to sleep, because the timer that normally
+triggers calling this method is not triggering any calls to it.
+<br><br>
+If this is omitted, it is possible that a transaction might be left open in the
+schema cache system.}
+  property TimerInterval: cardinal read FTimerInterval
+                                   write SetTimerInterval
+                                   default 5000;
+
+{ Events }
+
+{: Event hook to give access to the moment when the first process becomes
+active.
+<br><br>
+This event is triggered only when the FIRST process becomes active and not when
+other processes that are nested become active.}
+  property OnBeginBusy: TNotifyEvent read FOnBeginBusy write FOnBeginBusy;
+{: Event hook to give access to the moment when the last process is completed or
+aborted.}
+  property OnEndBusy: TNotifyEvent read FOnEndBusy write FOnEndBusy;
+{: Event hook to give access to the moment when the first process that is
+initiated with Yield as true becomes active.
+<br><br>
+This event is triggered only when the first yielding process becomes active and
+not when other processes that are nested become active.
+<br><br>
+The first yielding process is the target of this event, regardless of whether
+the Yield settings of other processes that are nested after it are True or
+False.}
+  property OnBeginYield: TNotifyEvent read FOnBeginYield write FOnBeginYield;
+{: Event hook to give access to the moment when the last process, that was
+initiated with Yield as true, is completed or aborted.}
+  property OnEndYield: TNotifyEvent read FOnEndYield write FOnEndYield;
+{: Event hook ability to override default colorscheme assignments by
+datalinks.}
+  property OnGetDataLinkColor: TIB_GetDataLinkColorEvent
+      read FOnGetDataLinkColor
+     write FOnGetDataLinkColor;
+{: This provides a hook into the session timer that operates in the background.
+<br><br>
+Do not check the Session's IsBusy flag because, when this event is fired, the
+IsBusy flag is already set to true.  It is possible to check the
+IB_Session.BusyLevel = 0 setting, since the normal counter is not incremented
+while a session timer event in progress. This way you can determine if it is, in
+fact, really busy.}
+  property OnSessionTimer: TIB_SessionTimerEvent read FOnSessionTimer
+                                                 write FOnSessionTimer;
+{: Global event to trap all potential exceptions due to error codes being
+returned from the API.}
+  property OnError;
+{: General purpose event used to tell the session to wake up.
+<br><br>
+Here, the session takes any action that is necessary to wake up the application,
+so that its events can be processed.}
+  property OnWakeup: TNotifyEvent read GetWakeup write SetWakeup;
+
+end;
+
+// IBA_Session.IMP

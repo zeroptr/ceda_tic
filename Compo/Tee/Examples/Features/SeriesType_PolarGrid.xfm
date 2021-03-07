@@ -1,0 +1,103 @@
+inherited SeriesTypePolarGrid: TSeriesTypePolarGrid
+  Left = 345
+  Top = 129
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Displays an array of values as a circular grid of cells, very si' +
+        'milar to a for example hard disk plate with sectors and tracks.'
+      'The AddCell method is used to fill the series:'
+      ''
+      '    for Sector:=0 to NumSectors-1 do'
+      '        for Track:=0 to NumTracks-1 do'
+      '        begin'
+      '          tmp:=0.5*Sqr(Cos(Sector/(NumSectors*0.2)))+'
+      '                   Sqr(Cos(Track/(NumTracks*0.2)))-'
+      '                   Cos(Track/(NumTracks*0.5));'
+      ''
+      '          AddCell(Sector,Track,tmp);'
+      '        end;')
+  end
+  inherited Chart1: TChart
+    Gradient.EndColor = clWhite
+    Gradient.MidColor = 6381921
+    Gradient.Visible = True
+    Legend.Bevel = bvLowered
+    Legend.Shadow.Visible = False
+    Title.Visible = False
+    BottomAxis.Increment = 14.400000000000000000
+    View3D = False
+    object PolarGrid: TPolarGridSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Circled = True
+      CellValues.Name = 'Values'
+      CellValues.Order = loNone
+      NumSectors = 25
+      NumTracks = 25
+      AngleIncrement = 14.400000000000000000
+      AngleValues.Name = 'Sectors'
+      AngleValues.Order = loNone
+      Brush.Color = clWhite
+      RadiusValues.Name = 'Tracks'
+      RadiusValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 10
+      Top = 9
+      Width = 71
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ScrollBar1: TScrollBar
+      Left = 92
+      Top = 14
+      Width = 97
+      Height = 16
+      Max = 200
+      Min = 1
+
+      Position = 21
+      TabOrder = 1
+      OnChange = ScrollBar1Change
+    end
+    object ScrollBar2: TScrollBar
+      Left = 203
+      Top = 14
+      Width = 98
+      Height = 16
+      Max = 200
+      Min = 1
+
+      Position = 20
+      TabOrder = 2
+      OnChange = ScrollBar1Change
+    end
+    object cbClockWise: TCheckBox
+      Left = 312
+      Top = 15
+      Width = 77
+      Height = 17
+      Caption = '&Clockwise'
+      TabOrder = 3
+      OnClick = cbClockWiseClick
+    end
+    object cbAxisTop: TCheckBox
+      Left = 395
+      Top = 15
+      Width = 81
+      Height = 17
+      Caption = '&Axis on top'
+      TabOrder = 4
+      OnClick = cbAxisTopClick
+    end
+  end
+end

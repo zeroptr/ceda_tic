@@ -1,0 +1,102 @@
+inherited ToolsCloneChartTool: TToolsCloneChartTool
+  Left = 349
+  Top = 227
+  Width = 684
+  Height = 494
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 668
+  end
+  inherited Memo1: TMemo
+    Width = 668
+    Lines.Strings = (
+      
+        'New CloneChartTool method which allows you to clone a specific T' +
+        'ool from the same or another Chart, copying its characteristics.'
+      ''
+      'Example :'
+      'var tmpNew : TTeeCustomTool;'
+      ''
+      '  tmpNew:=CloneChartTool(ColorLine,ColorLine.Owner);'
+      '  tmpNew.ParentChart:=ColorLine.ParentChart;')
+  end
+  inherited Chart1: TChart
+    Width = 668
+    Height = 302
+    Gradient.Balance = 0
+    Gradient.EndColor = clWhite
+    Gradient.StartColor = 16744576
+    Gradient.Visible = True
+    LeftWall.Visible = False
+    Legend.Alignment = laBottom
+    Legend.Symbol.Squared = True
+    Legend.Transparent = True
+    LeftAxis.Grid.ZPosition = 100.000000000000000000
+    LeftAxis.ZPosition = 100.000000000000000000
+    ColorPaletteIndex = 9
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      VertAxis = aRightAxis
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        0006000000000000000080764000000000000074400000000000006940000000
+        0000A05E4000000000000029400000000000405A40}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 668
+    object Label1: TLabel
+      Left = 153
+      Top = 14
+      Width = 60
+      Height = 13
+      Caption = '&Initial Value :'
+      FocusControl = Edit1
+    end
+    object bClone: TButton
+      Left = 8
+      Top = 9
+      Width = 129
+      Height = 25
+      Caption = '&Clone ColorLine Tool'
+      TabOrder = 0
+      OnClick = bCloneClick
+    end
+    object Edit1: TEdit
+      Left = 220
+      Top = 11
+      Width = 45
+      Height = 21
+      TabOrder = 1
+      Text = '100'
+    end
+    object UpDown1: TUpDown
+      Left = 265
+      Top = 11
+      Width = 16
+      Height = 21
+      Associate = Edit1
+      Max = 10000
+      Position = 100
+      TabOrder = 2
+    end
+    object bEdit: TButton
+      Left = 310
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = '&Edit'
+      TabOrder = 3
+      OnClick = bEditClick
+    end
+  end
+end

@@ -1,0 +1,154 @@
+object Release502Misc: TRelease502Misc
+  Left = 192
+  Top = 107
+  Width = 628
+  Height = 572
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 620
+    Height = 545
+    Align = alClient
+    Lines.Strings = (
+      'TeeChart Pro Release 5.02'
+      'Miscellaneous New Features'
+      '=========================='
+      ''
+      'Delphi 6 support'
+      '  This release supports Delphi 6 !'
+      ''
+      'TeeChartOffice'
+      '  Full sources included for TeeChartOffice example application.'
+      ''
+      'Inverline'
+      
+        '  Financial example, connects to Inverline.com website and displ' +
+        'ays'
+      '  stock values using Candle series and many financial functions.'
+      ''
+      'TeeGrayScale'
+      '  This global procedure ( unit TeCanvas.pas ) is now included'
+      '  in TeeChart, to convert charts from color mode to gray scale.'
+      ''
+      'TChartBrush'
+      '  All brush properties now accept "clNone" as Color, meaning'
+      
+        ' the brush will not fill the background parts when using a Brush' +
+        #39' '
+      ' pattern Style (or Brush Bitmap).'
+      '  '
+      '    Series1.Brush.Color :=clNone ;'
+      '    Series1.Brush.Style := bsDiagonal;'
+      ''
+      'Speed optimizations'
+      '  Some speed improvements when adding points and'
+      '  calculating screen pixel coordinates using Axes.'
+      ''
+      'CurveFitting function'
+      '  Incremented maximum number of points of source series to 32600'
+      ''
+      'Windows Transparent control'
+      
+        '  When the Chart Color is "clNone", it is created telling Window' +
+        #39's'
+      '  to use transparency ( WS_EX_TRANSPARENT )'
+      ''
+      'Gradients'
+      '  The Middle color is now preserved even if it is not used.'
+      ''
+      '3D Series (Surface, Contour, TriSurface, Waterfall)'
+      '  Memory consumption is reduced when using the '
+      '  TeeDefs.inc defines : SINGLE and EXTENDED'
+      ''
+      'Chart ListBox component'
+      '  New "RenameSeries" function to show the end user a dialog'
+      
+        '  to change the selected Series title.  Returns True if title ha' +
+        's been changed.'
+      ''
+      'Smith Series'
+      
+        '  New string property "ImagSymbol" ( by default is "i" ) to chan' +
+        'ge the'
+      '  suffix appended to axis labels.'
+      ''
+      'Clock Series'
+      
+        '  New property Timer ( TTimer ) to enable stopping / starting th' +
+        'e clock'
+      '  and changing the default refresh interval (1000 mseconds)'
+      '  ie: Series1.Timer.Interval:=200'
+      ''
+      'TeeCommander Toolbar'
+      
+        '  The Save button now adds picture formats (BMP,JPEG,GIF,etc) to' +
+        ' the list'
+      '  of file types and saves the chart into the selected format.'
+      
+        '  This works when the application uses picture exporting formats' +
+        ' (ie: TeeBMP,'
+      '  TeeJPEG, etc)'
+      ''
+      'Axis Arrows tool'
+      
+        '  The tool now calls the Chart "OnAllowScroll" event before appl' +
+        'ying the'
+      
+        '  scroll. This gives the programmer the ability to limit or stop' +
+        ' scrolling.'
+      ''
+      'TeeEmailFile'
+      
+        '  This global procedure at TeExport.pas unit now accepts an opti' +
+        'onal'
+      '  string to be the "Subject" text when sending the email.'
+      ''
+      'DrawLine Tool'
+      
+        '  The TDrawLineTool now stores its Lines collection to the DFM a' +
+        #39't'
+      '  design-time and also when saving charts to *.tee files.'
+      '  The procedure to create a line at runtime has been changed:'
+      ''
+      '    with ChartTool1 do'
+      '    begin'
+      '      TDrawLine.CreateXY(Lines,2,50,60,-50);'
+      '      TDrawLine.CreateXY(Lines,20,400,90,1000);'
+      '    end;'
+      ''
+      ''
+      'Chart BackImage'
+      '  The "Transparent" option at Panel tab (Chart Editor) now is'
+      '  also available at design-time.'
+      '  A new property: Chart1.BackImageTransp := True now gets stored'
+      '  into form DFM'#39's and native TEE files.'
+      ''
+      ''
+      'Chart Walls'
+      
+        '  All walls (Left,Right,Bottom and Back) support now the Gradien' +
+        #39't'
+      '  property.'
+      ''
+      ''
+      'Cursor Tool'
+      
+        '  New boolean property: UseChartRect to display cursors using th' +
+        #39'e'
+      '  full chart rectangle (Chart1.ChartRect) instead of the Series'
+      '  Axes positions.'
+      ''
+      '')
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+end

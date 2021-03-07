@@ -1,0 +1,132 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{99971C90-6B32-4B9A-BC81-30F086DC95C0}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="Tee814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="TeeUI814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="TeePro814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="TeeGL814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="TeeDB814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="TeeLanguage814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="TeeImage814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="TeeWorld814.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="DclTeePro814.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="Tee814">
+			<MSBuild Projects="Tee814.dproj"/>
+		</Target>
+		<Target Name="Tee814:Clean">
+			<MSBuild Targets="Clean" Projects="Tee814.dproj"/>
+		</Target>
+		<Target Name="Tee814:Make">
+			<MSBuild Targets="Make" Projects="Tee814.dproj"/>
+		</Target>
+		<Target Name="TeeUI814">
+			<MSBuild Projects="TeeUI814.dproj"/>
+		</Target>
+		<Target Name="TeeUI814:Clean">
+			<MSBuild Targets="Clean" Projects="TeeUI814.dproj"/>
+		</Target>
+		<Target Name="TeeUI814:Make">
+			<MSBuild Targets="Make" Projects="TeeUI814.dproj"/>
+		</Target>
+		<Target Name="TeePro814">
+			<MSBuild Projects="TeePro814.dproj"/>
+		</Target>
+		<Target Name="TeePro814:Clean">
+			<MSBuild Targets="Clean" Projects="TeePro814.dproj"/>
+		</Target>
+		<Target Name="TeePro814:Make">
+			<MSBuild Targets="Make" Projects="TeePro814.dproj"/>
+		</Target>
+		<Target Name="TeeGL814">
+			<MSBuild Projects="TeeGL814.dproj"/>
+		</Target>
+		<Target Name="TeeGL814:Clean">
+			<MSBuild Targets="Clean" Projects="TeeGL814.dproj"/>
+		</Target>
+		<Target Name="TeeGL814:Make">
+			<MSBuild Targets="Make" Projects="TeeGL814.dproj"/>
+		</Target>
+		<Target Name="TeeDB814">
+			<MSBuild Projects="TeeDB814.dproj"/>
+		</Target>
+		<Target Name="TeeDB814:Clean">
+			<MSBuild Targets="Clean" Projects="TeeDB814.dproj"/>
+		</Target>
+		<Target Name="TeeDB814:Make">
+			<MSBuild Targets="Make" Projects="TeeDB814.dproj"/>
+		</Target>
+		<Target Name="TeeLanguage814">
+			<MSBuild Projects="TeeLanguage814.dproj"/>
+		</Target>
+		<Target Name="TeeLanguage814:Clean">
+			<MSBuild Targets="Clean" Projects="TeeLanguage814.dproj"/>
+		</Target>
+		<Target Name="TeeLanguage814:Make">
+			<MSBuild Targets="Make" Projects="TeeLanguage814.dproj"/>
+		</Target>
+		<Target Name="TeeImage814">
+			<MSBuild Projects="TeeImage814.dproj"/>
+		</Target>
+		<Target Name="TeeImage814:Clean">
+			<MSBuild Targets="Clean" Projects="TeeImage814.dproj"/>
+		</Target>
+		<Target Name="TeeImage814:Make">
+			<MSBuild Targets="Make" Projects="TeeImage814.dproj"/>
+		</Target>
+		<Target Name="TeeWorld814">
+			<MSBuild Projects="TeeWorld814.dproj"/>
+		</Target>
+		<Target Name="TeeWorld814:Clean">
+			<MSBuild Targets="Clean" Projects="TeeWorld814.dproj"/>
+		</Target>
+		<Target Name="TeeWorld814:Make">
+			<MSBuild Targets="Make" Projects="TeeWorld814.dproj"/>
+		</Target>
+		<Target Name="DclTeePro814">
+			<MSBuild Projects="DclTeePro814.dproj"/>
+		</Target>
+		<Target Name="DclTeePro814:Clean">
+			<MSBuild Targets="Clean" Projects="DclTeePro814.dproj"/>
+		</Target>
+		<Target Name="DclTeePro814:Make">
+			<MSBuild Targets="Make" Projects="DclTeePro814.dproj"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="Tee814;TeeUI814;TeePro814;TeeGL814;TeeDB814;TeeLanguage814;TeeImage814;TeeWorld814;DclTeePro814"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="Tee814:Clean;TeeUI814:Clean;TeePro814:Clean;TeeGL814:Clean;TeeDB814:Clean;TeeLanguage814:Clean;TeeImage814:Clean;TeeWorld814:Clean;DclTeePro814:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="Tee814:Make;TeeUI814:Make;TeePro814:Make;TeeGL814:Make;TeeDB814:Make;TeeLanguage814:Make;TeeImage814:Make;TeeWorld814:Make;DclTeePro814:Make"/>
+		</Target>
+		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+	</Project>

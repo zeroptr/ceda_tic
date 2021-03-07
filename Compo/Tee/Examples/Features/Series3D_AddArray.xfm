@@ -1,0 +1,49 @@
+inherited AddArray3D: TAddArray3D
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 110
+  end
+  inherited Memo1: TMemo
+    Height = 110
+    Lines.Strings = (
+      
+        'All 3D Series (surface, contour, colorgrid, etc) include a new m' +
+        'ethod'
+      'to add a bi-dimensional array (x by z grid of values).'
+      ''
+      'var A : TArrayGrid;  x,z : Integer;'
+      'SetLength( A, 5, 7 ) ; '
+      'for x:=0 to 4 do for z:= 0 to 6 do A[x,z] := Random ;'
+      'Series1.AddArray( A );')
+  end
+  inherited Chart1: TChart
+    Top = 153
+    Height = 184
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    object Series1: TColorGridSeries
+      CenteredPoints = True
+      Marks.ArrowLength = 0
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 0
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pen.Style = psDot
+      Pen.SmallDots = True
+      PaletteSteps = 60
+      PaletteStyle = psStrong
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      YValues.Name = 'Y'
+      ZValues.Name = 'Z'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 112
+    Visible = False
+  end
+end

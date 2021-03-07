@@ -1,0 +1,463 @@
+object TeePacForm: TTeePacForm
+  Left = 275
+  Top = 180
+  ActiveControl = Chart1
+  AutoScroll = False
+  ClientHeight = 343
+  ClientWidth = 437
+  Color = clBtnFace
+  ParentFont = True
+  KeyPreview = True
+  Menu = MainMenu1
+  OldCreateOrder = True
+  Position = poDefault
+  Scaled = False
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel3: TPanel
+    Left = 0
+    Top = 0
+    Width = 437
+    Height = 37
+    Align = alTop
+    BevelOuter = bvLowered
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+    object SpeedButton1: TSpeedButton
+      Left = 5
+      Top = 4
+      Width = 25
+      Height = 25
+      Hint = 'Open a saved Game !'
+      AllowAllUp = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00555555555555
+        5555555555555555555555555555555555555555555555555555555555555555
+        555555555555555555555555555555555555555FFFFFFFFFF555550000000000
+        55555577777777775F55500B8B8B8B8B05555775F555555575F550F0B8B8B8B8
+        B05557F75F555555575F50BF0B8B8B8B8B0557F575FFFFFFFF7F50FBF0000000
+        000557F557777777777550BFBFBFBFB0555557F555555557F55550FBFBFBFBF0
+        555557F555555FF7555550BFBFBF00055555575F555577755555550BFBF05555
+        55555575FFF75555555555700007555555555557777555555555555555555555
+        5555555555555555555555555555555555555555555555555555}
+      NumGlyphs = 2
+      OnClick = SpeedButton1Click
+    end
+    object SpeedButton2: TSpeedButton
+      Left = 33
+      Top = 4
+      Width = 25
+      Height = 25
+      Hint = 'Save Game to Disk'
+      AllowAllUp = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        333333FFFFFFFFFFFFF33000077777770033377777777777773F000007888888
+        00037F3337F3FF37F37F00000780088800037F3337F77F37F37F000007800888
+        00037F3337F77FF7F37F00000788888800037F3337777777337F000000000000
+        00037F3FFFFFFFFFFF7F00000000000000037F77777777777F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF00037F7F333333337F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF00037F7F333333337F7F000FFFFFFFFF
+        00037F7F333333337F7F000FFFFFFFFF07037F7F33333333777F000FFFFFFFFF
+        0003737FFFFFFFFF7F7330099999999900333777777777777733}
+      NumGlyphs = 2
+      OnClick = SpeedButton2Click
+    end
+    object SpeedButton3: TSpeedButton
+      Left = 69
+      Top = 4
+      Width = 25
+      Height = 25
+      Hint = 'Re-Start New Game !'
+      AllowAllUp = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF0033333333B333
+        333B33FF33337F3333F73BB3777BB7777BB3377FFFF77FFFF77333B000000000
+        0B3333777777777777333330FFFFFFFF07333337F33333337F333330FFFFFFFF
+        07333337F33333337F333330FFFFFFFF07333337F33333337F333330FFFFFFFF
+        07333FF7F33333337FFFBBB0FFFFFFFF0BB37777F3333333777F3BB0FFFFFFFF
+        0BBB3777F3333FFF77773330FFFF000003333337F333777773333330FFFF0FF0
+        33333337F3337F37F3333330FFFF0F0B33333337F3337F77FF333330FFFF003B
+        B3333337FFFF77377FF333B000000333BB33337777777F3377FF3BB3333BB333
+        3BB33773333773333773B333333B3333333B7333333733333337}
+      NumGlyphs = 2
+      OnClick = SpeedButton3Click
+    end
+    object SpeedButton4: TSpeedButton
+      Left = 105
+      Top = 4
+      Width = 25
+      Height = 25
+      Hint = 'Toggle Zoom On / Off'
+      AllowAllUp = True
+      GroupIndex = 4
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33033333333333333F7F3333333333333000333333333333F777333333333333
+        000333333333333F777333333333333000333333333333F77733333333333300
+        033333333FFF3F777333333700073B703333333F7773F77733333307777700B3
+        33333377333777733333307F8F8F7033333337F333F337F3333377F8F9F8F773
+        3333373337F3373F3333078F898F870333337F33F7FFF37F333307F99999F703
+        33337F377777337F3333078F898F8703333373F337F33373333377F8F9F8F773
+        333337F3373337F33333307F8F8F70333333373FF333F7333333330777770333
+        333333773FF77333333333370007333333333333777333333333}
+      NumGlyphs = 2
+      OnClick = SpeedButton4Click
+    end
+    object SpeedButton5: TSpeedButton
+      Left = 133
+      Top = 4
+      Width = 25
+      Height = 25
+      Hint = 'Toggle Legend On / Off'
+      AllowAllUp = True
+      GroupIndex = 3
+      Glyph.Data = {
+        42010000424D4201000000000000760000002800000011000000110000000100
+        040000000000CC00000000000000000000001000000010000000000000000000
+        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00DDDDDDDDDDDD
+        DDDDD0000000DDDDDDDDDDDDDDDDD0000000D444DDDDDDDDDDDDD0000000D444
+        DD000000000DD0000000D444DDDDDDDDDDDDD0000000DDDDDDDDDDDDDDDDD000
+        0000DDDDDDDDDDDDDDDDD0000000D444DDDDDDDDDDDDD0000000D444DD000000
+        000DD0000000D444DDDDDDDDDDDDD0000000DDDDDDDDDDDDDDDDD0000000DDDD
+        DDDDDDDDDDDDD0000000D444DDDDDDDDDDDDD0000000D444DD000000000DD000
+        0000D444DDDDDDDDDDDDD0000000DDDDDDDDDDDDDDDDD0000000DDDDDDDDDDDD
+        DDDDD0000000}
+      OnClick = SpeedButton5Click
+    end
+    object SpeedButton6: TSpeedButton
+      Left = 161
+      Top = 4
+      Width = 25
+      Height = 25
+      Hint = 'Toggle Axis On / Off'
+      AllowAllUp = True
+      GroupIndex = 1
+      Down = True
+      Glyph.Data = {
+        66010000424D6601000000000000760000002800000014000000140000000100
+        040000000000F000000000000000000000001000000010000000000000000000
+        8000008000000080800080000000800080008080000080808000C0C0C0000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00888888888888
+        8888888800008888888888888888888800008888888888888888888800008808
+        88808880888088880000800000000000000000080000880880CCC0AAA0DDD088
+        0000880880CCC0AAA0DDD0880000800880CCC0AAA0DDD0880000880880CCC0AA
+        A0DDD0880000880880CCC0AAA0DDD08800008008800000AAA0DDD08800008808
+        888880AAA0DDD088000088088888800000DDD088000080088888888880DDD088
+        000088088888888880DDD0880000880888888888800000880000800888888888
+        8888888800008888888888888888888800008888888888888888888800008888
+        88888888888888880000}
+      OnClick = SpeedButton6Click
+    end
+    object SpeedButton7: TSpeedButton
+      Left = 189
+      Top = 4
+      Width = 25
+      Height = 25
+      Hint = 'Toggle 3D On / Off'
+      AllowAllUp = True
+      GroupIndex = 2
+      Down = True
+      Caption = '3D'
+      OnClick = SpeedButton7Click
+    end
+    object BitBtn1: TBitBtn
+      Left = 228
+      Top = 4
+      Width = 93
+      Height = 29
+      Caption = '&Edit Chart...'
+      TabOrder = 0
+      OnClick = BitBtn1Click
+      Glyph.Data = {
+        96010000424D9601000000000000760000002800000018000000180000000100
+        0400000000002001000000000000000000001000000010000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
+        7777777777777777777777777777777777777777777777777777777777777770
+        0070070070077777777777777777777777777777777777778787878787877777
+        7777770000000000000077777777770998CC8DD8228077777777780998CC8DD8
+        228087777777770998CB8888228077777777780998BCB888B280877777777708
+        8BCC8B8B2B80777777777808B8CC88B822B087777777770B8888888822807777
+        7777780888888888228087777777770888888888888077777777780888888888
+        8880877777777700000000000000777777777777878787878787777777777000
+        7070707070707707777770777070700070077707777770777000707070707707
+        7777700070707000700070007777777777777777777777777777}
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 37
+    Width = 437
+    Height = 40
+    Align = alTop
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 80
+      Top = 8
+      Width = 20
+      Height = 20
+      Caption = '0'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold, fsItalic]
+      ParentFont = False
+    end
+    object Label2: TLabel
+      Left = 8
+      Top = 8
+      Width = 51
+      Height = 19
+      Caption = 'Score:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label3: TLabel
+      Left = 144
+      Top = 8
+      Width = 47
+      Height = 19
+      Caption = 'Lives:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label4: TLabel
+      Left = 212
+      Top = 8
+      Width = 20
+      Height = 20
+      Caption = '3'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold, fsItalic]
+      ParentFont = False
+    end
+    object Chart2: TChart
+      Left = 273
+      Top = 4
+      Width = 132
+      Height = 33
+      BackWall.Brush.Color = clWhite
+      BackWall.Pen.Visible = False
+      Foot.Font.Height = -12
+      Foot.Visible = False
+      Legend.Visible = False
+      MarginRight = 40
+      Title.Text.Strings = (
+        'TChart Component')
+      Title.Visible = False
+      AxisVisible = False
+      BottomAxis.Automatic = False
+      BottomAxis.AutomaticMaximum = False
+      BottomAxis.AutomaticMinimum = False
+      BottomAxis.Maximum = 347.000000000000000000
+      Chart3DPercent = 40
+      ClipPoints = False
+      Frame.Visible = False
+      LeftAxis.ExactDateTime = False
+      View3DWalls = False
+      Color = clSilver
+      TabOrder = 0
+      object HorizBarSeries1: THorizBarSeries
+        BarBrush.Color = clWhite
+        BarPen.Color = clWhite
+        Marks.Callout.Brush.Color = clBlack
+        Marks.Style = smsXValue
+        Marks.Visible = True
+        SeriesColor = clNavy
+        Gradient.Direction = gdLeftRight
+        XValues.Name = 'X'
+        XValues.Order = loNone
+        YValues.Name = 'Y'
+        YValues.Order = loAscending
+        Left = 353
+        Top = 38
+      end
+    end
+  end
+  object Chart1: TChart
+    Left = 0
+    Top = 77
+    Width = 437
+    Height = 229
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    Foot.Font.Height = -12
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'TChart Component')
+    Title.Visible = False
+    OnUndoZoom = Chart1UndoZoom
+    View3D = False
+    Zoom.Animated = True
+    Zoom.AnimatedSteps = 12
+    Align = alClient
+    TabOrder = 1
+    TabStop = True
+    object Walls: TBubbleSeries
+      OnGetPointerStyle = WallsGetPointerStyle
+      ColorEachPoint = False
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Frame.Visible = False
+      Marks.Style = smsValue
+      Marks.Transparent = True
+      Marks.Visible = False
+      SeriesColor = 8421440
+      AfterDrawValues = WallsAfterDrawValues
+      ClickableLine = False
+      Pointer.HorizSize = 20
+      Pointer.InflateMargins = True
+      Pointer.Pen.Color = clNavy
+      Pointer.Style = psCircle
+      Pointer.VertSize = 20
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+      Left = 183
+      Top = 158
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 306
+    Width = 437
+    Height = 37
+    Align = alBottom
+    TabOrder = 2
+    object Label5: TLabel
+      Left = 108
+      Top = 4
+      Width = 219
+      Height = 13
+      Caption = 'Any key to Start.  Arrow keys to move.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label7: TLabel
+      Left = 84
+      Top = 20
+      Width = 269
+      Height = 13
+      Caption = 'Left mouse button to Zoom. Right mouse button to Scroll.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 131
+    Top = 86
+    object File1: TMenuItem
+      Caption = '&File'
+      object New1: TMenuItem
+        Caption = '&New'
+        ShortCut = 16462
+        OnClick = New1Click
+      end
+      object Open1: TMenuItem
+        Caption = '&Open...'
+        ShortCut = 114
+        OnClick = Open1Click
+      end
+      object Save1: TMenuItem
+        Caption = '&Save...'
+        ShortCut = 113
+        OnClick = Save1Click
+      end
+    end
+    object Options1: TMenuItem
+      Caption = '&Options'
+      object Zoomed1: TMenuItem
+        Caption = '&Zoomed'
+        OnClick = Zoomed1Click
+      end
+      object N3Dimensions1: TMenuItem
+        Caption = '3 &Dimensions'
+        Checked = True
+        OnClick = N3Dimensions1Click
+      end
+      object ShowAxis1: TMenuItem
+        Caption = 'Show &Axis'
+        Checked = True
+        OnClick = ShowAxis1Click
+      end
+      object ShowLegend1: TMenuItem
+        Caption = 'Show &Legend'
+        OnClick = ShowLegend1Click
+      end
+    end
+    object Speed1: TMenuItem
+      Caption = '&Speed'
+      object Slow1: TMenuItem
+        Caption = '&Slow'
+        OnClick = Slow1Click
+      end
+      object Normal1: TMenuItem
+        Caption = '&Normal'
+        Checked = True
+        OnClick = Normal1Click
+      end
+      object Fast1: TMenuItem
+        Caption = '&Fast'
+        OnClick = Fast1Click
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'TEE'
+    Filter = 'TeePac Game Files|*.TEE'
+    Options = [ofHideReadOnly, ofFileMustExist]
+    Left = 63
+    Top = 87
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = 'TEE'
+    Filter = 'TeePac Game Files|*.TEE'
+    Options = [ofOverwritePrompt]
+    Left = 193
+    Top = 89
+  end
+end

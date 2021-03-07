@@ -1,0 +1,199 @@
+inherited ChartActionsForm: TChartActionsForm
+  Width = 440
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 432
+  end
+  inherited Memo1: TMemo
+    Width = 432
+    Lines.Strings = (
+      
+        'New Chart and Series standard Actions. With Actions (See TAction' +
+        'List '
+      
+        'component help) you can use buttons, checkboxes, menu items, etc' +
+        ' to'
+      'control Charts and Series with no code.'
+      ''
+      'Example: Button1.Action := ChartActionCopy1 ;')
+  end
+  inherited Chart1: TChart
+    Top = 151
+    Width = 432
+    Height = 186
+    object Series1: TBarSeries
+      Marks.ArrowLength = 20
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = True
+      SeriesColor = clRed
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 432
+    Height = 76
+    object Label1: TLabel
+      Left = 11
+      Top = 14
+      Width = 28
+      Height = 13
+      Caption = 'Chart:'
+    end
+    object Label2: TLabel
+      Left = 8
+      Top = 40
+      Width = 32
+      Height = 13
+      Caption = 'Series:'
+    end
+    object CheckBox1: TCheckBox
+      Left = 44
+      Top = 12
+      Width = 49
+      Height = 17
+      Action = ChartAction3D1
+      TabOrder = 0
+    end
+    object CheckBox2: TCheckBox
+      Left = 100
+      Top = 12
+      Width = 57
+      Height = 17
+      Action = ChartActionAxes1
+      TabOrder = 1
+    end
+    object Button1: TButton
+      Left = 218
+      Top = 8
+      Width = 75
+      Height = 25
+      Action = ChartActionCopy1
+      TabOrder = 2
+    end
+    object Button2: TButton
+      Left = 298
+      Top = 8
+      Width = 75
+      Height = 25
+      Action = ChartActionEdit1
+      TabOrder = 3
+    end
+    object CheckBox3: TCheckBox
+      Left = 153
+      Top = 12
+      Width = 59
+      Height = 17
+      Action = ChartActionLegend1
+      TabOrder = 4
+    end
+    object Button3: TButton
+      Left = 298
+      Top = 40
+      Width = 75
+      Height = 25
+      Action = ChartActionPrint1
+      TabOrder = 5
+    end
+    object CheckBox4: TCheckBox
+      Left = 44
+      Top = 40
+      Width = 53
+      Height = 17
+      Action = SeriesActionActive1
+      TabOrder = 6
+    end
+    object CheckBox5: TCheckBox
+      Left = 100
+      Top = 40
+      Width = 73
+      Height = 17
+      Action = SeriesActionMarks1
+      TabOrder = 7
+    end
+    object Button4: TButton
+      Left = 218
+      Top = 40
+      Width = 75
+      Height = 25
+      Action = SeriesActionEdit1
+      TabOrder = 8
+    end
+    object CheckBox6: TCheckBox
+      Left = 153
+      Top = 40
+      Width = 64
+      Height = 17
+      Action = ChartActionGrid1
+      TabOrder = 9
+    end
+  end
+  object ActionList1: TActionList
+    Left = 352
+    Top = 16
+    object ChartAction3D1: TChartAction3D
+      Category = 'Chart'
+      Chart = Chart1
+      Caption = '&3D'
+      Hint = 'Switch 2D / 3D'
+    end
+    object ChartActionAxes1: TChartActionAxes
+      Category = 'Chart'
+      Chart = Chart1
+      Caption = '&Axes'
+      Hint = 'Show / Hide Axes'
+    end
+    object ChartActionCopy1: TChartActionCopy
+      Category = 'Chart'
+      Chart = Chart1
+      Caption = '&Copy'
+      Hint = 'Copy to Clipboard'
+    end
+    object ChartActionEdit1: TChartActionEdit
+      Category = 'Chart'
+      Chart = Chart1
+      Caption = '&Edit...'
+      Hint = 'Edit Chart'
+    end
+    object ChartActionLegend1: TChartActionLegend
+      Category = 'Chart'
+      Chart = Chart1
+      Caption = '&Legend'
+      Hint = 'Show / Hide Legend'
+    end
+    object ChartActionPrint1: TChartActionPrint
+      Category = 'Chart'
+      Chart = Chart1
+      Caption = '&Print...'
+      Hint = 'Print preview Chart'
+    end
+    object SeriesActionActive1: TSeriesActionActive
+      Category = 'Chart Series'
+      Series = Series1
+      Caption = '&Active'
+      Hint = 'Show / Hide Series'
+    end
+    object SeriesActionEdit1: TSeriesActionEdit
+      Category = 'Chart Series'
+      Series = Series1
+      Caption = '&Edit...'
+      Hint = 'Edit Series'
+    end
+    object SeriesActionMarks1: TSeriesActionMarks
+      Category = 'Chart Series'
+      Series = Series1
+      Caption = '&Marks'
+      Hint = 'Show / Hide Series Marks'
+    end
+    object ChartActionGrid1: TChartActionGrid
+      Category = 'Chart'
+      Caption = '&Grids'
+      Hint = 'Show / Hide Grids'
+    end
+  end
+end

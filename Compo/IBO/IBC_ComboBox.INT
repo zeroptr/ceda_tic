@@ -1,0 +1,143 @@
+
+{                                                                              }
+{ TIB_ComboBox                                                                 }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  20-Dec-2001                                                                 }
+{     Added GetAutoLabel interface routine to support change to                }
+{     IIB_GridWinControl                                                       }
+{                                                                              }
+
+{: This control allows a standard combo box to be bound to a data column.
+<br><br>
+The values of the drop-down list must be supplied by assigning them to the
+Items property manually at design-time or run-time.
+<br><br>
+The ItemValues property can be used to provide a table of values to store
+in the database instead of the entries listed in the Items property.  Note
+that this property is ignored if the Style is csDropDown.
+<br><br>
+To use a list defined from a query try making use of the TIB_LookupCombo
+control, which supports a data-aware list portion. Otherwise, pre-load the
+values of the query into the Items property of this control at run-time.
+<br><br>
+If Style is csDropDownList and the value in the data column does not match
+an item in the list then the control appears blank.}
+TIB_CustomComboBox = class(TCustomComboBox, IIB_GridWinControl)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.INT}
+{$UNDEF IB_AutoLabel}
+private
+  FItemValues: TStrings;
+protected
+  function GetComboText: string;
+  procedure SetComboText( const AValue: string );
+  procedure SetEditReadOnly;
+{$IFDEF IBO_VCL60_OR_GREATER}
+  procedure SetItems( const AValue: TStrings ); override;
+{$ELSE}
+  procedure SetItems( const AValue: TStrings );
+{$ENDIF}
+  function GetValue: string;
+  procedure SetValue( const AValue: string );
+  function GetItemValues: TStrings;
+  procedure SetItemValues( AValue: TStrings );
+{$IFDEF IBO_VCL60_OR_GREATER}
+  function GetItemIndex: Integer; override;
+  procedure SetItemIndex( const Value: Integer ); override;
+{$ELSE}
+  function GetItemIndex: Integer;
+  procedure SetItemIndex( const Value: Integer );
+{$ENDIF}
+  procedure Loaded; override;
+  procedure CreateParams( var Params: TCreateParams ); override;
+  procedure Change; override;
+  procedure Click; override;
+  procedure ComboWndProc( var Message: TMessage;
+                              ComboWnd: HWnd;
+                              ComboProc: Pointer ); override;
+  procedure CreateWnd; override;
+  procedure KeyDown( var Key: Word; Shift: TShiftState ); override;
+  procedure KeyPress( var Key: Char ); override;
+  procedure WndProc( var Message: TMessage ); override;
+
+  // Implemented for IIB_GridWinControl - but generically for consistency
+  // with other controls.
+  procedure BoundsChanged;
+
+  // Implementation of IIB_GridWinControl interface requirements
+  // These are already defined
+  //   procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+  //   procedure BoundsChanged;
+  //   function CanFocus: boolean;
+  //   procedure SetFocus;
+  //   procedure Invalidate;
+  // These functions need to be defined - which I will do via
+  // functions named IBG_* and redirect...
+  function IIB_GridWinControl.DisplayColumn = IBG_DisplayColumn;
+  function IIB_GridWinControl.GetText = IBG_GetText;
+  function IIB_GridWinControl.TranslateText = IBG_TranslateText;
+  function IIB_GridWinControl.HasActiveChild = IBG_HasActiveChild;
+  procedure IIB_GridWinControl.SetBorderStyle = IBG_SetBorderStyle;
+  function IIB_GridWinControl.GetFont = IBG_GetFont;
+  procedure IIB_GridWinControl.SetFont = IBG_SetFont;
+  procedure IIB_GridWinControl.SetColor = IBG_SetColor;
+  procedure IIB_GridWinControl.SetVisible = IBG_SetVisible;
+  function IIB_GridWinControl.GetAutoLabel = IBG_GetAutoLabel;
+  function IBG_DisplayColumn: TObject;
+  function IBG_GetText: string;
+  function IBG_TranslateText(AVal: string): string;
+  function IBG_HasActiveChild: boolean;
+  procedure IBG_SetBorderStyle( AVal: TBorderStyle );
+  function IBG_GetFont: TFont;
+  procedure IBG_SetFont( const AFont: TFont );
+  procedure IBG_SetColor( AColor: TColor );
+  procedure IBG_SetVisible( AVal: boolean );
+  function IBG_GetAutoLabel: TObject;
+  property Value: string read GetValue write SetValue;
+public
+  constructor Create( AOwner: TComponent ); override;
+  destructor Destroy; override;
+  property Text;
+  property ItemIndex: Integer read GetItemIndex write SetItemIndex;
+public
+{: I have overidden this method so that when it is called the ItemValues are
+also cleared out.}
+{$IFDEF IBO_VCL60_OR_GREATER}
+  procedure Clear; override;
+{$ELSE}
+  procedure Clear; virtual; 
+{$ENDIF}
+{$IFNDEF HELPSCAN}
+  property Items write SetItems;
+  // make these public for easy access
+  // ie. IB_Grid needs them to alter display properties dynamically
+{$ENDIF}
+{: This property provides a table of values to store in the database instead
+of the entries listed in the Items property.
+<br><br>
+Property is ignored when Style is set to csDropDown, as the ComboBox
+Items are used for text entry in that case.}
+  property ItemValues: TStrings read GetItemValues write SetItemValues;
+end;
+
+TIB_ComboBox = class(TIB_CustomComboBox)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.PBL}
+{$UNDEF IB_AutoLabel}
+{$IFNDEF HELPSCAN}
+published
+  property Style; {Must be published before Items}
+  property DropDownCount;
+  property ItemHeight;
+  property Items;
+  property ItemValues;
+  property Sorted;
+  property OnChange;
+  property OnDrawItem;
+  property OnDropDown;
+  property OnMeasureItem;
+{$ENDIF}
+end;
+
+// IBC_ComboBox.IMP

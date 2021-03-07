@@ -1,0 +1,61 @@
+inherited PointFigureDemo: TPointFigureDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 57
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      'Point & Figure series is a financial chart style.'
+      'Point & Figure is made of X'#39's and O'#39's symbols'
+      'representing over time filtered price movements.'
+      '')
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    Title.Text.Strings = (
+      'Point & Figure')
+    View3D = False
+    object Series1: TPointFigureSeries
+      CloseValues.Name = 'Close'
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.Name = 'High'
+      LowValues.Name = 'Low'
+      OpenValues.Name = 'Open'
+      BoxSize = 1.000000000000000000
+      DownSymbol.Brush.Color = clRed
+      DownSymbol.InflateMargins = True
+      DownSymbol.Style = psCircle
+      DownSymbol.Visible = True
+      ReversalAmount = 3.000000000000000000
+      UpSymbol.Brush.Color = clGreen
+      UpSymbol.InflateMargins = True
+      UpSymbol.Style = psDiagCross
+      UpSymbol.Visible = True
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      XValues.Name = 'Date'
+      XValues.Order = loAscending
+      YValues.Name = 'Close'
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 59
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

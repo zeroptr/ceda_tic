@@ -1,0 +1,103 @@
+inherited CanvasDotPen: TCanvasDotPen
+  Caption = 'CanvasDotPen'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Under Windows NT and 2000 it'#39's now possible to draw lines'
+      'with dotted styles and widths bigger than 1.'
+      ''
+      'Example:  Series1.Pen.Width:=3 ; Series1.Pen.Style:=psDot;')
+  end
+  inherited Chart1: TChart
+    Title.Visible = False
+    Legend.CheckBoxes = True
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      LinePen.Style = psDot
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      LinePen.Color = clGreen
+      LinePen.Style = psDot
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clYellow
+      LinePen.Color = clYellow
+      LinePen.Style = psDot
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series4: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clBlue
+      LinePen.Color = clBlue
+      LinePen.Style = psDot
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 88
+      Top = 10
+      Width = 31
+      Height = 13
+      Caption = '&Width:'
+      FocusControl = Edit1
+    end
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 8
+      Width = 57
+      Height = 17
+      Caption = '&Dots'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Edit1: TEdit
+      Left = 128
+      Top = 8
+      Width = 33
+      Height = 21
+      TabOrder = 1
+      Text = '3'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 161
+      Top = 8
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 0
+      Position = 3
+      TabOrder = 2
+      Wrap = False
+    end
+  end
+end

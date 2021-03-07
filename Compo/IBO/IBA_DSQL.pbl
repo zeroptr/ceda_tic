@@ -1,0 +1,34 @@
+
+{                                                                              }
+{  IBA_DSQL.PBL                                                                }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+public
+
+{ Properties }
+
+  property SQLHistory;
+  property SQLHistoryRef;
+
+published
+
+{ Properties }
+
+  property KeepSQLHistory;
+  property ParamChar;
+  property ParamCheck;
+
+{ Events }
+
+  property AfterExecDDL;
+  property AfterExecDML;
+  property AfterPrepare;
+  property AfterUnprepare;
+  property BeforeExecDDL;
+  property BeforeExecDML;
+  property BeforePrepare;
+  property BeforeUnprepare;
+
+{$ENDIF}

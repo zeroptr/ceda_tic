@@ -1,0 +1,103 @@
+inherited SeriesTextSourceForm: TSeriesTextSourceForm
+  Left = 270
+  Top = 192
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 88
+  end
+  inherited Memo1: TMemo
+    Height = 47
+    Lines.Strings = (
+      
+        'The Series TextSource component is used to fill a Series with po' +
+        'ints'
+      
+        'coming from text.  Text can be loaded from Strings, File or Web ' +
+        'URL address.')
+  end
+  inherited Chart1: TChart
+    Left = 169
+    Top = 90
+    Width = 310
+    Height = 240
+    object Series1: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 47
+    object Button1: TButton
+      Left = 8
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Fill Series !'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 88
+      Top = 8
+      Width = 121
+      Height = 25
+      Caption = 'Fill from &Internet:'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+    object Edit1: TEdit
+      Left = 216
+      Top = 10
+      Width = 177
+      Height = 21
+      TabOrder = 2
+      Text = 'http://www.steema.com/demo.txt'
+    end
+  end
+  object Memo2: TMemo
+    Left = 0
+    Top = 90
+    Width = 169
+    Height = 240
+    Align = alLeft
+    Lines.Strings = (
+      'This memo contains series points'
+      '( format is X,Y,Text )'
+      '1,123,A'
+      '2,456,B'
+      '3,321,C'
+      '4,222,D'
+      '5,90,E'
+      '6,111,F'
+      '7,-10,G')
+    TabOrder = 3
+  end
+  object SeriesTextSource1: TSeriesTextSource
+    Active = True
+    HeaderLines = 2
+    Fields = <
+      item
+        FieldIndex = 3
+        FieldName = 'Text'
+      end
+      item
+        FieldIndex = 1
+        FieldName = 'X'
+      end
+      item
+        FieldIndex = 2
+        FieldName = 'Bar'
+      end>
+    FieldSeparator = ','
+    Series = Series1
+    Left = 72
+    Top = 250
+  end
+end

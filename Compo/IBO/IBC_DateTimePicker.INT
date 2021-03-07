@@ -1,0 +1,39 @@
+
+{                                                                              }
+{ TIB_DateTimePicker                                                           }
+{                                                                              }
+
+{: This control is an IBO aware descendant of TDateTimePicker.
+<br><br>
+I plan to eventually replace this with a more functional and generic control
+that will work with all supported versions of Delphi that IBO supports.
+<br><br>
+As it is right now I can only support D3, D4 and C3 with this control.}
+TIB_CustomDateTimePicker = class(TDateTimePicker)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.INT}
+{$UNDEF IB_AutoLabel}
+private
+  procedure CNNotify( var Message: TWMNotify ); message CN_Notify;
+protected
+  FShowingCheckbox: boolean;
+  procedure Loaded; override;
+  procedure CreateParams( var Params: TCreateParams ); override;
+public
+  constructor Create( AOwner: TComponent ); override;
+  destructor Destroy; override;
+  property ShowCheckbox default true;
+end;
+
+{: Published class of TIB_CustomDate using the TDateTimePicker control.}
+TIB_DateTimePicker = class(TIB_CustomDateTimePicker)
+{$DEFINE IB_AutoLabel}
+{$I IB_WinControl.PBL}
+{$UNDEF IB_AutoLabel}
+{$IFNDEF HELPSCAN}
+published
+  property ShowCheckbox;
+{$ENDIF}
+end;
+
+// IBC_DateTimePicker.IMP

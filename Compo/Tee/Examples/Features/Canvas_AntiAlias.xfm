@@ -1,0 +1,83 @@
+inherited CanvasAntiAlias: TCanvasAntiAlias
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 49
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'Global method to smooth curve and diagonal lines (Anti-Alias), a' +
+        'nd'
+      'new Canvas property to zoom fonts (as percentage).')
+  end
+  inherited Chart1: TChart
+    Top = 92
+    Height = 245
+    Title.Text.Strings = (
+      'Anti-Aliased Pie')
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    OnAfterDraw = Chart1AfterDraw
+    object Series1: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      DarkPen = 220
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PiePen.Width = 3
+      PieValues.Name = 'Pie'
+      Data = {
+        0408000000000000000028824004436172730000000000E088400650686F6E65
+        730000000000A07540065461626C65730000000000207040084D6F6E69746F72
+        730000000000A08640054C616D70730000000000807940094B6579626F617264
+        730000000000708D400542696B65730000000000805E4006436861697273}
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 51
+    object Label1: TLabel
+      Left = 136
+      Top = 13
+      Width = 52
+      Height = 13
+      Caption = '&Font zoom:'
+      FocusControl = Edit1
+    end
+    object CheckBox1: TCheckBox
+      Left = 10
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Anti-Alias'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Edit1: TEdit
+      Left = 192
+      Top = 10
+      Width = 41
+      Height = 21
+      TabOrder = 1
+      Text = '100'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 233
+      Top = 10
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 1
+      Max = 1000
+      Increment = 5
+      Position = 100
+      TabOrder = 2
+    end
+  end
+end

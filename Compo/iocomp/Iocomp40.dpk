@@ -1,0 +1,47 @@
+package iocomp40;
+
+{$R *.RES}
+{$R 'iProfessionalReg.dcr'}
+{$R 'iInstrumentPackReg.dcr'}
+{$R 'iPlotPackReg.dcr'}
+{$R 'iOPCCommonReg.dcr'}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $00400000}
+{$DESCRIPTION 'Iocomp Delphi 4 VCL Package'}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl40,
+  vcljpg40;
+
+contains
+  iProfessionalReg in 'iProfessionalReg.pas',
+  iInstrumentPackReg in 'iInstrumentPackReg.pas',
+  iPlotPackPropertyEditorsReg in 'iPlotPackPropertyEditorsReg.pas',
+  iPlotPackReg in 'iPlotPackReg.pas',
+  iProfessionalPropertyEditorsReg in 'iProfessionalPropertyEditorsReg.pas',
+  iInstrumentPackPropertyEditorsReg in 'iInstrumentPackPropertyEditorsReg.pas',
+  iOPCCommonPropertyEditorsReg in 'iOPCCommonPropertyEditorsReg.pas',
+  iOPCCommonReg in 'iOPCCommonReg.pas',
+  iComponent in 'iComponent.pas';
+
+end.

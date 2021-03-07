@@ -1,0 +1,71 @@
+inherited ModeFunctionDemo: TModeFunctionDemo
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Mode function calculates the value with highest count of dup' +
+        'licates inside '
+      'the source series data.'
+      'Includes the option to ignore null source values.')
+  end
+  inherited Chart1: TChart
+    Legend.Symbol.Pen.Visible = False
+    Title.Text.Strings = (
+      'TeeChart Mode Function')
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        000F000000000000000000444000000000008055400000000000406140000000
+        0000C05340000000000000534000000000000033400000000000003F40000000
+        0000805A400000000000003F400000000000C05E400000000000606340000000
+        000000414000000000000047400000000000C05E400000000000C06240}
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      DataSource = Series1
+      Title = 'Mode'
+      VertAxis = aRightAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TModeTeeFunction
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 12
+      Width = 145
+      Height = 17
+      Caption = '&Include Null values'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 184
+      Top = 12
+      Width = 113
+      Height = 17
+      Caption = '&Hide Null values'
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+  end
+end

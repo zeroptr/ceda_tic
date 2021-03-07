@@ -1,0 +1,104 @@
+object FaderEditor: TFaderEditor
+  Left = 192
+  Top = 107
+  AutoScroll = False
+  ClientHeight = 177
+  ClientWidth = 222
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 16
+    Top = 41
+    Width = 34
+    Height = 13
+    Caption = '&Speed:'
+    FocusControl = SBSpeed
+  end
+  object Label2: TLabel
+    Left = 182
+    Top = 60
+    Width = 6
+    Height = 13
+    Caption = '0'
+  end
+  object Label3: TLabel
+    Left = 19
+    Top = 125
+    Width = 55
+    Height = 13
+    Caption = 'Initial &delay:'
+    FocusControl = Edit1
+  end
+  object BStart: TButton
+    Left = 16
+    Top = 9
+    Width = 75
+    Height = 25
+    Caption = '&Fade'
+    TabOrder = 0
+    OnClick = BStartClick
+  end
+  object BReset: TButton
+    Left = 128
+    Top = 9
+    Width = 75
+    Height = 25
+    Caption = '&Reset'
+    TabOrder = 1
+    OnClick = BResetClick
+  end
+  object SBSpeed: TScrollBar
+    Left = 16
+    Top = 59
+    Width = 161
+    Height = 16
+    Min = 1
+
+    Position = 16
+    TabOrder = 2
+    OnChange = SBSpeedChange
+  end
+  object ButtonColor1: TButtonColor
+    Left = 16
+    Top = 89
+    Caption = '&Color...'
+    TabOrder = 3
+  end
+  object RGStyle: TRadioGroup
+    Left = 112
+    Top = 89
+    Width = 110
+    Height = 73
+    Caption = 'Style:'
+    ItemIndex = 0
+    Items.Strings = (
+      'Fade &In'
+      'Fade &Out')
+    TabOrder = 4
+    OnClick = RGStyleClick
+  end
+  object Edit1: TEdit
+    Left = 18
+    Top = 141
+    Width = 57
+    Height = 21
+    TabOrder = 5
+    Text = '0'
+    OnChange = Edit1Change
+  end
+  object UDDelay: TUpDown
+    Left = 75
+    Top = 141
+    Width = 15
+    Height = 21
+    Associate = Edit1
+    Max = 32767
+    TabOrder = 6
+    Thousands = False
+  end
+end

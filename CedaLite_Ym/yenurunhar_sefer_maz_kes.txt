@@ -1,0 +1,28 @@
+select 
+(Select FAT_IRS_ID from fat_irs where FAT_IRS_SEP=1 and urunhar.fatura_id=fat_irs_id) fat_irs_id,
+urunhar_id ,TIP,cast ('URUNHAR SEFER_ID sefer(faturasý kesildi olarak)  sefer_id alanýnda yok' as varchar(50)) from urunhar
+where
+SEFER_ID>0
+and
+SEFER_ID IN (select sefer_id from sefer where sefer_id=urunhar.sefer_id AND SEFER_SATIS_FAT_KESILDI<>1)
+
+union all
+
+select 
+(Select FAT_IRS_ID from fat_irs where FAT_IRS_SEP=1 and urunhar.fatura_id=fat_irs_id) fat_irs_id,
+urunhar_id ,TIP,cast ('URUNHAR SEFER_BEKLEME sefer(faturasý kesildi olarak) sefer_id alanýnda yok' as varchar(50)) from urunhar
+where
+SEFER_BEKLEME>0
+and
+SEFER_BEKLEME IN (select sefer_id from sefer where sefer_id=urunhar.SEFER_BEKLEME AND BEKLEME_FATURASI_KESILDI<>1)
+
+union all
+
+select 
+(Select FAT_IRS_ID from fat_irs where FAT_IRS_SEP=1 and urunhar.fatura_id=fat_irs_id) fat_irs_id,
+urunhar_id ,TIP,cast ('URUNHAR MAZOT_FISI_ID MAZOT_FISI(faturasý alýndý olarak) MAZOT_FIS_ID alanýnda yok' as varchar(50)) from urunhar
+where
+MAZOT_FISI_ID>0
+and
+MAZOT_FISI_ID IN (select MAZOT_FIS_ID from MAZOT_FISI where MAZOT_FIS_ID=urunhar.MAZOT_FISI_ID AND ALIS_FATURASI_ALINDI<>1)
+

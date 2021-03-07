@@ -1,0 +1,23 @@
+
+{                                                                              }
+{ TIB_Memo                                                                     }
+{                                                                              }
+
+{: This control is designed to handle large amounts of text data from a BLOB
+field or large VARCHAR field.
+<br><br>
+It is possible to have the contents of a BLOB loaded only when the user
+wants to see the contents. This is controlled by the AutoDisplay property.}
+TIB_CustomMemo = class(TCustomMemo)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomMemo.INT}
+{$UNDEF IB_AutoLabel}
+end;
+
+TIB_Memo = class(TIB_CustomMemo)
+{$DEFINE IB_AutoLabel}
+{$I IBC_CustomMemo.PBL}
+{$UNDEF IB_AutoLabel}
+end;
+
+// IBC_Memo.IMP

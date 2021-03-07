@@ -1,0 +1,9 @@
+inherited ExtraLegendEditor: TExtraLegendEditor
+  ClientHeight = 334
+  ClientWidth = 423
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    Width = 423
+  end
+end

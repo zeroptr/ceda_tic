@@ -1,0 +1,2370 @@
+
+{                                                                              }
+{ IBA_Dataset                                                                  }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+{                                                                              }
+{  Wassim Haddad <lobolo2000@yahoo.com>                                        }
+{  22-Aug-2001                                                                 }
+{     Added support to import column defaults from the server upon request.    }
+{     ImportServerDefaults is a public method that imports column defaults     }                                                                        
+{     from the server.                                                         }
+{                                                                              }
+{  29-Aug-2001                                                                 }
+{    Added OnKeySourceStateChanged event which fires whenever the keysource    }
+{    state changes.                                                            }
+{                                                                              }
+{******************************************************************************}
+
+{: Exception class for the TIB_Dataset component.}
+EIB_DatasetError = class( EIB_Error );
+{: Event type for most all events of the TIB_Dataset component.}
+TIB_DatasetEvent = procedure( IB_Dataset: TIB_Dataset ) of object;
+{: Event type for most all events of the TIB_Dataset component that also
+need a row reference to accompany them.}
+TIB_DatasetRowEvent = procedure( IB_Dataset: TIB_Dataset;
+                                 ARow: TIB_Row ) of object;
+{: When fetching records to the end of a dataset or an undefined point a
+fetch callback mechanism is used. Each callback has a status of one of these
+three types.}
+TIB_CallbackStatus = ( csInit, csRefresh, csFinal );
+{: Event type to process a fetch callback when fetching many records.}
+TIB_CallbackEvent = procedure(     IB_Dataset: TIB_Dataset;
+                                   Status: TIB_CallbackStatus;
+                                   CursorRowNum: longint;
+                               var Abort: boolean ) of object;
+{: This event is used to provide a hook that allows confirmation to be acquired.
+Its only current use is in the OnConfirmDelete event but others could be
+implemented at any time.}
+TIB_ConfirmationEvent = procedure(     Sender: TComponent;
+                                   var Confirmed: boolean ) of object;
+{: This is used to inquire whether the dataset should be scrolled. It is used
+for the OnGetCanScroll event.}
+TIB_GetCanScrollEvent = procedure (     Sender: TIB_Dataset;
+                                    var CanScroll: boolean ) of object;
+{: In some cases it is necessary to provide a custom means to figure out
+how many records are in the current dataset. This event type provides a
+means to do this.}
+TIB_CustomRecordCount = procedure(     Sender: TIB_Dataset;
+                                   var RecordCount: longint ) of object;
+{: These event types are used to process SearchBuffer values.}
+TIB_SearchingEventType = ( setClearCriteria,
+                           setSaveCriteria,
+                           setRecallCriteria,
+                           setSaveLastCriteria,
+                           setRecallLastCriteria,
+                           setWriteCriteria,
+                           setReadCriteria );
+{: These status types are used to determine the state of the dataset.
+<br><br>
+I added an extra "s" in order to avoid a naming collision with the VCL so
+that IB Objects can coexist with the VCL's data aware components and controls.}
+TIB_DatasetState = ( dssInactive,
+                     dssPrepared,
+                     dssSearch,
+                     dssBrowse,
+                     dssEdit,
+                     dssInsert,
+                     dssDelete );
+{: Set of TIB_DatasetState values. }
+TIB_DatasetStateSet = set of TIB_DatasetState;
+{: States for which a check is performed to allow the developer to affix a
+custom algorithm to the CanEdit, CanDelete, and CanInsert properties.}
+TIB_DatasetCanModify = ( cmDelete, cmEdit, cmInsert );
+{: Event type to enable or block a dataset's ability to be modified.}
+TIB_GetCanModifyEvent = procedure (     Sender: TIB_Dataset;
+                                        Action: TIB_DatasetCanModify;
+                                    var CanModify: boolean ) of object;
+{: These settings provide more specific control over the behavior of datasets
+in a master-detail relationship when MasterSearch is being used.}
+TIB_MasterSearchFlagsSet = ( msfOpenMasterOnOpen,
+                             msfSearchMasterOnSearch,
+                             msfSearchAppliesToMasterOnly );
+
+{: Options to better control behavior of datasets when using the MasterSearch
+option.}
+TIB_MasterSearchFlags = set of TIB_MasterSearchFlagsSet;
+
+{: Actions taken by a child dataset in a master-detail relationship.
+<br><br>
+This is intended for internal use only.}
+TIB_MasterChildAction = ( mcaSaveSearch,
+                          mcaClearSearch,
+                          mcaRecallSearch,
+                          mcaRecallLastSearch,
+                          mcaWriteSearch,
+                          mcaReadSearch,
+                          mcaMasterSearchChanged,
+                          mcaPost,
+                          mcaCancelInsert );
+
+{: Actions taken by a child dataset in a key-detail relationship.
+<br><br>
+This is intended for internal use only.}
+TIB_KeyChildAction = ( kcaUpdateKeyDescCalcFields );
+
+{: Utility flags for use with the TIB_Dataset class.}
+  TIB_DatasetFlagsSet = ( dsfInsertWasPosted,
+                          dsfDeleteWasPosted,
+                          dsfEditWasPosted,
+                          dsfWasInvalidated,
+                          dsfWasRefreshed );
+{: Set of Dataset Utility Flags.}
+  TIB_DatasetFlags = set of TIB_DatasetFlagsSet;
+
+{: When Refresh is called one of these actions will be taken.
+<br><br>
+<b>Hints about refreshing data</b>
+<br><br>
+With IBO you can refresh data in a range of different ways.  The crudest and
+least efficient is call Close and then Open (or set Active to False and then to
+True).  It forces all rows previously fetched to be tossed and then completely
+re-fetched from the server.  This may be desirable in some circumstances, though.
+<br><br>
+There are these methods and properties to consider. Most of these only apply
+to the IB_Query (TIB_BDataset classes).
+<br><br>
+The Refresh method keeps the whole row buffers in memory and refreshes the list
+of keys that define the dataset.  If a new row is added, it becomes a member
+of the dataset through its key being fetched on refresh;  or, if a row is
+deleted, its key is excluded when the keys are refreshed.  The deleted row's
+whole record buffer would eventually be garbage-collected as a result of its key
+being absent from the dataset.
+<br><br>
+This method is used internally when the OrderingItemNo property is changed.  It
+works especially well there, because the whole record buffers stay in memory and
+only the newly-ordered keys need to be fetched back in.   The individual row
+buffers are simply re-associated with the keys, without having to be re-fetched
+for re-ordering purposes.
+<br><br>
+The RefreshAction property determines how the refresh is to end up. It can
+behave as though it were being opened the first time (raOpen) or, after it is
+opened again it can go to the row number that it was on before the refresh
+(raKeepRowNum). The third option is for it to go to the same row it was
+positioned on before, by matching the Bookmark (raKeepDataPos).
+<br><br>
+The InvalidateRows method will keep the current list of keys and cause all of
+the individual row buffers to be fetched from the server again.
+<br><br>
+If you combine Refresh and InvalidateRows, the dataset will be entirely
+refreshed, as if you set active to false and then true. Calling the RefreshAll
+method accomplishes the same thing.
+<br><br>
+You can also invalidate individual rows by calling the InvalidateRowNum() and
+InvalidateBookmark() methods. This is great for reflecting changes that occur
+in separate datasets or by calling a stored procedure.
+<br><br>
+When a record goes into dssEdit state, that row is automatically invalidated
+because, in order to establish a cursor context, it needs to fetch the record
+again.
+<br><br>
+Updates and deletes are executed using positioned
+WHERE CURRENT OF < cursor name > statements.}
+TIB_RefreshAction = ( raOpen, raKeepRowNum, raKeepDataPos );
+
+{: These are actions the dataset should take when its transaction Commits.}
+TIB_CommitAction = ( caClose, caInvalidateCursor, caFetchAll,
+                     caRefreshKeys, caRefresh );
+
+{: This event type is used to process the DMLCacheItems in order to maintain
+cross-dataset buffer synchronization.}
+TIB_AnnounceDMLCacheItemEvent = procedure (
+        ADataset: TIB_Dataset;
+  const ADMLCacheItemType: TIB_DMLCacheItemType ) of object;
+
+{: This event type is used to process the DMLCacheItems in order to maintain
+cross-dataset buffer synchronization.}
+TIB_ReceiveDMLCacheItemEvent = procedure (
+        ADataset: TIB_Dataset;
+  const ADMLCacheItem: TIB_DMLCacheItem ) of object;
+
+{: VCL Compatibility.}
+TIB_DataSetErrorEvent = procedure(     DataSet: TIB_DataSet;
+                                       E: EIB_Error;
+                                   var Action: TIB_DataAction ) of object;
+{: VCL Compatibility}
+TIB_UpdateErrorEvent = procedure(    DataSet: TComponent;
+                                     E: Exception;
+                                     UpdateKind: TIB_UpdateKind;
+                                 var UpdateAction: TIB_UpdateAction ) of object;
+
+TIB_UpdateRecordEvent = procedure(   DataSet: TComponent;
+                                     UpdateKind: TIB_UpdateKind;
+                                 var UpdateAction: TIB_UpdateAction ) of object;
+TIB_KeyDatasourceEvent = procedure ( Sender: TIB_Dataset;
+                                     ADataSource: TIB_DataSource ) of object;
+{: This class serves as the base for the TIB_Cursor and TIB_Query components.
+<br><br>
+It is intended primarily for SQL statements that select multiple rows.
+It can, however, handle any statement.
+<br><br>
+The IB_Cursor component is a single-buffer unidirectional dataset ideal for
+scanning through records one at a time in sequential order. It will return
+accurate data for any valid SELECT statement using very little memory.  It is
+the fastest way to do a full table scan.
+<br><br>
+The IB_Query component is a buffered scrollable dataset that is ideal for
+browsing by users and providing a randomly scrollable dataset.
+<br><br>
+The RecordCount property may not work for some select statements. It uses a
+simple parsing substitution in order to put together a separate SELECT COUNT( * )
+statement to get the record counts.  You can provide a custom event handler to
+calculate the RecordCount for a dataset.  In some cases with the buffered dataset
+it will do a FetchAll and then report the number of rows in the buffer.}
+TIB_Dataset = class( TIB_Statement )
+private
+{ Property Storage Fields }
+  FIB_KeyDataLink: TIB_KeyDataLink;
+  FIB_MasterDataLink: TIB_MasterDataLink;
+  FDataSourceList: TList;
+  FAutoFetchFirst: boolean;
+  FAutoFetchAll: boolean;
+  FCheckRequired: boolean;
+  FState: TIB_DatasetState;
+  FLastRowState: TIB_RowState;
+  FPostedState: TIB_DatasetState;
+  FCancelledState: TIB_DatasetState;
+  FOpenPending: boolean;
+  FClosePending: boolean;
+  FInsertPending: boolean;
+  FWasSearching: boolean;
+  FPreventEditing: boolean;
+  FPreventInserting: boolean;
+  FPreventDeleting: boolean;
+  FPreventSearching: boolean;
+  FPreventKeySeeking: integer;
+  FCursorRecordCountValid: boolean;
+  FParamWasChanged: boolean;
+  FPessimisticLocking: boolean;
+  FIsRowLocked: boolean;
+  FIsCancelling: boolean;
+  FCursorIsOpen: boolean;
+  FCursorEof: boolean;
+  FCursorName: string;
+  FCursorRowNum: longint;
+  FCursorRecordCount: longint;
+  FIsPostingLevel: integer;
+  FSQLSelect: TIB_StringList;
+  FSQLFrom: TIB_StringList;
+  FSQLWhere: TIB_StringList;
+  FSQLGroup: TIB_StringList;
+  FSQLHaving: TIB_StringList;
+  FSQLUnion: TIB_StringList;
+  FSQLPlan: TIB_StringList;
+  FSQLOrder: TIB_StringList;
+  FSQLForUpdate: TIB_StringList;
+  FSQLOrderLinks: TIB_StringList;
+  FOrderingItems: TIB_StringList;
+  FOrderingLinks: TIB_StringList;
+  FOrderingItemNo: integer;
+  FOrderingItemNoChanging: integer;
+  FOrderingLink: string;
+  FOrderingField: TIB_Column;
+  FOrderingParam: TIB_Column;
+  FOrderingLinkChanging: integer;
+  FCommitAction: TIB_CommitAction;
+  FRefreshAction: TIB_RefreshAction;
+  FRefiningIncSearch: integer;
+  FSearchingLinks: TIB_StringList;
+  FSearchingLink: string;
+  FSearchingParamName: string;
+  FSearchingParam: TIB_Column;
+  FSearchingLinkChanging: integer;
+  FSearchCriteria: TStrings;
+  FKeyLinks: TIB_StringList;
+  FKeyDescLinks: TIB_StringList;
+  FKeyLinksAutoDefine: boolean;
+  FKeySeeking: boolean;
+  FMasterLinks: TIB_StringList;
+  FMasterParamLinks: TIB_StringList;
+  FMasterSearch: boolean;
+  FMasterSearchFlags: TIB_MasterSearchFlags;
+  FMasterWhere: string;
+  FMasterSearchWasActive: boolean;
+  FKeyDataFreezeLevel: integer;
+  FKeyChildUpdatingLevel: integer;
+  FMasterDataChangeLevel: integer;
+  FMasterDataChangeMaxLevel: integer;
+  FStateChangeLevel: integer;
+  FSQLWhereLow: TStrings;
+  FSQLWhereMed: TStrings;
+  FSQLWhereHigh: TStrings;
+  FSQLWhereChanged: boolean;
+  FSQLOrderChanged: boolean;
+  FColorScheme: boolean;
+  FGetServerDefaults: boolean;
+  FDefaultValues: TIB_StringList;
+  FGeneratorLinks: TIB_StringList;
+  FAutoPostDelete: boolean;
+  FConfirmDeletePrompt: TStrings;
+  FRefreshOnParamChange: boolean;
+  FRequestLive: boolean;
+  FSQLSectionChanging: TIB_SQLSections;
+  FMaxRows: longint;
+  FMaxTicks: DWORD;
+  FMinTicksRows: longint;
+  FPageRows: longint;
+  FControlsDisabledLevel: integer;
+  FWasStateChange: boolean;
+  FWasDataChange: boolean;
+  FWasScrolled: boolean;
+  FDMLCacheFlags: TIB_DMLCacheFlagsSet;
+  FAssignedSQLWhere: string;
+  FDatasetFlags: TIB_DatasetFlags;
+  FRefreshDML: Boolean;
+{ Fetch callback dialog }
+  dlgCancelQuery: TForm;
+{ Optimization/System Flags }
+  flag_open_after_load: boolean;
+  flag_junk_value: integer;
+  flag_keylinks: integer;
+{ Event Storage Fields }
+  FBeforeOpen: TIB_DatasetEvent;
+  FAfterOpen: TIB_DatasetEvent;
+  FBeforeClose: TIB_DatasetEvent;
+  FAfterClose: TIB_DatasetEvent;
+  FBeforeSearch: TIB_DatasetEvent;
+  FAfterSearch: TIB_DatasetEvent;
+  FBeforeEdit: TIB_DatasetEvent;
+  FAfterEdit: TIB_DatasetEvent;
+  FBeforeInsert: TIB_DatasetEvent;
+  FAfterInsert: TIB_DatasetEvent;
+  FBeforeDelete: TIB_DatasetEvent;
+  FAfterDelete: TIB_DatasetEvent;
+  FBeforeCancel: TIB_DatasetEvent;
+  FAfterCancel: TIB_DatasetEvent;
+  FAfterScroll: TIB_DatasetEvent;
+  FBeforeScroll: TIB_DatasetEvent;
+  FBeforePost: TIB_DatasetEvent;
+  FAfterPost: TIB_DatasetEvent;
+  FOnNewRecord: TIB_DatasetEvent;
+  FOnCallback: TIB_CallbackEvent;
+  FAfterFetchRow: TIB_DatasetEvent;
+  FAfterFetchEof: TIB_DatasetEvent;
+  FOnConfirmDelete: TIB_ConfirmationEvent;
+  FOnOrderingChanged: TIB_DatasetEvent;
+  FOnGetRecordCount: TIB_CustomRecordCount;
+  FOnGetCanScroll: TIB_GetCanScrollEvent;
+  FOnGetCanModify: TIB_GetCanModifyEvent;
+  FOnCustomEdit: TIB_DatasetEvent;
+  FOnCustomDelete: TIB_DatasetEvent;
+  FOnCustomInsert: TIB_DatasetEvent;
+  FOnCustomLockRow: TIB_DatasetEvent;
+  FOnDMLCacheAnnounceItem: TIB_AnnounceDMLCacheItemEvent;
+  FOnDMLCacheReceivedItem: TIB_ReceiveDMLCacheItemEvent;
+protected
+  FOnEditError: TIB_DataSetErrorEvent;
+  FOnPostError: TIB_DataSetErrorEvent;
+  FOnDeleteError: TIB_DataSetErrorEvent;
+  FOnUpdateError: TIB_UpdateErrorEvent;
+  FOnUpdateRecord: TIB_UpdateRecordEvent;
+  procedure CheckOperation( Operation: TIB_DataOperation;
+                            ErrorEvent: TIB_DataSetErrorEvent );
+  function GetMasterLinkParamName( AIndex: integer ): string;
+private
+  FIsPostRetainingLevel: integer;
+  FHasPostRetained: boolean;
+  function GetIsPosting: boolean;
+  function GetIsPostRetaining: boolean;
+  function GetCalculatingFields: boolean; override;
+protected
+  FCachedUpdates: boolean;
+  FKeyLookupCurLevel: integer;
+  FKeyLookupMaxLevel: integer;
+  FRefreshEof: boolean;
+  FRefreshRowNum: longint;
+  FRefreshBookmark: string;
+  FRefreshCurLevel: integer;
+  FRefreshMaxLevel: integer;
+  FRefreshWasScrolled: boolean;
+  FRefreshResult: boolean;
+  function GetUpdatesPending: boolean; virtual;
+  function GetUpdateStatus: TIB_UpdateStatus; virtual;
+  function IsUsingManualDML( UpdateKind: TIB_UpdateKind ): boolean; virtual;
+private
+  procedure CheckCursorName;
+  procedure SetDefaultValues( AValue: TIB_StringList );
+  function GetGeneratorLinks: TIB_StringList;
+  procedure SetGeneratorLinks( Value: TIB_StringList );
+  procedure SetJoinLinks( AJoinLinks: TIB_StringList );
+  procedure SetKeySeeking( AValue: boolean );
+  function GetKeyDataset: TIB_Dataset;
+  function GetMasterDataset: TIB_Dataset;
+  function GetMasterRelation( LinkNo: integer ): string;
+  function GetMasterFieldName( LinkNo: integer ): string;
+  procedure SetMasterLinks( Value: TIB_StringList );
+  procedure SetMasterSource( AValue: TIB_DataSource ); //~virtual;
+  function GetMasterSource: TIB_DataSource; //~virtual;
+  procedure SetOrderingItems( Value: TIB_StringList );
+  procedure SetOrderingLinks( Value: TIB_StringList );
+  function GetOrderingItemNoChanging: boolean;
+  function GetOrderingLinkChanging: boolean;
+  function GetSearchingLinkChanging: boolean;
+  procedure SetMasterParamLinks( Value: TIB_StringList );
+  procedure SetSearchingLinks( Value: TIB_StringList );
+  function GetSQLSection( Index: TIB_SQLSections ): TStrings;
+  procedure SetSQLSection( Index: TIB_SQLSections; Value: TStrings );
+  procedure SetPreventEditing( AValue: boolean );
+  procedure SetPreventInserting( AValue: boolean );
+  procedure SetPreventDeleting( AValue: boolean );
+  procedure SetPreventSearching( AValue: boolean );
+  function GetDataSourceCount: integer;
+  function GetDataSources( Index: integer ): TIB_DataSource;
+  function GetModified: boolean;
+  function GetSQLWhereChanged: boolean;
+  procedure SetAutoPostDelete( AValue: boolean );
+  procedure SetConfirmDeletePrompt( AValue: TStrings );
+  function GetPreparedEdits: boolean;
+  procedure SetPreparedEdits( AValue: boolean );
+  function GetPreparedInserts: boolean;
+  procedure SetPreparedInserts( AValue: boolean );
+  procedure IB_MasterDataChange( ADataLink: TIB_DataLink;
+                                 ADataSource: TIB_DataSource;
+                                 AField: TIB_Column );
+  procedure IB_KeyDataChange( ADataLink: TIB_DataLink;
+                              ADataSource: TIB_DataSource;
+                              AField: TIB_Column );
+  function GetRecNo: longint;
+  procedure SetRecNo( AValue: longint );
+  function GetDeleteSQL: TIB_StringList;
+  function GetEditSQL: TIB_StringList;
+  function GetLockSQL: TIB_StringList;
+  function GetInsertSQL: TIB_StringList;
+  procedure SetDeleteSQL( AValue: TIB_StringList );
+  procedure SetEditSQL( AValue: TIB_StringList );
+  procedure SetLockSQL( AValue: TIB_StringList );
+  procedure SetInsertSQL( AValue: TIB_StringList );
+  procedure ProcessSQLWhereStrings( const AStrings: TStrings;
+                                    var   NewWhereClause: string;
+                                          High: boolean );
+  function GetRefreshing: boolean;
+  function GetCallbackFreezeLevel: integer;
+protected
+  FCallbackFetchingLevel: integer;
+  FCallbackInc: integer;
+  FCallbackInitTick: DWORD;
+  FCallbackRefreshTick: DWORD;
+  FCallbackInitInt: DWORD;
+  FCallbackRefreshInt: DWORD;
+  FCallbackCaption: string;
+  FFetching: boolean;
+  FScanningLevel: integer;
+  FMaxScanLevel: integer;
+  FCursorGen: WORD;
+  FFetchingAborted: boolean;
+  FFetchingAbortedGen: integer;
+  FKeyLinksAutoDefined: boolean;
+  FKeyLinksAreDBKEY: boolean;
+  FClosedBookmark: string;
+  FClosedRowNum: longint;
+  FClosedEof: boolean;
+  FUpdateSQL: TIB_UpdateSQL;
+  procedure DefineProperties(Filer: TFiler); override;
+  procedure GetColumnIsReadOnly(     AColumn: TIB_Column;
+                                 var AReadOnly: boolean ); override;
+  procedure GetControlIsReadOnly(     AColumn: TIB_Column;
+                                  var AReadOnly: boolean ); override;
+  function GetKeyLinksExist: boolean;
+  procedure SetKeyLinks( AKeyLinks: TIB_StringList ); //~virtual;
+  procedure SetKeyDescLinks( AKeyDescLinks: TIB_StringList ); //~virtual;
+  function GetKeyLinks: TIB_StringList; //~virtual;
+  function IsKeyLinksStored: boolean; //virtual;
+  procedure SetKeySource( AValue: TIB_DataSource ); //~virtual;
+  function GetKeySource: TIB_DataSource; //~virtual;
+  procedure SetCallbackCaption( const AValue: string ); //~virtual;
+  procedure SetRequestLive( AValue: boolean ); //~virtual;
+{ Inherited Property Access Methods }
+  function GetSysKeyRelation: string; override;
+  procedure SetConnection( AValue: TIB_Connection ); override;
+  procedure SetTransaction( AValue: TIB_Transaction ); override;
+  procedure SetActive( Value: boolean ); override;
+  procedure SysBeforeParamsDataChange( Sender: TIB_Row;
+                                       AField: TIB_Column ); override;
+  procedure SysAfterParamsDataChange( Sender: TIB_Row;
+                                      AField: TIB_Column ); override;
+  procedure SysLayoutChange( Sender: TObject ); override;
+{ Buffering Property Access Methods }
+  function GetBufferRowCount: longint; virtual;
+  function GetBufferHasBof: boolean; virtual;
+  function GetBufferHasEof: boolean; virtual;
+  function GetBufferRowNum: longint; virtual;
+  procedure SetBufferRowNum( AValue: longint ); virtual;
+  function GetBufferBof: boolean; virtual;
+  function GetBufferEof: boolean; virtual;
+  function GetBufferFields: TIB_Row; virtual;
+{ Property Access Methods }
+  function GetBookmark: string; virtual;
+  procedure SetBookmark( const ABookMark: string ); virtual;
+  function GetBufferBookmark: string; virtual;
+  procedure SetBufferBookmark( const ABookMark: string ); virtual;
+  function GetCursorBof: boolean;
+  function GetEof: boolean; virtual;
+  function GetBof: boolean; virtual;
+  function GetCanModify: boolean; //~virtual;
+  function GetCanEdit: boolean; virtual;   // Reserved by Geoff Worboys.
+  function GetCanInsert: boolean; virtual; // Reserved by Geoff Worboys.
+  function GetCanDelete: boolean; virtual; // Reserved by Geoff Worboys.
+  function GetCanSearch: boolean; //~virtual;
+  function GetCanScroll: boolean;
+  function SysGetCanScroll: boolean; virtual; // Corey Wangler 2/28/2000
+  function GetNeedToPost: boolean;
+  function GetState: TIB_DatasetState;
+  procedure SetState( AValue: TIB_DatasetState ); //~virtual;
+  function GetRowNum: longint; virtual;
+  procedure SetRowNum( AValue: longint ); virtual;
+  function GetBofRowNum: longint; virtual;
+  function GetEofRowNum: longint; virtual;
+  function GetUnidirectional: boolean; virtual;
+  procedure SetReadOnly( AValue: boolean ); //~virtual;
+  function GetReadOnly: boolean; virtual;
+  procedure SetOrderingItemNo( AValue: integer ); //~virtual;
+  procedure SetOrderingLink( const AValue: string ); //~virtual;
+  procedure SetSearchingLink( const AValue: string ); //~virtual;
+  function GetSearchingLinksActive: boolean; //virtual;
+  function GetSearchedDeletes: boolean;
+  function GetSearchedEdits: boolean;
+  procedure SetSearchedDeletes( AValue: boolean );
+  procedure SetSearchedEdits( AValue: boolean );
+  function GetKeyFields: TIB_Row; virtual;
+  property KeyLinksExist: boolean read GetKeyLinksExist;
+  property RefiningIncSearch: integer read FRefiningIncSearch;
+{ General methods }
+  procedure ProcessTransactionEvent( ATransactionLink: TIB_TransactionLink;
+                                     AEvent: TIB_TransactionEventType ); override;
+  procedure ProcessLinkEvent( AEvent: TIB_StatementEventType;
+                              Info: integer ); override;
+{ Inherited Methods }
+  procedure Loaded; override;
+  procedure SetSession( ASession: TIB_Session ); override;
+  procedure SysActiveChange; override;
+  procedure SysPreparedChanged; override;
+  procedure SysAfterPrepare; override;
+  procedure SysAfterUnprepare; override;
+  procedure SysExecSelect; override;
+  procedure SysExecute; override;
+  procedure SysClose; override;
+  procedure SysBeforeFieldDataChange( Sender: TIB_Row;
+                                      AField: TIB_Column ); override;
+  procedure SysBeforeExecuteForOutput; override;
+  procedure SysAfterExecuteForOutput; override;
+  function SysNeedToRefineSQL: boolean; override;
+  procedure SysRefineSQL; override;
+  procedure SysPrepareFailed; override;
+  function SysPrepare: boolean; override;
+  procedure SysPrepareSQL; override;
+  procedure SysInitRawSQL; override;
+  procedure SysFinishRawSQL; override;
+  procedure SysUnprepare; override;
+  procedure SysSQLChange( Sender: TObject; var Unprepare: boolean ); override;
+  procedure SysUpdateDescriptors; override;
+  procedure SysDescribeVARList( ARow: TIB_Row ); override;
+  procedure DoMacroSubstitute; override;
+{ New System Methods }
+  function GetCanDoSearchedSQL: boolean; //~virtual;
+  function SysGetCursorRecordCount: longint; virtual;
+  function SysFetchSingle: boolean; //~virtual;
+  function SysOpen: boolean; //~virtual;
+  function SysRecordCount: longint; virtual;
+  function SysRefresh( Rows, Keys: boolean ): boolean; virtual;
+  procedure SysOpenAfterLoad; //virtual;
+  procedure SysUpdateKeyData( PreserveOldKeyData: boolean ); virtual;
+  procedure SysEdit; //~virtual;
+  procedure SysLockRow; virtual;
+  procedure SysInsert; //~virtual;
+  procedure SysInsertRow; virtual;
+  procedure SysGetServerDefaults; //virtual;
+  procedure SysGetServerDefaults2(PreSetDefaults: boolean); //virtual;
+  procedure SysGetDefaultValues; //virtual;
+  procedure SysDelete; //~virtual;
+  procedure SysPost( CancelUnmodified, IsRetaining: boolean ); virtual;
+  procedure SysExecPost( CancelUnmodified: boolean ); virtual;
+  procedure SysPostSearch( EndSearchMode: boolean ); //~virtual;
+  procedure SysPostEditedRow; virtual;
+  procedure SysPostInsertedRow; virtual;
+  procedure SysPostDeletedRow; //~virtual;
+  procedure SysCancel; virtual;
+  procedure SysCancelSearch; //~virtual;
+  procedure SysCancelEditedRow; //~virtual;
+  procedure SysCancelInsertedRow; virtual;
+  procedure SysCancelDeletedRow; //~virtual;
+  procedure SysClearLock; //~virtual;
+  procedure SysLast; virtual;
+  procedure SysFirst; virtual;
+  function SysMoveBy( JumpRecs: longint ): longint; virtual;
+  function SysCursorMoveByRow( JumpRecs: longint ): longint;
+  procedure SysMasterSearchChanged;
+  procedure SysBeforeScroll; virtual;
+  procedure SysAfterScroll; virtual;
+  procedure SysStateChanged; //~virtual;
+  procedure SysKeyStateChanged; //~virtual;
+  procedure SysUpdateKeyLinksData; //~virtual;
+  procedure SysMasterStateChanged; //~virtual;
+  procedure SysSearch; //~virtual;
+  procedure SysKeyDataChange( AField: TIB_Column ); //~virtual;
+  procedure SysMasterDataChange( AField: TIB_Column ); //~virtual;
+  procedure SysMasterDataUpdate( AField: TIB_Column ); //~virtual;
+  procedure SysProcessCallback( Status: TIB_CallbackStatus ); virtual;
+  procedure SysUpdateState; //virtual;
+  procedure SysCheckOrderingLink;
+  procedure SysCheckSearchingLink;
+{ Internal method handlers }
+  procedure SysBeforeOpen; virtual;
+  procedure SysAfterOpen; virtual;
+  procedure SysJustBeforeOpen; virtual;
+  procedure SysJustAfterOpen; //~virtual;
+  procedure SysBeforeClose; //~virtual;
+  procedure SysAfterClose; virtual;
+  procedure SysBeforeSearch; virtual;
+  procedure SysAfterSearch; //~virtual;
+  procedure SysBeforeEdit; //~virtual;
+  procedure SysAfterEdit; //~virtual;
+  procedure SysBeforeInsert; //~virtual;
+  procedure SysAfterInsert; virtual;
+  procedure SysBeforeDelete; //~virtual;
+  procedure SysAfterDelete; //~virtual;
+  procedure SysBeforePost; //~virtual;
+  procedure SysAfterPost; virtual;
+  procedure SysBeforeCancel; //~virtual;
+  procedure SysAfterCancel; virtual;
+{ System Cursor handling methods }
+  procedure SysFetchAll( ATicks: DWORD );
+  procedure SysFetchNext;
+  procedure SysEditCursorRow; virtual;
+  procedure SysInsertCursorRow; virtual;
+  procedure SysDeleteCursorRow; virtual;
+  procedure SysAfterFetchCursorEof; virtual;
+  function SysAfterFetchCursorRow: boolean; virtual;
+{ DML Methods }
+  procedure SQL_DeleteRow; virtual;
+  procedure SQL_EditRow; virtual;
+  function SQL_LockRow: boolean; virtual;
+  procedure SQL_InsertRow; //~virtual;
+{ API Function Calls }
+  function API_FetchRow: isc_long;
+  procedure API_OpenCursor( const ACursorName: string );
+  procedure API_CloseCursor;
+{ Event Dispatch Methods }
+  procedure DoBeforeOpen; dynamic;
+  procedure DoAfterOpen; dynamic;
+  procedure DoBeforeClose; dynamic;
+  procedure DoAfterClose; dynamic;
+  procedure DoBeforeSearch; dynamic;
+  procedure DoAfterSearch; dynamic;
+  procedure DoBeforeEdit; dynamic;
+  procedure DoBeforeScroll; virtual;
+  procedure DoAfterEdit; dynamic;
+  procedure DoBeforeInsert; dynamic;
+  procedure DoAfterInsert; dynamic;
+  procedure DoAfterDelete; dynamic;
+  procedure DoBeforeDelete; dynamic;
+  procedure DoBeforePost; dynamic;
+  procedure DoAfterPost; dynamic;
+  procedure DoBeforeCancel; dynamic;
+  procedure DoAfterCancel; dynamic;
+  procedure DoAfterScroll; virtual;
+  procedure DoKeyDataChange( AField: TIB_Column ); dynamic;
+  procedure DoNewRecord; dynamic;
+  procedure DoOrderingChanged; dynamic;
+  procedure DoAppCallback; virtual;
+  procedure DoCallback; virtual;
+  procedure DoDMLCacheAnnounceItem(
+                         ADMLCacheItemType: TIB_DMLCacheItemType ); //~virtual;
+  procedure DoDMLCacheReceiveItem(
+                           const ADMLCacheItem: TIB_DMLCacheItem ); //~virtual;
+  // These two defined for use in TIB_Cursor (and similar derivatives)
+  // - the derivatives will simply create a public version of this function
+  // that call inherited to access these functions.  Buffered dataset
+  // derivatives should not use these functions.
+  procedure APIFirst;
+  procedure APINext;
+{ Link Event Dispatch Methods }
+  procedure DoLinkStateChanged;
+{ General Methods }
+  procedure SQLSectionChange( Sender: TObject ); //~virtual;
+
+public
+{: This property indicates whether there are actually records in the buffer, as
+opposed to indicating whether the dataset was opened and records were fetched
+into the buffer.  It is necessary for cases where it is possible that records
+might be inserted into the buffer without the dataset being opened.  This
+property will tell you whether just the buffer is active. }
+  function BufferActive: boolean;
+{: This is a reference to the datalink used to maintain a relationship with the
+KeyLinks master dataset.
+<br><br>Lookup controls may wish to read properties from the KeyDataLink.}
+  property IB_KeyDataLink: TIB_KeyDataLink read FIB_KeyDataLink;
+{: This flag can be used to find out whether the dataset is going to be retained
+when it is being posted.  This may affect the validation logic on certain columns.
+You may only want to raise an exception for a certain condition when the post
+is not going to be retained.}
+  property IsPostRetaining: boolean read GetIsPostRetaining;
+{: This flag can be used to indicate that an insert is being initialised. This
+can be particularly useful in DataChange events when you want to check that the
+datachange occurred due to default value or other initialisation.}
+  property IsInsertPending: boolean read FInsertPending;
+{: After the post/retaining has been performed, this property can verify it in
+case you want a certain action to follow it.  For example, if you are cancelling
+a master dataset row in a master-detail relationship, that had been inserted
+with PostRetaining, you will need to delete the child records too. (Of course,
+you can have cascading deletes via ref integrity or a trigger to do that too.)}
+  property HasPostRetained: boolean read FHasPostRetained;
+
+{: RowNum of the underlying unidirectional cursor that brings records into the
+buffer. This is the same as RowNum on a unidirectional dataset like TIB_Cursor.}
+  property CursorRowNum: longint read FCursorRowNum;
+{: Bof status of the underlying cursor.}
+  property CursorBof: boolean read GetCursorBof;
+{: Eof status of the underlying cursor.}
+  property CursorEof: boolean read FCursorEof;
+{: Name of the cursor defined on the server for fetching records from.}
+  property CursorName: string read FCursorName;
+
+{ General properties }
+
+{: This property indicates whether the state and data change events are being
+cached and not propagated to the datasource and datalinks.}
+  property ControlsDisabledLevel: integer read FControlsDisabledLevel;
+{: This indicates whether a cursor is open on the server.}
+  property CursorIsOpen: boolean read FCursorIsOpen;
+{: This property applies where a relationship has been formed between a column in
+this dataset and the unique key of another dataset, by way of the other dataset's
+KeyLinks property, in order to pick up and display a single, corresponding value
+from that other dataset.  The other dataset's KeySource property points to this
+dataset's DataSource. A KeyDataFreezeLevel lower than 1 indicates that this
+dataset's pointer column is allowed to be modified by scrolling in the linked
+dataset and selecting a different value. <br><br>
+The property is maintained internally and it not intended to be utilized by the
+application programmer.}
+  property KeyDataFreezeLevel: integer read FKeyDataFreezeLevel;
+{: In a relationship which has been formed by pointing a column in this dataset
+to the unique key of another dataset, by way of the other dataset's KeyLinks
+and KeySource properties, this property is used to keep track of whether
+the other dataset is currently being scrolled to seek a match for the pointing
+column's value.  If so, this property will return a value higher than zero and
+prevent the current row from being put into dssEdit state.
+<br><br>
+The property is maintained internally and it not intended to be utilized by the
+application programmer. }
+  property KeyChildUpdatingLevel: integer read FKeyChildUpdatingLevel;
+{: This property determines whether the KeyLinks should be defined automatically
+if none were provided by the developer.}
+  property KeyLinksAutoDefine: boolean read FKeyLinksAutoDefine
+                                       write FKeyLinksAutoDefine
+                                       default false;
+{: This flag indicates whether the KeyLinks property was defined by the system,
+from querying the metadata for a primary or unique key ( True ) or defined by the
+developer supplying values for it ( False ). }
+  property KeyLinksAutoDefined: boolean read FKeyLinksAutoDefined;
+{: Returns True if the KeyLinks are defined using the DB_KEY column.}
+  property KeyLinksAreDBKEY: boolean read FKeyLinksAreDBKEY;
+{: If the dataset is a dependent dataset having its MasterSearch property set
+True, this flag stores True if the dataset is active when it follows its master
+into dssSearch mode.
+<br><br>
+Then, when the master leaves dssSearch mode the dependent dataset will be
+reopened if the flag indicates it was previously active. }
+  property MasterSearchWasActive: boolean read FMasterSearchWasActive;
+{: Flag which is set internally to indicate that the dataset is being refreshed
+in response to its master dataset in a MasterLinks relationship having had its
+data changed. }
+  property MasterDataChangeLevel: integer read FMasterDataChangeLevel;
+{: Property indicating the state of the dataset immediately before it was
+cancelled.  It will be either dssEdit, dssInsert or dssDelete.
+<br><br>
+It is commonly useful to read this property in the AfterCancel event. }
+  property CancelledState: TIB_DatasetState read FCancelledState;
+{: Property indicating the state of the dataset immediately before it was last
+posted.  It will be either dssEdit, dssInsert or dssDelete.
+<br><br>
+This property can be read in the AfterPost event to determine which type of DML
+was just posted to the server.}
+  property PostedState: TIB_DatasetState read FPostedState;
+{: Flag to indicate which portion of the SQL property is being changed.
+<br><br>
+It applies only to the SQLSelect, SQLFrom, etc. pre-parsed sections of the
+SQL property.}
+  property SQLSectionChanging: TIB_SQLSections read FSQLSectionChanging;
+{: Temporary reference used when a call to WriteSearch() or ReadSearch()
+is performed.}
+  property SearchCriteria: TStrings read FSearchCriteria;
+{: Preparsed access to the SELECT portion of the SQL in a SELECT statement, from
+the beginning of the statement up to the beginning of the FROM  portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLSelect: TStrings index ssSelect read GetSQLSection
+                                              write SetSQLSection
+                                              stored false;
+{: Preparsed access to the FROM portion of the SQL SELECT statement, from the
+FROM keyword up to the beginning of the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLFrom: TStrings Index ssFrom read GetSQLSection
+                                          write SetSQLSection
+                                          stored false;
+{: Preparsed access to the WHERE clause of the SQL statement, from the keyword
+WHERE up to the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLWhere: TStrings Index ssWhere read GetSQLSection
+                                            write SetSQLSection
+                                            stored false;
+{: Preparsed access to the GROUP BY portion of SQL SELECT statement, from the
+keyword GROUP BY up to the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLGroup: TStrings Index ssGroup read GetSQLSection
+                                            write SetSQLSection
+                                            stored false;
+{: Preparsed access to the HAVING portion of the SQL statement, from the keyword
+HAVING up to the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLHaving: TStrings Index ssHaving read GetSQLSection
+                                              write SetSQLSection
+                                              stored false;
+{: Preparsed access to the UNION  portion of the SQL statement, from the keyword
+UNION up to the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLUnion: TStrings Index ssUnion read GetSQLSection
+                                            write SetSQLSection
+                                            stored false;
+{: Preparsed access to the PLAN portion of the SQL statement, from the keyword
+PLAN up to the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLPlan: TStrings Index ssPlan read GetSQLSection
+                                          write SetSQLSection
+                                          stored false;
+{: Preparsed access to the  the ORDER BY portion of the SQL statement, from the
+keyword ORDER BY up to the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLOrder: TStrings Index ssOrder read GetSQLSection
+                                            write SetSQLSection
+                                            stored false;
+{: Preparsed access to the FOR UPDATE portion of the SQL statement, from the
+keyword FOR UPDATE up to the next major portion.
+<br><br>
+This property is resolved to the SQL property immediately.}
+  property SQLForUpdate: TStrings Index ssForUpdate read GetSQLSection
+                                                    write SetSQLSection
+                                                    stored false;
+{: Message prompt used to confirm if a record should be deleted or not.}
+  property ConfirmDeletePrompt: TStrings read FConfirmDeletePrompt
+                                         write SetConfirmDeletePrompt;
+{: This property controls how a dataset interacts with the DML cache of its
+transaction in order to synchronize changes between datasets automatically.
+<br><br>
+It is possible to override the default behavior by using the
+OnDMLCacheAnnounceItem and OnDMLReceiveItem events. Otherwise, the KeyLinks
+columns and values are used by default.}
+  property DMLCacheFlags: TIB_DMLCacheFlagsSet read FDMLCacheFlags
+                                               write FDMLCacheFlags
+                                               default [];
+{: This property controls whether the dataset should be refreshed after an input
+parameter has been changed.}
+  property RefreshOnParamChange: boolean read FRefreshOnParamChange
+                                         write FRefreshOnParamChange
+                                         default false;
+{: This property is used to supply a custom SQL statement that will take care
+of deleting the current row of the dataset. Its syntax is the same as that used
+for the VCL's TUpdateSQL.DeleteSQL property.
+<br><br>
+For example:
+<br><br>
+DELETE FROM MYTABLE WHERE MYKEY = :OLD_MYKEY
+<br><br>
+Prefixing the column name with OLD_ on the parameter will ensure that the proper
+association is made with the "OLD." state variable on the server.
+<br><br>
+It is NOT necessary to use this component if you have properly assigned KeyLinks
+to the dataset. IBO automatically generates the standard statements to perform
+deletes.
+<br>
+I have found this property useful to perform non-standard actions when deleting
+a record from a dataset. One case could be where the dataset is actually
+derived from a select stored procedure. You can use the DeleteSQL to call
+another stored procedure that you have created to perform the delete.
+<br><br>
+For example:
+<br><br>
+EXECUTE PROCEDURE MYDELETEPROC ( :OLD_MYKEY )
+<br><br>
+This will pass in the necessary information to the stored procedure and then as
+long as you did your job right it will take care of whatever database actions
+are required to effectively delete that record.
+<br><br>
+Keep in mind that when using a stored procedure you do not have the automatic
+protection of checking the RowsAffected property performed for you. It will be
+a very good idea to test such practices thoroughly.}
+  property DeleteSQL: TIB_StringList read GetDeleteSQL write SetDeleteSQL;
+{: This property is used to supply a custom SQL statement that will take care
+of editing the current row of the dataset. Its syntax is the same as that used
+for the VCL's TUpdateSQL.ModifySQL property.
+<br><br>
+For example:
+<br><br>
+<br>UPDATE MYTABLE SET
+<br>  MYCOL1 = :MYCOL1
+<br>  MYCOL2 = :MYCOL2
+<br>WHERE MYKEY = :OLD_MYKEY
+<br><br>
+Prefixing the column name with OLD_ on the parameter will ensure that the proper
+association is made with the "OLD." state variable on the server.
+<br><br>
+It is NOT necessary to use this component if you have properly assigned KeyLinks
+to the dataset. IBO automatically generates the standard statements to perform
+updates.
+<br>
+I have found this property useful to perform non-standard actions when editing
+a record in a dataset. One case could be where the dataset is actually
+derived from a select stored procedure. You can use the EditSQL to call
+another stored procedure that you have created to perform the update.
+<br><br>
+For example:
+<br><br>
+EXECUTE PROCEDURE MYEDITPROC ( :MYCOL1, :MYCOL2, :OLD_MYKEY )
+<br><br>
+This will pass in the necessary information to the stored procedure and then as
+long as you did your job right it will take care of whatever database actions
+are required to effectively update that record.
+<br><br>
+Keep in mind that when using a stored procedure you do not have the automatic
+protection of checking the RowsAffected property performed for you. It will be
+a very good idea to test such practices thoroughly.}
+  property EditSQL: TIB_StringList read GetEditSQL write SetEditSQL;
+{: This property works almost exactly like the EditSQL property except its
+purpose is to perform a dummy update to the row which you want locked.
+<br><br>
+For example:
+<br><br>
+<br>UPDATE MYTABLE SET
+<br>  MYCOL1 = MYCOL1
+<br>WHERE MYKEY = :OLD_MYKEY
+<br><br>
+Notice that only the OLD_MYKEY column uses a parameter.  The "lock" is set by
+simply setting the other column directly to its own value.
+<br><br>
+This property can be ignored except in specialized situations, since IBO will
+execute this locking statement automatically when KeyLinks are supplied.
+<br><br>
+}
+  property LockSQL: TIB_StringList read GetLockSQL write SetLockSQL;
+{: This property works just like the VCL's TUpdateSQL.InsertSQL property.
+<br><br>
+For example:
+<br><br>
+<br>INSERT INTO MYTABLE ( MYCOL1, MYCOL2 )
+<br>VALUES ( :MYCOL1, MYCOL2 )
+<br><br>
+IBO automatically generates an INSERT statement for datasets output from a direct
+query.  This property becomes useful in more complex INSERT situations: <ul>
+<li>As with EditSQL and DeleteSQL, when your dataset is the output of a SELECT
+from a stored procedure, or a joined dataset where you want to your insert to
+add rows to more than one table, it provides a way to pass parameters to a
+stored procedure you have created to perform one or more operations that
+will generate new rows in the dataset.<br><br>
+<li>Your dataset is formed across a many-to-many relationship and you need to
+insert a row into the junction (or intersecting) table as well.  Employing a
+custom InsertSQL can make the interface for the complex master-master-detail
+relationship seem as easy as a master-detail relationship.
+</ul> }
+  property InsertSQL: TIB_StringList read GetInsertSQL write SetInsertSQL;
+
+{ Events }
+
+{: This event serves as a hook to enable customized behavior while a query
+is running. By setting the CallbackInc property to 0 or more you will get a
+callback for each increment indicated. This gives Windows the opportunity to
+process application messages such a mouse clicks, key presses, etc.
+<br><br>
+Caution must be observed when performing certain operations that may result in a
+problem. For example, closing a form that has a running query on it could be
+problematic.
+<br><br>
+One way to use this event is to provide a button for the user which, when
+clicked, would call the AbortFetching method to cause the execution of fetches
+from the query to cease.
+<br><br>
+This event also serves well for maintaining a progress meter on a running query.
+See the IBF_DataPump form for one such implementation.}
+  property OnCallback: TIB_CallbackEvent read FOnCallback
+                                         write FOnCallback;
+{: This event provides a means to display a custom dialog to prompt the user
+before they delete a record.}
+  property OnConfirmDelete: TIB_ConfirmationEvent read FOnConfirmDelete
+                                                  write FOnConfirmDelete;
+{: This event is called for the IB_Cursor component after each row is fetched.}
+  property AfterFetchRow: TIB_DatasetEvent read FAfterFetchRow
+                                           write FAfterFetchRow;
+{: This event is called for the IB_Cursor component after Eof is fetched.}
+  property AfterFetchEof: TIB_DatasetEvent read FAfterFetchEof
+                                           write FAfterFetchEof;
+{: Dataset event.}
+  property BeforeOpen:   TIB_DatasetEvent read FBeforeOpen
+                                          write FBeforeOpen;
+{: Dataset event.}
+  property AfterOpen:    TIB_DatasetEvent read FAfterOpen
+                                          write FAfterOpen;
+{: Dataset event.}
+  property BeforeClose:  TIB_DatasetEvent read FBeforeClose
+                                          write FBeforeClose;
+{: Dataset event.}
+  property AfterClose:   TIB_DatasetEvent read FAfterClose
+                                          write FAfterClose;
+{: If the Search method is called, this event will fire immediately before the
+dataset enters dssSearch state.}
+  property BeforeSearch: TIB_DatasetEvent read FBeforeSearch
+                                          write FBeforeSearch;
+{: If the Search method is called, this event will fire just after the dataset
+has entered dssSearch state.}
+  property AfterSearch:  TIB_DatasetEvent read FAfterSearch
+                                          write FAfterSearch;
+{: Dataset event.}
+  property BeforeEdit:   TIB_DatasetEvent read FBeforeEdit
+                                          write FBeforeEdit;
+{: Dataset event.}
+  property AfterEdit:    TIB_DatasetEvent read FAfterEdit
+                                          write FAfterEdit;
+{: Dataset event.}
+  property BeforeInsert: TIB_DatasetEvent read FBeforeInsert
+                                          write FBeforeInsert;
+{: Dataset event.}
+  property AfterInsert:  TIB_DatasetEvent read FAfterInsert
+                                          write FAfterInsert;
+{: Dataset event.}
+  property BeforeDelete: TIB_DatasetEvent read FBeforeDelete
+                                          write FBeforeDelete;
+{: Dataset event.}
+  property BeforeScroll:  TIB_DatasetEvent read FBeforeScroll
+                                           write FBeforeScroll;
+{: Dataset event.}
+  property AfterDelete:  TIB_DatasetEvent read FAfterDelete
+                                          write FAfterDelete;
+{: Dataset event.}
+  property BeforePost:   TIB_DatasetEvent read FBeforePost
+                                          write FBeforePost;
+{: Dataset event.}
+  property AfterPost:    TIB_DatasetEvent read FAfterPost
+                                          write FAfterPost;
+{: Dataset event.}
+  property BeforeCancel: TIB_DatasetEvent read FBeforeCancel
+                                          write FBeforeCancel;
+{: Dataset event.}
+  property AfterCancel:  TIB_DatasetEvent read FAfterCancel
+                                          write FAfterCancel;
+{: Dataset event.}
+  property AfterScroll:  TIB_DatasetEvent read FAfterScroll
+                                          write FAfterScroll;
+{: This event is called when a record is inserted into a dataset.
+<br><br>
+If any changes are performed in this event's handler method, the buffer is
+flagged as unmodified.}
+  property OnNewRecord: TIB_DatasetEvent read FOnNewRecord
+                                         write FOnNewRecord;
+{: This event is called when the OrderingItemNo information of a dataset is
+changed.
+<br><br>
+It can also be triggered by a change to the OrderingItems or OrderingLinks
+properties.}
+  property OnOrderingChanged: TIB_DatasetEvent read FOnOrderingChanged
+                                               write FOnOrderingChanged;
+{: This event allows for a custom method to determine the number of rows in a
+dataset. The default method does not work for queries that have complicated
+GROUP BY conditions.
+<br><br>
+Some alternative SELECT COUNT( * ) statement should be put together to determine
+what the count should be.
+<br><br>
+If you are using an IB_Query it may also be possible to perform a FetchAll
+and then assign the number of the items in the buffer. The FetchAll could be
+aborted by the user if it takes too long.}
+  property OnGetRecordCount: TIB_CustomRecordCount read FOnGetRecordCount
+                                                   write FOnGetRecordCount;
+{: This event is used to prevent the cursor from being scrolled.
+<br><br>
+Please be careful that you do not create an infinite loop and please do not
+produce a visual prompt to the user. This is not intended for visual use.}
+  property OnGetCanScroll: TIB_GetCanScrollEvent
+      read FOnGetCanScroll
+     write FOnGetCanScroll;
+{: This event is used to prevent modifications by custom logic.
+<br><br>
+Please be careful that you do not create an infinite loop and please do not
+produce a visual prompt to the user. This is not intended for visual use.}
+  property OnGetCanModify: TIB_GetCanModifyEvent
+      read FOnGetCanModify
+     write FOnGetCanModify;
+{: This event enables a custom handler to be supplied in order to perform
+the update on the server. An exception may be raised in this event and the
+Post process will be stopped.
+<br><br>
+It may be easier to assign a statement to the EditSQL property that can be
+either an UPDATE statement or an EXECUTE PROCEDURE statement.}
+  property OnCustomEdit: TIB_DatasetEvent read FOnCustomEdit
+                                          write FOnCustomEdit;
+{: This event enables a custom handler to be supplied in order to perform
+the delete on the server. An exception may be raised in this event and the
+Post process will be stopped.
+<br><br>
+The CSDemos sample application shows how a stored procedure is used to
+perform the delete instead of the default way.
+<br><br>
+It may be easier to assign a statement to the DeleteSQL property that can be
+either a DELETE statement or an EXECUTE PROCEDURE statement.}
+  property OnCustomDelete: TIB_DatasetEvent read FOnCustomDelete
+                                            write FOnCustomDelete;
+{: This event enables a custom handler to be supplied in order to perform
+the insert on the server. An exception may be raised in this event and the
+Post process will be stopped.
+<br><br>
+It may be easier to assign a statement to the InsertSQL property that can be
+either an INSERT statement or an EXECUTE PROCEDURE statement.}
+  property OnCustomInsert: TIB_DatasetEvent read FOnCustomInsert
+                                            write FOnCustomInsert;
+{: This event allows a custom action to be performed in order to consider
+the record about to go into dssEdit state as locked. If the lock fails an
+exception may be raised.
+<br><br>
+It may be easier to assign a statement to the LockSQL property that can be
+either an UPDATE statement or an EXECUTE PROCEDURE statement.}
+  property OnCustomLockRow: TIB_DatasetEvent read FOnCustomLockRow
+                                             write FOnCustomLockRow;
+{: This event is used to customize how the dataset will announce that changes
+have occurred to other datasets.
+<br><br>
+This is typically done by calling:<br>
+   DefaultDMLCacheAnnounceItem( ADMLCacheItemType );
+<br><br>
+For your reference, in case you want to emulate it, here is what this method
+does internally:
+<br><br>
+<code>
+procedure TIB_Dataset.DefaultDMLCacheAnnounceItem(
+                                      ADMLCacheItemType: TIB_DMLCacheItemType );
+var
+  ii: integer;
+  tmpStr: string;
+begin
+  tmpStr := '';
+  for ii := 0 to KeyFields.ColumnCount - 1 do begin
+    if ii > 0 then begin
+      tmpStr := tmpStr + ';';
+    end;
+    tmpStr := tmpStr + KeyFields[ii].FieldName;
+  end;
+  case ADMLCacheItemType of
+    ditEdit, ditDelete:
+      IB_Transaction.AddDMLCacheItem( IB_Connection,
+                                      Self,
+                                      tmpStr,
+                                      Fields.OldValues[ tmpStr ],
+                                      ADMLCacheItemType );
+    ditInsert:
+      IB_Transaction.AddDMLCacheItem( IB_Connection,
+                                      Self,
+                                      tmpStr,
+                                      Fields.Values[ tmpStr ],
+                                      ADMLCacheItemType );
+  end;
+end;
+</code>
+<br>
+Please see the Survey sample application in the D4Apps folder.}
+  property OnDMLCacheAnnounceItem: TIB_AnnounceDMLCacheItemEvent
+    read FOnDMLCacheAnnounceItem
+   write FOnDMLCacheAnnounceItem;
+{: This event is used to customize how the dataset will respond to the
+announcement from another dataset that changes have occurred.
+<br><br>
+Here is an example of what the DefaultDMLCacheReceivedItem( ADMLCacheItem );
+method does so that you can make your own customized behavior if necessary.
+<br><br>
+<code>
+procedure TIB_BDataset.DefaultDMLCacheReceivedItem(
+  const ADMLCacheItem: TIB_DMLCacheItem);
+var
+  ii: integer;
+  tmpStr: string;
+begin
+  tmpStr := '';
+  for ii := 0 to KeyFields.ColumnCount - 1 do begin
+    if ii > 0 then begin
+      tmpStr := tmpStr + ';';
+    end;
+    tmpStr := tmpStr + KeyFields[ii].FieldName;
+  end;
+  if AnsiCompareText( ADMLCacheItem.KeyFieldNames, tmpStr ) = 0 then begin
+    KeyFields.Values[ ADMLCacheItem.KeyFieldNames ] :=
+      ADMLCacheItem.KeyFieldValues;
+    case ADMLCacheItem.DMLCacheItemType of
+      ditEdit: InvalidateBookmark( KeyFields.RowData );
+      ditDelete: DeleteBufferBookmark( KeyFields.RowData );
+      ditInsert: InsertBufferBookmark( KeyFields.RowData );
+    end;
+  end;
+end;
+</code>
+<br>
+Please see the Survey sample application in the D4Apps folder.}
+  property OnDMLCacheReceivedItem: TIB_ReceiveDMLCacheItemEvent
+    read FOnDMLCacheReceivedItem
+   write FOnDMLCacheReceivedItem;
+{: VCL Compatibility.}
+  property OnEditError: TIB_DataSetErrorEvent read FOnEditError
+                                              write FOnEditError;
+{: VCL Compatibility.}
+  property OnPostError: TIB_DataSetErrorEvent read FOnPostError
+                                              write FOnPostError;
+{: VCL Compatibility.}
+  property OnDeleteError: TIB_DataSetErrorEvent read FOnDeleteError
+                                                write FOnDeleteError;
+
+public
+
+{ Inherited Methods }
+{$IFNDEF HELPSCAN}
+  constructor Create( AOwner : TComponent ); override;
+  destructor Destroy; override;
+  procedure Execute; override;
+  procedure InvalidateSQL; override;
+  function FindKeyField( const FieldName: string ): TIB_Column; override;
+  procedure FreeServerResources; override;
+{: System method for internal usage only.}
+  procedure MasterToChildAction( AAction: TIB_MasterChildAction );
+{: System method for internal usage only.}
+  procedure KeyToChildAction( AAction: TIB_KeyChildAction; Info: longint );
+{$ENDIF}
+
+{ Methods }
+
+  function DoConfirmDelete: boolean; //~virtual;
+  function FindBufferField( const FieldName: string ): TIB_Column;
+
+{: This is a very useful method that takes the SQL and search criteria of
+one dataset and assigns it to another dataset.
+<br><br>
+It is ideal for tranferring the search criteria from an IB_Query, that is used
+for browsing and searching, across to an IB_Cursor component from which you want
+to run a report or export inside a separate, snapshot-isolated (tiConcurrency)
+transaction.}
+  procedure AssignSQLWithSearch( ADataset: TIB_Dataset );
+{: This method is used to assign just the WHERE clause of one SQL to another
+dataset's SQL.}
+  procedure AssignSQLWhere( ADataset: TIB_Dataset );
+{: This method will attempt to return a TIB_Column reference for the field
+name passed in for the Buffer Fields array.
+<br><br>
+An exception is raised if it cannot be found.}
+  function BufferFieldByName( const AFieldName: string ): TIB_Column;
+{: Move to the first record in the buffer.}
+  procedure BufferFirst;
+{: Move to the last record in the buffer.}
+  procedure BufferLast;
+{: Move to the nth record in the buffer from the current position.}
+  function BufferMoveBy( Increment: longint ):longint;
+{: Move to the next record in the buffer.}
+  procedure BufferNext;
+{: Move to the prior record in the buffer.}
+  procedure BufferPrior;
+{: Checks to make sure that the dataset is active.}
+  procedure CheckActive;
+{: This will attempt to post a record if necessary.}
+  procedure CheckBrowseMode;
+{: This checks to see if the dataset can scroll before the record pointer is
+moved to a new record.}
+  procedure CheckCanScroll;
+{: Checks to make sure that the dataset is prepared.}
+  procedure CheckPrepared;
+{: Check to make sure that all data aware controls have properly supplied
+data for the record.}
+  procedure CheckRequiredFields;
+{: Indicate that fetches should processed with a callback.}
+  procedure BeginCallbackFetching;
+{: Indicate that fetches should no longer be processed with a callback.}
+  procedure EndCallbackFetching;
+{: This begins a nested bracket where no callbacks are allowed.}
+  procedure BeginCallbackFreeze;
+{: This ends a nested bracket where no callbacks were allowed.}
+  procedure EndCallbackFreeze;
+{: In a relationship which has been formed by pointing a column in this dataset
+to the unique key of another dataset, by way of the other dataset's KeyLinks
+and KeySource properties, this procedure begins a nested bracket that disables
+the ability to modify the pointing column by scrolling to and selecting a
+different row in the other dataset.}
+  procedure BeginKeyDataFreeze;
+{: In a relationship which has been formed by pointing a column in this dataset
+to the unique key of another dataset, by way of the other dataset's KeyLinks
+and KeySource properties, this procedure terminates a nested bracket that
+disabled the ability to modify the pointing column by scrolling to and selecting
+a different row in the other dataset.}
+  procedure EndKeyDataFreeze;
+{: Increment the freeze level determining whether state and data change events
+are propagated to the datasource and datalink components.}
+  procedure DisableControls;
+{: This procedure can be used in the corresponding event to make it easy to
+peform the default behavior and augment it with additional behavior.  An
+appropriate case would be where a dataset is drawn from a view or stored
+procedure and more than one item may need to be announced.}
+  procedure DefaultDMLCacheAnnounceItem(
+                             ADMLCacheItemType: TIB_DMLCacheItemType ); //~virtual;
+{: }
+  procedure DefaultDMLCacheReceivedItem( const ADMLCacheItem: TIB_DMLCacheItem);
+                                                                        virtual;
+{: Decrement the freeze level that determines whether state and data change
+events are propagated to the datasource and datalink components.}
+  procedure EnableControls;
+{: This method allows a state change event to be sent to all of the datalink
+components.}
+  procedure StateChanged;
+{: This method applies to the IB_Query component. It releases all of the
+individual record buffers and causes them to be refetched from the server the
+next time they are referenced.}
+  procedure InvalidateRows; virtual;
+{: This function gives access to the columns defined in the KeyLinks property.
+<br><br>
+It is used in conjunction with KeyFields[]. Refer to it for more information.}
+  function KeyFieldByName( const AFieldName: string ): TIB_Column;
+{: This method applies to the IB_Query component. It ensures that all of the
+individual record buffers for the range defined are fetched from the server.}
+  function ValidateRows( Start, Finish: longint ): boolean; virtual;
+{: This method applies to the IB_Query component. It releases an
+individual record buffer and causes it to be refetched from the server the
+next time it is referenced.
+<br><br>
+The IB_Grid and other data aware controls respond to this event and will
+immediately refetch the record if it is current.
+<br><br>
+This is ideal for causing a dataset to reflect changes made in a stored
+procedure or trigger without having to dump and refetch the entire dataset,
+as the BDE and VCL require.}
+  procedure InvalidateRowNum( ARowNum: longint ); virtual;
+{: This method applies to the IB_Query component. It releases an
+individual record buffer and causes it to be refetched from the server the
+next time it is referenced.
+<br><br>
+The IB_Grid and other data aware controls respond to this event and will
+immediately refetch the record if it is current.
+<br><br>
+This is ideal for causing a dataset to reflect changes made in a stored
+procedure or trigger without having to dump and refetch the entire dataset
+as the BDE and VCL require.}
+  function InvalidateBookmark( const ABookmark: string ): boolean; virtual;
+{: Sets this dataset as the current focused dataset for the default session.}
+  procedure SetFocus;
+{: This method is used to fetch a single record only. False is returned if
+0 or more than one record exists for the SELECT being executed.}
+  function FetchSingle: boolean;
+{: Causes all records to be fetched.
+
+In the IB_Query component this will not affect the current cursor position.}
+  procedure FetchAll;
+{: Make the dataset become active.}
+  procedure Open;
+{: Close and re-open the dataset.
+<br><br>
+For the IB_Query it is done in a manner that preserves all rows that have been
+selected previously and fetches in only the key columns.
+<br><br>
+See also the RefreshAction property to see how the cursor should be re-opened.}
+  function Refresh: boolean;
+{: This method will refresh just the keys of the dataset in order to pick up or
+drop inserted or deleted rows for the dataset.
+<br><br>
+FetchWholeRows must be false or else this method will simply act the same as
+the Refresh method because when it is True, whole rows are being fetched rather
+than just the keys independently from their associated record buffers.}
+  function RefreshKeys: boolean;
+{: This method applies to the buffered dataset and causes all record buffers in
+the cache to be removed.  Thus, the next time that row is referenced, a
+singleton fetch from the server will be required in order to display the row.
+It therefore acts as a refresh mechanism because any new changes on the server
+would become visible due to the refresh.}
+  function RefreshRows: boolean;
+{: This does a normal Refresh but it calls InvalidateRows() as well, resulting
+in a complete refresh of all of the buffers for the dataset.
+<br><br>
+It is the same as the Refresh method.}
+  function RefreshAll: boolean;
+{: Close the dataset.}
+  procedure Close;
+{: Go to the first record in the dataset.
+<br><br>
+For the IB_Cursor component this will cause the current cursor to be closed
+and reopened.  With an IB_Cursor, then, don't call Open and then First.  Call
+Prepare and then First.
+<br><br>
+With an IB_Query this simply makes the RowNum become 1.}
+  procedure First;
+{: This procedure will kill the open cursor and flag the cursor as EOF.}
+  procedure KillCursor;
+{: This positions the cursor at the end of the dataset.
+<br><br>
+For an IB_Cursor this is Eof and for an IB_Query it is the last valid row of
+the dataset.}
+  procedure Last;
+{: Goes to the Next record in the Dataset or Eof.}
+  procedure Next;
+{: For IB_Query only:  goes to the previous row in the dataset.
+<br><br>
+In an IB_Cursor an exception will be raised.
+<br><br>
+Push InterBase to make scrollable cursors!}
+  procedure Prior;
+{: Move the current cursor by an increment.
+<br><br>
+A negative number in a IB_Cursor will raise an exception.}
+  function MoveBy( JumpRecs: longint ): longint;
+{: Put current record into dssEdit state or raise an exception.}
+  procedure Edit;
+{: Move to Eof and put current record into dssInsert state or raise
+an exception.}
+  procedure Append;
+{: Put current record into dssInsert state or raise an exception.}
+  procedure Insert;
+{: Delete the current record or raise an exception.}
+  procedure Delete;
+{: Post any pending changes made to the dataset or raise an exception.}
+  procedure Post;
+{: Effectively post the current changes to the server but retain the edit state
+of the dataset. In the case of an insert the record is actually inserted and
+then when the final post of the retained insert is performed it effectively
+performs an edit. If the PostRetained insert is cancelled then the record is
+deleted.
+<br><br>
+This method should not be used when in dssDelete state.}
+  procedure PostRetaining;
+{: Cancel any pending changes made to the dataset or raise an exception.}
+  procedure Cancel;
+{: Cause the fetching process to stop and return full control of the
+application back to the user.}
+  procedure AbortFetching; //~virtual;
+{: Returns the number of records in the current dataset with the search
+criteria applied.}
+  function RecordCount: longint;
+{: Put the dataset into dssSearch state.}
+  procedure Search;
+{: Save the current search criteria aside in a temporary buffer.}
+  procedure SaveSearch;
+{: Clear out all of the currently defined search criteria.}
+  procedure ClearSearch;
+{: Recall search criteria that were set aside in a temporary buffer.}
+  procedure RecallSearch;
+{: Recall the search criteria that were in use when the dataset was last opened.}
+  procedure RecallLastSearch;
+{: Takes the current search criteria and streams it into a TStrings object.}
+  procedure WriteSearch( AStrings: TStrings );
+{: Reads search criteria and streams it from a TStrings object.}
+  procedure ReadSearch( AStrings: TStrings );
+{: Clears out any defined SearchingLinks parameters so that all of the  records
+are visible in the dataset.}
+  procedure ClearSearchingLinks;
+{:  Calling this method allows a self-contained boolean expression to be
+included in the SQLWhere clause. All parsing is done for you.}
+  procedure AddSQLWhereClause( const WhereClause: string );
+{: Returns True if this DataSource is pointed to as a KeySource.
+<br><br>
+It is used in order to avoid an infinite cycle.}
+  function IsKeyLinkedTo( DataSource: TIB_DataSource ): boolean;
+{: Returns True if this DataSource is pointed to as a MasterSource.
+<br><br>
+It is used in order to avoid an infinite cycle.}
+  function IsMasterLinkedTo( DataSource: TIB_DataSource ): boolean;
+{: Announce an UpdateData event manually.}
+  procedure UpdateData; //~virtual;
+{: Announce a DataChange event manually.}
+  procedure DataChange; //~virtual;
+{: This method is handly to get a quick list of the user-friendly names of
+the OrderingItems entries. A dialog can be presented with these names in it.
+When the user selects one, the IndexNo - 1 can be assigned to the OrderingItemNo
+property. If it is the same, you could check to see whether both ASC and DESC
+entries exist and, if so, toggle them.}
+  procedure GetOrderingItemsList( const OrderingItemsList: TStrings );
+{: Pass a TStrings object to this method to have IBO load it with an ALTER TABLE
+DDL statement deduced from the current fields and constraints of the dataset as
+known to the Schema Cache.
+<br><br>
+This is useful for avoiding dependencies with foreign keys, since they are not
+included in the GetCreateTableSQL() method.}
+  procedure GetAlterTableSQL( AStrings: TStrings );
+{: Pass a TStrings object to this method to have IBO load it with a CREATE TABLE
+DDL statement deduced from the current fields and constraints of the dataset as
+known to the Schema Cache.
+<br><br>
+This method does not return FOREIGN KEY constraints.  A similar method,
+GetAlterTableSQL() will get these for you.}
+  procedure GetCreateTableSQL( AStrings: TStrings; DomainInfo,
+                                                   ConstraintInfo: boolean );
+{: Returns the columns defined in the OrderingItems list of entries.
+<br><br>
+A blank string is returned if no entry exists.}
+  function GetOrderingSQL( ItemNo: integer ): string;
+{: This method populates a TList with the TIB_Column references for the
+buffer fields.}
+  procedure GetBufferFieldList( AList: TList; const FieldNames: string );
+{: If you would like to maintain the default OnCallback activity and add in
+a bit of your own behavior then this method can be used from within your
+event handler to maintain the default activity.}
+  procedure DefaultProcessCallback( Status: TIB_CallbackStatus );
+{: Causes any grid attached to the dataset to ensure that the row with the
+supplied RowNum is in the visible display.
+<br><br>
+Pass in -1 to have it show the current row;  or pass an expression or a
+particular value to have it show a specific RowNum.}
+  procedure ShowNearest( ARowNum: longint );
+{: Retrieve defined default value for specified column, including any
+macro substitution.}
+  function GetColumnDefaultValue(AColumn: TIB_Column; var DefStr: string): boolean;
+
+{ Abstract Buffering Properties }
+
+{: This only works well for the IB_Query component for now.}
+  property BufferFields: TIB_Row read GetBufferFields;
+{: This only works well for the IB_Query component for now.}
+  property BufferRowNum: longint read GetBufferRowNum write SetBufferRowNum;
+{: This only works well for the IB_Query component for now.}
+  property BufferEof: boolean read GetBufferEof;
+{: This only works well for the IB_Query component for now.}
+  property BufferBof: boolean read GetBufferBof;
+{: This only works well for the IB_Query component for now.}
+  property BufferRowCount: longint read GetBufferRowCount;
+{: This only works well for the IB_Query component for now.}
+  property BufferHasBof: boolean read GetBufferHasBof;
+{: This only works well for the IB_Query component for now.}
+  property BufferHasEof: boolean read GetBufferHasEof;
+
+{ Properties }
+
+{: When a dataset is opened this property determines whether all rows should
+be fetched.}
+  property AutoFetchAll: boolean read FAutoFetchAll
+                                 write FAutoFetchAll
+                                 default false;
+{: When a dataset is opened this property determines whether the first row should
+be selected.}
+  property AutoFetchFirst: boolean read FAutoFetchFirst
+                                   write FAutoFetchFirst
+                                   default true;
+{: Determines whether a call to the Delete method will be posted immediately.}
+  property AutoPostDelete: boolean read FAutoPostDelete
+                                   write SetAutoPostDelete
+                                   default true;
+{: This only works for the IB_Query component for now.}
+  property Bookmark: string read GetBookmark write SetBookmark;
+{: This only works for the IB_Query component for now.}
+  property BufferBookmark: string read GetBufferBookmark
+                                  write SetBufferBookmark;
+{: Sets the increment determining the interval at which an OnCallback event is
+triggered.
+<br><br>
+If it is set to -1 then there will be no process callback at all.
+<br><br>
+If it is set to 0 then calls will be made only to Application.ProcessMessages.
+<br><br>
+If it is set to 1 or higher, the callback timing increment settings will be
+checked to see if a callback should be triggered.
+<br><br>
+This check is performed every nth fetch processed.}
+  property CallbackInc: integer read FCallbackInc
+                                write FCallbackInc
+                                default 5;
+{: This message is used by the default callback dialog that appears when
+records are being fetched in from the server in bulk quantity.}
+  property CallbackCaption: string read FCallbackCaption
+                                   write SetCallbackCaption;
+{: Stores a reference to the GetTickCount when the query was started.}
+  property CallbackInitTick: DWORD read FCallbackInitTick;
+{: Provides a built-in storage for maintaining a time-based increment in
+milliseconds.
+<br><br>
+Using this you could update a dialog every second instead of every 10 fetches.
+<br><br>
+Each 1000 units is a second.}
+  property CallbackRefreshTick: DWORD read FCallbackRefreshTick
+                                      write FCallbackRefreshTick;
+{: When using default callback processing this determines the length of
+initial delay in milliseconds before any visible action is taken to inform the
+user that a query is being processed.
+<br><br>
+Each 1000 units is a second.}
+  property CallbackInitInt: DWORD read FCallbackInitInt
+                                  write FCallbackInitInt
+                                  default 3000;
+{: When using default callback processing this determines the length of
+incremental delay in milliseconds before any visible action is taken to update
+the user during the processing of a query.
+<br><br>
+Each 1000 units is a second.}
+  property CallbackRefreshInt: DWORD read FCallbackRefreshInt
+                                     write FCallbackRefreshInt
+                                     default 250;
+{: Returns whether callbacks have been frozen.
+<br><br>
+If it is Zero then callbacks will be performed if CallbackInc is not -1.
+<br><br>
+See also the BeginCallbackFreeze and EndCallbackFreeze methods.}
+  property CallbackFreezeLevel: integer read GetCallbackFreezeLevel;
+{: Indicates if callbacks have been requested for fetching activity.
+<br><br>
+This is incremented by calling BeginCallbackFetching and Decremented by
+calling EndCallbackFetching.}
+  property CallbackFetchingLevel: integer read FCallbackFetchingLevel;
+{: This indicates whether the dataset's record count has been computed on the
+server and whether RecordCount can be read without invoking a potentially
+lengthy select statement.}
+  property CursorRecordCountValid: boolean read FCursorRecordCountValid;
+{: This property returns True if the user aborted the fetching of records by
+calling AbortFetching or by closing the dataset.
+<br><br>
+Fetching will also be aborted if the dataset is put into an edit ot insert
+state.}
+  property FetchingAborted: boolean read FFetchingAborted;
+{: This property gives a mark so that you can determine, with more accuracy than
+just reading a Boolean flag, whether fetching was aborted.}
+  property FetchingAbortedGen: integer read FFetchingAbortedGen;
+{: Returns the number of datasource components that reference this dataset.}
+  property DataSourceCount: integer read GetDataSourceCount;
+{: Gives an indexed access to all DataSources that reference this dataset.}
+  property DataSources[ Index: integer ]: TIB_DataSource read GetDataSources;
+{: Returns the current state of the dataset.}
+  property State: TIB_DatasetState read GetState;
+{: Returns True if the dataset can scroll backwards.}
+  property Unidirectional: boolean read GetUnidirectional;
+{: Returns True if the dataset is at the end of the file.}
+  property Eof: boolean read GetEof;
+{: Returns True if the dataset is at the beginning of the file.}
+  property Bof: boolean read GetBof;
+{: Current record number of the output.}
+  property RecNo: longint read GetRecNo write SetRecNo;
+{: This property tells the row number of the BOF position.
+<br><br>
+This is always 0 unless horizontal dataset refinement is in effect. In this
+case, it will indicate which negative row number the BOF position is
+currently mapped to. The more records that are fetched with the descending
+cursor the more records are appended into the front part of the dataset which
+pushes the BOF row more and more negative.}
+  property BofRowNum: longint read GetBofRowNum;
+{: This is the row number at which the EOF record is positioned.}
+  property EofRowNum: longint read GetEofRowNum;
+{: Returns the row number at which the cursor is currently positioned.}
+  property RowNum: longint read GetRowNum write SetRowNum;
+{: Returns True if the dataset can modify the current row or insert a new one.}
+  property CanModify: boolean read GetCanModify;
+{: Returns True if the dataset can modify the current row.}
+  property CanEdit: boolean read GetCanEdit;
+{: Returns True if the dataset can insert a new row.}
+  property CanInsert: boolean read GetCanInsert;
+{: Returns True if the dataset can delete the current row.}
+  property CanDelete: boolean read GetCanDelete;
+{: Returns True if the dataset can go into search mode to select a subset of rows.}
+  property CanSearch: boolean read GetCanSearch;
+{: Returns True if the dataset can Scroll to a different row.}
+  property CanScroll: boolean read GetCanScroll;
+{: Determine whether REQUIRED fields are to be checked just before posting an
+edit or insert.}
+  property CheckRequired: boolean read FCheckRequired
+                                  write FCheckRequired
+                                  default true;
+{: Returns True if the dataset is in the process of being closed.}
+  property ClosePending: boolean read FClosePending;
+{: Returns True if the dataset is in the process of being Opend.}
+  property OpenPending: boolean read FOpenPending;
+{: Returns True if the dataset has changes that are pending.}
+  property NeedToPost: boolean read GetNeedToPost;
+{: Returns True if any modifications have been made to the current row.}
+  property Modified: boolean read GetModified;
+{: Returns True if the dataset is currently in the process of cancelling changes.}
+  property IsCancelling: boolean read FIsCancelling;
+{: Returns True if the dataset is currently in the process of posting changes.}
+  property IsPosting: boolean read GetIsPosting;
+{: Returns True if a dataset is readonly. This will also return True if a
+transaction is ReadOnly.}
+  property ReadOnly: boolean read GetReadOnly write SetReadOnly default false;
+{: Returns True if a dataset is currently in the process of refreshing.}
+  property Refreshing: boolean read GetRefreshing;
+{: Prevents the dataset from going into dssEdit state by forcing CanEdit to
+return False. Otherwise, any other factors affecting the CanEdit property
+will be calculated.}
+  property PreventEditing: boolean read FPreventEditing
+                                   write SetPreventEditing
+                                   default false;
+{: Prevents the dataset from going into dssInsert state by forcing CanInsert to
+return False. Otherwise, any other factors affecting the CanInsert property
+will be calculated.}
+  property PreventInserting: boolean read FPreventInserting
+                                     write SetPreventInserting
+                                     default false;
+{: Prevents the dataset from going into dssDelete state by forcing CanDelete to
+return False. Otherwise, any other factors affecting the CanDelete property
+will be calculated.}
+  property PreventDeleting: boolean read FPreventDeleting
+                                    write SetPreventDeleting
+                                    default false;
+{: Determines whether the dataset can go into dssSearch state.}
+  property PreventSearching: boolean read FPreventSearching
+                                     write SetPreventSearching
+                                     default false;
+{: Flag to determine whether the KeySource dataset will be prevented from
+causing the lookup dataset to perform the seek in order to do the lookup.}
+  property PreventKeySeeking: integer read FPreventKeySeeking;
+{: When using PessimisticLocking this property indicates whether a lock has been
+obtained for the current row in the dataset.
+<br><br>
+In most cases a lock will not be issued until the row goes into dssEdit state.}
+  property IsRowLocked: boolean read FIsRowLocked;
+{: Upon going into dssEdit state you can have a dummy update automatically
+performed to lock the record that just went into dssEdit state.
+<br><br>
+If another user has already obtained a lock on the record then an exception
+is raised and the record will remain as readonly.
+<br><br>
+With IB Objects, datasets output from joins across multiple tables are updatable
+through custom SQL, so the dummy update executes upon each updatable ROW on the
+server that is contributing output to the current row, to ensure that the user
+will always be able to post work successfully.
+<br><br>
+InterBase has row-level locking, which makes it friendly about pessimistic
+locking - only those rows that are actually updated get locked.
+<br><br>
+Because these locks survive only for the duration of the transaction, they are
+certain to be cleaned up if a connection failure occurs.}
+  property PessimisticLocking: boolean read FPessimisticLocking
+                                       write FPessimisticLocking
+                                       default false;
+{: Returns True if the dataset is currently processing the query by fetching rows
+from the server.}
+  property Fetching: boolean read FFetching;
+{: Rows are being fetched from the server in order to move the current cursor.}
+  property ScanningLevel: integer read FScanningLevel;
+{: Reference to the KeyDataset being linked to by the KeySource property. Be
+sure to check for nil before referencing it.}
+  property KeyDataset: TIB_Dataset read GetKeyDataset;
+{: Reference to the MasterDataset being linked to by the MasterSource property.
+Be sure to check for nil before referencing it.}
+  property MasterDataset: TIB_Dataset read GetMasterDataset;
+{: Gives the name of the Master Table for the indexed reference in the
+MasterLinks property.}
+  property MasterRelation [ Index: integer ]: string read GetMasterRelation;
+{: Gives the name of the Master Column for the indexed reference in the
+MasterLinks property.}
+  property MasterFieldName[ Index: integer ]: string read GetMasterFieldName;
+{: Not fully implemented yet.}
+  property ParamValueLinks;
+{: Returns True if a search criterion was changed or other modification was made
+to the WHERE clause during the OnPrepareSQL event cycle.}
+  property SQLWhereChanged: boolean read GetSQLWhereChanged;
+{: Returns True if a search criterion was changed or other modification was made
+to the ORDER BY clause during the OnPrepareSQL event cycle.}
+  property SQLOrderChanged: boolean read FSQLOrderChanged;
+{: During the OnPrepareSQL cycle a self contained boolean expression can be
+added into the WHERE clause at different priority levels.
+<br><br>
+There are three levels that accumulate WHERE clause criteria.  At the last point
+of the cycle, these values are taken and placed into the SQL statement sent
+to the server according to this priority scheme.}
+  property SQLWhereLow: TStrings read FSQLWhereLow;
+{: During the OnPrepareSQL cycle a self contained boolean expression can be
+added into the WHERE clause at different priority levels.
+<br><br>
+There are three levels that accumulate WHERE clause criteria.  At the last point
+of the cycle, these values are taken and placed into the SQL statement sent
+to the server according to this priority scheme.}
+  property SQLWhereMed: TStrings read FSQLWhereMed;
+{: This property is very useful for having IBO handle the parsing of items to
+be added to the WHERE clause of the SELECT statement being constructed. The
+OnPrepareSQL phase is the only point where it is valid to add items to this
+stringlist.
+<br><br>
+Each unit of entries must aggregate to a syntactically valid SQL expression that
+evaluates to a Boolean True or False.  It is possible to include parentheses to
+to provide for nesting of items. By default, all items are "ANDed" together,
+but if the OR operator is placed as an item on its own, it will be used instead
+of the default 'AND'.
+<br><br>
+Here are some sample uses of this property:
+<br>
+<code>
+SQLWhereItems.Add( '(' );
+SQLWhereItems.Add( 'MYCOL1 = 100' );
+SQLWhereItems.Add( 'OR' );
+SQLWhereItems.Add( 'MYCOL1 = 200' );
+SQLWhereItems.Add( ')' );
+</code>
+<br>
+<br>and when parsed into the finalized SQL statement will end up as:
+<br>
+<br>WHERE .... < original criteria plus other system stuff >
+<br>   AND ( MYCOL1 = 100 OR MYCOL1 = 200 )
+<br>
+<br>This may seem simple and of little use but it will make it much easier to
+<br>build the SQL criteria when combining the logic of numerous controls that
+<br>impact the statement.
+<br>
+<br>
+<b>Nesting the parentheses</b><br>
+This example shows how the nesting of parentheses can be accomplished.  If an
+operator is omitted, AND is used as the default.
+<br>
+<code>
+SQLWhereItems.Add( '(' );
+SQLWhereItems.Add( '(' );
+SQLWhereItems.Add( 'MYCOL > 100' );
+SQLWhereItems.Add( 'MYCOL = 200' );
+SQLWhereItems.Add( ')' );
+SQLWhereItems.Add( 'MYCOL < 300' );
+SQLWhereItems.Add( ')' );
+</code>
+<br>
+<br>when parsed into the finalized SQL statement will end up as:
+<br>
+<br>WHERE ....
+<br>   AND (( MYCOL = 100 AND MYCOL = 200 ) AND MYCOL = 300 )}
+  property SQLWhereItems: TStrings read FSQLWhereMed;
+{: During the OnPrepareSQL cycle a self contained boolean expression can be
+added into the WHERE clause at different priority levels.
+<br><br>
+There are three levels that accumulate WHERE clause criteria.  At the last point
+of the cycle, these values are taken and placed into the SQL statement sent
+to the server according to this priority scheme.}
+  property SQLWhereHigh: TStrings read FSQLWhereHigh;
+{: This property contains a list of columns that the dataset is ordered by.}
+  property SQLOrderLinks: TIB_StringList read FSQLOrderLinks;
+{: If an OrderingLink is currently active then this will have the name of
+the column used to define the OrderingLink entry.}
+  property OrderingLink: string read FOrderingLink write SetOrderingLink;
+{: If an OrderingLink is currently active then this will have the TIB_Column
+reference to the column used to define the OrderingLink entry.}
+  property OrderingField: TIB_Column read FOrderingField;
+{: Parameter used to improve performance when dealing with large datasets.
+<br><br>
+This enables the use of dataset refinement with any operation that seeks a
+record in the buffered dataset.
+<br><br>
+This really only applies when working with a buffered dataset but it is
+declared at a lower level in abstract fashion.}
+  property OrderingParam: TIB_Column read FOrderingParam;
+{: If a SearchingLink is currently active then this will have the name of
+the column used to define the SearchingLink entry.}
+  property SearchingLink: string read FSearchingLink write SetSearchingLink;
+{: If a SearchingLink is currently active then this will have the TIB_Column
+reference to the parameter used to define the OrderingLink entry.
+<br><br>
+Get the field reference using the OrderingField property.}
+  property SearchingParam: TIB_Column read FSearchingParam;
+{: If a SearchingLink is currently active then this will have the name of
+the parameter used in the SearchingLink entry.}
+  property SearchingParamName: string read FSearchingParamName;
+{: Returns True if the OrderingItemNo is in the process of changing.}
+  property OrderingItemNoChanging: boolean read GetOrderingItemNoChanging;
+{: Returns True if the OrderingLink is in the process of changing.}
+  property OrderingLinkChanging: boolean read GetOrderingLinkChanging;
+{: Returns True if the SearchingLink is in the process of changing.}
+  property SearchingLinkChanging: boolean read GetSearchingLinkChanging;
+//{: Returns True if the RefiningLink is currently active.}
+//  property RefiningLinksActive: boolean read GetRefiningLinksActive;
+{: Returns True if the SearchingLink is currently active.}
+  property SearchingLinksActive: boolean read GetSearchingLinksActive;
+{: In some cases it is necessary to have deletes performed via a searched
+delete instead of a positioned delete. This property will cause the SQL
+that is generated for you when deleting a record to be a positioned delete if
+False (the default) or a searched delete if True.}
+  property SearchedDeletes: boolean read GetSearchedDeletes
+                                    write SetSearchedDeletes
+                                    default false;
+{: This property will cause updates executed behind the scenes to be performed
+with searched updates instead of positioned updates. In other words, if you look
+in the SQL trace monitor you will see:
+<br><br>
+UPDATE < table > SET < col > = < val >
+WHERE < pk col >= ?< pk param >
+<br><br>
+instead of:
+<br><br>
+WHERE CURRENT OF < cursor name >.
+<br><br>
+Only datasets with a single relation can be live with SearchedUpdates. If you
+have a joined dataset that you want to be live then you must use positioned
+updates.}
+  property SearchedEdits: boolean read GetSearchedEdits
+                                  write SetSearchedEdits
+                                  default false;
+{: This property determines whether all updates are performed through a
+prepared DSQL statement or whether a DSQL statement for just the updated
+columns should be constructed and immediately executed (the default).}
+  property PreparedEdits: boolean read GetPreparedEdits
+                                  write SetPreparedEdits
+                                  default false;
+{: This property determines whether all inserts are performed through a
+prepared DSQL statement or whether a DSQL statement for just the modified
+(non-NULL) columns should be constructed and immediately executed.}
+  property PreparedInserts: boolean read GetPreparedInserts
+                                  write SetPreparedInserts
+                                  default true;
+{: This property allows default column values to be defined on the client.  As
+soon as the dataset enters dssInsert state, AsString is assigned the string
+values stored in this StringList property.
+<br><br>
+Use this standard format:
+<br><br>[< tablename >.]< columnname >=< string value to be assigned >}
+  property DefaultValues: TIB_StringList read FDefaultValues
+                                         write SetDefaultValues;
+
+{: Reference to allow access to the columns defined in the KeyLinks property.
+<br><br>
+<br>This property is used in conjunction with these methods:
+<br>function SeekKeyForBufferFields: boolean;
+<br>function LookupKeyForBufferFields: boolean;
+<br>function LookupKeyForFields: boolean;
+<br><br>
+Set the values for the KeyLinks columns and then call one of the above three
+methods to act upon the key column values.}
+  property KeyFields: TIB_Row read GetKeyFields;
+
+{: This property indicates whether any cached updates are waiting to be applied.}
+  property UpdatesPending: boolean read GetUpdatesPending;
+{: This property returns the current CachedUpdates status of the currently
+selected record.}
+  property UpdateStatus: TIB_UpdateStatus read GetUpdateStatus;
+
+{------------------------------------------------------------------------------}
+
+{$IFDEF HELPSCAN}
+published
+{$ELSE}
+public
+{$ENDIF}
+
+{------------------------------------------------------------------------------}
+
+{: IBO native data aware controls are designed to use a color scheme when a
+dataset is in dssSearch, dssEdit, dssInsert states.
+<br><br>
+It is possible to customize these colors by changing them on the
+TIB_SessionProps component.}
+  property ColorScheme: boolean read FColorScheme write FColorScheme;
+{: This property makes it very easy to populate a column with a value from
+a generator. Provide entries in the following format:
+<br><br>
+[< tablename >.]< columnname >=< generatorname >
+<br><br>
+See the Contact sample application to see this implemented.}
+  property GeneratorLinks: TIB_StringList read GetGeneratorLinks
+                                          write SetGeneratorLinks;
+{: This determines whether DEFAULT constraints that are declared at the server
+level should be queried, parsed and used when an insert is performed on the
+client.
+<br><br>
+This can be a bit expensive since the metadata must be queried.}
+  property GetServerDefaults: boolean read FGetServerDefaults
+                                      write FGetServerDefaults
+                                      default false;
+{: Contains a list of hints that are used to display more user friendly
+messages to the user.
+<br><br>
+They are used by the various IB_XXXBar controls.}
+  property Hints;
+{: This property plays a very important role in the IB_Query component.
+<br><br>
+This property must contain the column(s) that define a unique identifier for
+each row of the data on the server.
+<br><br>
+An IB_Query component maintains a permanent buffer of these key columns that
+serve as the backbone of the dataset buffer. Then, on demand, the remaining
+whole record buffer is selected in one at a time by internal prepared cursors.
+By this means, scrolling to the end of a dataset only requires fetching in all
+of the keys and then the last whole record buffer.
+<br><br>
+The BDE/VCL requires that the entire dataset be fetched in, which can take a
+very long time.  The key-driven functionality of IB Objects makes it magnitudes
+more responsive than the BDE/VCL when browsing rows at random.
+<br><br>
+This property is also used in order to define an XBASE-style SET RELATION
+relationship between two datasets. With this relationship defined the
+following behavior can be observed:
+<br><br>
+Parent record scrolls: A seek for the new matching child record is performed.
+First a check is done in the existing fetched records. If it is found in the
+client's buffers, that record becomes the current record in the child dataset.
+If it is not found there, a special SELECT statement is formed for searching for
+it on the server.  If it is found, the key column values required for fetching
+it are returned.<br><br>
+With these keys, the columns of the IB_Query's key buffer are fetched until a
+matching key is returned.  Because only the key column(s) are being fetched, not
+the entire row, it is very fast. <br><br>
+The special SELECT also takes any search criteria for the data set into
+consideration, so as to fetch in just those keys which it is certain to match
+eventually.  Otherwise, non-matching parent data could exist, causing child
+dataset to be set to Bof - yes, Bof and not Eof.
+<br><br>
+Child record is scrolled: This is taken as an indication that the parent
+should be made to reference a different child record. So, the parent record
+is put into dssEdit state and the necessary columns in the parent record are
+updated so that they refer to the newly selected record in the child table.
+<br><br>
+With this feature it is possible to have multiple columns define the
+relationship between two datasets. This is unlike the Lookup stuff in the VCL
+that allows tables to be related only through a single column:column link.
+<br><br>
+It differs also in that the lookup controls do not need properties like
+LookupDataset, LookupDataSource, LookupFields, etc., because the linkages are
+defined at the dataset level, using KeyLinks and KeySource.  Binding the linkages
+of the controls to those of the dataset allows greater programmer control and
+flexibility.
+<br><br>
+See KeySource for a few more details.
+<br><br>
+There is a sample application called KeyLinks that shows how to set it up.}
+  property KeyLinks: TIB_StringList read GetKeyLinks
+                                    write SetKeyLinks
+                                    stored IsKeyLinksStored;
+{: This property is used to determine which columns in the KeyLinks parent
+should be updated in order to maintain description columns for display purposes
+as the KeyLinks child is scrolled.
+<br><br>
+Typically, the description column in the parent dataset is driven from an
+in-line singleton SELECT in the SELECT list of columns, for example:
+<br><br>
+SELECT COLUMN1, COLUMN2, LOOKUPCOL
+(SELECT DESCRIPTION FROM CHILD_TABLE
+WHERE PK = PARENT_TABLE.LOOKUPCOL)
+AS MYDESCRIPTION
+FROM PARENT_TABLE
+<br><br>
+This property of the child dataset is additional to the Keysource and KeyLinks
+properties that have already been set up to form the relationship with the
+KeyDataset parent.
+<br><br>
+Using the example above, the standard KeyDescLinks format is:<br>
+DESCRIPTION=PARENT_DATASET.MYDESCRIPTION
+<br><br>
+See the Company sample application for a demonstration of how this can be used
+to integrate the lookup combobox with a grid.}
+  property KeyDescLinks: TIB_StringList read FKeyDescLinks
+                                        write SetKeyDescLinks;
+{: This property determines whether seeking is performed in the child dataset
+of a KeyLinks relationship.}
+  property KeySeeking: boolean read FKeySeeking
+                               write SetKeySeeking
+                               default true;
+{: This property defines which dataset is referenced in order to complete
+the KeyLinks relationship.  It is set on the child dataset and points to the
+datasource of the parent dataset.
+<br><br>
+This works very much like an XBASE SET RELATION command where one dataset
+scrolls another dataset and performs a locate.}
+  property KeySource: TIB_DataSource read GetKeySource write SetKeySource;
+{: It is possible to make a dataset that is output from a join between tables
+capable of inserts and deletes without custom SQL, by indicating which relation
+these operations should be applied to.
+<br><br>
+Observe that only one table can be subjected to update or delete operations by
+this means.  If you need to make the insert, update and delete methods operate
+on two or more of the tables, stored procedures will be required.  Refer to the
+InsertSQL, EditSQL and DeleteSQL properties.}
+  property KeyRelation;
+{: This property can play a very important role in the IB_Query component when
+the dataset is formed by an SQL statement that includes an implicit join.
+<br><br>
+An implicit join is old SQL-89 syntax, deprecated in IB since version 5.x, of
+this form:
+<br><br>
+SELECT TABLE1.COLUMN1, TABLE1.COLUMN2, TABLE2.COLUMNA, TABLE2.COLUMNB
+FROM TABLE1, TABLE2
+WHERE TABLE1.COLUMN1 = TABLE2.COLUMNA
+AND TABLE2.COLUMNX > TABLE1.COLUMNY
+<br><br>
+In this statement, the JOIN criteria are mixed up with the SELECT criteria.
+This is confusing and inefficient for IBO to parse.  The JoinLinks property is
+used to define join and filter criteria necessary for ensuring that the
+columns in the KeyLinks property will define each row of the output uniquely
+and accurately.
+<br><br>
+Principally, JoinLinks tells the parser which expressions in the WHERE clause
+are JOIN criteria.  JoinLinks for the statement above would be:
+<br><br>
+TABLE1.COLUMN1=TABLE2.COLUMNA
+<br><br>
+This simplifies what the internal cursors, that are used to
+fetch single record buffers, will be passed in their WHERE clause criteria.  It
+removes the need to subject the dataset to being re-prepared every time the
+values of the search criteria change. It also reduces the amount of input
+parameter data necessary to fetch the individual rows to exactly what is
+required - ideally, only key values.
+<br><br>
+Distinguishing the JOIN criteria avoids the need to pass parameters for the JOIN
+criteria into the WHERE clause each time an individual row is fetched and removes
+a source of severe performance degradation.
+<br><br>
+If you are using a version of IB 5.x or higher, you are strongly recommended to
+use explicit JOIN syntax and take special care to avoid mixing the two syntaxes
+in one statement, which can cause server-side ambiguities that IBO can not
+detect or control.  You do not need JoinLinks for a statement that uses pure
+explicit JOIN syntax.}
+  property JoinLinks: TIB_StringList read FJoinLinks write SetJoinLinks;
+{: Reference to the dataset that will serve as the master dataset in a
+master detail relationship.}
+  property MasterSource: TIB_DataSource read GetMasterSource
+                                        write SetMasterSource;
+{: This property is used to define the column to column relationships
+between the child and parent datasets in a master-detail construction.
+The format is as follows:
+<br><br>
+< childtable >.< childcol >=< mastertable >.< mastercol >
+<br><br>
+You must include the table name if it exists for MasterSearch to work properly.
+<br><br>
+MasterLinks has features that help define the relationship between the parent
+and child datasets. For example, when the child dataset is inserting a new
+record, the proper values from the parent are written into the linking columns of
+the child dataset.}
+  property MasterLinks: TIB_StringList read FMasterLinks write SetMasterLinks;
+{: This property determines whether a child dataset will follow its master into
+dssSearch state. If it is True, the search criteria for the child dataset are
+used in order to select records from the master dataset.
+<br><br>
+This is accomplished by adding an EXISTS( SELECT  ) clause that contains
+the appropriate relations for the master-detail relationship and the child's
+search criteria.
+<br><br>
+This will only take effect if there is a valid MasterLinks definition.}
+  property MasterSearch: boolean read FMasterSearch
+                                 write FMasterSearch
+                                 default false;
+{: Property to take better control over the behavior of datasets when using the
+MasterSearch option.}
+  property MasterSearchFlags: TIB_MasterSearchFlags read FMasterSearchFlags
+                                                    write FMasterSearchFlags;
+{: This property works just like parameterized queries in a TQuery.
+<br><br>
+It defines which parameters correspond to which fields in the dataset that
+MasterSource is referring to.}
+  property MasterParamLinks: TIB_StringList read FMasterParamLinks
+                                            write SetMasterParamLinks;
+{: Maximum number of rows to be fetched. 0 means all rows to Eof.}
+  property MaxRows: longint read FMaxRows write FMaxRows default 0;
+{: This property will limit a query that is fetching rows to fetching for the
+specified period of time and then to abort the fetching process.}
+  property MaxTicks: DWORD read FMaxTicks write FMaxTicks default 0;
+{: This property determines when the MaxTicks can begin checking to abort the
+process of fetching rows. It sets the the minimum number of rows required before
+a MaxTicks timeout is allowed.}
+  property MinTicksRows: longint read FMinTicksRows
+                                 write FMinTicksRows
+                                 default 0;
+{: Number of rows that a connected control has requested to be scrolled when the
+PAGE DOWN or PAGE UP commands are received.}
+  property PageRows: longint read FPageRows write FPageRows default 0;
+{: This property defines the action that should be taken upon Refreshing a
+dataset.
+<br><br>
+raOpen should be used with the TIB_Cursor.  Any of them can be used for the
+TIB_Query component.}
+  property RefreshAction: TIB_RefreshAction read FRefreshAction
+                                            write FRefreshAction
+                                            default raOpen;
+{: WIP}
+  property CommitAction: TIB_CommitAction read FCommitAction
+                                          write FCommitAction
+                                          default caClose;
+{: This property determines which of the OrderingItems entries is driving the
+current sort order of the dataset. If this property is changed whilst the dataset
+is Active, the dataset will be refreshed using the new ordering selection.
+<br><br>
+A value of 0 causes the ORDER BY clause as it appears in the SQL property of
+the dataset to be used.
+<br><br>
+If you give a value less than zero, it will select the DESCending criterion
+attached to the OrderingItem that is referenced in the table by that absolute
+value.
+<br><br>
+A positive value causes the ascending criterion of the referenced item to be
+used.
+<br><br>
+Please refer to the Contact sample application to see how this is implemented.
+<br><br>
+<b>More hints about OrderingItems</b>
+<br><br>
+OrderingItems supports two ORDER BY criteria items per each line item entry.
+They should be separated with a semicolon. The first should be an ASCENDING
+criterion and the second (which is optional) should be DESCENDING, using the same
+columns.
+<br>
+<br>OrderingItems:
+<br>Name=LASTNAME;LASTNAME DESC
+<br>ZIP=ZIP;ZIP DESC
+<br>
+<br>OrderingLinks:
+<br>LASTNAME=1
+<br>ZIP=2
+<br>
+<br>For these entries, any OrderingItemNo from -2 to 2 is valid.
+<br>
+<br>This table shows OrderingItemNo and the corresponding ORDER BY and
+<br>OrderingLink:
+<br>
+<br> 2    ORDER BY ZIP                    ZIP
+<br> 1    ORDER BY LASTNAME                LASTNAME
+<br> 0    ORDER BY < whatever is in the SELECT statement >    < blank >
+<br>-1    ORDER BY LASTNAME DESC                LASTNAME
+<br>-2    ORDER BY ZIP DESC                ZIP
+<br><br>
+The OrderingLink property tells the grid which column to put the arrow on.
+The sign of OrderingItemNo indicates which way the arrow points. If there are
+both ASC and DESC criteria for the corresponding OrderingLink, the arrow has a
+dash above or below it to indicate that the column can be sorted both ways.}
+  property OrderingItemNo: integer read FOrderingItemNo
+                                   write SetOrderingItemNo
+                                   default 0;
+{: This property is used to define a list of valid sort criteria for a dataset.
+<br><br>
+Entries should be made in the following format:
+<br><br>
+< user readable name of sort >=< ascending ORDER BY criteria>[;< descending
+ORDER BY criteria >}
+  property OrderingItems: TIB_StringList read FOrderingItems
+                                         write SetOrderingItems;
+{: This property defines the relationship between columns and entries in the
+OrderingItems table.
+<br><br>
+Entries should be of the following format:
+<br><br>
+[< tablename >.]< columnname >=< numerical reference in OrderingItems >
+<br><br>
+The first item in OrderingItems is considered to be 1 and not 0.
+<br><br>
+If this property is defined correctly, the IB_Grid can display a glyph in the
+corresponding column's header so that, when the user clicks on it, the grid is
+sorted in the order of the column clicked on.  If both an ascending and a
+descending criterion are supplied, each click on the grid column header will
+toggle between the two sort orders.
+<br><br>
+Please refer to the Contact sample application to see how this is implemented.}
+  property OrderingLinks: TIB_StringList read FOrderingLinks
+                                         write SetOrderingLinks;
+{: This property is used in order to make a SELECT statement updatable
+and deletable. Even if a dataset is not "live" it can still be inserted into
+because in SQL there is no concept of a INSERT INTO CURSOR.
+<br><br>
+RequestLive causes a FOR UPDATE clause to be included in the SELECT statement.
+Be aware that, if you include the FOR UPDATE clause explicitly in your SQL
+property, the effect will be to will toggle the setting of this property.
+<br><br>
+It was set up this way to enable you to include the list of columns with the OF
+clause.  For example, the following SQL will restrict updating to COL1 only;
+IBO will make all columns not included in the OF list read-only automatically.
+<br><br>
+SELECT COL1, COL2 FROM TABLE FOR UPDATE OF COL1
+}
+  property RequestLive: boolean read FRequestLive
+                                write SetRequestLive
+                                default false;
+{: This property is used to provide incremental searching on columns that
+have been defined in the OrderingLinks property.  It determines which input
+parameter corresponds to the column that is currently the OrderingLink column.
+<br><br>
+It should be defined in this format:
+<br><br>
+[< tablename >.]< columnname >=< parametername >
+<br><br>
+See the MDIApp or the SearchingLinks sample applications for a demonstration of
+this property.}
+  property SearchingLinks: TIB_StringList read FSearchingLinks
+                                          write SetSearchingLinks;
+{$IFNDEF HELPSCAN}
+{: The purpose of this property is to provide a design-time indication of
+how many components are referencing this dataset.}
+  property _DataSourceCount: integer read GetDataSourceCount
+                                     write flag_junk_value
+                                     stored false;
+{$ENDIF}
+private
+  FOnKeySourceStateChanged: TIB_KeyDatasourceEvent;
+protected
+  procedure IB_KeyStateChanged( Sender: TIB_DataLink;
+                                ADataSource: TIB_DataSource );
+public
+{: 	This method lets the query import default values from the server.}
+  procedure ImportServerDefaults;
+  property OnKeySourceStateChanged: TIB_KeyDatasourceEvent read FOnKeySourceStateChanged
+                                          write FOnKeySourceStateChanged;
+end;
+
+{                                                                              }
+{ TIB_Cursor                                                                   }
+{                                                                              }
+
+{: This component is most suitable for tasks, such as reports or table scans,
+where the data do not need to be buffered and bi-directionally scrollable.
+<br><br>
+For processing datasets this component is the fastest and most efficient. Use
+it whenever possible instead of the buffered dataset components if you don't
+need backward scrolling.
+<br><br>
+It is possible to use this component as you use the IB_DSQL component, to execute
+DSQL statements.
+<br><br>
+All native IBO controls except the IB_Grid and IB_CtrlGrid can be used with this
+component.}
+TIB_Cursor = class(TIB_Dataset)
+{$I IBA_Statement.PBL }
+{$I IBA_Dataset.PBL   }
+public
+{: This method is for doing low-level fetching for even more performance.
+<br><br>
+This method call avoids all notifications so that only the buffer for the
+current row is modified. Any data aware controls will not be aware that there
+is new data to display.}
+  procedure APIFirst;
+{: This method is for doing low-level fetching for even more performance.
+<br><br>
+This method call avoids all notifications so that only the buffer for the
+current row is modified. Any data aware controls will not be aware that there
+is new data to display.}
+  procedure APINext;
+{: This method has been slightly specialized to deliver better performance.}
+  procedure Next;
+published
+{: Event that provides notification that a new row has been fetched.}
+  property AfterFetchRow;
+{: Event that provides notification that the end of the dataset has been
+reached.}
+  property AfterFetchEof;
+end;
+
+// IBA_BDataset.IMP
+// IBA_Dataset.IMP

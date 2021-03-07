@@ -1,0 +1,50 @@
+inherited DBChartAny: TDBChartAny
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The Database Chart component can access any compatible'
+      
+        'TDataSet object class (like TTable, TQuery, TClientDataSet, ADO,' +
+        ' etc)'
+      'and any other 3rd party database access classes derived from'
+      'TDataSet ( InfoPower, FlashFiler, ASTA, ODBC, MemoryTable, etc).')
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 14
+      Top = 11
+      Width = 97
+      Height = 17
+      Caption = '&Active Table'
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+  inherited DBChart1: TDBChart
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TPieSeries
+      Marks.ArrowLength = 8
+      Marks.Style = smsPercent
+      Marks.Visible = True
+      DataSource = Table1
+      SeriesColor = clRed
+      XLabelsSource = 'NAME'
+      PieValues.DateTime = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      PieValues.ValueSource = 'SIZE'
+    end
+  end
+  object Table1: TTable
+    DatabaseName = 'DBDEMOS'
+    ReadOnly = True
+    TableName = 'animals.dbf'
+    Left = 48
+    Top = 122
+  end
+end

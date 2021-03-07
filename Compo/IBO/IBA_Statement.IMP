@@ -1,0 +1,3743 @@
+// IBA_Statement.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Jason Wharton <jwharton@ibobjects.com>                                      }
+{  09/09/2001                                                                  }
+{     I made it so that the OnMacroSubstitute event wouldn't get wiped out     }
+{     the IB_Script.SQL.Assign() method is used in the property editor.        }
+{                                                                              }
+{  Jason Wharton <jwharton@ibobjects.com>                                      }
+{  08/08/2001                                                                  }
+{     I improved the integration between the internal dataset and the TDataset }
+{     component so that it would respect the FieldsIndex setting. This is due  }
+{     to the AssignSQLWithSearch() method will inject various settings into    }
+{     the TDataset based component.                                            }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_Statement.CreateWithBinding( AOwner: TComponent;
+                                             ADataset: TIB_Dataset );
+begin
+  FBindingCursor := ADataset;
+  Create( AOwner );
+end;
+
+constructor TIB_Statement.Create(AOwner : TComponent);
+begin
+  inherited Create(AOwner);
+  FIB_StatementLinkList := TList.Create;
+  FSQL := TIB_SQLStrings.Create;
+  (FSQL as TIB_SQLStrings).FStatement := Self;
+  (FSQL as TIB_SQLStrings).OnChange := OnSQLChange;
+  FJoinLinks := TIB_StringProperty.Create;
+  (FJoinLinks as TIB_StringList).OnChange := OnSQLChange;
+  FParamValueLinks := TIB_StringProperty.Create;
+  FSysParamNames := TIB_StringList.Create;
+  FSysFieldNames := TIB_StringList.Create;
+  FSysTableNames := TIB_StringList.Create;
+  FOldParamValueLinks := TIB_StringProperty.Create;
+  FSQLHistory := TIB_StringList.Create;
+  FParams := TIB_Row.Create( Self, rtParam  );
+  FParams.OnRowStateChanged := SysParamsStateChanged;
+  FParams.BeforeModify := SysBeforeParamsDataChange;
+  FParams.AfterModify := SysAfterParamsDataChange;
+  FCursorFields := TIB_Row.Create( Self, rtField );
+  FCursorFields.OnRowStateChanged := SysCursorFieldsStateChanged;
+  FCursorFields.BeforeModify := SysBeforeCursorFieldDataChange;
+  FCursorFields.AfterModify := SysAfterCursorFieldDataChange;
+  FCursorKeyFields := TIB_Row.Create( Self, rtKey );
+  FCursorKeyFields.FIsKeyFields := true;
+  FKeepSQLHistory := false;
+  FSQLHistoryRef := 0;
+  FstHandle := nil;
+  FPrepared := false;
+  FCursorFieldCount := 0;
+  FParamCount := 0;
+  FParamChar := ':';
+  FParamCheck := true;
+  FSQLDialect := 1;
+  FHints := TIB_StringProperty.Create;
+  (FHints as TIB_StringList).OnChange := HintsChange;
+  FColumnAttributes := TIB_StringProperty.Create;
+  FCalculatedFields := TIB_StringProperty.Create;
+  FCalculatedFields.OnChange := OnSQLChange;
+  FFieldsAlignment := TIB_StringProperty.Create;
+  FFieldsCharCase := TIB_StringProperty.Create;
+  FFieldsDisplayFormat := TIB_StringProperty.Create;
+  FFieldsDisplayLabel := TIB_StringProperty.Create;
+  FFieldsGridLabel := TIB_StringProperty.Create;
+  FFieldsDisplayWidth := TIB_StringProperty.Create;
+  FFieldsEditMask := TIB_StringProperty.Create;
+  FFieldsIndex := TIB_StringProperty.Create;
+  FFieldsReadOnly := TIB_StringProperty.Create;
+  FFieldsTrimming := TIB_StringProperty.Create;
+  FFieldsVisible := TIB_StringProperty.Create;
+  (FFieldsAlignment as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsCharCase as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsDisplayFormat as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsDisplayLabel as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsGridLabel as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsDisplayWidth as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsEditMask as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsIndex as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsReadOnly as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsTrimming as TIB_StringList).OnChange := LayoutChange;
+  (FFieldsVisible as TIB_StringList).OnChange := LayoutChange;
+  FIB_ConnectionLink := TIB_ConnectionLink.Create( Self );
+  FIB_ConnectionLink.OnProcessEvent := ProcessConnectionEvent;
+  FIB_TransactionLink := TIB_TransactionLink.Create( Self );
+  FIB_TransactionLink.OnProcessEvent := ProcessTransactionEvent;
+  FStoredProcHasDML := true;
+  flag_statement_type_invalid := true;
+  flag_rows_affected_invalid  := true;
+  flag_statement_plan_invalid := true;
+  FDefineCursorKeyFields := true;
+  FRetrieveDomainNames := true;
+  FMacroBegin := '';
+  FMacroEnd := '';
+  FCombineDuplicateParams := true;
+  FAlwaysCallMacroSubstitute := false;
+  FSetParamAttribs := false;
+  FCalculateAllFields := false;
+end;
+
+destructor TIB_Statement.Destroy;
+begin
+  try
+    SysDeallocate( true );
+  except
+    FPrepared := false;
+    if Assigned( IB_Connection ) and Assigned( FStHandle ) then
+      IB_Connection.DeallocateStmtHandle( PstHandle );
+  end;
+  IB_Transaction := nil;
+  IB_Connection := nil;
+  while StatementLinkCount > 0 do
+    TIB_StatementLink( FIB_StatementLinkList.Items[ 0 ] ).Statement := nil;
+  (FSQL as TIB_SQLStrings).OnChange := nil;
+  FIB_ConnectionLink.OnProcessEvent := nil;
+  FIB_TransactionLink.OnProcessEvent := nil;
+  with FParams do
+  begin
+    OnRowStateChanged := nil;
+    BeforeModify := nil;
+    AfterModify := nil;
+  end;
+  with FCursorFields do
+  begin
+    OnRowStateChanged := nil;
+    BeforeModify := nil;
+    AfterModify := nil;
+  end;
+  inherited Destroy; 
+  FSQL.Free;
+  FSQL := nil;
+  FParams.Free;
+  FParams := nil;
+  FCursorFields.Free;
+  FCursorFields := nil;
+  FCursorKeyFields.Free;
+  FCursorKeyFields := nil;
+  FParamValueLinks.Free;
+  FParamValueLinks := nil;
+  FSysParamNames.Free;
+  FSysParamNames := nil;
+  FSysFieldNames.Free;
+  FSysFieldNames := nil;
+  FSysTableNames.Free;
+  FSysTableNames := nil;
+  FOldParamValueLinks.Free;
+  FOldParamValueLinks := nil;
+  FJoinLinks.Free;
+  FJoinLinks := nil;
+  FSQLHistory.Free;
+  FSQLHistory := nil;
+  FIB_StatementLinkList.Free;
+  FIB_StatementLinkList := nil;
+  FHints.Free;
+  FHints := nil;
+  FColumnAttributes.Free;
+  FColumnAttributes := nil;
+  FCalculatedFields.Free;
+  FCalculatedFields := nil;
+  FFieldsAlignment.Free;
+  FFieldsAlignment := nil;
+  FFieldsCharCase.Free;
+  FFieldsCharCase := nil;
+  FFieldsDisplayFormat.Free;
+  FFieldsDisplayFormat := nil;
+  FFieldsDisplayLabel.Free;
+  FFieldsDisplayLabel := nil;
+  FFieldsGridLabel.Free;
+  FFieldsGridLabel := nil;
+  FFieldsDisplayWidth.Free;
+  FFieldsDisplayWidth := nil;
+  FFieldsEditMask.Free;
+  FFieldsEditMask := nil;
+  FFieldsIndex.Free;
+  FFieldsIndex := nil;
+  FFieldsReadOnly.Free;
+  FFieldsReadOnly := nil;
+  FFieldsTrimming.Free;
+  FFieldsTrimming := nil;
+  FFieldsVisible.Free;
+  FFieldsVisible := nil;
+end;
+
+procedure TIB_Statement.Notification( AComponent: TComponent;
+                                      Operation: TOperation);
+begin
+  if ( Operation = opRemove ) and ( AComponent = FIB_Transaction ) then
+    FIB_Transaction := nil;
+  inherited Notification( AComponent, Operation );
+end;
+
+procedure TIB_Statement.Loaded;
+begin
+  inherited Loaded;
+  if not ( csFixups in ComponentState ) then
+    SysPrepareAfterLoad;
+end;
+
+procedure TIB_Statement.SysPrepareAfterLoad;
+begin
+  try
+    if flag_prepare_after_load then
+    begin
+      SysPrepare;
+      if Prepared then
+        flag_prepare_after_load := false;
+    end;
+  except
+    // Throw away the exception.
+  end;
+end;
+
+procedure TIB_Statement.DoHandleError(       Sender: TObject;
+                                       const errcode: isc_long;
+                                             ErrorMessage,
+                                             ErrorCodes: TStringList;
+                                       const SQLCODE: isc_long;
+                                             SQLMessage,
+                                             SQL: TStringList;
+                                         var RaiseException: boolean);
+  function GetNameInfo( AComponent: TComponent ): string;
+  var
+    tmpStr: string;
+  begin
+    Result := '';
+    if Assigned( AComponent ) then
+    begin
+      if ( AComponent.Name <> '' ) then
+        Result := Result + AComponent.Name + '.'
+      else
+        Result := Result + '<' + AComponent.ClassName + '>.';
+      tmpStr := GetNameInfo( AComponent.Owner );
+      if tmpStr = '' then
+      else
+        Result := tmpStr + Result;
+    end;
+  end;
+var
+  tmpStr: string;
+begin
+  if PreparingSQL then
+    SQL.Add( RefinedSQL );
+  tmpStr := Self.ClassName + ': ' + mkLitCriteria( GetNameInfo( Self ), '"' );
+  if IB_Session.ClientMonitorHooksIn then
+    tmpStr := tmpStr + ' stHandle=' + IntToStr(Integer(FstHandle)) + ' (ERROR)';
+  ErrorMessage.Add( #13#10'STATEMENT:'#13#10 + tmpStr + #13#10 );
+  inherited DoHandleError( Self,
+                           errcode,
+                           ErrorMessage,
+                           ErrorCodes,
+                           SQLCODE,
+                           SQLMessage,
+                           SQL,
+                           RaiseException );
+  if RaiseException and Assigned( IB_Transaction ) then
+    IB_Transaction.DoHandleError( Self,
+                                  errcode,
+                                  ErrorMessage,
+                                  ErrorCodes,
+                                  SQLCODE,
+                                  SQLMessage,
+                                  SQL,
+                                  RaiseException );
+  if RaiseException and Assigned( IB_Connection ) then
+    IB_Connection.DoHandleError( Self,
+                                 errcode,
+                                 ErrorMessage,
+                                 ErrorCodes,
+                                 SQLCODE,
+                                 SQLMessage,
+                                 SQL,
+                                 RaiseException );
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Statement.IsPreparedStored: boolean;
+begin
+  Result := IB_Session.StoreActive and Prepared and not Active;
+end;
+
+function TIB_Statement.IsActiveStored: boolean;
+begin
+  Result := IB_Session.StoreActive and Active;
+end;
+
+function TIB_Statement.GetDatabaseName: string;
+begin
+  if Assigned( IB_Connection ) then
+    FDatabaseName := IB_Connection.DatabaseName;
+  Result := FDatabaseName;
+end;
+
+procedure TIB_Statement.SetDatabaseName( const AValue: string );
+begin
+  FDatabaseName := AValue;
+  IB_Connection := IB_Session.GetConnectionByName( AValue );
+end;
+
+procedure TIB_Statement.SetColumnAttributes( Value: TIB_StringList );
+begin FColumnAttributes.Assign(Value); end;
+procedure TIB_Statement.SetCalculatedFields( Value: TIB_StringList );
+begin FCalculatedFields.Assign(Value); end;
+procedure TIB_Statement.SetFieldsAlignment( Value: TIB_StringList );
+begin FFieldsAlignment.Assign(Value); end;
+procedure TIB_Statement.SetFieldsCharCase( Value: TIB_StringList );
+begin FFieldsCharCase.Assign(Value); end;
+procedure TIB_Statement.SetFieldsDisplayFormat( Value: TIB_StringList );
+begin FFieldsDisplayFormat.Assign(Value); end;
+procedure TIB_Statement.SetFieldsDisplayLabel( Value: TIB_StringList );
+begin FFieldsDisplayLabel.Assign(Value); end;
+procedure TIB_Statement.SetFieldsGridLabel( Value: TIB_StringList );
+begin FFieldsGridLabel.Assign(Value); end;
+procedure TIB_Statement.SetFieldsDisplayWidth( Value: TIB_StringList );
+begin FFieldsDisplayWidth.Assign(Value); end;
+procedure TIB_Statement.SetFieldsEditMask( Value: TIB_StringList );
+begin FFieldsEditMask.Assign(Value); end;
+procedure TIB_Statement.SetFieldsIndex( Value: TIB_StringList );
+begin FFieldsIndex.Assign(Value); end;
+procedure TIB_Statement.SetFieldsReadOnly( Value: TIB_StringList );
+begin FFieldsReadOnly.Assign(Value); end;
+procedure TIB_Statement.SetFieldsTrimming( Value: TIB_StringList );
+begin FFieldsTrimming.Assign(Value); end;
+procedure TIB_Statement.SetFieldsVisible( Value: TIB_StringList );
+begin FFieldsVisible.Assign(Value); end;
+
+procedure TIB_Statement.SetKeyRelation( const AValue: string );
+begin
+  if KeyRelation <> AValue then
+  begin
+    SysUnprepare;
+    FKeyRelation := AValue;
+  end;
+end;
+
+procedure TIB_Statement.SetHints( Value: TStrings );
+begin
+  FHints.Assign(Value);
+end;
+
+procedure TIB_Statement.GetColumnIsReadOnly(     AColumn: TIB_Column;
+                                             var AReadOnly: boolean );
+var
+  tmpR,
+  tmpS: string;
+begin
+  if not AReadOnly then
+    AReadOnly := AColumn.IsCalculated;
+  if not AReadOnly and not AColumn.Computed then
+  begin
+    tmpS := SysKeyRelation;
+    if tmpS = '' then
+      AReadOnly := true
+    else
+    begin
+      tmpR := AColumn.RelName;
+      if Pos( '"', tmpS ) = 0 then
+        tmpS := '"' + tmpS + '"';
+      if Pos( '"', tmpR ) = 0 then
+        tmpR := '"' + tmpR + '"';
+      AReadOnly := ( tmpR <> tmpS );
+    end;
+  end;
+end;
+
+procedure TIB_Statement.GetControlIsReadOnly(     AColumn: TIB_Column;
+                                              var AReadOnly: boolean );
+begin
+// Abstract.
+end;
+
+procedure TIB_Statement.BeginLayout;
+begin
+  Inc( FIgnoreLayoutChange );
+end;
+
+procedure TIB_Statement.EndLayout;
+begin
+  Dec( FIgnoreLayoutChange );
+  if FIgnoreLayoutChange = 0 then
+    UpdateLayout;
+end;
+
+procedure TIB_Statement.UpdateLayout;
+begin
+  SysUpdateLayout( false );
+end;
+
+procedure TIB_Statement.UpdateRecord;
+begin
+  ProcessLinkEvent( setFieldsUpdateData, 0 );
+end;
+
+procedure TIB_Statement.SysUpdateLayout( FirstTime: boolean );
+var
+  ii: integer;
+  tmpCol: TIB_Column;
+begin
+  Inc( FIgnoreLayoutChange );
+  if Assigned( FBindingCursor ) then
+    Inc( FBindingCursor.FIgnoreLayoutChange );
+  try
+    if Fields.ColumnCount > 0 then
+    begin
+      if not FirstTime or ( FieldsIndex.Count > 0 ) then
+        UpdateIndex;
+      if not FirstTime or
+         ( ColumnAttributes.Count > 0 ) or
+         ( FieldsAlignment.Count > 0 ) or
+         ( FieldsCharCase.Count > 0 ) or
+         ( FieldsDisplayFormat.Count > 0 ) or
+         ( FieldsDisplayLabel.Count > 0 ) or
+         ( FieldsGridLabel.Count > 0 ) or
+         ( FieldsDisplayWidth.Count > 0 ) or
+         ( FieldsEditMask.Count > 0 ) or
+         ( FieldsReadOnly.Count > 0 ) or
+         ( FieldsTrimming.Count > 0 ) or
+         ( FieldsVisible.Count > 0 ) or
+         ( IB_Connection.ColumnAttributes.Count > 0 ) or
+         ( IB_Connection.FieldsAlignment.Count > 0 ) or
+         ( IB_Connection.FieldsCharCase.Count > 0 ) or
+         ( IB_Connection.FieldsDisplayFormat.Count > 0 ) or
+         ( IB_Connection.FieldsDisplayLabel.Count > 0 ) or
+         ( IB_Connection.FieldsGridLabel.Count > 0 ) or
+         ( IB_Connection.FieldsDisplayWidth.Count > 0 ) or
+         ( IB_Connection.FieldsEditMask.Count > 0 ) or
+         ( IB_Connection.FieldsReadOnly.Count > 0 ) or
+         ( IB_Connection.FieldsTrimming.Count > 0 ) or
+         ( IB_Connection.FieldsVisible.Count > 0 ) then
+        for ii := 0 to Fields.ColumnCount - 1 do
+        begin
+          tmpCol := Fields.Columns[ii];
+          SysUpdateAlignment( tmpCol );
+          SysUpdateCharCase( tmpCol );
+          SysUpdateDisplayFormat( tmpCol );
+          SysUpdateDisplayLabel( tmpCol );
+          SysUpdateGridLabel( tmpCol );
+          SysUpdateDisplayWidth( tmpCol );
+          SysUpdateEditMask( tmpCol );
+          SysUpdateReadOnly( tmpCol );
+          SysUpdateTrimming( tmpCol );
+          SysUpdateVisible( tmpCol );
+          tmpCol.SysLayoutChanged;
+        end;
+    end;
+    if SetParamAttribs and (Params.ColumnCount > 0) then
+    begin
+      if not FirstTime or
+         ( ColumnAttributes.Count > 0 ) or
+         ( FieldsAlignment.Count > 0 ) or
+         ( FieldsCharCase.Count > 0 ) or
+         ( FieldsDisplayFormat.Count > 0 ) or
+         ( FieldsDisplayLabel.Count > 0 ) or
+         ( FieldsGridLabel.Count > 0 ) or
+         ( FieldsDisplayWidth.Count > 0 ) or
+         ( FieldsEditMask.Count > 0 ) or
+         ( FieldsReadOnly.Count > 0 ) or
+         ( FieldsTrimming.Count > 0 ) or
+         ( FieldsVisible.Count > 0 ) or
+         ( IB_Connection.ColumnAttributes.Count > 0 ) or
+         ( IB_Connection.FieldsAlignment.Count > 0 ) or
+         ( IB_Connection.FieldsCharCase.Count > 0 ) or
+         ( IB_Connection.FieldsDisplayFormat.Count > 0 ) or
+         ( IB_Connection.FieldsDisplayLabel.Count > 0 ) or
+         ( IB_Connection.FieldsGridLabel.Count > 0 ) or
+         ( IB_Connection.FieldsDisplayWidth.Count > 0 ) or
+         ( IB_Connection.FieldsEditMask.Count > 0 ) or
+         ( IB_Connection.FieldsReadOnly.Count > 0 ) or
+         ( IB_Connection.FieldsTrimming.Count > 0 ) or
+         ( IB_Connection.FieldsVisible.Count > 0 ) then
+        for ii := 0 to Params.ColumnCount - 1 do
+        begin
+          tmpCol := Params.Columns[ii];
+          SysUpdateAlignment( tmpCol );
+          SysUpdateCharCase( tmpCol );
+          SysUpdateDisplayFormat( tmpCol );
+          SysUpdateDisplayLabel( tmpCol );
+          SysUpdateGridLabel( tmpCol );
+          SysUpdateDisplayWidth( tmpCol );
+          SysUpdateEditMask( tmpCol );
+          SysUpdateReadOnly( tmpCol );
+          SysUpdateTrimming( tmpCol );
+          SysUpdateVisible( tmpCol );
+          tmpCol.SysLayoutChanged;
+        end;
+    end;
+  finally
+    if Assigned( FBindingCursor ) then
+      Dec( FBindingCursor.FIgnoreLayoutChange );
+    Dec( FIgnoreLayoutChange );
+  end;
+  if FIgnoreLayoutChange = 0 then
+    SysLayoutChanged;
+end;
+
+
+function GetColAttrTxt( const ACol: TIB_Column;
+                        const AColStrings,
+                              AConStrings: TIB_StringList ): string;
+var
+  tmpStr: string;
+  tmpPos: integer;
+begin
+  with ACol do
+  begin
+    Result := AColStrings.LinkValues[ FullFieldName ];
+    if ( Length( Result ) = 0 ) and ( AConStrings.Count > 0 ) then
+    begin
+      Result := AConStrings.LinkValues[ FullFieldName ];
+      if ( Length( Result ) = 0 ) and
+         ( fetDomainName in Statement.IB_Connection.FieldEntryTypes ) then
+      begin
+        Result := AConStrings.LinkValues[ DomainName ];
+      end;
+      if ( Length( Result ) = 0 ) and
+         ( fetSQLType in Statement.IB_Connection.FieldEntryTypes ) then
+      begin
+        tmpStr := SQLTypeSource;
+        tmpPos := Pos( '(', tmpStr );
+        if tmpPos > 0 then
+        begin
+          tmpStr := Trim( Copy( tmpStr, 1, tmpPos - 1 ));
+        end;
+        Result := AConStrings.LinkValues[ tmpStr ];
+      end;
+    end;
+  end;
+end;
+
+function GetColAttrChar( const ACol: TIB_Column;
+                         const AColStrings,
+                               AConStrings: TIB_StringList ): char;
+var
+  tmpStr: string;
+begin
+  tmpStr := GetColAttrTxt( ACol, AColStrings, AConStrings );
+  tmpStr := UpperCase( Copy( Trim( tmpStr ), 1, 1 ));
+  if Length( tmpStr ) = 0 then begin
+    Result := #0;
+  end else begin
+    Result := tmpStr[1];
+  end;
+end;
+
+procedure TIB_Statement.UpdateAlignment;
+var
+  ii: integer;
+begin
+  for ii := 0 to Fields.ColumnCount - 1 do
+    SysUpdateAlignment( Fields.Columns[ ii] );
+end;
+
+procedure TIB_Statement.SysUpdateAlignment( AField: TIB_Column );
+begin
+  with AField do begin
+    case GetColAttrChar( AField,
+                         FieldsAlignment,
+                         IB_Connection.FieldsAlignment ) of
+      'L': FAlignment := taLeftJustify;
+      'R': FAlignment := taRightJustify;
+      'C': FAlignment := taCenter;
+      else if IsBoolean then begin
+        FAlignment := taCenter;
+      end else if AField.IsNumeric then begin
+        FAlignment := taRightJustify;
+      end else begin
+        FAlignment := taLeftJustify;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.UpdateCharCase;
+var
+  ii: integer;
+begin
+  for ii := 0 to Fields.ColumnCount - 1 do begin
+    SysUpdateCharCase( Fields.Columns[ii] );
+  end;
+end;
+
+procedure TIB_Statement.SysUpdateCharCase( Afield: TIB_Column );
+begin
+  with AField do begin
+    case GetColAttrChar( AField,
+                         FieldsCharCase,
+                         IB_Connection.FieldsCharCase ) of
+      'P': FCharCase := ccProper;
+      'U': FCharCase := ccUpper;
+      'L': FCharCase := ccLower;
+      else FCharCase := ccNormal;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.UpdateDisplayFormat;
+var
+  ii: integer;
+begin
+  with Fields do for ii := 0 to ColumnCount - 1 do begin
+    SysUpdateDisplayFormat( Columns[ii] );
+  end;
+  if SetParamAttribs then
+  with Params do for ii := 0 to ColumnCount - 1 do begin
+    SysUpdateDisplayFormat( Columns[ii] );
+  end;
+end;
+
+procedure TIB_Statement.SysUpdateDisplayFormat( AField: TIB_Column );
+begin
+  AField.FDisplayFormat := GetColAttrTxt( AField,
+                           FieldsDisplayFormat,
+                           IB_Connection.FieldsDisplayFormat );
+end;
+
+procedure TIB_Statement.UpdateDisplayLabel;
+var
+  ii: integer;
+begin
+  with Fields do
+    for ii := 0 to ColumnCount - 1 do
+      SysUpdateDisplayLabel( Columns[ii] );
+  if SetParamAttribs then
+    with Params do
+      for ii := 0 to ColumnCount - 1 do
+        SysUpdateDisplayLabel( Columns[ii] );
+end;
+
+procedure TIB_Statement.SysUpdateDisplayLabel( AField: TIB_Column );
+begin
+  AField.FDisplayLabel := GetColAttrTxt( AField,
+                                         FieldsDisplayLabel,
+                                         IB_Connection.FieldsDisplayLabel );
+end;
+
+procedure TIB_Statement.UpdateGridLabel;
+var
+  ii: integer;
+begin
+  with Fields do
+    for ii := 0 to ColumnCount - 1 do
+      SysUpdateGridLabel( Columns[ii] );
+  if SetParamAttribs then
+    with Params do
+      for ii := 0 to ColumnCount - 1 do
+        SysUpdateGridLabel( Columns[ii] );
+end;
+
+procedure TIB_Statement.SysUpdateGridLabel( AField: TIB_Column );
+begin
+  AField.FGridDisplayLabel := GetColAttrTxt( AField,
+                                             FieldsGridLabel,
+                                             IB_Connection.FieldsGridLabel );
+end;
+
+procedure TIB_Statement.UpdateDisplayWidth;
+var
+  ii: integer;
+begin
+  for ii := 0 to Fields.ColumnCount - 1 do
+    SysUpdateDisplayWidth( Fields.Columns[ii] );
+end;
+
+procedure TIB_Statement.SysUpdateDisplayWidth( AField: TIB_Column );
+var
+  tmpStr: string;
+begin
+  with AField do begin
+    tmpStr := Trim( GetColAttrTxt( AField,
+                                   FieldsDisplayWidth,
+                                   IB_Connection.FieldsDisplayWidth ));
+    if Length( tmpStr ) = 0 then begin
+      FDisplayWidth := -1;
+    end else begin
+      FDisplayWidth := StrToInt( tmpStr );
+    end;
+  end;
+end;
+
+procedure TIB_Statement.UpdateEditMask;
+var
+  ii: integer;
+begin
+  for ii := 0 to Fields.ColumnCount - 1 do with Fields.Columns[ii] do begin
+    SysUpdateEditMask( Fields.Columns[ii] );
+  end;
+  if SetParamAttribs then
+  for ii := 0 to Params.ColumnCount - 1 do with Params.Columns[ii] do begin
+    SysUpdateEditMask( Params.Columns[ii] );
+  end;
+end;
+
+procedure TIB_Statement.SysUpdateEditMask( AField: TIB_Column );
+begin
+  AField.FEditMask := GetColAttrTxt( AField,
+                                     FieldsEditMask,
+                                     IB_Connection.FieldsEditMask );
+end;
+
+procedure TIB_Statement.UpdateIndex;
+var
+  ii, jj: integer;
+  tmpCol: TIB_Column;
+begin
+  for jj := 0 to FieldCount - 1 do
+    if Fields.GetBySQLNo( jj, tmpCol ) then
+      if tmpCol.Index <> jj then
+        tmpCol.SetIndex( jj );
+  ii := 0;
+  for jj := 0 to FieldsIndex.Count - 1 do
+    if Fields.GetByName( FieldsIndex[ jj ], tmpCol ) then
+    begin
+      tmpCol.SetIndex( ii );
+      Inc( ii );
+    end;
+end;
+procedure TIB_Statement.UpdateReadOnly;
+var
+  ii: integer;
+begin
+  for ii := 0 to Fields.ColumnCount - 1 do
+    SysUpdateReadOnly( Fields.Columns[ii] );
+end;
+procedure TIB_Statement.SysUpdateReadOnly( AField: TIB_Column );
+begin
+  with FieldsReadOnly, AField do begin
+    FReadOnly := CompareText( 'T',
+                 Copy( LinkValues[ FullFieldName ], 1, 1 )) = 0;
+    FPreventEditing := LinkParamIsSet[ FullFieldName, IB_NOEDIT ];
+    FPreventInserting := LinkParamIsSet[ FullFieldName, IB_NOINSERT ];
+    FPreventSearching := LinkParamIsSet[ FullFieldName, IB_NOSEARCH ];
+    if Assigned( IB_Connection ) then
+    begin
+      with IB_Connection.FieldsReadOnly do
+      begin
+        if LinkIndex[FullFieldName] >= 0 then
+        begin
+          FReadOnly := FReadOnly or
+                     ( CompareText( 'T',
+                               Copy( LinkValues[ FullFieldName ], 1, 1 )) = 0 );
+          FPreventEditing := FPreventEditing or
+                           LinkParamIsSet[ FullFieldName, IB_NOEDIT ];
+          FPreventInserting := FPreventInserting or
+                             LinkParamIsSet[ FullFieldName, IB_NOINSERT ];
+          FPreventSearching := FPreventSearching or
+                             LinkParamIsSet[ FullFieldName, IB_NOSEARCH ];
+        end
+        else
+          if fetDomainName in IB_Connection.FieldEntryTypes then
+          begin
+            FReadOnly := FReadOnly or
+                     ( CompareText( 'T',
+                               Copy( LinkValues[ DomainName ], 1, 1 )) = 0 );
+            FPreventEditing := FPreventEditing or
+                           LinkParamIsSet[ DomainName, IB_NOEDIT ];
+            FPreventInserting := FPreventInserting or
+                             LinkParamIsSet[ DomainName, IB_NOINSERT ];
+            FPreventSearching := FPreventSearching or
+                             LinkParamIsSet[ DomainName, IB_NOSEARCH ];
+          end;
+      end;
+    end;
+  end;
+end;
+procedure TIB_Statement.UpdateTrimming;
+var
+  ii: integer;
+begin
+  for ii := 0 to Fields.ColumnCount - 1 do
+    SysUpdateTrimming( Fields.Columns[ii] );
+end;
+procedure TIB_Statement.SysUpdateTrimming( AField: TIB_Column );
+begin
+  with AField do
+  begin
+    case GetColAttrChar( AField,
+                         FieldsTrimming,
+                         IB_Connection.FieldsTrimming ) of
+      'N': FTrimming := ctNone;
+      'A': FTrimming := ctAll;
+      'B': FTrimming := ctBoth;
+      'L': FTrimming := ctLeft;
+      'R': FTrimming := ctRight;
+      'S': FTrimming := ctSentence;
+      else
+      if IsText then
+        FTrimming := ctRight
+      else
+        FTrimming := ctNone;
+    end;
+  end;
+end;
+procedure TIB_Statement.UpdateVisible;
+var
+  ii: integer;
+begin
+  with Fields do for ii := 0 to ColumnCount - 1 do
+    SysUpdateVisible( Columns[ii] );
+  if SetParamAttribs then
+  with Params do for ii := 0 to ColumnCount - 1 do
+    SysUpdateVisible( Columns[ii] );
+end;
+procedure TIB_Statement.SysUpdateVisible( AField: TIB_Column );
+begin
+  AField.FVisible := GetColAttrChar( AField,
+                                     FieldsVisible,
+                                     IB_Connection.FieldsVisible ) <> 'F';
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Statement.GetBlobNodeData( AVar: PXSQLVAR;
+                                         ArrayDesc: PISC_Array_Desc;
+                                         ABlobNode: PIB_BlobNode );
+begin
+  if not Assigned( ABlobNode ) then
+    raise EIB_Error.Create( E_Unassigned_Blob_Node );
+  if CheckTransaction( true ) then
+    with IB_Session do
+    begin
+      errcode := GetBlobData( pdbHandle,
+                              ptrHandle,
+                              AVar,
+                              ArrayDesc,
+                              ABlobNode,
+                              FOnBlobCallback );
+      if errcode = isc_segstr_eof then
+        errcode := 0;
+      if errcode <> 0 then
+        HandleException( Self );
+    end;
+end;
+
+procedure TIB_Statement.PutBlobNodeData( AVar: PXSQLVAR;
+                                         ArrayDesc: PISC_Array_Desc;
+                                         ABlobNode: PIB_BlobNode );
+begin
+  if not Assigned( ABlobNode ) then
+    raise EIB_Error.Create( E_Unassigned_Blob_Node );
+  CheckTransaction( true );
+  with IB_Session do
+  begin
+    errcode := PutBlobData( pdbHandle,
+                            ptrHandle,
+                            AVar,
+                            ArrayDesc,
+                            ABlobNode,
+                            FOnBlobCallback );
+    if errcode <> 0 then
+      HandleException( Self );
+  end;
+end;
+
+procedure TIB_Statement.GetFieldNamesList( AStrings: TStrings );
+var
+  ii: integer;
+begin
+  try
+    if AStrings <> nil then
+      with AStrings do
+      begin
+        BeginUpdate;
+        try
+          Clear;
+          for ii := 0 to FieldCount - 1 do
+            AStrings.Add( Fields.Columns[ii].BestFieldName );
+        finally
+          EndUpdate;
+        end;
+      end;
+  except
+    Application.HandleException( Self );
+  end;
+end;
+
+procedure TIB_Statement.GetParamNamesList( AStrings: TStrings );
+var
+  ii: integer;
+begin
+  if AStrings <> nil then
+    with AStrings do
+    begin
+      BeginUpdate;
+      try
+        Clear;
+        for ii := 0 to ParamCount - 1 do
+          AStrings.Add( Params[ii].BestFieldName );
+      finally
+        EndUpdate;
+      end;
+    end;
+end;
+
+function TIB_Statement.GetFields: TIB_Row;
+begin
+  Result := FCursorFields;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Statement.SetSQLHistoryRef( AValue: integer );
+begin
+  if KeepSQLHistory then
+  begin
+    FSQLHistoryRef := AValue;
+    if ( FSQLHistoryRef >= 0 ) and
+       ( FSQLHistoryRef < FSQLHistory.Count ) then
+      SQL.CommaText := SQLHistory[ SQLHistoryRef ]
+    else
+    begin
+      SQL.Text := '';
+      FSQLHistoryRef := SQLHistory.Count;
+    end;
+  end;
+end;
+
+function TIB_Statement.AddSQLHistory( ASQL: TStrings;
+                                      Position: integer ): boolean;
+var
+  tmpStr: string;
+begin
+  Result := false;
+  if KeepSQLHistory then
+  begin
+    Result := true;
+    tmpStr := Trim( ASQL.CommaText );
+    if Position < SQLHistory.Count then
+      FSQLHistory[ Position ] := tmpStr
+    else
+    if ( tmpStr <> '' ) and
+       (( FSQLHistory.Count = 0 ) or
+        ( Trim( FSQLHistory[ FSQLHistory.Count - 1 ] ) <> tmpStr )) then
+    begin
+      if FSQLHistoryRef = SQLHistory.Count then
+        Inc( FSQLHistoryRef );
+      FSQLHistory.Add( tmpStr );
+    end
+    else
+      Result := false;
+  end;
+end;
+
+procedure TIB_Statement.ClearSQLHistory;
+begin
+  FSQLHistory.Clear;
+  FSQLHistoryRef := 0;
+end;
+
+procedure TIB_Statement.RemoveSQLHistory( Position: integer );
+begin
+  FSQLHistory.Delete( Position );
+  if FSQLHistoryRef > Position then
+    Dec( FSQLHistoryRef );
+  SetSQLHistoryRef( SQLHistoryRef );
+end;
+
+function TIB_Statement.GetSysKeyRelation: string;
+begin
+  Result := KeyRelation;
+  if ( Result = '' ) and ( Fields.RelationCount = 1 ) then
+    Result := Fields.RelationNames[0];
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Statement.GetCalculatingFields: boolean;
+begin
+  Result := Fields.FCalculatingFields;
+end;
+
+procedure TIB_Statement.CalculateFields;
+begin
+  if Prepared then
+    with Fields do
+    begin
+      BeginUpdate;
+      try
+        CalculateFields;
+      finally
+        EndUpdate( false );
+      end;
+    end;
+end;
+
+procedure TIB_Statement.DoCalculateField( ARow: TIB_Row; AField: TIB_Column );
+begin
+  if Prepared then
+  begin
+    if Assigned( OnCalculateField ) then
+      OnCalculateField( Self, ARow, AField )
+    else
+    if not Assigned( AField ) then
+      if ( Self is TIB_Dataset ) then
+        TIB_Dataset(Self).KeyToChildAction( kcaUpdateKeyDescCalcFields,
+                                            longint(ARow) );
+  end;
+end;
+
+procedure TIB_Statement.Prepare;
+begin
+  BeginBusy( false );
+  try
+    SysPrepare;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Statement.Unprepare;
+begin
+  if Prepared then
+  begin
+    BeginBusy( false );
+    try
+      SysDeallocate( false );
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.Execute;
+begin
+  BeginBusy( false );
+  try
+    SysClose;
+    SysExecute;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Statement.ExecSQL;
+begin
+  Execute;
+end;
+
+procedure TIB_Statement.ExecuteDDL( const Statement: string );
+begin
+  if CheckConnection( true ) and
+     CheckTransaction( true ) then
+  begin
+    BeginBusy( false );
+    try
+      ProcessEvent( BeforeExecDDL );
+      ProcessLinkEvent( setBeforeExecDDL, 0 );
+      IB_Connection.SysBeforeExecDDL;
+      IB_Transaction.SysBeforeExecDDL;
+      try
+        SysExecuteImmediate( Statement, nil );
+        IB_Transaction.SysAfterExecDDL;
+        IB_Connection.SysAfterExecDDL;
+        ProcessEvent( AfterExecDDL );
+        ProcessLinkEvent( setAfterExecDDL, 0 );
+      finally
+        IB_Transaction.Activate;
+      end;
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.ExecuteDML( const Statement: string; AParam: PXSQLDA );
+begin
+  if CheckConnection( true ) and
+     CheckTransaction( true ) then
+  begin
+    BeginBusy( false );
+    try
+      ProcessEvent( BeforeExecDML );
+      ProcessLinkEvent( setBeforeExecDML, 0 );
+      try
+        SysExecuteImmediate( Statement, AParam );
+        ProcessEvent( AfterExecDML );
+        ProcessLinkEvent( setAfterExecDML, 0 );
+      finally
+        IB_Transaction.Activate;
+      end;
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.ExecuteImmediate( const Statement: string;
+                                                AParam: PXSQLDA );
+begin
+  BeginBusy( false );
+  try
+    SysExecuteImmediate( Statement, AParam );
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Statement.ExecImmed2( const Statement: string;
+                                          AParam, AField: PXSQLDA );
+begin
+  BeginBusy( false );
+  try
+    SysExecImmed2( Statement, AParam, AField );
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Statement.FreeServerResources;
+var
+  SaveCW: word;
+begin
+  if Assigned( FStHandle ) and ( FStHandle <> pointer(-1) ) then
+  begin
+    if Prepared then
+      InvalidateSQL;
+    if Assigned( IB_Connection ) then
+      IB_Connection.DeallocateStmtHandle( PstHandle )
+    else
+    with IB_Session do
+    begin
+      asm fstcw [SaveCW] end;
+      errcode := isc_dsql_free_statement( @status, PstHandle, DSQL_DROP );
+      asm fldcw [SaveCW] end;
+    end;
+    FStHandle := pointer(-1);
+  end;
+end;
+
+function TIB_Statement.FieldByName( const AFieldName: string ): TIB_Column;
+begin
+  Prepared := true;
+  Result := Fields.ByName( AFieldName );
+end;
+
+function TIB_Statement.ParamByName( const AFieldName: string ): TIB_Column;
+begin
+  Prepared := true;
+  Result := Params.ByName( AFieldName );
+end;
+function TIB_Statement.FindField( const FieldName: string ): TIB_Column;
+begin Fields.GetByname( FieldName, Result ); end;
+function TIB_Statement.FindKeyField( const FieldName: string ): TIB_Column;
+begin CursorKeyFields.GetByName( FieldName, Result ); end;
+function TIB_Statement.FindParam( const FieldName: string ): TIB_Column;
+begin Params.GetByName( FieldName, Result ); end;
+function TIB_Statement.GetParams: TIB_Row;
+begin Result := FParams; end;
+function TIB_Statement.GetFieldCount: integer;
+begin Result := Fields.ColumnCount; end;
+function TIB_Statement.GetParamCount: integer;
+begin Result := Params.ColumnCount; end;
+function TIB_Statement.GetIsSelectSQL: boolean;
+begin
+  Result := StatementType in [stSelect, stSelectForUpdate];
+end;
+
+function TIB_Statement.GetSQLIsAggregate: boolean;
+var
+  ii: integer;
+  tmpPos: integer;
+  tmpSel: integer;
+  tmpStr: string;
+  tmpLen: longint;
+  tmpCh: char;
+  BegPos, EndPos: longint;
+begin
+  GetSQLGroup( SQL.Text, tmpStr, BegPos, EndPos );
+  Result := Trim( tmpStr ) <> '';
+  if not Result then
+  begin
+    GetSQLSelect( SQL.Text, tmpStr, BegPos, EndPos );
+    tmpStr := AnsiUpperCase( tmpStr );
+    for ii := 1 to Length( tmpStr ) do
+      if Ord( tmpStr[ii] ) < 32 then
+        tmpStr[ii] := ' ';
+    if ( getLitsRoundSafeStrPos(' DISTINCT ', tmpStr, 1, true, false ) > 0) or
+       ( getLitsRoundSafeStrPos(' DISTINCT(', tmpStr, 1, true, false ) > 0) then
+      Result := true
+    else
+    if Pos( '(', tmpStr ) > 0 then
+    begin
+      if FSysFieldNames.Count = 0 then
+        if PreparingSQL then
+        begin
+          if ParamCheck then
+            tmpCh := ParamChar
+          else
+            tmpCh := #0;
+          // Avoides infinite loop.
+          FSelectParamsCount := MakeServerSQL( SQL.Text,
+                                               FSysParamNames,
+                                               FSysFieldNames,
+                                               FSysTableNames,
+                                               tmpStr,
+                                               tmpCh,
+                                               false,
+                                               tmpLen );
+          FSysFieldNamesNeedRefine := true;
+        end
+        else
+          SysGetRawSQL;
+      for ii := 0 to FSysFieldNames.Count - 1 do
+      begin
+        tmpStr := AnsiUpperCase( GetCharValues( FSysFieldNames[ii] ));
+        if Pos( '(', tmpStr ) > 0 then
+        begin
+          replace_string( tmpStr, ' (', '(' );
+            tmpPos := getLitsRoundSafeStrPos( 'COUNT(', tmpStr, 1, true, false );
+          if tmpPos = 0 then
+            tmpPos := getLitsRoundSafeStrPos( 'MAX(', tmpStr, 1, true, false );
+          if tmpPos = 0 then
+            tmpPos := getLitsRoundSafeStrPos( 'MIN(', tmpStr, 1, true, false );
+          if tmpPos = 0 then
+            tmpPos := getLitsRoundSafeStrPos( 'AVG(', tmpStr, 1, true, false );
+          if tmpPos = 0 then
+            tmpPos := getLitsRoundSafeStrPos( 'SUM(', tmpStr, 1, true, false );
+          if tmpPos > 0 then
+          begin
+          // I cannot remember what this check for SELECT is all about.
+          // I think it is to detect whether there is an in-line select that
+          // is using the aggregate instead of the query itself.
+          // I put in a new check to avoid corruption from stuff in comments.
+            tmpSel := getLitSafeStrPos( 'SELECT ', tmpStr, 1 );
+            Result := ( tmpSel = 0 ) or ( tmpPos < tmpSel );
+            if Result then
+              Break;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TIB_Statement.GetSQLIsSelectProc: boolean;
+var
+  tmpStr: string;
+  tmpStu: string;
+  tmpPos: integer;
+  tmpLen: longint;
+  BegPos, EndPos: longint;
+begin
+  GetSQLFrom( SQL.Text, tmpStr, BegPos, EndPos );
+  MakeServerSQL( Trim(tmpStr), nil,nil,nil, tmpStr, ParamChar, false, tmpLen );
+  if not Assigned( IB_Connection ) or ( IB_Connection.SQLDialect <> 3 ) then
+    tmpStr := AnsiUpperCase( tmpStr );
+  tmpStu := AnsiUpperCase( tmpStr );
+  for tmpPos := 1 to Length( tmpStr ) do
+    if Ord( tmpStr[tmpPos] ) < 32 then
+      tmpStr[tmpPos] := ' ';
+  Result := ( Pos( '(', tmpStu ) > 0 ) and
+            not (( Pos( ' ON ', tmpStu ) > 0 ) or
+                 ( Pos( ' JOIN ', tmpStu ) > 0 ));
+  CheckConnection( false );
+  if Assigned( IB_Connection ) and not Result then
+  begin
+    tmpStr := SysKeyRelation;
+    if tmpStr <> '' then
+      Result := IB_Connection.SchemaCache.ProcedureNames.IndexOf(tmpStr) <> -1;
+  end;
+end;
+
+function TIB_Statement.GetFieldValue( const FieldName: string ): Variant;
+begin Result := Fields.GetColumnValue( FieldName ); end;
+procedure TIB_Statement.SetFieldValue( const FieldName: string;
+                                       const Value: Variant );
+begin Fields.SetColumnValue( FieldName, Value ); end;
+function TIB_Statement.GetParamValue( const ParamName: string ): Variant;
+begin Result := Params.GetColumnValue( ParamName ); end;
+procedure TIB_Statement.SetParamValue( const ParamName: string;
+                                       const Value: Variant );
+begin Params.SetColumnValue( ParamName, Value ); end;
+procedure TIB_Statement.GetFieldList( AList: TList; const FieldNames: string );
+begin Fields.GetColumnList( AList, FieldNames ); end;
+procedure TIB_Statement.GetParamList( AList: TList; const ParamNames: string );
+begin Params.GetColumnList( AList, ParamNames ); end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Statement.CheckConnection( RequestConnect: boolean ): boolean;
+var
+  tmpStr: string;
+begin
+  if ( IB_Connection = nil ) and ( FDatabaseName <> '' ) then
+    IB_Connection := IB_Session.GetConnectionByName( FDatabaseName );
+  if ( IB_Connection = nil ) and IB_Session.AllowDefaultConnection then
+    IB_Connection := GetDefaultConnection;
+  if RequestConnect and
+     not Assigned( IB_Connection ) and
+     not ( csDestroying in ComponentState ) and
+     not ( csReading in ComponentState ) then
+  begin
+    if Assigned( Owner ) then tmpStr := Owner.Name else tmpStr := '';
+    if tmpStr <> '' then tmpStr := tmpStr + '.';
+    if Name <> '' then tmpStr := tmpStr + Name else tmpStr := tmpStr + '<no name>';
+    raise EIB_StatementError.Create( E_NO_CONNECTION + ': ' + tmpStr );
+  end;
+  if RequestConnect and not FIB_ConnectionLink.Connected then
+    IB_Connection.Connect;
+  Result := FIB_ConnectionLink.Connected;
+end;
+
+function TIB_Statement.CheckTransaction( RequestStart: boolean ): boolean;
+begin
+  if IB_Transaction = nil then
+    CheckConnection( false );
+  if ( IB_Transaction = nil ) then
+    IB_Transaction := GetDefaultTransaction;
+  if ( IB_Transaction = nil ) and
+     (( IB_Session.AllowDefaultTransaction ) or
+      ( csDesigning in ComponentState )) then
+  begin
+    if FIB_Transaction = nil then
+    begin
+      FIB_Transaction := TIB_TransactionDefault.Create( Self );
+      FIB_Transaction.Name := 'tr' + Self.Name;
+      FIB_Transaction.AutoCommit := true;
+      FIB_Transaction.Isolation := tiCommitted;
+    end
+    else
+    with FIB_Transaction do
+      if AutoCommit and Started then
+        Commit;
+    IB_Transaction := FIB_Transaction;
+  end;
+  if Assigned( FIB_Transaction ) then
+    FIB_Transaction.IB_Connection := IB_Connection;
+  if RequestStart and not FIB_TransactionLink.Started then
+  begin
+    if not Assigned( IB_Transaction ) then
+      raise EIB_Error.Create( E_Invalid_Internal_Transaction );
+    if not Assigned( IB_Transaction.IB_Connection ) then
+      CheckConnection( false );
+    if Assigned( IB_Transaction.IB_Connection ) then
+      with IB_Transaction.IB_Connection do
+        if not ( Connected ) and
+               ( ConnectionStatus <> csDisconnected ) then
+          API_Connect;
+    IB_Transaction.SysStart;
+    if not FIB_TransactionLink.Started and Assigned( IB_Transaction ) then
+      IB_Transaction.SysStart;
+  end;
+  Result := FIB_TransactionLink.Started;
+end;
+
+function TIB_Statement.SysAllocate: boolean;
+begin
+  if not Assigned( FStHandle ) and CheckConnection( true ) then
+  begin
+    IB_Connection.AllocateStmtHandle( PstHandle );
+    FSQLDialect := IB_Connection.SQLDialect;
+  end;
+  Result := Assigned( FStHandle );
+end;
+
+procedure TIB_Statement.SysDeallocate( AllowCachedHandle: boolean );
+var
+  SaveCW: word;
+begin
+  if Assigned( FStHandle ) then
+  begin
+    SysUnprepare;
+    if longint(FStHandle) <> -1 then
+    begin
+      if Assigned( IB_Connection ) and AllowCachedHandle then
+        IB_Connection.DeallocateStmtHandle( PstHandle )
+      else
+      with IB_Session do
+      begin
+        asm fstcw [SaveCW] end;
+        errcode := isc_dsql_free_statement( @status, PstHandle, DSQL_DROP );
+        asm fldcw [SaveCW] end;
+      end;
+    end;
+    FStHandle := nil;
+  end;
+  if Assigned( FIB_Transaction ) and FIB_Transaction.Started then
+    if FIB_Transaction.FConnectionWasLost then FIB_Transaction.Rollback else
+                                               FIB_Transaction.Commit;
+  if Assigned( IB_Connection ) then
+  //!!! Check for a lost connection.
+    FSQLDialect := IB_Connection.SQLDialect;
+end;
+
+procedure TIB_Statement.InvalidateSQL;
+begin
+  ProcessEvent( OnInvalidateSQL );
+  if FSQLIsValid then
+    FSQLIsValid := false;
+end;
+
+function TIB_Statement.SysPrepare: boolean;
+begin
+  if Prepared then
+  begin
+    if not SQLIsValid then
+    begin
+      if Active then
+        SysClose;
+      SysExecPrepare;
+    end;
+  end
+  else
+  if ( csLoading in ComponentState ) or
+     ( csFixups  in ComponentState ) then
+    flag_prepare_after_load := true
+  else
+  if SysAllocate and CheckTransaction( true ) then
+  begin
+    SysExecPrepare;
+    if not SQLIsValid then
+      SysExecPrepare;
+  end;
+  Result := Prepared;
+end;
+
+function TIB_Statement.GetSQLIsRefined: boolean;
+begin
+  Result := ServerSQL <> RefinedSQL;
+end;
+
+function TIB_Statement.GetSQLDialect: integer;
+begin
+  Result := FSQLDialect;
+  if ( Result < 3 ) then
+  begin
+    if not Assigned( IB_Connection ) then
+      CheckConnection( false );
+    if Assigned( IB_Connection ) then
+    begin
+      if IB_Connection.SQLDialect > 0 then
+        Result := IB_Connection.SQLDialect;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.SysExecPrepare;
+var
+  New_In,
+  New_Out: smallint;
+  oldSQL: string;
+  oldJoin: string;
+  tmpSQL: string;
+  tmpLen: longint;
+  oldSQLValid: boolean;
+begin
+  if not PreparingSQL then try
+    if Prepared then
+    begin
+      FRepreparingSQL := true;
+      SysStoreParamValueLinks;
+    end
+    else
+    SysBeforePrepare;
+    FPreparingSQL := true;
+    oldSQL := SQL.Text;
+    oldJoin := FJoinLinks.Text;
+    oldSQLValid := SQLIsValid;
+    try
+      try
+        SQL.BeginUpdate;
+        try
+          ParamValueLinks.Clear;
+          FSQLIsValid := true;
+          SysGetRawSQL;
+        finally
+          SQL.Text := oldSQL;
+          FJoinLinks.Text := oldJoin;
+        end;
+      finally
+        SQL.EndUpdate;
+      end;
+    except
+      FSQLIsValid := oldSQLValid;
+      SysPrepareFailed;
+      raise;
+    end;
+    with IB_Session do
+    begin
+      errcode := API_Prepare( PChar( RefinedSQL ), New_In, New_Out );
+      if errcode = isc_dsql_error then
+      begin
+        if IsTriggerOrProcedureDDL( SQL.Text ) then
+        begin
+          if ParamCheck then
+          begin
+            MakeServerSQL( SQL.Text, nil,
+                                     nil,
+                                     nil, tmpSQL, #0, true, tmpLen );
+            errcode := API_Prepare( PChar( tmpSQL ), New_In, New_Out );
+          end;
+        end
+        else
+        begin
+        // Try stripping comments out.
+          MakeServerSQL( RefinedSQL, nil,
+                                     nil,
+                                     nil, tmpSQL, ParamChar, false, tmpLen );
+          errcode := API_Prepare( PChar( tmpSQL ), New_In, New_Out );
+        end;
+      end;
+      if errcode = 0 then
+      begin
+        FPrepared := true;
+        try
+          FParamCount := New_In;
+          FCursorFieldCount := New_Out;
+          SysUpdateDescriptors;
+        except
+          FSQLIsValid := oldSQLValid;
+          SysPrepareFailed;
+          raise;
+        end;
+        if ( StatementLinkCount > 0 ) and
+           (( FParamCount > 0 ) or RepreparingSQL ) then
+          ProcessLinkEvent( setParamsRefsChanged, 0 );
+        if RepreparingSQL then
+          SysLayoutChanged
+        else
+        begin
+          if ( StatementLinkCount > 0 ) then
+            ProcessLinkEvent( setFieldsRefsChanged, 0 );
+          SysUpdateLayout( true );
+          AddSQLHistory( SQL, FSQLHistoryRef );
+          if FCursorFieldCount > 0 then
+            CursorFields.CleanBuffers( true );
+          SysPreparedChanged;
+        end;
+        if FParamCount > 0 then
+          SysRestoreParamValueLinks;
+        SysAfterPrepare;
+      end
+      else
+      begin
+        SysPrepareFailed;
+        HandleException( Self );
+      end;
+      if (Status[0] = isc_arg_gds {1}) and (Status[1] = 0) and
+      (Status[2] = isc_arg_warning {18})
+      then HandleException (Self)
+    end;
+  finally
+    FPreparingSQL := false;
+    FRepreparingSQL := false;
+  end;
+end;
+
+procedure TIB_Statement.SysDescribeVARList( ARow: TIB_Row );
+var
+  ii: integer;
+begin
+  with IB_Session, ARow do
+    case RowType of
+      rtParam:
+      begin
+        for ii := 0 to FInDa.SQLd - 1 do
+          FPSQLDA.SQLVAR[ ii ] := FInDa.SQLVAR[ ii ];
+        NameParams;
+      end;
+      rtField:
+        for ii := 0 to FOutDa.SQLd - 1 do
+          FPSQLDA.SQLVAR[ ii ] := FOutDa.SQLVAR[ ii ];
+    end;
+end;
+
+procedure TIB_Statement.DoMacroSubstitute;
+begin
+  if FAlwaysCallMacroSubstitute or Assigned( FOnMacroSubstitute ) then
+    SQL.Text := IB_Parse.SubstMacros( SQL.Text,
+                                      SysSubstituteMacros,
+                                      MacroBegin,
+                                      MacroEnd );
+end;
+
+procedure TIB_Statement.SysGetRawSQL;
+var
+  tmpLen: longint;
+  tmpBool: boolean;
+  tmpCh: char;
+begin
+  if ParamCheck then tmpCh := ParamChar else tmpCh := #0;
+  tmpBool := SysNeedToRefineSQL;
+  SysInitRawSQL;
+  DoMacroSubstitute;
+  SysPrepareSQL;
+  SysFinishRawSQL;
+  if tmpBool then
+  begin
+    MakeServerSQL( SQL.Text, nil, nil, nil, FServerSQL, tmpCh, true, tmpLen );
+    try
+      FRefiningSQL := true;
+      try
+        SysInitRawSQL;
+        SysRefineSQL;
+        SysFinishRawSQL;
+      except
+        FSQLIsValid := false;
+        raise;
+      end;
+    finally
+      FRefiningSQL := false;
+    end;
+  end;
+  FSelectParamsCount := MakeServerSQL( SQL.Text,
+                                       FSysParamNames,
+                                       FSysFieldNames,
+                                       FSysTableNames,
+                                       FRefinedSQL,
+                                       tmpCh,
+                                       true,
+                                       tmpLen );
+  FSysFieldNamesNeedRefine := true;
+  // Have the refinedsql parsed for macros - to cater for additions
+  // coming from filters, searches etc.
+  if FAlwaysCallMacroSubstitute or Assigned( FOnMacroSubstitute ) then
+    FRefinedSQL := IB_Parse.SubstMacros( FRefinedSQL,
+                                         SysSubstituteMacros,
+                                         MacroBegin,
+                                         MacroEnd );
+  if not tmpBool then
+    FServerSQL := FRefinedSQL
+  else
+    // if ServerSQL was not copied from refined then also have it parsed
+    // for macro insertion
+    if FAlwaysCallMacroSubstitute or Assigned( FOnMacroSubstitute ) then
+      FServerSQL := IB_Parse.SubstMacros( FServerSQL,
+                                           SysSubstituteMacros,
+                                           MacroBegin,
+                                           MacroEnd );
+  FPreparedSQL := SQL.Text;
+end;
+
+function TIB_Statement.SysSubstituteMacros( const ATextBlock: string ): string;
+begin
+  if Assigned( FOnMacroSubstitute ) then
+  begin
+    Result := MacroBegin + MacroBegin + ATextBlock + MacroEnd + MacroEnd;
+    OnMacroSubstitute( Self, ATextBlock, Result );
+    if Result = MacroBegin + MacroBegin + ATextBlock + MacroEnd + MacroEnd then
+      Result := MacroBegin + ATextBlock + MacroEnd;
+  end;
+end;
+
+procedure TIB_Statement.SysFieldNamesRefine;
+var
+  ii, jj: integer;
+  tmpStr: string;
+  tmpRel: string;
+  tmpFlds: TIB_StringList;
+  tmpPos: integer;
+  trm: string;
+  begPos, endPos: longint;
+begin
+  FSysFieldNamesNeedRefine := false;
+  ii := 0;
+  tmpFlds := TIB_StringList.Create;
+  try
+    FSysFieldNames.BeginUpdate;
+    try
+      while ii <= FSysFieldNames.Count - 1 do
+      begin
+        tmpStr := GetCharValues( FSysFieldNames[ii] );
+        for jj := 1 to Length( tmpStr ) do
+          if tmpStr[ jj ] < ' ' then
+            tmpStr[ jj ] := ' ';
+        tmpStr := Trim( tmpStr );
+        if tmpStr = '<*>' then
+        begin
+          FSysFieldNames.Delete( ii );
+          tmpStr := Trim( FSysFieldNames[ii]);
+          if tmpStr = '*' then
+            tmpRel := SysKeyRelation
+            // Need to parse for multiple table names later on.
+            // We are safe for now because it is only needing the count and if
+            // it is wrong it auto corrects by describing the output fields
+            // after the prepare is performed.
+          else
+          begin
+            tmpRel := '';
+            tmpPos := getLitSafeStrPos( '.*', tmpStr, 1 );
+            if tmpPos > 0 then
+              tmpRel := Copy( tmpStr, 1, tmpPos - 1 );
+            // Parse table alias names later on.
+            // If an alias name is used and no table exists then it will simply
+            // get corrected by describing the fields after the prepare.
+          end;
+          if tmpRel <> '' then
+            with IB_Connection.SchemaCache do
+              if TableNames.IndexOf( tmpRel ) <> -1 then
+              begin
+                GetTableFields( tmpRel, tmpFlds );
+                if tmpFlds.Count > 0 then
+                begin
+                  FSysFieldNames.Delete( ii );
+                  for jj := tmpFlds.Count - 1 downto 0 do
+                    FSysFieldNames.Insert( ii, tmpFlds[jj] );
+                  Inc( ii, tmpFlds.Count );
+                end;
+              end;
+        end
+        else
+        begin
+        // Need to remove the AS < aliasname > part so that this won't foul up
+        // other uses. This is also because we already have access to this info
+        // using the aliasname property.
+          trm := '';
+          begPos := ParseLineInvalid;
+          endPos := ParseLineEnd;
+          if ParseStr( tmpStr,
+                       '', false,
+                       ['AS'],
+                       begPos,
+                       endPos,
+                       trm,
+                       false,
+                       false ) then
+          begin
+            tmpStr := Trim( Copy( tmpStr, 1, endPos - 1 ));
+            FSysFieldNames[ii] := SetCharValues( tmpStr );
+          end
+          else
+          begin
+            begPos := getLitSafePosFromRight( ' ', tmpStr, 0, true );
+            if begPos > 0 then
+            begin
+              tmpStr := Trim( Copy( tmpStr, 1, begPos - 1 ));
+              FSysFieldNames[ii] := SetCharValues( tmpStr );
+            end;
+          end;
+          Inc( ii );
+        end;
+        tmpFlds.Clear;
+      end;
+    finally
+      FSysFieldNames.EndUpdate;
+    end;
+  finally
+    tmpFlds.Free;
+  end;
+end;
+
+function TIB_Statement.GetSysParamNames: TIB_StringList;
+begin
+  Result := FSysParamNames;
+end;
+
+function TIB_Statement.GetSysFieldNames: TIB_StringList;
+begin
+  if FSysFieldNamesNeedRefine then
+    SysFieldNamesRefine;
+  Result := FSysFieldNames;
+end;
+
+function TIB_Statement.GetSysTableNames: TIB_StringList;
+begin
+  Result := FSysTableNames;
+end;
+
+procedure TIB_Statement.SysInitRawSQL;
+begin
+end;
+
+procedure TIB_Statement.SysFinishRawSQL;
+begin
+end;
+
+procedure TIB_Statement.SysRefineSQL;
+begin
+end;
+
+function TIB_Statement.SysNeedToRefineSQL: boolean;
+begin
+  Result := false;
+end;
+
+function TIB_Statement.GetClientSQL: string;
+begin
+  if Prepared then
+  begin
+    SysBeforeExecute;
+    SysPrepare;
+    MakeClientSQL( ServerSQL, Result, ParamChar );
+  end
+  else
+    Result := SQL.Text;
+end;
+
+procedure TIB_Statement.SysBeforePrepare;
+begin
+  ProcessEvent( BeforePrepare );
+  ProcessLinkEvent( setBeforePrepare, 0 );
+end;
+
+procedure TIB_Statement.SysAfterPrepare;
+begin
+  ProcessLinkEvent( setAfterPrepare, 0 );
+  ProcessEvent( AfterPrepare );
+end;
+
+procedure TIB_Statement.SysClose;
+begin
+  if Active then
+  begin
+    FActive := false;
+    SysActiveChange;
+  end;
+end;
+
+procedure TIB_Statement.SysUnprepare;
+begin
+  if Prepared then
+  begin
+    if not FUnpreparing then
+    begin
+      FUnpreparing := true;
+      try
+        SysClose;
+        SysBeforeUnprepare;
+        SysStoreParamValueLinks;
+        FPrepared := false;
+        FServerSQL := '';
+        FSysParamNames.Clear;
+        FSysFieldNames.Clear;
+        FSysTableNames.Clear;
+        FParamCount := 0;
+        FCursorFieldCount := 0;
+        try
+          SysUpdateDescriptors;
+          ProcessLinkEvent( setParamsRefsChanged, 0 );
+          ProcessLinkEvent( setFieldsRefsChanged, 0 );
+          SysLayoutChanged;
+        finally
+          SysAfterUnprepare;
+          SysPreparedChanged;
+        end;
+      finally
+        FUnpreparing := false;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.SysBeforeUnprepare;
+begin
+  ProcessEvent( BeforeUnprepare );
+  ProcessLinkEvent( setBeforeUnprepare, 0 );
+end;
+
+procedure TIB_Statement.SysAfterUnprepare;
+begin
+  ProcessLinkEvent( setAfterUnprepare, 0 );
+  ProcessEvent( AfterUnprepare );
+end;
+
+procedure TIB_Statement.SysExecute;
+begin
+  if CheckTransaction( true ) then
+  begin
+    if SysPrepare then
+    begin
+      SysBeforeExecute;
+      if FieldCount > 0 then
+        SysBeforeExecuteForOutput;
+      if ParamCount > 0 then
+        SysBeforeExecuteWithInput;
+      FWasSingleton := false;
+      try
+        SysExecStatement;
+      except
+        SysExecuteFailed;
+        raise;
+      end;
+      flag_rows_affected_invalid := true;
+      try
+        if Assigned( IB_Transaction ) then
+        begin
+          if ( StatementType in [ stInsert,
+                                  stUpdate,
+                                  stDelete,
+                                  stDDL ] ) or
+             (( StatementType = stExecProcedure ) and
+               ( StoredProcHasDML or ( FieldCount = 0 ))) then
+          begin
+            if IB_Transaction.Started then
+              IB_Transaction.Activate;
+          end;
+        end;
+      finally
+        if ParamCount > 0 then
+          SysAfterExecuteWithInput;
+        if FieldCount > 0 then
+          SysAfterExecuteForOutput;
+        SysAfterExecute;
+      end;
+    end
+    else
+      raise EIB_StatementError.Create( E_FAILED_TO_PREPARE );
+  end
+  else
+  if //not Assinged( IB_Transaction ) and
+     not (( csLoading in ComponentState ) or
+          ( csDestroying in ComponentState ) or
+          ( csFixups  in ComponentState )) then begin
+    raise EIB_StatementError.Create( E_NO_ACTIVE_TRANS );
+  end;
+end;
+
+procedure TIB_Statement.SysExecuteFailed;
+begin
+  if StatementType in [ stInsert, stUpdate, stExecProcedure ] then
+    Params.AfterPostBuffers( false );
+end;
+
+procedure TIB_Statement.SysBeforeExecuteForOutput;
+begin
+  CursorFields.CleanBuffers( true );
+end;
+
+procedure TIB_Statement.SysAfterExecuteForOutput;
+begin
+  if not Active then
+  begin
+    FActive := true;
+    if WasSingleton then
+    begin
+      CursorFields.RefreshBuffers( true, true, true );
+      CursorFields.SysAfterModify( nil );
+    end;
+    SysActiveChange;
+  end;
+end;
+
+procedure TIB_Statement.SysBeforeExecuteWithInput;
+begin
+  Params.PostBlobBuffers;
+end;
+
+procedure TIB_Statement.SysAfterExecuteWithInput;
+begin
+  Params.AfterPostBuffers( true );
+end;
+
+procedure TIB_Statement.SysExecStatement;
+begin
+  if not ( StatementType in [ stSetGenerator,
+                              stCommit,
+                              stRollback,
+                              stStartTrans ] ) then
+    CheckTransaction( true );
+  case StatementType of
+    stSelect:
+      SysExecSelect;
+    stInsert,
+    stUpdate,
+    stDelete:
+      begin
+        ProcessEvent( BeforeExecDML );
+        ProcessLinkEvent( setBeforeExecDML, 0 );
+        API_Execute;
+        ProcessEvent( AfterExecDML );
+        ProcessLinkEvent( setAfterExecDML, 0 );
+      end;
+    stDDL:
+      begin
+        ProcessEvent( BeforeExecDDL );
+        ProcessLinkEvent( setBeforeExecDDL, 0 );
+        IB_Connection.SysBeforeExecDDL;
+        IB_Transaction.SysBeforeExecDDL;
+        API_Execute;
+        IB_Transaction.SysAfterExecDDL;
+        IB_Connection.SysAfterExecDDL;
+        ProcessEvent( AfterExecDDL );
+        ProcessLinkEvent( setAfterExecDDL, 0 );
+      end;
+    stGetSegment,
+    stPutSegment:
+      API_Execute;
+    stExecProcedure:
+      API_Execute2;
+    stStartTrans:
+      if Assigned( IB_Transaction ) then
+      begin
+        IB_Transaction.Started := true;
+        IB_Transaction.StartTransaction
+      end else
+        raise EIB_StatementError.Create( E_Unassigned_Transaction );
+    stCommit:
+      if Assigned( IB_Transaction ) then
+        IB_Transaction.SysCommit( false )
+      else
+        raise EIB_StatementError.Create( E_Unassigned_Transaction );
+    stRollback:
+      if Assigned( IB_Transaction ) then
+        IB_Transaction.SysRollback( false )
+      else
+        raise EIB_StatementError.Create( E_Unassigned_Transaction );
+    stSelectForUpdate:
+      SysExecSelect;
+    stSetGenerator:
+      API_Execute;
+    else
+      raise EIB_StatementError.Create( E_UNKNOWN_STATEMENT + ': ' +
+                                       IntToStr( Ord( StatementType )));
+  end;
+end;
+
+procedure TIB_Statement.SysExecSelect;
+begin
+  API_Execute2;
+end;
+
+procedure TIB_Statement.SysBeforeExecute;
+begin
+  ProcessEvent( BeforeExecute );
+  ProcessLinkEvent( setBeforeExecute, 0 );
+  if ParamCount > 0 then begin
+    ProcessLinkEvent( setParamsUpdateData, 0 );
+  end;
+end;
+
+procedure TIB_Statement.SysAfterExecute;
+begin
+  ProcessLinkEvent( setAfterExecute, 0 );
+  ProcessEvent( AfterExecute );
+end;
+
+procedure TIB_Statement.SysExecuteImmediate( Statement: string;
+                                             AParam: PXSQLDA );
+var
+  tmpStr,
+  tmpType: string;
+var
+  SaveCW: word;
+  NewDBHandle: isc_db_handle;
+  NewTRHandle: isc_db_handle;
+  tmpLen: longint;
+begin
+  if FAlwaysCallMacroSubstitute or Assigned( FOnMacroSubstitute ) then
+    Statement := IB_Parse.SubstMacros( Statement,
+                                       SysSubstituteMacros,
+                                       MacroBegin,
+                                       MacroEnd );
+  MakeServerSQL( Statement, nil, nil, nil, Statement, #0, true, tmpLen );
+  if FIB_ConnectionLink.Connected then
+  begin
+    if CheckTransaction( true ) then
+      API_ExecuteImmediate( Statement, AParam );
+  end
+  else
+  if IB_Connection <> nil then
+  begin
+    NewDBHandle := nil;
+    NewTRHandle := nil;
+    with IB_Connection.IB_Session do
+    begin
+      if Assigned( isc_dsql_execute_immediate ) then
+      begin
+        asm fstcw [SaveCW] end;
+        errcode := isc_dsql_execute_immediate( @status,
+                                               @NewDBHandle,
+                                               @NewTRHandle,
+                                               Length(Statement),
+                                               PChar(Statement),
+                                               IB_Connection.SQLDialect,
+                                               AParam );
+        asm fldcw [SaveCW] end;
+      end
+      else
+        errcode := -1;
+      if ( NewDBHandle <> nil ) or ( errcode = isc_bad_db_handle ) then
+      begin
+        if SetConnectionProperties( IB_Connection, Statement, tmpType ) then
+        begin
+          if NewDBHandle <> nil then
+            IB_Connection.dbHandle := NewDBHandle
+          else
+          if tmpType = 'DROP' then
+          begin
+            try
+              IB_Connection.SysConnect( true );
+            except
+              Exit;
+            end;
+            IB_Connection.DropDatabase;
+          end
+          else
+          if tmpType = 'CONNECT' then
+            IB_Connection.SysConnect( true )
+          else
+          if tmpType <> 'DISCONNECT' then
+            IB_Connection.SysConnect( true );
+        end
+        else
+        if ExtractDBProp( Statement+';', '', [ 'CONNECT',
+                                               'DISCONNECT',
+                                               'DROP' ], tmpType, tmpStr ) then
+        else
+          raise EIB_StatementError.Create( E_INV_CREATE_CONNECT_DROP );
+      end
+      else if errcode <> 0 then
+        HandleException( Self );
+    end;
+  end else begin
+    raise EIB_StatementError.Create( E_NO_CONNECTION );
+  end;
+end;
+
+procedure TIB_Statement.SysExecImmed2( Statement: string;
+                                       AParam, AField: PXSQLDA );
+begin
+  if CheckConnection( true ) then
+    if CheckTransaction( true ) then
+      API_ExecImmed2( Statement, AParam, AField );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Statement.SysPreparedChanged;
+begin
+  ProcessLinkEvent( setPreparedChanged, 0 );
+  ProcessEvent( OnPreparedChanged );
+end;
+
+procedure TIB_Statement.SysActiveChange;
+begin
+  ProcessLinkEvent( setActiveChange, 0 );
+  ProcessEvent( OnActiveChange );
+end;
+
+procedure TIB_Statement.SysLayoutChanged;
+begin
+  ProcessLinkEvent( setLayoutChanged, 0 );
+  ProcessEvent( OnLayoutChanged );
+end;
+
+procedure TIB_Statement.SysStoreParamValueLinks;
+var
+  ii: integer;
+begin
+{ Store all current AParam values to old params. }
+  FOldParamValueLinks.BeginUpdate;
+  try
+    FOldParamValueLinks.Clear;
+    for ii := 0 to ParamCount - 1 do
+      with Params[ii] do
+        if not IsBlob and not IsArray and not IsNull then
+        begin
+          if IsDateTime then
+            FOldParamValueLinks.Add( BestFieldName + '=' +
+                                     AsDateTimeEncodeString )
+          else
+            FOldParamValueLinks.Add( BestFieldName + '=' + AsString );
+        end;
+  finally
+    FOldParamValueLinks.EndUpdate;
+  end;
+end;
+
+procedure TIB_Statement.SysRestoreParamValueLinks;
+var
+  ii: integer;
+  tmpStr: string;
+  tmpInt: integer;
+  tmpPrm: TIB_Column;
+begin
+{ Transfer OldParamValues to new params that line up by name. }
+  if ParamCount > 0 then
+  begin
+    for ii := 0 to ParamCount - 1 do
+      with Params[ii] do
+        if not IsBlob and not IsArray then
+        begin
+          tmpInt := FOldParamValueLinks.LinkIndex[ BestFieldName ];
+          if tmpInt <> -1 then
+          begin
+            tmpStr := FOldParamValueLinks.IndexValues[ tmpInt ];
+            if IsNull or ( AsString <> tmpStr ) then
+              try
+                if IsDateTime and ( tmpStr <> '' ) then
+                  AsDateTime := EncodeStringToDateTime( tmpStr )
+                else
+                  AsString := tmpStr;
+              except
+                Clear;
+              end;
+            FOldParamValueLinks.Delete( tmpInt );
+          end;
+        end;
+{ Place the values from the ParamValues property into the Params. }
+    with ParamValueLinks do
+      for ii := 0 to Count - 1 do
+      begin
+        tmpPrm := FindParam( Names[ ii ] );
+        if Assigned( tmpPrm ) then
+        begin
+          tmpStr := IndexValues[ ii ];
+          if tmpPrm.IsDateTime and ( tmpStr <> '' ) then
+            tmpPrm.AsDateTime := StrToDateTime( tmpStr )
+          else
+            tmpPrm.AsString := tmpStr;
+        end;
+      end;
+  end;
+end;
+
+procedure TIB_Statement.SysUpdateDescriptors;
+begin
+  FParams.SysUpdate( FParamCount );
+  if not RepreparingSQL then
+    FCursorFields.SysUpdate( FCursorFieldCount );
+  flag_statement_plan_invalid := true;
+end;
+
+procedure TIB_Statement.SysUpdateStatementType;
+var
+  tmp: array [0..10] of Char;
+  TypeBuffer: array [0..50] of Char;
+  StmtType: integer;
+  StmtLen: integer;
+  StmtText: string;
+  BegPos, EndPos: longint;
+begin
+  GetSQLSelect( SQL.Text, StmtText, BegPos, EndPos );
+  if StmtText <> '' then
+  begin
+    GetSQLForUpdate( SQL.Text, StmtText, BegPos, EndPos );
+    if StmtText <> '' then
+      FStatementType := stSelectForUpdate
+    else
+      FStatementType := stSelect;
+    flag_statement_type_invalid := false;
+  end
+  else
+  begin
+    FStatementType := stUnknown;
+    if Prepared then
+    begin
+      FillChar( tmp, SizeOf(tmp), #0 );
+      FillChar( TypeBuffer, SizeOf(TypeBuffer), #0 );
+      tmp[0] := Char( isc_info_sql_stmt_type );
+      API_DSQL_SQL_INFO( tmp, TypeBuffer );
+      if TypeBuffer[0] = Char(isc_info_sql_stmt_type) then
+      begin
+        StmtLen := 0;
+        Inc(StmtLen, byte(TypeBuffer[1])    );
+        Inc(StmtLen, byte(TypeBuffer[2])*256);
+        if StmtLen > 255 then
+          raise EIB_StatementError.Create( E_BAD_SQL_INF_LEN )
+        else
+          StmtType := byte(TypeBuffer[3])
+      end
+      else
+        raise EIB_StatementError.Create( E_BAD_SQL_INF_DATA );
+      Inc( FStatementType, StmtType );
+      flag_statement_type_invalid := false;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Statement.SysParamsStateChanged( Sender: TIB_Row );
+begin
+  ProcessLinkEvent( setParamsStateChanged, 0 );
+end;
+
+procedure TIB_Statement.SysCursorFieldsStateChanged( Sender: TIB_Row );
+begin
+  SysFieldsStateChanged( Sender )
+end;
+
+procedure TIB_Statement.SysFieldsStateChanged( Sender: TIB_Row );
+begin
+  ProcessLinkEvent( setFieldsStateChanged, 0 );
+end;
+
+{- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+
+procedure TIB_Statement.SysBeforeParamsDataChange( Sender: TIB_Row;
+                                                   AField: TIB_Column);
+begin
+// Abstract.
+end;
+
+procedure TIB_Statement.SysAfterParamsDataChange( Sender: TIB_Row;
+                                                  AField: TIB_Column);
+begin
+  ProcessLinkEvent( setParamsDataChange, integer( AField ));
+end;
+
+{- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+
+procedure TIB_Statement.SysBeforeCursorFieldDataChange( Sender: TIB_Row;
+                                                        AField: TIB_Column);
+begin
+  SysBeforeFieldDataChange( Sender, AField );
+end;
+
+procedure TIB_Statement.SysAfterCursorFieldDataChange( Sender: TIB_Row;
+                                                       AField: TIB_Column);
+begin
+  SysAfterFieldDataChange( Sender, AField );
+end;
+
+{- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+
+procedure TIB_Statement.SysBeforeFieldDataChange( Sender: TIB_Row;
+                                                  AField: TIB_Column);
+begin
+// Abstract.
+end;
+
+procedure TIB_Statement.SysAfterFieldDataChange( Sender: TIB_Row;
+                                                 AField: TIB_Column);
+begin
+  ProcessLinkEvent( setFieldsDataChange, integer( AField ));
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Statement.ProcessConnectionEvent( AConnectionLink: TIB_ConnectionLink;
+                                                AEvent: TIB_ConnectionEventType );
+begin
+  if Prepared and ( AEvent = cetBeforeAssignment ) then
+    Unprepare
+  else
+  if ( AEvent = cetAfterAssignment ) then
+    if Assigned( IB_Connection ) then
+      FSQLDialect := IB_Connection.SQLDialect
+    else
+      FSQLDialect := 1;
+end;
+
+procedure TIB_Statement.ProcessTransactionEvent( ATransactionLink: TIB_TransactionLink;
+                                                 AEvent: TIB_TransactionEventType );
+var
+  TL: TIB_TransactionLink;
+begin
+  if Prepared and ( AEvent = tetBeforeAssignment ) then
+  begin
+    TL := FIB_TransactionLink;
+    if not Assigned( TL.FNewTransaction ) or
+       ( TL.FNewTransaction.ConnectionIndex[ IB_Connection ] = -1 ) then
+      Unprepare;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Statement.SysPrepareSQL;
+var
+  ii: integer;
+begin
+  ProcessEvent( OnPrepareSQL );
+  for ii := 0 to StatementLinkCount - 1 do
+    with TIB_StatementLink( FIB_StatementLinkList.Items[ii] ) do
+      SysPrepareSQL;
+end;
+
+function TIB_Statement.API_Prepare(     Text: PChar;
+                                    var InVar,
+                                        OutVar: smallint ): integer;
+var
+  SaveCW: word;
+  procedure PrepareOutDa( VarCnt: word );
+  begin
+    if IB_Session.FOutCnt < VarCnt then
+    begin
+      FreeMem( IB_Session.FOutDa );
+      IB_Session.FOutDa := AllocMem( XSQLDA_LENGTH( VarCnt ));
+      IB_Session.FOutDa.version := SQLDA_VERSION1;
+      IB_Session.FOutCnt := VarCnt;
+    end;
+    IB_Session.FOutDa.sqln := IB_Session.FOutCnt;
+  end;
+  procedure PrepareInDa( VarCnt: word );
+  begin
+    if IB_Session.FInCnt < VarCnt then
+    begin
+      FreeMem( IB_Session.FInDa );
+      IB_Session.FInDa := AllocMem( XSQLDA_LENGTH( VarCnt ));
+      IB_Session.FInDa.version := SQLDA_VERSION1;
+      IB_Session.FInCnt := VarCnt;
+    end;
+    IB_Session.FInDa.sqln := VarCnt;
+  end;
+var
+  MonitorText: string;
+begin
+  if Trim( Text ) = EmptyStr then
+    raise EIB_StatementError.Create( E_NO_BLANK_SQL );
+  with IB_Session do
+  begin
+    if Prepared then
+      PrepareOutDa( Fields.ColumnCount )
+    else
+      PrepareOutDa( FSysFieldNames.Count );
+    if PstHandle^ = FakePointer then
+      IB_Connection.AllocateStmtHandle( PstHandle );
+    asm fstcw [SaveCW] end;
+    Result := isc_dsql_prepare( @status,
+                                PtrHandle,
+                                PstHandle,
+                                null_terminated,
+                                Text,
+                                SQLDialect,
+                                IB_Session.FOutDa );
+    asm fldcw [SaveCW] end;
+    if ( Result = 0 ) and ClientMonitorHooksIn then
+    begin
+      MonitorText := '//>>> STATEMENT PREPARED <<<//'#13#10 +
+                     'TIB_Statement.API_Prepare()'#13#10 +
+                     Self.ClassName + ': "';
+      if Assigned( Self.Owner ) and ( Self.Owner.Name <> '' ) then
+        MonitorText := MonitorText + Self.Owner.Name + '.';
+      MonitorText := MonitorText + Self.Name +
+                     '" stHandle=' + IntToStr(Integer(PstHandle^));
+      OutputToMonitor( MonitorText );
+    end;
+    OutVar := IB_Session.FOutDa.sqld;
+    if ( Result = 0 ) and ( OutVar > IB_Session.FOutDa.sqln ) then
+    begin
+      PrepareOutDa( OutVar );
+      asm fstcw [SaveCW] end;
+      Result := isc_dsql_describe( @status,
+                                   PstHandle,
+                                   SQLDialect,
+                                   IB_Session.FOutDa );
+      asm fldcw [SaveCW] end;
+    end;
+    FUnExPrmCnt := 0;
+    if ( Result = 0 ) then
+    begin
+      InVar := FSysParamNames.Count;
+      if InVar > 0 then
+      begin
+        PrepareInDa( InVar );
+        asm fstcw [SaveCW] end;
+        Result := isc_dsql_describe_bind( @status,
+                                          PstHandle,
+                                          SQLDialect,
+                                          IB_Session.FInDa );
+        asm fldcw [SaveCW] end;
+     // There is a bug in InterBase that causes problems with input parameters..
+     // A Statement of this form will result in 4 parameters instead of 2      .
+     //                                                                        .
+     // SELECT JOBTYPER.JOBNAVN                                                .
+     //      , JOBTYPER.JOBID                                                  .
+     //      , ( SELECT SUM(JOB.JOBTID)                                        .
+     //          FROM JOB                                                      .
+     //          WHERE JOB.JOBID = JOBTYPER.JOBID                              .
+     //            AND JOB.START_DATOTID >= :STARTDATO                         .
+     //            AND JOB.START_DATOTID <= :SLUTDATO ) AS TID                 .
+     // FROM JOBTYPER                                                          .
+     // ORDER BY 3                                                             .
+     //                                                                        .
+        if ( Result = 0 ) then
+        begin
+          if IB_Session.FInDa.sqld > InVar then
+          begin
+            FUnExPrmCnt := IB_Session.FInDa.sqld - InVar;
+            InVar := IB_Session.FInDa.sqld;
+            if ( IB_Session.FInDa.sqln < IB_Session.FInDa.sqld ) then
+            begin
+              PrepareInDa( InVar );
+              asm fstcw [SaveCW] end;
+              Result := isc_dsql_describe_bind( @status,
+                                                PstHandle,
+                                                SQLDialect,
+                                                IB_Session.FInDa );
+              asm fldcw [SaveCW] end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.SysPrepareFailed;
+begin
+  if not RepreparingSQL then
+  begin
+    FParamCount := 0;
+    FParams.SysUpdate( FParamCount );
+    FCursorFieldCount := 0;
+    FCursorFields.SysUpdate( FCursorFieldCount );
+    FPrepared := false;
+  end;
+  FSysParamNames.Clear;
+  FSysFieldNames.Clear;
+  FSysTableNames.Clear;
+end;
+
+procedure TIB_Statement.API_Execute;
+var
+  In_DA: PXSQLDA;
+  SaveCW: word;
+begin
+  if ParamCount > 0 then
+    In_DA := FParams.PSQLDA
+  else
+    In_DA := nil;
+  with IB_Session do
+  begin
+    asm fstcw [SaveCW] end;
+    errcode := isc_dsql_execute( @status,
+                                 PtrHandle,
+                                 PstHandle,
+                                 SQLDialect,
+                                 In_DA );
+    asm fldcw [SaveCW] end;
+    if errcode <> 0 then HandleException( Self );
+  end;
+  flag_rows_affected_invalid := true;
+  FWasSingleton := false;
+end;
+
+procedure TIB_Statement.API_Execute2;
+begin
+  with IB_Session do
+  begin
+    errcode := API_QuickFetch( true );
+    if errcode <> 0 then HandleException( Self );
+  end;
+end;
+
+function TIB_Statement.API_QuickFetch( Exec2: boolean ): integer;
+var
+  In_DA,
+  Out_DA: PXSQLDA;
+  SaveCW: word;
+  tmperr: longint;
+  tmpstatus: status_vector;
+
+  procedure DoTheFetch;
+  begin
+    with IB_Session do
+    begin
+      if Exec2 then
+        errcode := isc_dsql_execute2( @status,
+                                      PtrHandle,
+                                      PstHandle,
+                                      SQLDialect,
+                                      In_DA,
+                                      Out_DA )
+      else
+        errcode := isc_dsql_row_fetch2( @status,
+                                        PtrHandle,
+                                        PstHandle,
+                                        SQLDialect,
+                                        In_DA,
+                                        Out_DA );
+// There seems to be a bug where a cursor on the server is not getting closed.
+// Or, it could be getting opened when it should not be.
+// Added code below to attempt to avoid/recover.
+      if ( errcode = 0 ) and Assigned( Out_DA ) then
+        isc_dsql_free_row_statement( @status, PstHandle, DSQL_CLOSE );
+    end;
+  end;
+
+var
+  MonitorText: string;
+begin
+  flag_rows_affected_invalid := true;
+  if ParamCount > 0 then
+    In_DA := Params.PSQLDA
+  else
+    In_DA := nil;
+  if FieldCount > 0 then
+    Out_DA := Fields.PSQLDA
+  else
+    Out_DA := nil;
+  asm fstcw [SaveCW] end;
+  DoTheFetch;
+  asm fldcw [SaveCW] end;
+  if Assigned( Out_DA ) then with IB_Session do
+// There seems to be a bug where the server is losing the compile.
+// Added code below to attempt to recover.
+    if ( errcode = isc_dsql_error ) or
+       ( errcode = isc_port_len ) then
+    begin
+      if ClientMonitorHooksIn then
+      begin
+        MonitorText := '//>>> STATEMENT PREPARED <<<//'#13#10 +
+                       'TIB_Statement.API_QuickFetch()'#13#10 +
+                       'Recovery from lost server compile needed.'#13#10 +
+                       Self.ClassName + ': "';
+        if Assigned( Self.Owner ) and ( Self.Owner.Name <> '' ) then
+          MonitorText := MonitorText + Self.Owner.Name + '.';
+        MonitorText := MonitorText + Self.Name +
+            '" stHandle=' + IntToStr(Integer(PstHandle^)) + ' #QF';
+        OutputToMonitor( MonitorText );
+      end;
+      if not StoredProcHasDML then
+      begin
+        asm fstcw [SaveCW] end;
+        tmperr := isc_dsql_prepare( @tmpstatus,
+                                    PtrHandle,
+                                    PstHandle,
+                                    null_terminated,
+                                    PChar(ServerSQL),
+                                    SQLDialect,
+                                    Out_DA );
+        asm fldcw [SaveCW] end;
+        if tmperr = 0 then
+        begin
+          asm fstcw [SaveCW] end;
+          DoTheFetch;
+          asm fldcw [SaveCW] end;
+        end;
+      end;
+    end;
+  Result := IB_Session.errcode;
+  FWasSingleton := true;
+end;
+
+procedure TIB_Statement.API_DSQL_SQL_INFO( var Items:  array of Char;
+                                           var Buffer: array of Char );
+var
+  SaveCW: word;
+begin
+  with IB_Session do
+  begin
+    asm fstcw [SaveCW] end;
+    errcode := isc_dsql_sql_info( @status,
+                                  PstHandle,
+                                  SizeOf( Items ),
+                                  Items,
+                                  SizeOf( Buffer ),
+                                  @Buffer );
+    asm fldcw [SaveCW] end;
+    if errcode <> 0 then HandleException( Self );
+  end;
+end;
+
+procedure TIB_Statement.API_ExecuteImmediate( Statement: string;
+                                              AParam: PXSQLDA );
+var
+  ii: integer;
+  WasStarted: boolean;
+  SaveCW: word;
+begin
+  WasStarted := Assigned( IB_Transaction ) and IB_Transaction.Started;
+  try
+    with IB_Session do
+    begin
+      asm fstcw [SaveCW] end;
+      errcode := isc_dsql_execute_immediate( @status,
+                                             PdbHandle,
+                                             PtrHandle,
+                                             Length(Statement),
+                                             PChar(Statement),
+                                             SQLDialect,
+                                             AParam );
+      asm fldcw [SaveCW] end;
+      if errcode <> 0 then
+        API_CheckStatement( Statement, errcode );
+      if errcode <> 0 then
+        HandleException( Self );
+    end;
+  finally
+    if WasStarted and
+       Assigned( IB_Transaction) and not IB_Transaction.Started then
+      for ii := 0 to IB_Transaction.ConnectionCount - 1 do
+        Dec( IB_Transaction.Connections[ ii ].FStartedTransactionCount );
+  end;
+end;
+
+procedure TIB_Statement.API_ExecImmed2( const AStatement: string;
+                                              AParam,
+                                              AField: PXSQLDA );
+var
+  ii: integer;
+  WasStarted: boolean;
+  SaveCW: word;
+begin
+  WasStarted := Assigned( IB_Transaction ) and IB_Transaction.Started;
+  try
+    with IB_Session do
+    begin
+      asm fstcw [SaveCW] end;
+      errcode := ISC_ExecImmed2( AStatement, AParam, AField );
+      asm fldcw [SaveCW] end;
+      if errcode <> 0 then
+        API_CheckStatement( AStatement, errcode );
+      if errcode <> 0 then
+        HandleException( Self );
+    end;
+  finally
+    if WasStarted and
+       Assigned( IB_Transaction) and not IB_Transaction.Started then
+      for ii := 0 to IB_Transaction.ConnectionCount - 1 do
+        Dec( IB_Transaction.Connections[ ii ].FStartedTransactionCount );
+  end;
+end;
+
+function TIB_Statement.ISC_ExecImmed2( const AStatement: string;
+                                             AParam,
+                                             AField: PXSQLDA ): integer;
+
+var
+  immed2_stmt_handle: isc_stmt_handle;
+  SaveCW: word;
+  SQLDlct: word;
+  MonitorText: string;
+begin
+  with IB_Session do
+  begin
+//    There is a bug in IB's API. Cannot use the call below with WIN NT server!
+{
+  errcode := isc_dsql_exec_immed2( @status,
+                                   PdbHandle,
+                                   PtrHandle,
+                                   Length(AStatement),
+                                   PChar(AStatement),
+                                   SQLDA_VERSION1,
+                                   AParam,
+                                   AField );
+  if errcode <> 0 then begin
+    HandleException( Self );
+  end;
+}
+
+// Initialize
+    immed2_stmt_handle := nil;
+    Result := 0;
+
+// Allocate
+    if Assigned( IB_Connection ) then
+    begin
+      IB_Connection.AllocateStmtHandle( @immed2_stmt_handle );
+      SQLDlct := IB_Connection.SQLDialect;
+    end
+    else
+      SQLDlct := SQL_DIALECT_V5;
+    try
+
+      asm fstcw [SaveCW] end;
+// Prepare
+      errcode := isc_dsql_prepare( @status,
+                                   PtrHandle,
+                                   @immed2_stmt_handle,
+                                   Length(AStatement),
+                                   pchar(AStatement),
+                                   SQLDlct,
+                                   AField );
+
+      //ADDED// CW 2000-06-06
+      if ( errcode = 0 ) and ClientMonitorHooksIn then begin
+        MonitorText :=
+            '//>>> STATEMENT PREPARED <<<//'#13#10 +
+            'TIB_Statement.ISC_ExecImmed2()'#13#10 +
+            Self.ClassName + ': "';
+        if Assigned( Self.Owner ) and ( Self.Owner.Name <> '' ) then
+          MonitorText := MonitorText + Self.Owner.Name + '.';
+        MonitorText := MonitorText + Self.Name +
+            '" stHandle=' + IntToStr(Integer(immed2_stmt_handle)) + ' #EI';
+        OutputToMonitor( MonitorText );
+      end;
+      //ENDADDED//
+// Execute
+      if errcode = 0 then
+        errcode := isc_dsql_execute2( @status,
+                                      PtrHandle,
+                                      @immed2_stmt_handle,
+                                      SQLDlct,
+                                      AParam,
+                                      AField );
+      Result := errcode;
+      asm fldcw [SaveCW] end;
+
+    finally
+
+// Deallocate
+      if Assigned( IB_Connection ) then
+        IB_Connection.DeallocateStmtHandle( @immed2_stmt_handle );
+
+      if errcode <> 0 then
+        if Result = 0 then
+          Result := errcode;
+    end;
+  end; { with IB_Session }
+end;
+
+procedure TIB_Statement.API_CheckStatement( const AStatement: string;
+                                              var errcode: longint );
+var
+  tmpStr: string;
+  tmpType: string;
+begin
+  if ( errcode = isc_dsql_error ) and Assigned( IB_Connection ) then
+    if ExtractDBProp( AStatement, 'DATABASE', [ 'CONNECT',
+                                                'DISCONNECT',
+                                                'DROP' ], tmpType, tmpStr ) then
+    begin
+      errcode := 0;
+      if tmpType = 'CONNECT' then
+      begin
+        if ( tmpStr <> '' ) and
+           ( tmpStr <> IB_Connection.Database ) then
+        begin
+          IB_Connection.Disconnect;
+          if SetConnectionProperties( IB_Connection, AStatement, tmpStr ) then
+            IB_Connection.SysConnect( true );
+        end;
+      end
+      else
+      if tmpType = 'DISCONNECT' then
+        IB_Connection.Disconnect
+      else
+      if tmpType = 'DROP' then
+        IB_Connection.DropDatabase;
+    end;
+end;
+
+{                                                                              }
+{   Property Access Methods                                                    }
+{                                                                              }
+
+procedure TIB_Statement.SetConnection( AValue: TIB_Connection );
+begin
+  if IB_Connection <> AValue then
+  begin
+    if Assigned( IB_Connection ) then
+    begin
+      if IB_Transaction = GetDefaultTransaction then
+        IB_Transaction := nil;
+      IB_Connection.FStatementList.Remove( Self );
+    end;
+    FIB_ConnectionLink.IB_Connection := AValue;
+    try
+      if Assigned( FIB_Transaction ) and
+         ( IB_Transaction = FIB_Transaction ) then
+        FIB_Transaction.IB_Connection := IB_Connection;
+      if Assigned( IB_Connection ) then
+        IB_Connection.FStatementList.Add( Self );
+    except
+      FIB_ConnectionLink.IB_Connection := nil;
+    end;
+  end;
+end;
+
+function TIB_Statement.GetConnection: TIB_Connection;
+begin
+  Result := FIB_ConnectionLink.IB_Connection;
+end;
+
+procedure TIB_Statement.SetTransaction( AValue: TIB_Transaction );
+begin
+  if IB_Transaction <> AValue then
+  begin
+    if IB_Transaction <> nil then
+    begin
+      if ( AValue = nil ) or
+         ( IB_Transaction.IB_Connection <>
+           AValue.IB_Connection ) then
+        Unprepare;
+      IB_Transaction.FStatementList.Remove( Self );
+    end;
+    FIB_TransactionLink.IB_Transaction := AValue;
+    try
+      if ( FIB_Transaction <> nil ) and
+         ( FIB_Transaction <> AValue ) then
+      begin
+        FIB_Transaction.Free;
+        FIB_Transaction := nil;
+      end;
+      if IB_Transaction <> nil then
+        IB_Transaction.FStatementList.Add( Self );
+    except
+      FIB_TransactionLink.IB_Transaction := nil;
+    end;
+  end;
+end;
+
+function TIB_Statement.GetTransaction: TIB_Transaction;
+begin
+  if Assigned( FIB_TransactionLink ) then
+    Result := FIB_TransactionLink.IB_Transaction
+  else
+    Result := nil;
+  if ( csWriting in ComponentState ) and
+     (( Result = FIB_Transaction ) or
+      ( Result = GetDefaultTransaction ) ) then
+    Result := nil;
+end;
+
+function TIB_Statement.GetDefaultConnection: TIB_Connection;
+begin
+  Result := IB_Session.DefaultConnection;
+end;
+
+function TIB_Statement.GetDefaultTransaction: TIB_Transaction;
+begin
+  if Assigned( IB_Connection ) then
+    Result := IB_Connection.FDefaultTransaction
+  else
+    Result := nil;
+end;
+
+function TIB_Statement.GetStatementLinkCount: integer;
+begin
+// Leave this check here.
+  if Assigned( FIB_StatementLinkList ) then
+    Result := FIB_StatementLinkList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Statement.GetSQL: TStrings;
+begin
+  Result := FSQL;
+end;
+
+procedure TIB_Statement.SetSQL( AValue: TStrings );
+begin
+  if AValue is TIB_SQLStrings then
+    FSQL.Assign( AValue )
+  else
+  if Assigned( AValue ) then
+  // Do not use Assign() here!
+    FSQL.Text := AValue.Text
+  else
+    FSQL.Clear;
+end;
+
+procedure TIB_Statement.OnSQLChange( Sender: TObject );
+var
+  UnprepareSQL: boolean;
+begin
+  UnprepareSQL := not PreparingSQL and not AssigningSQL;
+  SysSQLChange( Sender, UnprepareSQL );
+  if UnprepareSQL then
+  begin
+    if Prepared then
+      SysUnprepare
+    else
+    begin
+      FSysParamNames.Clear;
+      FSysFieldNames.Clear;
+      FSysTableNames.Clear;
+    end;
+    flag_statement_type_invalid := true;
+  end;
+end;
+
+procedure TIB_Statement.SysSQLChange( Sender: TObject; var Unprepare: boolean );
+begin
+// Abstract at this level.
+end;
+
+procedure TIB_Statement.HintsChange( Sender: TObject );
+begin
+  if Prepared then begin
+    ProcessLinkEvent( setHintsChanged, 0 );
+  end;
+end;
+
+procedure TIB_Statement.LayoutChange( Sender: TObject );
+begin
+  if Prepared then
+    SysLayoutChange( Sender );
+  if FIgnoreLayoutChange = 0 then
+    SysLayoutChanged;
+end;
+
+procedure TIB_Statement.SysLayoutChange( Sender: TObject );
+begin
+  if FIgnoreLayoutChange = 0 then
+  begin
+    Inc( FIgnoreLayoutChange );
+    try
+      if Sender = FieldsAlignment then
+        UpdateAlignment
+      else
+      if Sender = FieldsCharCase then
+        UpdateCharCase
+      else
+      if Sender = FieldsDisplayFormat then
+        UpdateDisplayFormat
+      else
+      if Sender = FieldsDisplayLabel then
+        UpdateDisplayLabel
+      else
+      if Sender = FieldsGridLabel then
+        UpdateGridLabel
+      else
+      if Sender = FieldsDisplayWidth then
+        UpdateDisplayWidth
+      else
+      if Sender = FieldsEditMask then
+        UpdateEditMask
+      else
+      if Sender = FieldsIndex then
+        UpdateIndex
+      else
+      if Sender = FieldsReadOnly then
+        UpdateReadOnly
+      else
+      if Sender = FieldsTrimming then
+        UpdateTrimming
+      else
+      if Sender = FieldsVisible then
+        UpdateVisible;
+    finally
+      Dec( FIgnoreLayoutChange );
+    end;
+    if Assigned( FBindingCursor ) and
+       ( FBindingCursor.FIgnoreLayoutChange = 0 ) then
+    begin
+      Inc( FBindingCursor.FIgnoreLayoutChange );
+      try
+        if Sender = FieldsAlignment then
+          FBindingCursor.FieldsAlignment.Assign(FieldsAlignment)
+        else
+        if Sender = FieldsCharCase then
+          FBindingCursor.FieldsCharCase.Assign(FieldsCharCase)
+        else
+        if Sender = FieldsDisplayFormat then
+          FBindingCursor.FieldsDisplayFormat.Assign(FieldsDisplayFormat)
+        else
+        if Sender = FieldsDisplayLabel then
+          FBindingCursor.FieldsDisplayLabel.Assign(FieldsDisplayLabel)
+        else
+        if Sender = FieldsGridLabel then
+          FBindingCursor.FieldsGridLabel.Assign(FieldsGridLabel)
+        else
+        if Sender = FieldsDisplayWidth then
+          FBindingCursor.FieldsDisplayWidth.Assign(FieldsDisplayWidth)
+        else
+        if Sender = FieldsEditMask then
+          FBindingCursor.FieldsEditMask.Assign(FieldsEditMask)
+        else
+        if Sender = FieldsIndex then
+          FBindingCursor.FieldsIndex.Assign(FieldsIndex)
+        else
+        if Sender = FieldsReadOnly then
+          FBindingCursor.FieldsReadOnly.Assign(FieldsReadOnly)
+        else
+        if Sender = FieldsTrimming then
+          FBindingCursor.FieldsTrimming.Assign(FieldsTrimming)
+        else
+        if Sender = FieldsVisible then
+          FBindingCursor.FieldsVisible.Assign(FieldsVisible);
+      finally
+        Dec( FBindingCursor.FIgnoreLayoutChange );
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.SetPrepared( Value: boolean );
+begin
+  if Value <> Prepared then
+    if Value then
+      Prepare
+    else
+      Unprepare;
+end;
+
+procedure TIB_Statement.SetActive( Value: boolean );
+begin
+  if Value <> Active then
+    if Value then
+      SysExecute
+    else
+      SysClose;
+end;
+
+function TIB_Statement.GetActive: boolean;
+begin
+  Result := FActive;
+end;
+
+function TIB_Statement.GetPdbHandle: pisc_db_handle;
+begin
+  if Assigned( IB_Connection ) then
+    Result := IB_Connection.PdbHandle
+  else
+    Result := nil;
+end;
+
+function TIB_Statement.GetPtrHandle: pisc_tr_handle;
+begin
+  if Assigned( IB_Transaction ) then
+    Result := IB_Transaction.PtrHandle
+  else
+    Result := nil;
+end;
+
+function TIB_Statement.GetPstHandle: pisc_stmt_handle;
+begin
+  Result := @FstHandle;
+end;
+
+function TIB_Statement.GetStatementType;
+begin
+  if flag_statement_type_invalid then
+    try
+      SysUpdateStatementType;
+    except
+      FStatementType := stUnknown;
+      Application.HandleException( Self );
+    end;
+  Result := FStatementType;
+end;
+
+function TIB_Statement.GetRowsAffected;
+begin
+  if flag_rows_affected_invalid then begin
+    try
+      FRowsAffected := IB_Session.GetRowsAffected( PstHandle );
+      flag_rows_affected_invalid := false;
+    except
+      with FRowsAffected do begin
+        UpdateCount := -1;
+        DeleteCount := -1;
+        SelectCount := -1;
+        InsertCount := -1;
+      end;
+      Application.HandleException( Self );
+    end;
+  end;
+  case StatementType of
+    stUpdate: Result := FRowsAffected.UpdateCount;
+    stDelete: Result := FRowsAffected.DeleteCount;
+    stInsert: Result := FRowsAffected.InsertCount;
+    stSelect,
+    stSelectForUpdate: Result := FRowsAffected.SelectCount;
+    else Result := -1;
+  end;
+end;
+
+function TIB_Statement.GetRowsSelected;
+begin
+  if flag_rows_affected_invalid then begin
+    try
+      FRowsAffected := IB_Session.GetRowsAffected( PstHandle );
+      flag_rows_affected_invalid := false;
+    except
+      with FRowsAffected do begin
+        UpdateCount := -1;
+        DeleteCount := -1;
+        SelectCount := -1;
+        InsertCount := -1;
+      end;
+      Application.HandleException( Self );
+    end;
+  end;
+  Result := FRowsAffected.SelectCount;
+end;
+
+function TIB_Statement.GetStatementPlan;
+begin
+  if flag_statement_plan_invalid then
+  begin
+    FStatementPlan := GetStatementPlanFromHandle( PstHandle );
+    flag_statement_plan_invalid := false;
+  end;
+  Result := FStatementPlan;
+end;
+
+function TIB_Statement.Gen_ID( const AGenerator: string;
+                                     Increment: integer ): ISC_INT64;
+begin
+  Result := GeneratorValue( AGenerator, Increment );
+end;
+
+function TIB_Statement.GeneratorValue( const AGenerator: string;
+                                             Increment: integer ): ISC_INT64;
+begin
+  CheckConnection( true );
+  CheckTransaction( true );
+  if Assigned( IB_Connection ) and
+     not GetGeneratorValue( IB_Connection,
+                            IB_Transaction,
+                            IB_Connection.mkIdent( AGenerator ),
+                            Increment,
+                            Result ) then
+    raise EIB_StatementError.Create( E_GeneratorFailed );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Statement.DefineProperties( Filer: TFiler );
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty( 'ParamValues',
+                        ReadOldParamData,
+                        WriteOldParamData,
+                        ( ParamCount > 0 ) or
+                        ( FOldParamValueLinks.Count > 0 ));
+end;
+
+procedure TIB_Statement.WriteOldParamData( Writer: TWriter );
+var
+  ii: integer;
+begin
+  with Writer do
+  begin
+    WriteListBegin;
+    try
+      if ParamCount > 0 then
+      begin
+        for ii := 0 to ParamCount - 1 do
+          with Params[ii] do
+            if not IsNull and not IsBlob and not IsArray then
+              if IsDateTime then
+                WriteString( BestFieldName + '=' + AsDateTimeEncodeString )
+              else
+              // Should I escape this in case of junk chars?
+              // I think that Delphi does this automatically when writing
+              // into the DFM file.
+                WriteString( BestFieldName + '=' + AsString );
+      end
+      else
+      if FOldParamValueLinks.Count > 0 then
+        for ii := 0 to FOldParamValueLinks.Count - 1 do
+          WriteString( FOldParamValueLinks[ii] );
+    finally
+      WriteListEnd;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.ReadOldParamData(Reader: TReader);
+begin
+  FOldParamValueLinks.Clear;
+  with Reader do
+  begin
+    ReadListBegin;
+    try
+      while not EndOfList do
+        FOldParamValueLinks.Add( ReadString );
+    finally
+      ReadListEnd;
+    end;
+  end;
+end;
+
+procedure TIB_Statement.ProcessEvent( AEvent: TIB_StatementEvent );
+begin
+  if Assigned( AEvent ) and
+     ( not ( csLoading    in ComponentState ) and
+       not ( csFixups     in ComponentState ) and
+       not ( csDestroying in ComponentState )) then
+    AEvent( Self );
+end;
+
+procedure TIB_Statement.ProcessLinkEvent( AEvent: TIB_StatementEventType;
+                                          Info: integer );
+var
+  ii: integer;
+begin
+  for ii := 0 to StatementLinkCount - 1 do
+    if ii < FIB_StatementLinkList.Count then
+      with TIB_StatementLink(FIB_StatementLinkList.Items[ii]) do
+        ProcessEvent( AEvent, Info );
+end;
+
+function TIB_Statement.IsConnectionStored: boolean;
+begin
+  Result := Assigned( IB_Connection );
+//  if Result and IB_Session.AllowDefaultConnection then
+//     Result := not UsingDefaultConnection;
+end;
+
+function TIB_Statement.IsTransactionStored: boolean;
+begin
+  Result := Assigned( IB_Transaction ) and
+            ( IB_Transaction <> FIB_Transaction );
+  if Result and Assigned( IB_Connection ) then
+    Result := IB_Transaction <> IB_Connection.DefaultTransaction;
+//  if Result and IB_Session.AllowDefaultTransaction then
+//    Result := not UsingDefaultTransaction;
+end;
+
+function TIB_Statement.UsingDefaultConnection: boolean;
+begin
+  Result := ( IB_Connection = GetDefaultConnection );
+end;
+
+function TIB_Statement.UsingDefaultTransaction: boolean;
+begin
+  Result := ( IB_Transaction = GetDefaultTransaction );
+end;
+
+function TIB_Statement.GetDomainName( const ARelName,
+                                            ASQLName: string ): string;
+begin
+  Result := '';
+  if Assigned( IB_Connection ) and
+     ( RetrieveDomainNames ) and
+     ( IsSelectSQL ) and
+     not ( SQLIsSelectProc ) then
+    Result := IB_Connection.SchemaCache.GetDomainName( ARelName, ASQLName );
+end;
+
+procedure TIB_Statement.UpdateDesigner;
+begin
+  if ( csDesigning in ComponentState ) and
+     not ( csUpdating in ComponentState ) and
+     ( Owner is TForm ) then
+    with Owner as TForm do
+      if Assigned( Designer ) then
+        Designer.Modified;
+end;
+
+function TIB_Statement.CreateBlobStream( AColumn: TIB_Column;
+                                    AMode: TIB_BlobStreamMode ): TIB_BlobStream;
+begin
+  Result := TIB_BlobStream.CreateForColumn( AColumn, AMode );
+end;
+
+function TIB_Statement.GetColAttributeParams( const ACol,
+                                                    AParam: string ): string;
+begin
+  Result := ColumnAttributes.LinkParamValue[ ACol, AParam ];
+  if ( Result = '' ) and Assigned( IB_Connection ) then
+    with IB_Connection do
+      Result := ColumnAttributes.LinkParamValue[ ACol, AParam ];
+end;
+
+procedure TIB_Statement.SetColAttributeParams( const ACol, AParam: string;
+                                                     AValue: string );
+begin
+  ColumnAttributes.LinkParamValue[ ACol, AParam ] := AValue;
+end;
+
+function TIB_Statement.GetColIsAttributeSet( const ACol,
+                                                   AParam: string ): boolean;
+begin
+  Result := ColumnAttributes.LinkParamIsSet[ ACol, AParam ];
+  if not Result and Assigned( IB_Connection ) then
+    with IB_Connection do
+      if ( ColumnAttributes.Count > 0 ) then
+        Result := ColumnAttributes.LinkParamIsSet[ ACol, AParam ];
+end;
+
+procedure TIB_Statement.SetColIsAttributeSet( const ACol, AParam: string;
+                                                    AValue: boolean );
+begin
+  ColumnAttributes.LinkParamIsSet[ ACol, AParam ] := AValue;
+end;
+
+function TIB_Statement.GetMacroBegin: string;
+begin
+  if Assigned(IB_Connection) then
+  begin
+    if FMacroBegin = '' then
+      Result := IB_Connection.MacroBegin
+    else
+      Result := FMacroBegin;
+  end
+  else
+    Result := FMacroBegin;
+end;
+
+function TIB_Statement.GetMacroEnd: string;
+begin
+  if Assigned(IB_Connection) then
+  begin
+    if FMacroEnd = '' then
+      Result := IB_Connection.MacroEnd
+    else
+      Result := FMacroEnd;
+  end
+  else
+    Result := FMacroEnd;
+end;
+
+procedure TIB_Statement.SetMacroBegin( AValue: string );
+begin
+  if (AValue <> FMacroBegin) then
+  begin
+    if Assigned(IB_Connection) then
+    begin
+      if AValue = IB_Connection.MacroBegin then
+        FMacroBegin := ''
+      else
+        FMacroBegin := Trim(AValue);
+    end
+    else
+      FMacroBegin := Trim(AValue);
+  end;
+end;
+
+procedure TIB_Statement.SetMacroEnd( AValue: string );
+begin
+  if (AValue <> FMacroEnd) then
+  begin
+    if Assigned(IB_Connection) then
+    begin
+      if AValue = IB_Connection.MacroEnd then
+        FMacroEnd := ''
+      else
+        FMacroEnd := Trim(AValue);
+    end
+    else
+      FMacroEnd := Trim(AValue);
+  end;
+end;
+
+function TIB_Statement.IsMacroBeginStored: boolean;
+begin
+  Result := (FMacroBegin <> '');
+  if Result and Assigned(IB_Connection) then
+  begin
+    Result := (FMacroBegin <> IB_Connection.MacroBegin)
+  end;
+end;
+
+function TIB_Statement.IsMacroEndStored: boolean;
+begin
+  Result := (FMacroEnd <> '');
+  if Result and Assigned(IB_Connection) then
+  begin
+    Result := (FMacroEnd <> IB_Connection.MacroEnd)
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_SQLStrings.GetBegPos( AVal: TIB_SQLSections ): integer;
+begin Result := FBegPos[ AVal ]; end;
+function TIB_SQLStrings.GetEndPos( AVal: TIB_SQLSections ): integer;
+begin Result := FEndPos[ AVal ]; end;
+
+procedure TIB_SQLStrings.Changing;
+var
+  ii: TIB_SQLSections;
+begin
+  inherited Changing;
+{$IFDEF IBO_ENUMINDEX_SUPPORT}
+  for ii := Low( TIB_SQLSections ) to High( TIB_SQLSections ) do
+{$ELSE}
+  for ii := ssLowSQLSection to ssHighSQLSection do
+{$ENDIF}
+  begin
+    FBegPos[ii] := ParseLineInvalid;
+    FEndPos[ii] := ParseLineInvalid;
+  end;
+end;
+
+function TIB_SQLStrings.GetSQLSection( Index: TIB_SQLSections ): string;
+var
+  tmpBeg, tmpEnd: longint;
+begin
+  if BegPos[ Index ] = ParseLineInvalid then
+  begin
+    tmpBeg := ParseLineInvalid;
+    tmpEnd := ParseLineInvalid;
+    case Index of
+    ssSelect: GetSQLSelect( Text, Result, tmpBeg, tmpEnd );
+    ssFrom: GetSQLFrom( Text, Result, tmpBeg, tmpEnd );
+    ssWhere: GetSQLWhere( Text, Result, tmpBeg, tmpEnd );
+    ssGroup: GetSQLGroup( Text, Result, tmpBeg, tmpEnd );
+    ssHaving: GetSQLHaving( Text, Result, tmpBeg, tmpEnd );
+    ssUnion: GetSQLUnion( Text, Result, tmpBeg, tmpEnd );
+    ssPlan: GetSQLPlan( Text, Result, tmpBeg, tmpEnd );
+    ssOrder: GetSQLOrder( Text, Result, tmpBeg, tmpEnd );
+    ssForUpdate: GetSQLForUpdate( Text, Result, tmpBeg, tmpEnd );
+    end;
+    if tmpBeg = ParseLineInvalid then
+    begin
+      FBegPos[ Index ] := ParseLineAbsent;
+      FEndPos[ Index ] := ParseLineAbsent;
+    end
+    else
+    begin
+      FBegPos[ Index ] := tmpBeg;
+      FEndPos[ Index ] := tmpEnd;
+    end;
+  end
+  else
+  begin
+    SubStrings( Text, Result, FBegPos[ Index ], FEndPos[ Index ] );
+    Result := Trim( Result );
+  end;
+end;
+
+procedure TIB_SQLStrings.Assign( APersistent: TPersistent );
+var
+  TmpSQLStrings: TIB_SQLStrings absolute APersistent;
+begin
+  FStatement.Prepared := false;
+  if APersistent is TIB_SQLStrings then
+  begin
+    with TmpSQLStrings.FStatement do
+    begin
+      if Prepared then
+        SysStoreParamValueLinks;
+      FStatement.FOldParamValueLinks.Assign(FOldParamValueLinks);
+    end;
+    if TmpSQLStrings.FStatement is TIB_Dataset then
+    begin
+      with TmpSQLStrings.FStatement as TIB_Dataset do
+      begin
+        if SQLForUpdate.Count > 0 then
+          FRequestLive := true;
+      end;
+    end;
+  end;
+  if not Assigned( APersistent ) then
+    Clear
+  else
+    inherited Assign( APersistent );
+  if ( APersistent is TIB_SQLStrings ) then
+  begin
+    with TmpSQLStrings.FStatement do
+    begin
+      FStatement.CalculatedFields.Assign(CalculatedFields);
+      FStatement.ColumnAttributes.Assign(ColumnAttributes);
+      FStatement.FieldsAlignment.Assign(FieldsAlignment);
+      FStatement.FieldsCharCase.Assign(FieldsCharCase);
+      FStatement.FieldsDisplayFormat.Assign(FieldsDisplayFormat);
+      FStatement.FieldsDisplayLabel.Assign(FieldsDisplayLabel);
+      FStatement.FieldsGridLabel.Assign(FieldsGridLabel);
+      FStatement.FieldsDisplayWidth.Assign(FieldsDisplayWidth);
+      FStatement.FieldsEditMask.Assign(FieldsEditMask);
+      FStatement.FieldsIndex.Assign(FieldsIndex);
+      FStatement.FieldsReadOnly.Assign(FieldsReadOnly);
+      FStatement.FieldsTrimming.Assign(FieldsTrimming);
+      FStatement.FieldsVisible.Assign(FieldsVisible);
+      FStatement.OnMacroSubstitute := OnMacroSubstitute;
+      FStatement.OnCalculateField := OnCalculateField;
+    end;
+  end
+  else
+  begin
+    with FStatement do
+    begin
+      CalculatedFields.Clear;
+      ColumnAttributes.Clear;
+      FieldsAlignment.Clear;
+      FieldsCharCase.Clear;
+      FieldsDisplayFormat.Clear;
+      FieldsDisplayLabel.Clear;
+      FieldsGridLabel.Clear;
+      FieldsDisplayWidth.Clear;
+      FieldsEditMask.Clear;
+      FieldsIndex.Clear;
+      FieldsReadOnly.Clear;
+      FieldsTrimming.Clear;
+      FieldsVisible.Clear;
+// JLW - Putting this here is not a good idea.
+//       People's setting are getting wiped out when the SQL.Assign() is called.
+//       Seems the rule of thumb here is to avoid things the IB_Script component
+//       will need in this area where settings are cleared out.
+//      OnMacroSubstitute := nil;
+    end;
+  end;
+  if FStatement is TIB_Dataset then
+  begin
+    if ( APersistent is TIB_SQLStrings ) and
+       ( TmpSQLStrings.FStatement is TIB_Dataset ) then
+    begin
+      with TmpSQLStrings.FStatement as TIB_Dataset do
+      begin
+        TIB_Dataset(FStatement).GeneratorLinks.Assign(GeneratorLinks);
+        TIB_Dataset(FStatement).DefaultValues.Assign(DefaultValues);
+        TIB_Dataset(FStatement).GetServerDefaults := GetServerDefaults;
+        TIB_Dataset(FStatement).Hints.Assign(Hints);
+        TIB_Dataset(FStatement).JoinLinks.Assign(JoinLinks);
+        TIB_Dataset(FStatement).KeyLinks.Assign(KeyLinks);
+        TIB_Dataset(FStatement).KeyDescLinks.Assign(KeyDescLinks);
+        TIB_Dataset(FStatement).MasterLinks.Assign(MasterLinks);
+        TIB_Dataset(FStatement).MasterSearch := MasterSearch;
+        TIB_Dataset(FStatement).OrderingItems.Assign(OrderingItems);
+        TIB_Dataset(FStatement).OrderingItemNo := OrderingItemNo;
+        TIB_Dataset(FStatement).RequestLive := RequestLive;
+        TIB_Dataset(FStatement).SQLWhereLow.Assign(SQLWhereLow);
+        TIB_Dataset(FStatement).SQLWhereMed.Assign(SQLWhereMed);
+        TIB_Dataset(FStatement).SQLWhereHigh.Assign(SQLWhereHigh);
+        TIB_Dataset(FStatement).ParamValueLinks.Assign(ParamValueLinks);
+        TIB_Dataset(FStatement).CallbackInc := CallbackInc;
+        TIB_Dataset(FStatement).CallbackInitInt := CallbackInitInt;
+        TIB_Dataset(FStatement).CallbackRefreshInt := CallbackRefreshInt;
+        TIB_Dataset(FStatement).OnCallback := OnCallback;
+        TIB_Dataset(FStatement).EditSQL.Assign(EditSQL);
+        TIB_Dataset(FStatement).LockSQL.Assign(LockSQL);
+        TIB_Dataset(FStatement).InsertSQL.Assign(InsertSQL);
+        TIB_Dataset(FStatement).DeleteSQL.Assign(DeleteSQL);
+        TIB_Dataset(FStatement).PreparedEdits := PreparedEdits;
+        TIB_Dataset(FStatement).SearchedDeletes := SearchedDeletes;
+        TIB_Dataset(FStatement).SearchedEdits := SearchedEdits;
+      end;
+      with TIB_Dataset(FStatement) do
+        if Assigned( FBindingCursor ) then
+        begin
+          OrderingItemNo := 0;
+          SQLWhere.Clear;
+          SQLOrder.Clear;
+        end;
+      if FStatement is TIB_BDataset then
+        with TIB_BDataset(FStatement) do
+        begin
+          if Assigned( FIBODataset ) then
+          begin
+            MasterSource := nil;
+            KeySource := nil;
+            MasterLinks.Clear;
+          end;
+        end;
+    end
+    else
+    if not Assigned( APersistent ) then
+    begin
+      with FStatement as TIB_Dataset do
+      begin
+        GeneratorLinks.Clear;
+        DefaultValues.Clear;
+        GetServerDefaults := false;
+        Hints.Clear;
+        JoinLinks.Clear;
+        KeyLinks.Clear;
+        KeyDescLinks.Clear;
+        MasterLinks.Clear;
+        MasterSearch := false;
+        MasterSource := nil;
+        OrderingItems.Clear;
+        OrderingItemNo := 0;
+        RequestLive := false;
+        SearchingLinks.Clear;
+        EditSQL.Clear;
+        LockSQL.Clear;
+        InsertSQL.Clear;
+        DeleteSQL.Clear;
+        PreparedEdits := true;
+        SearchedDeletes := true;
+        SearchedEdits := true;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_SQLStrings.AssignTo( APersistent: TPersistent );
+begin
+  if Assigned( APersistent ) then
+    APersistent.Assign( Self );
+end;
+
+procedure TIB_SQLStrings.AssignWithSearch( ASQLStrings: TIB_SQLStrings );
+var
+  NewSQLWhere: string;
+  ii: integer;
+  tmpPos: longint;
+  tmpStr: string;
+  Bg, En: longint;
+begin
+  Assign( ASQLStrings );
+  if ASQLStrings.FStatement.IsSelectSQL then
+  begin
+    if FStatement is TIB_Dataset then
+      with FStatement as TIB_Dataset do
+      begin
+        FAssigningSQL := true;
+        try
+          GetSQLWhere( ASQLStrings.FStatement.ClientSQL, NewSQLWhere, Bg, En );
+          if NewSQLWhere <> EmptyStr then
+          begin
+            // Remove MasterLinks stuff because it will be added in again.
+            for ii := 0 to MasterLinks.Count - 1 do
+            begin
+              tmpStr := IB_AND + MasterLinks.IndexNames[ ii ] +
+                        '=?' + GetMasterLinkParamName( ii );
+              tmpPos := Pos( UpperCase( tmpStr ), UpperCase( NewSQLWhere ));
+              if tmpPos = 0 then
+              begin
+                tmpStr := MasterLinks.IndexNames[ ii ] +
+                          '=?' + GetMasterLinkParamName( ii ) + IB_AND;
+                tmpPos := Pos( UpperCase( tmpStr ), UpperCase( NewSQLWhere ));
+              end;
+              if tmpPos = 0 then
+              begin
+                tmpStr := 'WHERE ' + MasterLinks.IndexNames[ ii ] +
+                          '=?' + GetMasterLinkParamName( ii );
+                tmpPos := Pos( UpperCase( tmpStr ), UpperCase( NewSQLWhere ));
+              end;
+              if tmpPos > 0 then
+                System.Delete( NewSQLWhere, tmpPos, Length( tmpStr ));
+            end;
+            // Remove JoinLinks stuff because it will be added in again.
+            for ii := 0 to JoinLinks.Count - 1 do
+            begin
+              tmpStr := IB_AND + JoinLinks[ ii ];
+              tmpPos := Pos( UpperCase( tmpStr ), UpperCase( NewSQLWhere ));
+              if tmpPos = 0 then
+              begin
+                tmpStr := JoinLinks[ ii ] + IB_AND;
+                tmpPos := Pos( UpperCase( tmpStr ), UpperCase( NewSQLWhere ));
+              end;
+              if tmpPos = 0 then
+              begin
+                tmpStr := 'WHERE ' + JoinLinks[ ii ];
+                tmpPos := Pos( UpperCase( tmpStr ), UpperCase( NewSQLWhere ));
+              end;
+              if tmpPos > 0 then
+                System.Delete( NewSQLWhere, tmpPos, Length( tmpStr ));
+            end;
+            SQLWhere.Text := NewSQLWhere;
+          end;
+        finally
+          FAssigningSQL := false;
+        end;
+      end;
+  end;
+end;
+

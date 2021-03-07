@@ -1,0 +1,91 @@
+package dclcxWebD7;
+
+{$R *.res}
+{$R cxWebReg.dcr}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressWeb Framework by Developer Express Inc.'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  designide,
+  rtl,
+  vclx,
+  vclie,
+  cxWebD7,
+  vcldesigner;
+
+contains
+  cxWebDsgnModule,
+  cxfmAlign,
+  cxfmScale,
+  cxfmSize,
+  cxfmTabOrder,
+  cxfmWebGridsDsgn,
+  cxfmWebMenusDsgn,
+  cxfmWebModuleWizard,
+  cxfmWebStyleDsgn,
+  cxfmWebTVDsgn,
+  cxWebCtrlsFactory,
+  cxWebCustomDesigner,
+  cxWebDsgnConsts,
+  cxWebDsgnCtrls,
+  cxWebDsgnEnvOpt,
+  cxWebDsgnFactory,
+  cxWebDsgnGraphics,
+  cxWebDsgnIntf,
+  cxWebDsgnTypes,
+  cxWebDsgnUtils,
+  cxWebFormDesigner,
+  cxWebModuleWizard,
+  cxfmWebDsgn,
+  cxWebDsgnIntfImpl,
+  cxfmWebProjectWizard,
+  cxWebWizardUtils,
+  cxWebProjectWizard,
+  cxfmWebDataModuleWizard,
+  cxWebDsgnHTMLSource,
+  cxWebDsgnWebContext,
+  cxWebSprigs,
+  cxWebDsgnBaseModules,
+  cxWebDsgnComponentDesigners,
+  cxWebDsgnStrs,
+  cxWebHTMLDesigner,
+  cxWebDsgnHTMLConverter,
+  cxWebDsgnDelphiManager,
+  cxWebHTMLEvents,
+  cxWebHTMLBehaviors,
+  cxWebHTMLElementMapper,
+  cxWebDsgnHTMLCtrls,
+  MSHTML_TLB,
+  cxWebReg,
+  cxWebHTMLEditor,
+  cxWebHTMLEdIntf,
+  cxWebHTMLEdBar,
+  cxWebHTMLHostIntf,
+  cxWebHTMLConsts,
+  cxWebDsgnHTMLFilter,
+  cxWebFramesetWizard,
+  cxfmWebFramesetWizard;
+
+end.

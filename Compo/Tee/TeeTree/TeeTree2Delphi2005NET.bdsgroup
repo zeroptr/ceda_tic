@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{3E390030-4635-407D-8B29-3AC22F7D28A7}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    
+    <Projects>
+      <Projects Name="Steema.TeeTree.VCL.dll">Steema.TeeTree.VCL.bdsproj</Projects>
+      <Projects Name="Steema.TeeTree.VCL.Design.dll">Steema.TeeTree.VCL.Design.bdsproj</Projects>
+      <Projects Name="Targets">Steema.TeeTree.VCL.dll Steema.TeeTree.VCL.Design.dll</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

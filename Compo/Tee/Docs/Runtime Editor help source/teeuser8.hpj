@@ -1,0 +1,21 @@
+; This file is maintained by HCW. Do not modify this file directly.
+
+[OPTIONS]
+LCID=0x809 0x0 0x0 ; English (United Kingdom)
+REPORT=Yes
+CONTENTS=About_Chart_Editor
+TITLE=TeeChart Pro v8 Editor help
+COPYRIGHT=Copyright 2000-2007 Steema Software SL
+HLP=.\teeuser8.hlp
+
+[FILES]
+.\Teeuser8.rtf
+
+[MAP]
+#include .\Context_editor.txt
+
+[WINDOWS]
+main="",(247,216,453,520),60676,(r14876671),(r12632256),f2
+
+[CONFIG]
+BrowseButtons()

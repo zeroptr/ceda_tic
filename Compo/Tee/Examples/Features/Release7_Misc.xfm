@@ -1,0 +1,173 @@
+object MiscVersion7: TMiscVersion7
+  Left = 192
+  Top = 107
+  Width = 571
+  Height = 580
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 563
+    Height = 553
+    Align = alClient
+    Lines.Strings = (
+      'Miscellaneous changes and additions in version 7:'
+      '================================================='
+      ''
+      '- Support for Delphi for .Net for VCL applications.'
+      '  For WinForms and WebForms use TeeChart.NET'
+      ''
+      '- Transparency (blending) now uses Microsoft Windows API'
+      '  when possible (not in Windows 95), to make it faster.'
+      ''
+      
+        '- TChartGradient includes two new gradient modes: gdDiagonalUp a' +
+        'nd dDiagonalDown,'
+      
+        'and a new gradient gallery with many preset gradient styles like' +
+        ' "Sunset".'
+      ''
+      
+        '- TChartBrush editor dialog (TeeBrushDlg) provides several new p' +
+        'attern pictures'
+      'such as fire, clouds, metal, stone, etc.'
+      ''
+      
+        '- TTeeShadow can now draw shadows in "smooth" mode: Shadow.Smoot' +
+        'h:=True'
+      ''
+      '- Improvements in 3D clipping supporting 360 degree rotation.'
+      ''
+      '- TeeChart Wizard now supports Themes.'
+      ''
+      '- QuickReport Chart ( TQRChart ) new method "SetChart" to copy'
+      'a normal Chart into a QRChart:     QRChart1.SetChart(Chart1);'
+      ''
+      '- Chart1.Zoom can be set to zoom on Up Left drag direction.'
+      ''
+      
+        '- Translations to more languages: Farsi, Slovak, Hindi, Urdu and' +
+        ' Afrikaans.'
+      ''
+      '- Improved OpenGL display in Orthogonal and 2D modes.'
+      ''
+      '- Improved logarithmic axis automatic Increment.'
+      ''
+      
+        '- TSeriesDataText.ValueFormat new property to export Series valu' +
+        'es'
+      'to text files or streams using this format.'
+      ''
+      
+        '- TCursorTool.UseSeriesZ new property to display cursor at assoc' +
+        'iated'
+      'Series "Z" position.'
+      ''
+      
+        '- TAnnotationTool new PositionUnits property to display annotati' +
+        'ons'
+      
+        'at specified Left and Top coordinates expressed as percentage of' +
+        ' total'
+      'chart width and height.'
+      ''
+      
+        '- Clicked function for TriSurface series now returns the triangl' +
+        'e'
+      'under mouse XY position.'
+      ''
+      '- HighLow series support for null values.'
+      ''
+      '- Polar and Radar Series new "LabelsMargin" percent property.'
+      ''
+      '- New option at TChartEditor to hide the "Export, Native" tab.'
+      '  ChartEditor1.HideTabs:=[cetExportNative]'
+      ''
+      
+        '- Pie Series support for multi-paging (Chart1.MaxPointsPerPage :' +
+        '= 5)'
+      ''
+      '- New Design-Time "Options" editor dialog to configure several'
+      '  Chart gallery and Chart editor options.'
+      '  '
+      
+        '- New TCustomSeries "Shadow" property available to Line and Hori' +
+        'z.'
+      'Line series, to draw a shadow line near to the main line.'
+      ''
+      
+        '- New ChangeColor method in TChartGrid to display the color edit' +
+        'or dialog.'
+      
+        'New GetSeries, GetXYZSeries, FindXYZIndex methods and OnEditingC' +
+        'ell event.'
+      ''
+      '- Sample "TGLTorus" class for OpenGL Canvas 3D rendering.'
+      ''
+      
+        '- New TTeeScrollBar abstract generic class to implement scrollba' +
+        'rs with'
+      
+        'full formatting properties and improvements over standard Window' +
+        's scrollbar.'
+      ''
+      '- Transparency for TMapSeries polygons.'
+      ''
+      
+        '- New axis "MasterAxis" property to link axes to synchronize axe' +
+        's scales.'
+      ''
+      '- New axis OnDrawLabel event to customize every axis label.'
+      ''
+      
+        '- TPreviewPanel new SmoothBitmap property to display preview cha' +
+        'rts using'
+      'a smooth stretch algorithm instead of metafile.'
+      ''
+      '- New TeeAntiAlias global procedure in TeeProcs.pas unit.'
+      ''
+      
+        '- New properties at TColorGridSeries: Frame, SmoothBitmap, XGrid' +
+        'Every and'
+      'ZGridEvery.'
+      ''
+      
+        '- New StartLine and EndLine pen properties at TColorBandTool cla' +
+        'ss.'
+      ''
+      '- OnBeginDragLine new event at TColorLineTool'
+      ''
+      '- OnSnapChange new event at TCursorTool'
+      ''
+      '- GetNearesPoint new public method at TNearestTool.'
+      'TNearestTool works now with XYZ 3D series like TriSurface.'
+      
+        'New LinePen property to draw the line from mouse cursor to neare' +
+        'st point.'
+      ''
+      '- FastBrush and Transparency, new TriSurface series properties.'
+      ''
+      
+        '- New Chart1.Legend.Symbol.OnDraw event for custom-symbol-drawin' +
+        'g.'
+      ''
+      
+        '- New global methods at TeCanvas.pas unit: PolygonBounds, RectFr' +
+        'omTriangle,'
+      'TeeDistance, '
+      ''
+      ''
+      '')
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 0
+  end
+end

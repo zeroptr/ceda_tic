@@ -1,0 +1,116 @@
+object BasicFeatures: TBasicFeatures
+  Left = 245
+  Top = 163
+  Width = 496
+  Height = 474
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 233
+    Top = 154
+    Height = 293
+  end
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 488
+    Height = 113
+    Align = alTop
+    Color = clInfoBk
+    Lines.Strings = (
+      
+        'Creating charts is really easy to do. Just drop a Chart componen' +
+        't on your form'
+      'and double-click it to show the editor dialog.'
+      
+        'First steps with the editor dialog are clicking the Add button t' +
+        'o choose '
+      'a chart style (series) from the Gallery.'
+      ''
+      
+        'Adding points to a series can be done by code or at design-time,' +
+        ' linking'
+      'the series to a database or function.')
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 113
+    Width = 488
+    Height = 41
+    Align = alTop
+    TabOrder = 1
+    object Button1: TButton
+      Left = 240
+      Top = 8
+      Width = 169
+      Height = 25
+      Caption = '&Show the Chart editor...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 24
+      Top = 8
+      Width = 105
+      Height = 25
+      Caption = '&Run the code'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+  object Memo2: TMemo
+    Left = 0
+    Top = 154
+    Width = 233
+    Height = 293
+    Align = alLeft
+    Lines.Strings = (
+      'Run-time code to create charts:'
+      ''
+      'MyChart.RemoveAllSeries;'
+      ''
+      'MyChart.AddSeries( TBarSeries.Create( Self ));'
+      ''
+      'MyChart[0].Clear;'
+      'MyChart[0].Add(  123, '#39'ABC'#39', clRed );'
+      'MyChart[0].Add(  456, '#39'DEF'#39', clBlue );'
+      'MyChart[0].Add(  321, '#39'GHI'#39', clGreen );'
+      ''
+      'Change the bar Marks :'
+      ''
+      'MyChart[0].Marks.Style := smsValue ;'
+      ''
+      'To show the editor dialog, drop a '
+      'TChartEditor component and :'
+      ''
+      'ChartEditor1.Chart := MyChart;'
+      'ChartEditor1.Execute;'
+      '')
+    TabOrder = 2
+  end
+  object MyChart: TChart
+    Left = 236
+    Top = 154
+    Width = 252
+    Height = 293
+    Title.Text.Strings = (
+      'Chart example')
+    Align = alClient
+    TabOrder = 3
+  end
+  object ChartEditor1: TChartEditor
+    Chart = MyChart
+    Title = 'Example of Editing MyChart...'
+    TreeView = True
+    Left = 337
+    Top = 250
+  end
+end

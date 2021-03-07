@@ -1,0 +1,64 @@
+package cxSchedulerD14;
+
+{$R *.res}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ExpressScheduler 3 by Developer Express Inc.'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  cxExtEditorsD14,
+  cxExportD14;
+
+contains
+  cxScheduler,
+  cxSchedulerAggregateStorage,
+  cxSchedulerCustomControls,
+  cxSchedulerCustomResourceView,
+  cxSchedulerDateNavigator,
+  cxSchedulerDayView,
+  cxSchedulerDBStorage,
+  cxSchedulerDialogs,
+  cxSchedulerEventEditor,
+  cxSchedulerGoToDateDialog,
+  cxSchedulerRecurrenceEditor,
+  cxSchedulerRecurrenceSelectionDialog,
+  cxSchedulerResourcesLayoutEditor,
+  cxSchedulerStorage,
+  cxSchedulerStrs,
+  cxSchedulerUtils,
+  cxExportSchedulerLink,
+  cxSchedulerOutlookExchange,
+  cxDateNavigator,
+  cxSchedulerReminderWindow,
+  cxSchedulerTimeGridView,
+  cxSchedulerYearView,
+  cxSchedulerWeekView,
+  cxSchedulerGanttView,
+  cxSchedulerHolidaysLocationHolidayEditor,
+  cxSchedulerHolidays,
+  cxSchedulerHolidaysEditor,
+  cxSchedulerHolidaysLocationEditor,
+  cxSchedulerTaskDependencyEditor;
+
+end.

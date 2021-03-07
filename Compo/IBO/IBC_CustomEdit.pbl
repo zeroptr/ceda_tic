@@ -1,0 +1,45 @@
+
+{                                                                              }
+{  IB_CustomEdit.PBL                                                           }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+{$DEFINE IB_CustomEdit}
+{$I IB_WinControl.PBL}
+{$UNDEF IB_CustomEdit}
+
+published
+
+{$IFDEF IBC_Edit}
+property ButtonStyle;
+property PasswordChar;
+{$ENDIF}
+
+{$IFNDEF IBC_MEMO}
+{$IFNDEF IBC_RICHEDIT}
+property AlwaysShowButton;
+property OnButtonDraw;
+property ImageList;
+property ImageIndex;
+property ImageIndexDisabled;
+property ImageIndexPressed;
+property OnButtonClick;
+{$ENDIF}{$ENDIF}
+
+published
+
+property AutoSelect;
+property AutoSize;
+property HideSelection;
+property OEMConvert;
+property OnChange;
+
+{$IFDEF IBC_Edit}
+property OnGetDisplayText;
+property OnGetEditText;
+property OnSetEditText;
+property OnIsValidChar;
+{$ENDIF}
+
+{$ENDIF} // helpscan

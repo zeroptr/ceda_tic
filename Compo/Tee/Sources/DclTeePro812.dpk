@@ -1,0 +1,57 @@
+package DclTeePro812;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{ DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{ LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $42900000}
+{$DESCRIPTION 'TeeChart Pro 8 Components'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl,
+  tee812,
+  teedb812,
+  teeUI812,
+  teeGL812,
+  teepro812,
+  teelanguage812,
+  teeimage812,
+  teeworld812,
+  adortl,
+  dclado,
+  rtl,
+  bdertl,
+  designide,
+  vclactnband,
+  vclx; 
+
+contains
+  TeeChartReg in 'TeeChartReg.pas',
+  TeeExpForm in 'TeeExpForm.pas',
+  TeeChartExp in 'TeeChartExp.pas',
+  TeeChartPro in 'TeeChartPro.pas',
+  TeeDesignOptions in 'TeeDesignOptions.pas',
+  TeeSeriesDesign in 'TeeSeriesDesign.pas' {SeriesEditor},
+  TeeOpenGLReg in 'TeeOpenGLReg.pas',
+  TeeToolsGalleryDemos in 'TeeToolsGalleryDemos.pas';
+
+end.

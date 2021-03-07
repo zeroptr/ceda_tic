@@ -1,0 +1,27 @@
+Rob Schuff and other interested parties,
+
+I have developed a FRIENDLY way for users to SELECT A DATE AND TIME value for a date time field. The user clicks a button next to the date time edit box of interest (or however else you want the user to interact) which has an OnClick event which would look something like this
+
+procedure T<form name>.<button name>Click(Sender: TObject);
+begin
+  //set the date time field of interest with the date time value selected from SelectDateTime function
+  <date time field> := SelectDateTime(<date time field>);
+
+  //format the date time field value and place in an edit box
+  <date time edit box>.Text := FormatDateTime('ddd d mmm yyyy h:nn AM/PM',<date time field>);
+end;
+
+The SelectDateTime function brings up a simple dialog form from which the user simply selects parts of the date from a calender, combo boxes and radio buttons to select the desired date and time. Upon clicking 'OK' the date time field is set with the new date and time value selected. To clear the date time value (that is, make the date time 0), the user clicks 'Clear'. To select the current date and time the user clicks 'Now'. The user can click 'Cancel' to cancel selection.
+
+Beware that if you pass a date time field value in the SelectDateTime function which has been converted from a string value with a yy format, the year may be incorrect, for example, if you merge the two statements from the OnClick above into one statement like the following...
+
+<date time edit box>.Text := FormatDateTime('ddd d mmm yyyy h:nn AM/PM',
+  SelectDateTime(StrToDateTime(<date time edit box>.Text)));
+
+...if the year component of <date time edit box>.Text is '48' it will be interpreted as 1948. If you select 2048 in the Select Date Time form, the year part of <date time edit box>.Text will be set to '48', and will then be interpreted as 1948, hence the reason for the two separate statements.
+
+You may use and modify the code attached with this email AT YOUR OWN RISK as you see fit. Please email me any helpful comments about it. You may want to change the format, placement etc of components in the form... Happy programming....
+
+  
+Amanda Hansen
+WizBang Limited

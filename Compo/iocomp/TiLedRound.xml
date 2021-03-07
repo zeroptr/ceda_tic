@@ -1,0 +1,98 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>3D LED [Default]</Name>
+<Properties>
+<ActiveColor>65280</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BevelStyle>2</BevelStyle>
+<BorderStyle>2</BorderStyle>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>1</ShowReflection>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Flat LED</Name>
+<Properties>
+<ActiveColor>65280</ActiveColor>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BevelStyle>0</BevelStyle>
+<BorderStyle>0</BorderStyle>
+<InactiveColor>21760</InactiveColor>
+<ShowReflection>0</ShowReflection>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Pass (Lime) [Default]</Name>
+<Properties>
+<ActiveColor>65280</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Status (Blue)</Name>
+<Properties>
+<ActiveColor>16711680</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<InactiveColor>5570560</InactiveColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Status (Fuchsia)</Name>
+<Properties>
+<ActiveColor>16711935</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<InactiveColor>5570645</InactiveColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Warning (Yellow)</Name>
+<Properties>
+<ActiveColor>65535</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Failure (Red)</Name>
+<Properties>
+<ActiveColor>255</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<InactiveColor>21760</InactiveColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>GrayScale</Name>
+<Properties>
+<ActiveColor>16777215</ActiveColor>
+<AutoInactiveColor>1</AutoInactiveColor>
+<BackGroundColor>-2147483633</BackGroundColor>
+<InactiveColor>8421504</InactiveColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

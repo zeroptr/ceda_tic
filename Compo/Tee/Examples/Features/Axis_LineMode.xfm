@@ -1,0 +1,202 @@
+inherited AxisLineModeForm: TAxisLineModeForm
+  Width = 558
+  Height = 399
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 550
+  end
+  inherited Memo1: TMemo
+    Width = 550
+    Lines.Strings = (
+      
+        'Charts displayed using the 3D OpenGL canvas allow axis lines to ' +
+        'show as thin lines'
+      'as well as cylinders or as a rectangular body.'
+      ''
+      'The axis LineMode property controls the line style.')
+  end
+  inherited Chart1: TChart
+    Width = 550
+    Height = 216
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Pen.Color = clGray
+    Legend.Transparent = True
+    Legend.Visible = False
+    Title.Visible = False
+    BottomAxis.Axis.Color = clRed
+    BottomAxis.Axis.Width = 5
+    BottomAxis.Grid.DrawEvery = 10
+    BottomAxis.LabelsFont.Height = -16
+    BottomAxis.LabelsSeparation = 60
+    Chart3DPercent = 1
+    LeftAxis.Axis.Color = clNavy
+    LeftAxis.Axis.Width = 5
+    LeftAxis.Grid.DrawEvery = 3
+    LeftAxis.LabelsFont.Height = -16
+    LeftAxis.LabelsSeparation = 70
+    LeftAxis.TickLength = 14
+    View3DOptions.Elevation = 360
+    View3DOptions.HorizOffset = 90
+    View3DOptions.Orthogonal = False
+    View3DOptions.Rotation = 40
+    View3DOptions.VertOffset = -1
+    View3DOptions.Zoom = 91
+    View3DWalls = False
+    Color = clWhite
+    ColorPaletteIndex = 6
+    object Series1: TLineSeries
+      HorizAxis = aBothHorizAxis
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = 8454143
+      VertAxis = aBothVertAxis
+      LineHeight = 6
+      LinePen.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000000000000000F07E4000000000004C83400000000000088640000000
+        000074834000000000007C85400000000000E481400000000000D48240000000
+        00008C8440000000000044864000000000006C86400000000000FC8740000000
+        00006489400000000000E4864000000000004C83400000000000948640000000
+        0000D8884000000000009C88400000000000B088400000000000FC8740000000
+        0000348740000000000034874000000000002488400000000000FC8740000000
+        0000A88B400000000000688F40}
+    end
+    object Series2: TLineSeries
+      HorizAxis = aBothHorizAxis
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      VertAxis = aRightAxis
+      LineHeight = 6
+      LinePen.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        00190000006666666666198C406666666666B18D406666666666E58C40CCCCCC
+        CCCCF88D40CCCCCCCCCCFA8B40FFFFFFFFFF368D40FFFFFFFFFF6A8C40CCCCCC
+        CCCC938C403233333333418D409899999999898C403233333333738E40989999
+        9999218E40CCCCCCCCCC908F4066666666667C8F40CCCCCCCCCCF68F40CCCCCC
+        CC4C8F904066666666E613914000000000007F91409A999999996A9140676666
+        666693914001000000001892406766666666C69140CDCCCCCCCC749140676666
+        6666C7904034333333B30A9040}
+    end
+    object ChartTool1: TRotateTool
+      Inertia = 26
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 550
+    object Label1: TLabel
+      Left = 10
+      Top = 15
+      Width = 22
+      Height = 13
+      Caption = '&Axis:'
+      FocusControl = cbAxis
+    end
+    object Label2: TLabel
+      Left = 122
+      Top = 15
+      Width = 53
+      Height = 13
+      Caption = '&Line Mode:'
+      FocusControl = cbLineMode
+    end
+    object Label3: TLabel
+      Left = 298
+      Top = 15
+      Width = 31
+      Height = 13
+      Caption = '&Width:'
+      FocusControl = Edit1
+    end
+    object cbAxis: TComboFlat
+      Left = 37
+      Top = 11
+      Width = 78
+      TabOrder = 0
+      OnChange = cbAxisChange
+      Items.Strings = (
+        'Left'
+        'Right'
+        'Top'
+        'Bottom')
+    end
+    object cbLineMode: TComboFlat
+      Left = 181
+      Top = 11
+      Width = 89
+      TabOrder = 1
+      OnChange = cbLineModeChange
+      Items.Strings = (
+        'lmLine'
+        'lmCylinder'
+        'lmRectangle')
+    end
+    object Edit1: TEdit
+      Left = 333
+      Top = 12
+      Width = 27
+      Height = 21
+      TabOrder = 2
+      Text = '10'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 360
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Position = 10
+      TabOrder = 3
+    end
+  end
+  object TeeOpenGL1: TTeeOpenGL
+    Active = True
+    AmbientLight = 42
+    Light.Color = clBlack
+    Light.Visible = True
+    Light.Direction.Z = -1.000000000000000000
+    Light.Position.X = 439.000000000000000000
+    Light.Position.Y = 143.000000000000000000
+    Light.Position.Z = -100.000000000000000000
+    Light.SpotDegrees = 180.000000000000000000
+    Light1.Color = clBlack
+    Light1.Visible = True
+    Light1.Direction.Z = -1.000000000000000000
+    Light1.Position.X = -439.000000000000000000
+    Light1.Position.Y = 153.000000000000000000
+    Light1.Position.Z = 316.000000000000000000
+    Light1.SpotDegrees = 180.000000000000000000
+    Light2.Color = clGray
+    Light2.Visible = False
+    Light2.Direction.Z = -1.000000000000000000
+    Light2.Position.X = -100.000000000000000000
+    Light2.Position.Y = -100.000000000000000000
+    Light2.Position.Z = -100.000000000000000000
+    Light2.SpotDegrees = 180.000000000000000000
+    Shininess = 0.200000000000000000
+    TeePanel = Chart1
+    Left = 8
+    Top = 67
+  end
+end

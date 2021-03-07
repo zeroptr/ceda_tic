@@ -1,0 +1,115 @@
+inherited ChartGridFirstRowNum: TChartGridFirstRowNum
+  Width = 564
+  Height = 448
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 556
+  end
+  inherited Memo1: TMemo
+    Width = 556
+    Lines.Strings = (
+      
+        'Use the method to return the first data of the ChartGrid that co' +
+        'ntains values. It is useful when interrogating the '
+      
+        'Grid for values and there is the possibility that header rows mi' +
+        'ght vary.'
+      
+        'Example: ShowMessage('#39'Row num. : '#39' + IntToStr(ChartGrid1.FirstRo' +
+        'wNum));')
+  end
+  inherited Chart1: TChart
+    Left = 167
+    Width = 389
+    Height = 265
+    BottomWall.Size = 4
+    LeftWall.Transparent = True
+    Legend.Visible = False
+    Title.Visible = False
+    BottomAxis.LabelsSeparation = 100
+    View3DOptions.Elevation = 360
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 94
+    View3DOptions.Rotation = 324
+    object Series1: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      AreaLinesPen.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 40
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        01080000000000000000000000345EBA49FC758640DBB66DDBB66D0B40884160
+        E5A0288640DBB66DDBB66D1B40AB1C5A642BC5854024499224499224405FE5D0
+        22FB2F8540DBB66DDBB66D2B40EEA7C64B378A844049922449922431407D6ABC
+        7473E4834024499224499234400C2DB29DAF3E8340FFFFFFFFFFFF374002560E
+        2D32AD8340}
+    end
+    object Series2: TAreaSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      AreaLinesPen.Visible = False
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 40
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        0108000000000000000000000096512CB726F78440DAB66DDBB66D0B40D69E59
+        12F0A88440DAB66DDBB66D1B40E8211ADD64DC84402449922449922440BE2154
+        A9E3838440DAB66DDBB66D2B4016EC866DB95A844048922449922431403D575B
+        B18C5484402349922449923440296F47382E8E8440FEFFFFFFFFFF374081397A
+        FC03658440}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 556
+    object cbShowFields: TCheckBox
+      Left = 19
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Show Fields'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbShowFieldsClick
+    end
+    object BitBtn1: TBitBtn
+      Left = 118
+      Top = 9
+      Width = 130
+      Height = 25
+      Caption = '&First Row num. ?'
+      TabOrder = 1
+      OnClick = BitBtn1Click
+    end
+  end
+  object ChartGrid1: TChartGrid
+    Left = 0
+    Top = 156
+    Width = 167
+    Height = 265
+    Align = alLeft
+    Options = [goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing, goColSizing, goEditing, goTabs, goThumbTracking]
+    TabOrder = 3
+    Chart = Chart1
+    ShowLabels = False
+    ShowXValues = cgsNo
+  end
+end

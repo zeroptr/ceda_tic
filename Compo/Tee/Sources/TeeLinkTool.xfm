@@ -1,0 +1,73 @@
+inherited LinkToolEditor: TLinkToolEditor
+  Left = 192
+  Top = 107
+  ClientHeight = 261
+  ClientWidth = 311
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited PageControl1: TPageControl
+    Width = 311
+    Height = 261
+    ActivePage = TabLink
+    object TabLink: TTabSheet [0]
+      Caption = 'Link'
+      ImageIndex = 4
+      object Label16: TLabel
+        Left = 8
+        Top = 45
+        Width = 25
+        Height = 13
+        Caption = '&URL:'
+        FocusControl = EURL
+      end
+      object Label17: TLabel
+        Left = 8
+        Top = 89
+        Width = 22
+        Height = 13
+        Caption = '&Hint:'
+        FocusControl = EHint
+      end
+      object Label18: TLabel
+        Left = 8
+        Top = 1
+        Width = 24
+        Height = 13
+        Caption = '&Text:'
+        FocusControl = EText
+      end
+      object EURL: TEdit
+        Left = 8
+        Top = 61
+        Width = 257
+        Height = 21
+        TabOrder = 0
+        Text = 'http://www.steema.com'
+        OnChange = EURLChange
+      end
+      object EHint: TEdit
+        Left = 8
+        Top = 105
+        Width = 257
+        Height = 21
+        TabOrder = 1
+        OnChange = EHintChange
+      end
+      object EText: TEdit
+        Left = 8
+        Top = 17
+        Width = 257
+        Height = 21
+        TabOrder = 2
+        OnChange = ETextChange
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 252
+    Top = 168
+  end
+end

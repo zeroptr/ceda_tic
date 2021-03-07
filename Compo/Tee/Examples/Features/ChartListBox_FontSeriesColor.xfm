@@ -1,0 +1,233 @@
+inherited ChartListBoxFontSeriesColor: TChartListBoxFontSeriesColor
+  Left = 415
+  Top = 316
+  Width = 537
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 529
+  end
+  inherited Memo1: TMemo
+    Width = 529
+    Lines.Strings = (
+      'When True shows Series names in colour of Series.'
+      'Example:'
+      'ChartListBox1.FontSeriesColor:=True;')
+  end
+  inherited Chart1: TChart
+    Left = 121
+    Width = 408
+    BackWall.Color = clWhite
+    BackWall.Dark3D = False
+    BackWall.Size = 8
+    BackWall.Transparent = False
+    Border.Visible = True
+    BottomWall.Dark3D = False
+    BottomWall.Size = 8
+    LeftWall.Color = clWhite
+    LeftWall.Dark3D = False
+    LeftWall.Size = 8
+    Legend.Alignment = laBottom
+    Legend.Font.Height = -13
+    Legend.Font.Name = 'Times New Roman'
+    Legend.Frame.Visible = False
+    Legend.Shadow.HorizSize = 0
+    Legend.Shadow.VertSize = 0
+    Legend.Symbol.DefaultPen = False
+    Legend.Symbol.Pen.Visible = False
+    Legend.Transparent = True
+    RightWall.Color = clWhite
+    RightWall.Dark3D = False
+    RightWall.Size = 8
+    Title.Font.Color = clBlack
+    Title.Font.Height = -16
+    Title.Font.Name = 'Times New Roman'
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.Color = clBlack
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.GridCentered = True
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.LabelsFont.Name = 'Times New Roman'
+    BottomAxis.MinorTicks.Visible = False
+    BottomAxis.Ticks.Color = clBlack
+    BottomAxis.TicksInner.Visible = False
+    BottomAxis.Title.Font.Name = 'Times New Roman'
+    DepthAxis.Axis.Width = 1
+    DepthAxis.Grid.Color = clBlack
+    DepthAxis.Grid.Style = psSolid
+    DepthAxis.LabelsFont.Height = -13
+    DepthAxis.LabelsFont.Name = 'Times New Roman'
+    DepthAxis.MinorTicks.Visible = False
+    DepthAxis.Ticks.Color = clBlack
+    DepthAxis.TicksInner.Visible = False
+    DepthAxis.Title.Font.Name = 'Times New Roman'
+    DepthTopAxis.Axis.Width = 1
+    DepthTopAxis.Grid.Color = clBlack
+    DepthTopAxis.Grid.Style = psSolid
+    DepthTopAxis.LabelsFont.Height = -13
+    DepthTopAxis.LabelsFont.Name = 'Times New Roman'
+    DepthTopAxis.MinorTicks.Visible = False
+    DepthTopAxis.Ticks.Color = clBlack
+    DepthTopAxis.TicksInner.Visible = False
+    DepthTopAxis.Title.Font.Name = 'Times New Roman'
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.Color = clBlack
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Height = -13
+    LeftAxis.LabelsFont.Name = 'Times New Roman'
+    LeftAxis.MinorTicks.Visible = False
+    LeftAxis.Ticks.Color = clBlack
+    LeftAxis.TicksInner.Visible = False
+    LeftAxis.Title.Font.Name = 'Times New Roman'
+    RightAxis.Axis.Width = 1
+    RightAxis.Grid.Color = clBlack
+    RightAxis.Grid.Style = psSolid
+    RightAxis.LabelsFont.Height = -13
+    RightAxis.LabelsFont.Name = 'Times New Roman'
+    RightAxis.MinorTicks.Visible = False
+    RightAxis.Ticks.Color = clBlack
+    RightAxis.TicksInner.Visible = False
+    RightAxis.Title.Font.Name = 'Times New Roman'
+    TopAxis.Axis.Width = 1
+    TopAxis.Grid.Color = clBlack
+    TopAxis.Grid.Style = psSolid
+    TopAxis.LabelsFont.Height = -13
+    TopAxis.LabelsFont.Name = 'Times New Roman'
+    TopAxis.MinorTicks.Visible = False
+    TopAxis.Ticks.Color = clBlack
+    TopAxis.TicksInner.Visible = False
+    TopAxis.Title.Font.Name = 'Times New Roman'
+    View3D = False
+    BevelOuter = bvNone
+    Color = clWhite
+    ColorPaletteIndex = 5
+    object Series1: TLineSeries
+      Marks.Arrow.Color = clBlack
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Font.Name = 'Times New Roman'
+      Marks.Transparent = True
+      Marks.Visible = False
+      LinePen.Width = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010A00000000000000000000003C963E54C13873405555555555550540CF764C
+        9D6007734055555555555515403D8A3AF3ADE47240000000000000204085DC0C
+        B7BC247340555555555555254018C1C675620F7340AAAAAAAAAAAA2A40AAA92C
+        AA0E167340FFFFFFFFFFFF2F403B9AEAC9C7547340AAAAAAAAAAAA32408438D6
+        25725373405555555555553540F1FFAAE3237273400000000000003840CD2EDF
+        7ACB647340}
+    end
+    object Series2: TPointSeries
+      Marks.Arrow.Color = clBlack
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Font.Name = 'Times New Roman'
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psTriangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010A000000000000000000000060C3D32BCF74734055555555555505401951DA
+        1BD71B73405555555555551540853C829B786F734000000000000020403D0AD7
+        23534873405555555555552540AB05F618C4447340AAAAAAAAAAAA2A401A51DA
+        1BD71B7340FFFFFFFFFFFF2F40D1AE424A26017340AAAAAAAAAAAA32401C412A
+        45BDAB7240555555555555354066A3737E9B94724000000000000038401C6151
+        91A6C47240}
+    end
+    object Series3: TLineSeries
+      Marks.Arrow.Color = clBlack
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Font.Name = 'Times New Roman'
+      Marks.Transparent = True
+      Marks.Visible = False
+      LinePen.Width = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010A00000000000000000000001DC18D14184872405555555555550540FA777D
+        66270F72405555555555551540F947DFA46E4D72400000000000002040D53E1D
+        8F50467240555555555555254069E388B523FF7140AAAAAAAAAAAA2A40B11534
+        2D49267240FFFFFFFFFFFF2F40FB57561A3EF67140AAAAAAAAAAAA3240D79E59
+        12C2C971405555555555553540D77E32C6D8B071400000000000003840D75E0B
+        7AEF977140}
+    end
+    object Series4: TPointSeries
+      Marks.Arrow.Color = clBlack
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Font.Height = -13
+      Marks.Font.Name = 'Times New Roman'
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        010A00000000000000000000004929E8F698FC71405555555555550540DB6800
+        6F33BC714055555555555515408F31772D91E671400000000000002040D16F5F
+        0718DE7140555555555555254063AF777FB29D7140AAAAAAAAAAAA2A40B415FB
+        CBFE5E7140FFFFFFFFFFFF2F409FBE654E8FA97140AAAAAAAAAAAA32404CF38E
+        530AEF714055555555555535404CF38E530AEF714000000000000038404829E8
+        F698FC7140}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 529
+    object cbFont: TCheckBox
+      Left = 14
+      Top = 13
+      Width = 97
+      Height = 17
+      Caption = '&Font Series color'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbFontClick
+    end
+  end
+  object ChartListBox1: TChartListBox
+    Left = 0
+    Top = 156
+    Width = 121
+    Height = 390
+    Align = alLeft
+    ItemHeight = 24
+    TabOrder = 3
+  end
+end

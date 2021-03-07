@@ -1,0 +1,70 @@
+inherited CustomFunctionDemo: TCustomFunctionDemo
+  Caption = 'f'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 105
+  end
+  inherited Memo1: TMemo
+    Height = 105
+    Lines.Strings = (
+      
+        'New Custom function to calculate y = f(x) values using an OnCalc' +
+        'ulate event:'
+      ''
+      
+        'procedure TCustomFunctionDemo.TeeFunction1Calculate(Sender: TCus' +
+        'tomTeeFunction;'
+      '  const x: Double; var y: Double);'
+      'begin'
+      '  y: = Sin(x / 10);'
+      'end;')
+  end
+  inherited Chart1: TChart
+    Top = 148
+    Height = 189
+    Legend.TextStyle = ltsXAndValue
+    Title.Text.Strings = (
+      'y = Sin( x / 10 )')
+    ClipPoints = False
+    LeftAxis.MaximumOffset = 3
+    LeftAxis.MinimumOffset = 3
+    View3D = False
+    object Series1: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clBlue
+      Title = 'y = Sin( x / 10 )'
+      LinePen.Width = 2
+      LinePen.EndStyle = esFlat
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TCustomTeeFunction
+        Period = 1.000000000000000000
+        NumPoints = 100
+        OnCalculate = TeeFunction1Calculate
+      end
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 107
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

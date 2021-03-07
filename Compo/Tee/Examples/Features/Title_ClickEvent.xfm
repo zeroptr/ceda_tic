@@ -1,0 +1,47 @@
+inherited TitleClickEvent: TTitleClickEvent
+  Caption = 'TitleClickEvent'
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Clicking a chart title ( Title, Foot, SubTitle and SubFoot ) gen' +
+        'erates'
+      'an "OnClickTitle" event.'
+      ''
+      'Click a title or footer to raise the event.')
+  end
+  inherited Chart1: TChart
+    Foot.Text.Strings = (
+      'This is the foot')
+    SubFoot.Font.Color = 8421440
+    SubFoot.Font.Height = -13
+    SubFoot.Font.Style = [fsBold]
+    SubFoot.Text.Strings = (
+      'This is the subfoot')
+    SubTitle.Font.Charset = ANSI_CHARSET
+    SubTitle.Font.Color = clGreen
+    SubTitle.Font.Height = -13
+    SubTitle.Font.Name = 'Courier New'
+    SubTitle.Font.Style = [fsItalic]
+    SubTitle.Text.Strings = (
+      'This is the subtitle')
+    Title.Text.Strings = (
+      'This is the Title')
+    OnClickTitle = Chart1ClickTitle
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    OnMouseMove = Chart1MouseMove
+    object Series1: TPieSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = True
+      SeriesColor = clRed
+      PieValues.DateTime = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+  end
+end

@@ -1,0 +1,89 @@
+inherited CanvasCustomShapeRoundSize: TCanvasCustomShapeRoundSize
+  Height = 380
+  Position = poDesktopCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Set the rounding on the corners of each Mark.'
+      'Example:'
+      '  with Series1.Marks do'
+      '  begin'
+      '    Pen.Visible:=True;'
+      '    ShapeStyle:=fosRoundRectangle;'
+      '    RoundSize:=UpDown1.Position;'
+      '  end;')
+  end
+  inherited Chart1: TChart
+    Height = 197
+    Gradient.EndColor = clSilver
+    Gradient.Visible = True
+    MarginTop = 10
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.MaximumOffset = 15
+    BottomAxis.MinimumOffset = 15
+    LeftAxis.Axis.Width = 1
+    View3D = False
+    object Series1: TBubbleSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.Length = -6
+      Marks.Clip = True
+      Marks.Font.Height = -16
+      Marks.Font.Style = [fsBold]
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = True
+      ClickableLine = False
+      Pointer.Gradient.Balance = 46
+      Pointer.Gradient.Direction = gdRadial
+      Pointer.Gradient.EndColor = clWhite
+      Pointer.Gradient.Visible = True
+      Pointer.HorizSize = 26
+      Pointer.InflateMargins = True
+      Pointer.Style = psCircle
+      Pointer.VertSize = 26
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+      Data = {
+        00050000000000000000B884405555555555D564400000000000208440ABAAAA
+        AAAAEA5B400000000000C88040ABAAAAAAAAEA5B400000000000008B40555555
+        5555B563400000000000688140ABAAAAAAAA2A5D40}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 19
+      Top = 15
+      Width = 58
+      Height = 13
+      Caption = '&Round Size:'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 85
+      Top = 12
+      Width = 30
+      Height = 21
+      TabOrder = 0
+      Text = '15'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 115
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Position = 15
+      TabOrder = 1
+    end
+  end
+end

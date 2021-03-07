@@ -1,0 +1,99 @@
+object TagCloudEditor: TTagCloudEditor
+  Left = 368
+  Top = 227
+  AutoScroll = False
+  ClientHeight = 207
+  ClientWidth = 302
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 302
+    Height = 207
+    ActivePage = TabOptions
+    Align = alClient
+    TabOrder = 0
+    object TabOptions: TTabSheet
+      Caption = 'Options'
+      ImageIndex = -1
+      object Label1: TLabel
+        Left = 8
+        Top = 8
+        Width = 25
+        Height = 13
+        Caption = '&Filter:'
+        FocusControl = EFilter
+      end
+      object Label2: TLabel
+        Left = 8
+        Top = 88
+        Width = 65
+        Height = 13
+        Caption = '&Separation %:'
+        FocusControl = ESep
+      end
+      object EFilter: TEdit
+        Left = 8
+        Top = 24
+        Width = 121
+        Height = 21
+        TabOrder = 0
+        OnChange = EFilterChange
+      end
+      object CBClip: TCheckBox
+        Left = 8
+        Top = 56
+        Width = 97
+        Height = 17
+        Caption = '&Clip'
+        TabOrder = 1
+        OnClick = CBClipClick
+      end
+      object ButtonPen1: TButtonPen
+        Left = 152
+        Top = 24
+        Caption = '&Border...'
+        TabOrder = 2
+      end
+      object Button1: TButton
+        Left = 152
+        Top = 66
+        Width = 75
+        Height = 25
+        Caption = '&Pattern...'
+        TabOrder = 3
+        OnClick = Button1Click
+      end
+      object ESep: TEdit
+        Left = 8
+        Top = 105
+        Width = 41
+        Height = 21
+        TabOrder = 4
+        Text = '0'
+        OnChange = ESepChange
+      end
+      object UDSep: TUpDown
+        Left = 49
+        Top = 105
+        Width = 15
+        Height = 21
+        Associate = ESep
+        TabOrder = 5
+      end
+    end
+    object TabFont: TTabSheet
+      Caption = 'Font'
+    end
+    object TabGradient: TTabSheet
+      Caption = 'Gradient'
+      ImageIndex = 2
+    end
+  end
+end

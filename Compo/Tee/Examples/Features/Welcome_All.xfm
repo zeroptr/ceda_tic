@@ -1,0 +1,306 @@
+object WelcomeAllForm: TWelcomeAllForm
+  Left = 219
+  Top = 159
+  Width = 569
+  Height = 371
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Draw3D1: TDraw3D
+    Left = 0
+    Top = 0
+    Width = 561
+    Height = 344
+    Gradient.Balance = 86
+    Gradient.Direction = gdRadial
+    Gradient.EndColor = clSilver
+    Gradient.Visible = True
+    Align = alClient
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 25
+      Top = 69
+      Width = 336
+      Height = 16
+      Caption = '57 Chart styles (in 2D and 3D plus multiple combinations).'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label2: TLabel
+      Left = 25
+      Top = 85
+      Width = 266
+      Height = 16
+      Caption = '42 Functions (Standard, Financial, Statistical).'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label3: TLabel
+      Left = 25
+      Top = 101
+      Width = 278
+      Height = 16
+      Caption = 'OpenGL 3D rendering, with lights and shadows.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label4: TLabel
+      Left = 25
+      Top = 117
+      Width = 315
+      Height = 16
+      Caption = 'Run-time Editor, Print-Preview, Gallery and Chart Grid.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label5: TLabel
+      Left = 25
+      Top = 133
+      Width = 269
+      Height = 16
+      Caption = 'Toolbar with editing, rotation, zoom and scroll.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label6: TLabel
+      Left = 25
+      Top = 149
+      Width = 353
+      Height = 16
+      Caption = 'Web source component to retrieve Internet Charts and Data.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label7: TLabel
+      Left = 25
+      Top = 165
+      Width = 348
+      Height = 16
+      Caption = 'Database Charts with Summaries, Sorting and record level.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label8: TLabel
+      Left = 25
+      Top = 181
+      Width = 449
+      Height = 16
+      Caption = 
+        'Export picture to Flash, XAML, JPEG, GIF, PNG, BMP, EPS, PDF, PC' +
+        'X, WMF.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label9: TLabel
+      Left = 25
+      Top = 197
+      Width = 333
+      Height = 16
+      Caption = 'Export Data to HTML, XML, Text, CSV and Excel formats.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label10: TLabel
+      Left = 25
+      Top = 213
+      Width = 382
+      Height = 16
+      Caption = 'Fully scriptable under Internet Explorer, VBA, ASP and ASP.NET.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label11: TLabel
+      Left = 25
+      Top = 229
+      Width = 308
+      Height = 16
+      Caption = '44 Chart Tool components for additional functionality'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label12: TLabel
+      Left = 25
+      Top = 245
+      Width = 188
+      Height = 16
+      Caption = 'Live animated Zoom and Scroll.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label13: TLabel
+      Left = 25
+      Top = 261
+      Width = 251
+      Height = 16
+      Caption = 'Unlimited multiple axes, fully customizable.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Label14: TLabel
+      Left = 25
+      Top = 277
+      Width = 213
+      Height = 16
+      Caption = '3D Canvas, gradients, font outlines...'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+    object Image1: TImage
+      Left = 6
+      Top = 68
+      Width = 17
+      Height = 17
+      Picture.Data = {
+        07544269746D6170F6000000424DF60000000000000076000000280000001000
+        000010000000010004000000000080000000C40E0000C40E0000100000000000
+        0000000000000000800000800000008080008000000080008000808000008080
+        8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+        FF00DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+        DDDDDDDDDDDDDDDDDDDDDDDDDDDDD99DDDDDDDDDDDDD9999DDDDDDDDDDDD9999
+        DDDDDDDDDDDDD99DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+        DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+        DDDD}
+      Transparent = True
+    end
+    object Memo1: TMemo
+      Left = 1
+      Top = 1
+      Width = 559
+      Height = 56
+      Align = alTop
+      Alignment = taCenter
+      Color = 14811135
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clNavy
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      Lines.Strings = (
+        'TeeChart Pro, a Charting and Graphing component available as '
+        'Pure C# .Net Assembly, Java, ActiveX / COM'
+        'and VCL / CLX versions (for Delphi, BDS, C++ Builder and Kylix).')
+      ParentFont = False
+      TabOrder = 0
+    end
+    object Chart1: TChart
+      Left = 1
+      Top = 304
+      Width = 559
+      Height = 39
+      BottomWall.Size = 3
+      Gradient.EndColor = clFuchsia
+      Gradient.StartColor = 8454143
+      Gradient.Visible = True
+      LeftWall.Size = 4
+      Legend.Visible = False
+      Title.Text.Strings = (
+        'TChart')
+      Title.Visible = False
+      AxisVisible = False
+      Chart3DPercent = 10
+      Align = alBottom
+      TabOrder = 1
+      object Series1: TLineSeries
+        Marks.Arrow.Visible = True
+        Marks.Callout.Brush.Color = clBlack
+        Marks.Callout.Arrow.Visible = True
+        Marks.Visible = False
+        SeriesColor = clBlue
+        LinePen.Visible = False
+        OutLine.Color = clSilver
+        Pointer.InflateMargins = True
+        Pointer.Style = psRectangle
+        Pointer.Visible = False
+        Stairs = True
+        XValues.Name = 'X'
+        XValues.Order = loAscending
+        YValues.Name = 'Y'
+        YValues.Order = loNone
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 329
+    Top = 240
+  end
+end

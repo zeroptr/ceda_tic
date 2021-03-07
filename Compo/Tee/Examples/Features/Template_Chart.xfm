@@ -1,0 +1,72 @@
+inherited TemplateChart: TTemplateChart
+  Left = 268
+  Top = 183
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 137
+    Top = 114
+    Width = 3
+    Height = 223
+    Cursor = crHSplit
+  end
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Native Charts (Tee files), can be exported without data to creat' +
+        'e templates.'
+      
+        'They can be saved to streams and files and can be used for examp' +
+        'le in'
+      
+        'dynamic charts, where new Series are added to the Chart with for' +
+        'matting '
+      'settings from other pre-created charts.')
+  end
+  inherited Chart1: TChart
+    Left = 140
+    Width = 339
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 113
+      Height = 25
+      Action = ChartActionEdit1
+      Caption = '&Edit Template...'
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 176
+      Top = 8
+      Width = 185
+      Height = 25
+      Caption = '&Run the example'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+  object TemplateChart: TChart
+    Left = 0
+    Top = 114
+    Width = 137
+    Height = 223
+    Title.Text.Strings = (
+      'Template')
+    Align = alLeft
+    TabOrder = 3
+  end
+  object ActionList1: TActionList
+    Left = 48
+    Top = 178
+    object ChartActionEdit1: TChartActionEdit
+      Category = 'Chart'
+      Chart = TemplateChart
+      Caption = '&Edit...'
+      Hint = 'Edit Chart'
+    end
+  end
+end

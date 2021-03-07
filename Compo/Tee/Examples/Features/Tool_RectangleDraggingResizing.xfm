@@ -1,0 +1,29 @@
+inherited ToolRectangleDraggingResizing: TToolRectangleDraggingResizing
+  Left = 579
+  Top = 250
+  Width = 573
+  Height = 468
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 565
+  end
+  inherited Memo1: TMemo
+    Width = 565
+  end
+  inherited Chart1: TChart
+    Width = 565
+    Height = 325
+    inherited Series1: TBubbleSeries
+      Data = {
+        000800000000000000006061405555555555D564400000000000C08640ABAAAA
+        AAAAEA5D400000000000088C40ABAAAAAAAA2A5D400000000000A88D40ABAAAA
+        AAAA2A5D400000000000A081405555555555D564400000000000206F40555555
+        555515604000000000007085405555555555B563400000000000688040ABAAAA
+        AAAAAA5C40}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 565
+  end
+end

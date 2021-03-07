@@ -1,0 +1,36 @@
+object OrderInfo: TOrderInfo
+  Left = 280
+  Top = 223
+  Width = 405
+  Height = 339
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 397
+    Height = 312
+    Align = alClient
+    Lines.Strings = (
+      'If you wish to order and register TeeChart Pro, or upgrade from'
+      'a previous version, please visit our web site:'
+      ''
+      'http://www.steema.com'
+      ''
+      
+        'We provide multi-site licensing, priority support plans and disc' +
+        'ounts'
+      'for educational and non-profit organizations.'
+      ''
+      'Thank You !!'
+      'Steema Software.')
+    TabOrder = 0
+  end
+end

@@ -1,0 +1,127 @@
+inherited WindRoseForm: TWindRoseForm
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Wind-Rose series is a polar chart showing geographical'
+      
+        'coordinates around the circle. ( N = North, S = South, W = West,' +
+        ' E = East ).'
+      ''
+      'Displays more than one series at the same time, each one with'
+      'specific properties.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'Wind-Rose series')
+    BottomAxis.Increment = 10.000000000000000000
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    Color = clGray
+    object Series1: TWindRoseSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Circled = True
+      AngleIncrement = 10.000000000000000000
+      AngleValues.DateTime = False
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      CircleBackColor = clSilver
+      CircleLabelsFont.Color = clYellow
+      CircleLabelsFont.Style = [fsBold]
+      Pen.Color = clRed
+      Pointer.Brush.Color = clBlue
+      Pointer.HorizSize = 2
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.VertSize = 2
+      Pointer.Visible = True
+    end
+    object Series2: TWindRoseSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      AngleIncrement = 10.000000000000000000
+      AngleValues.DateTime = False
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      Pen.Color = clGreen
+      Pointer.HorizSize = 3
+      Pointer.InflateMargins = True
+      Pointer.Style = psTriangle
+      Pointer.VertSize = 3
+      Pointer.Visible = True
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 88
+      Top = 11
+      Width = 34
+      Height = 13
+      Caption = '&Labels:'
+      FocusControl = ComboBox1
+    end
+    object CheckBox1: TCheckBox
+      Left = 11
+      Top = 10
+      Width = 65
+      Height = 17
+      Caption = '&Axes'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object ComboBox1: TComboBox
+      Left = 126
+      Top = 8
+      Width = 89
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        '15'
+        '30'
+        '45'
+        '90')
+    end
+    object Button1: TButton
+      Left = 224
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 312
+      Top = 12
+      Width = 57
+      Height = 17
+      Caption = '&Circled'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox2Click
+    end
+  end
+end

@@ -1,0 +1,79 @@
+inherited DBChartSingleRecord: TDBChartSingleRecord
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Database Charts can use "single record" mode. '
+      'In this mode, several fields of the same record in the dataset '
+      'are displayed. When the current record is changed, the chart'
+      'recreates the series.')
+  end
+  inherited Panel1: TPanel
+    object DBNavigator1: TDBNavigator
+      Left = 120
+      Top = 8
+      Width = 224
+      Height = 25
+      DataSource = DataSource1
+      VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+      Flat = True
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      Left = 9
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Active Table'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+  inherited DBChart1: TDBChart
+    Height = 126
+    Title.Visible = False
+    object Series1: TBarSeries
+      ColorEachPoint = True
+      Marks.ArrowLength = 20
+      Marks.Visible = True
+      DataSource = DataSource1
+      SeriesColor = clRed
+      BarStyle = bsCone
+      Gradient.Direction = gdTopBottom
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      YValues.ValueSource = 'OrderNo;ItemNo;PartNo;Qty;Discount'
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 240
+    Width = 474
+    Height = 115
+    Align = alBottom
+    DataSource = DataSource1
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
+    TabOrder = 3
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = []
+  end
+  object Table1: TTable
+    DatabaseName = 'DBDEMOS'
+    TableName = 'items.db'
+    Left = 152
+    Top = 274
+  end
+  object DataSource1: TDataSource
+    DataSet = Table1
+    Left = 256
+    Top = 272
+  end
+end

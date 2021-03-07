@@ -1,0 +1,114 @@
+inherited PageNumToolDemo: TPageNumToolDemo
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'The PageNum tool displays the current page number at the '
+      'specified position, with the desired Font and Formatting string.'
+      ''
+      
+        'Example: PageTool.Format:='#39'Page %d of %d'#39' ; PageTool.Shape.Font.' +
+        'Color:=clRed;')
+  end
+  inherited Chart1: TChart
+    Top = 135
+    Height = 202
+    Legend.TopPos = 17
+    MarginBottom = 10
+    MaxPointsPerPage = 10
+    View3D = False
+    object Series1: TPointSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 60
+    object Label1: TLabel
+      Left = 16
+      Top = 7
+      Width = 35
+      Height = 13
+      Caption = 'F&ormat:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 192
+      Top = 7
+      Width = 40
+      Height = 13
+      Caption = '&Position:'
+      FocusControl = ComboBox1
+    end
+    object Label3: TLabel
+      Left = 21
+      Top = 34
+      Width = 28
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'P&age:'
+      FocusControl = ChartPageNavigator1
+    end
+    object Edit1: TEdit
+      Left = 56
+      Top = 4
+      Width = 121
+      Height = 21
+      TabOrder = 0
+      OnChange = Edit1Change
+    end
+    object ComboBox1: TComboBox
+      Left = 240
+      Top = 4
+      Width = 105
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Left top'
+        'Left bottom'
+        'Right top'
+        'Right bottom')
+    end
+    object ChartPageNavigator1: TChartPageNavigator
+      Left = 57
+      Top = 31
+      Width = 120
+      Height = 21
+      TabOrder = 2
+      Chart = Chart1
+    end
+    object Button1: TButton
+      Left = 240
+      Top = 29
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 3
+      OnClick = Button1Click
+    end
+  end
+end

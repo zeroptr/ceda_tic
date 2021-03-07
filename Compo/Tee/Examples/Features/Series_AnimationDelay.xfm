@@ -1,0 +1,163 @@
+inherited SeriesAnimationDelay: TSeriesAnimationDelay
+  Left = 423
+  Top = 328
+  Width = 535
+  Height = 430
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 527
+  end
+  inherited Memo1: TMemo
+    Width = 527
+    Lines.Strings = (
+      
+        'Increments between Steps of a Series animation may be delayed by' +
+        ' the value of the Delay property (in '
+      'milliseconds).')
+  end
+  inherited Chart1: TChart
+    Width = 527
+    Height = 247
+    BackWall.Pen.Visible = False
+    BottomWall.Pen.Visible = False
+    BottomWall.Size = 4
+    LeftWall.Pen.Visible = False
+    LeftWall.Size = 4
+    Legend.Color = clInfoBk
+    Legend.Frame.Color = clGray
+    Legend.Frame.Visible = False
+    Legend.Shadow.Color = 13421772
+    Legend.Visible = False
+    Title.Alignment = taLeftJustify
+    Title.Color = clInfoBk
+    Title.Font.Color = clBlack
+    Title.Font.Height = -13
+    Title.Frame.Color = clGray
+    Title.Shadow.HorizSize = 0
+    Title.Shadow.VertSize = 0
+    Title.Transparent = False
+    Title.Visible = False
+    BottomAxis.Axis.Color = 4210752
+    BottomAxis.Grid.Color = 13421772
+    BottomAxis.Grid.Visible = False
+    Frame.Visible = False
+    LeftAxis.Axis.Color = 4210752
+    LeftAxis.Grid.Visible = False
+    View3DOptions.Elevation = 334
+    View3DOptions.Orthogonal = False
+    Color = clWhite
+    ColorPaletteIndex = 5
+    object Series1: THorizBarSeries
+      BarPen.Visible = False
+      ColorEachPoint = True
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Color = clGray
+      Marks.Shadow.Color = 13421772
+      Marks.Shadow.HorizSize = 2
+      Marks.Shadow.VertSize = 2
+      Marks.Visible = True
+      Gradient.Direction = gdLeftRight
+      XValues.Name = 'Bar'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loAscending
+      Data = {
+        00060000000000000000605D400000000000E065400000000000F06E40000000
+        000010634000000000000044400000000000606340}
+    end
+    object ChartTool1: TSeriesAnimationTool
+      Series = Series1
+      Steps = 134
+    end
+    object GridBandTool1: TGridBandTool
+      Band1.Color = 15329769
+      Band2.Color = clWhite
+      AxisID = 2
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 527
+    object Label7: TLabel
+      Left = 11
+      Top = 15
+      Width = 30
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'D&elay:'
+      FocusControl = Edit2
+    end
+    object Label2: TLabel
+      Left = 123
+      Top = 14
+      Width = 30
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'S&teps:'
+      FocusControl = SBSteps
+    end
+    object Label3: TLabel
+      Left = 305
+      Top = 14
+      Width = 18
+      Height = 13
+      Caption = '100'
+    end
+    object Edit2: TEdit
+      Left = 46
+      Top = 12
+      Width = 41
+      Height = 21
+      HelpContext = 1878
+      TabOrder = 0
+      Text = '10'
+      OnChange = Edit2Change
+    end
+    object UDDelay: TUpDown
+      Left = 87
+      Top = 12
+      Width = 15
+      Height = 21
+      HelpContext = 1878
+      Associate = Edit2
+      Max = 32767
+      Position = 10
+      TabOrder = 1
+    end
+    object SBSteps: TScrollBar
+      Left = 158
+      Top = 12
+      Width = 141
+      Height = 16
+      HelpContext = 1881
+      Max = 1000
+      Min = 1
+
+      Position = 100
+      TabOrder = 2
+      OnChange = SBStepsChange
+    end
+    object Button1: TButton
+      Left = 329
+      Top = 8
+      Width = 75
+      Height = 25
+      HelpContext = 1882
+      Caption = '&Animate !'
+      TabOrder = 3
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 417
+      Top = 8
+      Width = 75
+      Height = 25
+      HelpContext = 1882
+      Caption = '&Edit...'
+      TabOrder = 4
+      OnClick = Button2Click
+    end
+  end
+end

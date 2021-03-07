@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="4.0.11" DotMatrixReport="True" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Varsayýlan" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="39128,6845144213" ReportOptions.Description.Text="" ReportOptions.LastChange="39128,7110787384" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;&#13;&#10;procedure DMPMemo11OnAfterPrint(Sender: TfrxComponent);&#13;&#10;begin&#13;&#10;&#13;&#10;  DMPMemo13.Text:=DMPMemo11.Text;&#13;&#10;//if DMPMemo11.Text&#60;&#62;'' then&#13;&#10;//  DMPMemo13.Text:=DMPMemo11.Text&#13;&#10;//  else&#13;&#10;//  DMPMemo13.Text:='';&#13;&#10;//page1.&#13;&#10;//PageFooter1.&#13;&#10;end;&#13;&#10;&#13;&#10;begin&#13;&#10;&#13;&#10;end." StoreInDFM="False" PropData="044C65667403580203546F70025008446174617365747301010C4100000020446174615365743D22446D5F466173745F5265706F72742E6672784442717279436172692220446174615365744E616D653D226672784442717279436172692200010C4500000020446174615365743D22446D5F466173745F5265706F72742E66727844427172794661747572612220446174615365744E616D653D2266727844427172794661747572612200010C4700000020446174615365743D22446D5F466173745F5265706F72742E6672784442717279466174757261442220446174615365744E616D653D226672784442717279466174757261442200010C5100000020446174615365743D22446D5F466173745F5265706F72742E6672784442717279466174757261445F5472616E2220446174615365744E616D653D226672784442717279466174757261445F5472616E220000095661726961626C65730100055374796C650100">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxDMPPage Name="Page1" PaperWidth="210,819863845505" PaperHeight="296,862308276426" PaperSize="9" LeftMargin="2,53999835958439" RightMargin="2,53999835958439" TopMargin="4,49791376176403" BottomMargin="4,49791376176403" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="" FontStyle="0">
+    <TfrxReportTitle Name="ReportTitle1" Height="85" Left="0" Top="17" Width="777,6">
+      <TfrxDMPMemoView Name="DMPMemo1" Left="76,8" Top="17" Width="115,2" Height="17" DataField="CARI_KOD" DataSet="Dm_Fast_Report.frxDBqryCari" DataSetName="frxDBqryCari" Text="[frxDBqryCari.&#34;CARI_KOD&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo2" Left="86,4" Top="51" Width="403,2" Height="17" DataField="CARI_AD" DataSet="Dm_Fast_Report.frxDBqryCari" DataSetName="frxDBqryCari" Text="[frxDBqryCari.&#34;CARI_AD&#34;]"/>
+    </TfrxReportTitle>
+    <TfrxMasterData Name="MasterData1" Height="17" Left="0" Top="170" Width="777,6" ColumnWidth="0" ColumnGap="0" DataSet="Dm_Fast_Report.frxDBqryFaturaD_Tran" DataSetName="frxDBqryFaturaD_Tran" RowCount="0">
+      <TfrxDMPMemoView Name="DMPMemo3" Left="38,4" Top="0" Width="403,2" Height="17" DataField="ACIKLAMA" DataSet="Dm_Fast_Report.frxDBqryFaturaD_Tran" DataSetName="frxDBqryFaturaD_Tran" Text="[frxDBqryFaturaD_Tran.&#34;ACIKLAMA&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo4" Left="288" Top="0" Width="240" Height="17" DataField="CINSI" DataSet="Dm_Fast_Report.frxDBqryFaturaD_Tran" DataSetName="frxDBqryFaturaD_Tran" Text="[frxDBqryFaturaD_Tran.&#34;CINSI&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo9" Left="566,4" Top="0" Width="76,8" Height="17" DataField="BIRIM_FIY_VPB" DataSet="Dm_Fast_Report.frxDBqryFaturaD_Tran" DataSetName="frxDBqryFaturaD_Tran" Text="[frxDBqryFaturaD_Tran.&#34;BIRIM_FIY_VPB&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo10" Left="662,4" Top="0" Width="76,8" Height="17" DataField="TUTAR_VPB" DataSet="Dm_Fast_Report.frxDBqryFaturaD_Tran" DataSetName="frxDBqryFaturaD_Tran" Text="[frxDBqryFaturaD_Tran.&#34;TUTAR_VPB&#34;]"/>
+    </TfrxMasterData>
+    <TfrxPageFooter Name="PageFooter1" Height="17" Left="0" Top="425" Width="777,6" OnBeforePrint="PageFooter1OnBeforePrint" PrintOnLastPage="False">
+      <TfrxDMPMemoView Name="DMPMemo11" Left="508,8" Top="0" Width="163,2" Height="17" OnAfterPrint="DMPMemo11OnAfterPrint" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2f" DisplayFormat.Kind="fkNumeric" Text="[SUM(&#60;frxDBqryFaturaD_Tran.&#34;TUTAR_VPB&#34;&#62;,MasterData1,2)]"/>
+    </TfrxPageFooter>
+    <TfrxPageHeader Name="PageHeader1" Height="17" Left="0" Top="119" Width="777,6">
+      <TfrxDMPMemoView Name="DMPMemo13" Left="508,8" Top="0" Width="96" Height="17" DisplayFormat.DecimalSeparator="," Text=""/>
+    </TfrxPageHeader>
+    <TfrxFooter Name="Footer1" Height="187" Left="0" Top="204" Width="777,6">
+      <TfrxDMPMemoView Name="DMPMemo5" Left="86,4" Top="34" Width="796,8" Height="17" DataField="GTYAZILE" DataSet="Dm_Fast_Report.frxDBqryFatura" DataSetName="frxDBqryFatura" Text="[frxDBqryFatura.&#34;GTYAZILE&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo6" Left="441,6" Top="68" Width="76,8" Height="17" DataField="NET_TOP" DataSet="Dm_Fast_Report.frxDBqryFatura" DataSetName="frxDBqryFatura" Text="[frxDBqryFatura.&#34;NET_TOP&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo7" Left="441,6" Top="85" Width="76,8" Height="17" DataField="KDV_TOP" DataSet="Dm_Fast_Report.frxDBqryFatura" DataSetName="frxDBqryFatura" Text="[frxDBqryFatura.&#34;KDV_TOP&#34;]"/>
+      <TfrxDMPMemoView Name="DMPMemo8" Left="441,6" Top="102" Width="76,8" Height="17" DataField="GENEL_TOP" DataSet="Dm_Fast_Report.frxDBqryFatura" DataSetName="frxDBqryFatura" Text="[frxDBqryFatura.&#34;GENEL_TOP&#34;]"/>
+    </TfrxFooter>
+  </TfrxDMPPage>
+</TfrxReport>

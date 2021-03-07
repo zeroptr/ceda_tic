@@ -1,0 +1,38 @@
+
+{                                                                              }
+{  IBA_BDataset.PBL                                                            }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+
+published
+
+{ Properties }
+
+property BufferSynchroFlags;
+property CachedUpdates;
+property CommitAction;
+property DMLCacheFlags;
+property FetchWholeRows;
+property FilterDeletedRecords;
+property Filter;
+property Filtered;
+property FilterOptions;
+property FilterPlan;
+property IncSearchKeyInt;
+property IncSearchSeekInt;
+property Unidirectional;
+
+{ Events }
+
+property OnCustomDelete;
+property OnCustomEdit;
+property OnCustomInsert;
+property OnCustomLockRow;
+property OnFilterRecord;
+property OnMultiSelect;
+property OnRowSelectedChanged;
+property OnUpdateRecord;
+property OnUpdateError;
+
+{$ENDIF}

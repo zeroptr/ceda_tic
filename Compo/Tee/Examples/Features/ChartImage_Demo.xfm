@@ -1,0 +1,83 @@
+object ChartImageForm: TChartImageForm
+  Left = 234
+  Top = 246
+  Width = 478
+  Height = 334
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Image1: TImage
+    Left = 0
+    Top = 154
+    Width = 470
+    Height = 153
+    Align = alClient
+    Picture.Data = {
+      0B544368617274496D61676560305701545046300654436861727400044C6566
+      74020003546F7002000557696474680390010648656967687403FA0011546974
+      6C652E466F6E742E48656967687402130F5469746C652E466F6E742E4E616D65
+      0611426F6F6B6D616E204F6C64205374796C65105469746C652E466F6E742E53
+      74796C650B066673426F6C640866734974616C696300185469746C652E466F6E
+      742E496E7465724368617253697A6502021A5469746C652E466F6E742E4F7574
+      4C696E652E56697369626C6509125469746C652E546578742E537472696E6773
+      0106065443686172740006566965773344080D5A6F6F6D2E50656E2E4D6F6465
+      0708706D4E6F74586F7205436F6C6F720706636C4E6F6E650000}
+    Stretch = True
+  end
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 470
+    Height = 113
+    Align = alTop
+    Lines.Strings = (
+      'The Chart below is not a TeeChart component. '
+      'It'#39's an standard VCL Image control showing a *.tee file.'
+      ''
+      
+        'The ChartImage class is a derived TGraphic format that can be as' +
+        'signed '
+      'to any Picture property.'
+      ''
+      
+        'ChartImage also provides a "Chart" property to access the intern' +
+        'al  "true" '
+      'TeeChart component.')
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 113
+    Width = 470
+    Height = 41
+    Align = alTop
+    TabOrder = 1
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 12
+      Width = 81
+      Height = 17
+      Caption = '&Stretch'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object Button1: TButton
+      Left = 128
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 1
+      OnClick = Button1Click
+    end
+  end
+end

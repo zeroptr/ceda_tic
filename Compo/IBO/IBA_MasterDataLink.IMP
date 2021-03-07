@@ -1,0 +1,145 @@
+// IBA_MasterDataLink.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Jason Wharton <jwharton@jwharton.com>                                       }
+{  06/13/2002                                                                  }
+{     Made it so that when a master dataset is posting an insert that a        }
+{     detail dataset won't cause the master to do a post retaining, post the   }
+{     child dataset and then post the master. It should simply post the master }
+{     dataset and leave the detail dataset in insert state.                    }
+{            Copyright (C) 2002 Jason Wharton                                  }
+{                                                                              }
+{******************************************************************************}
+
+procedure TIB_MasterDataLink.CheckBrowseMode;
+begin
+  if Assigned( ChildDataset ) and ChildDataset.Active then
+  begin
+    if FCheckBrowseModeLevel < 2 then
+    begin
+      Inc( FCheckBrowseModeLevel );
+      try
+        if not (( Dataset.State = dssInsert ) and
+                ( Dataset.IsPosting ) and
+                ( ChildDataset.State = dssInsert )) then
+          ChildDataset.CheckBrowseMode;
+      finally
+        Dec( FCheckBrowseModeLevel );
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_MasterDataLink.DoBeforeAssignment;
+begin
+// Why was I closing this? It doesn't seem necessary...
+//  ChildDataset.Active := false;
+  inherited DoBeforeAssignment;
+end;
+
+procedure TIB_MasterDataLink.DoAfterAssignment;
+var
+  tmpIdx: integer;
+begin
+  if Assigned( ChildDataset ) then 
+    with ChildDataset do
+    begin
+      if Assigned( MasterDataset ) and Assigned( DataSource ) then
+      begin
+        with MasterDataset.FDataSourceList do
+        begin
+          tmpIdx := IndexOf( DataSource );
+          if tmpIdx > 0 then
+            Move( tmpIdx, 0 );
+        end;
+        with DataSource.FDataLinkList do
+        begin
+          tmpIdx := IndexOf( Self );
+          if tmpIdx > 0 then
+            Move( tmpIdx, 0 );
+        end;
+      end;
+      SysMasterDataChange( nil );
+    end;
+  inherited DoAfterAssignment;
+end;
+
+procedure TIB_MasterDataLink.SysPrepareSQL;
+var
+  DetailSQLWhere: string;
+  ii, kk: integer;
+begin
+  if Assigned( ChildDataset ) then 
+    with ChildDataset do
+    begin
+      if MasterSearch and Prepared and SQLWhereChanged then
+      begin
+        DetailSQLWhere := 'WHERE ';
+        kk := 0;
+        for ii := 0 to MasterLinks.Count - 1 do
+        begin
+          if kk > 0 then
+            DetailSQLWhere := DetailSQLWhere + IB_AND;
+          DetailSQLWhere := DetailSQLWhere + MasterLinks[ ii ];
+          Inc( kk );
+        end;
+        for ii := 0 to JoinLinks.Count - 1 do
+        begin
+          if kk > 0 then
+            DetailSQLWhere := DetailSQLWhere + IB_AND;
+          DetailSQLWhere := DetailSQLWhere + JoinLinks[ ii ];
+          Inc( kk );
+        end;
+        if kk > 0 then
+        begin
+          AddWhereClause( DetailSQLWhere, FMasterWhere );
+          MasterDataset.SQLWhereLow.Add( 'EXISTS ( '#13#10#13#10 + 'SELECT * ' +
+                                         Trim( SQLFrom.Text ) + #13#10 +
+                                         Trim( DetailSQLWhere ) +
+                                         ')'#13#10#13#10 );
+          MasterDataset.ParamValueLinks.AddStrings( ParamValueLinks );
+        end;
+      end;
+    end;
+end;
+
+procedure TIB_MasterDataLink.SysStateChanged;
+begin
+  inherited SysStateChanged;
+  if Assigned( ChildDataset ) then 
+    with ChildDataset do
+      SysMasterStateChanged;
+end;
+
+

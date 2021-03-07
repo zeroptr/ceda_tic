@@ -1,0 +1,124 @@
+inherited AreaTransparency: TAreaTransparency
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Area Series, when displayed in 2D mode, allows Transparency.'
+      
+        'Transparency is a number from 0 to 100 expressed in percent unit' +
+        's.'
+      ''
+      'Series1.Transparency := 45 ;')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    View3D = False
+    object Series1: TAreaSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 56
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TAreaSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 56
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TAreaSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clNavy
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Transparency = 56
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    object TrackBar1: TTrackBar
+      Left = 127
+      Top = 14
+      Width = 79
+      Height = 21
+      LineSize = 10
+      Max = 100
+      Orientation = trHorizontal
+      Frequency = 10
+      Position = 35
+      TabOrder = 0
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+      OnChange = TrackBar1Change
+    end
+    object TrackBar2: TTrackBar
+      Left = 223
+      Top = 12
+      Width = 79
+      Height = 21
+      LineSize = 10
+      Max = 100
+      Orientation = trHorizontal
+      Frequency = 10
+      Position = 35
+      TabOrder = 1
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+      OnChange = TrackBar2Change
+    end
+    object TrackBar3: TTrackBar
+      Left = 319
+      Top = 12
+      Width = 79
+      Height = 21
+      LineSize = 10
+      Max = 100
+      Orientation = trHorizontal
+      Frequency = 10
+      Position = 35
+      TabOrder = 2
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
+      OnChange = TrackBar3Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 13
+      Width = 113
+      Height = 17
+      Caption = '&Transparency % :'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox1Click
+    end
+  end
+end

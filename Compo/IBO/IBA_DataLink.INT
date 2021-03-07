@@ -1,0 +1,419 @@
+
+{                                                                              }
+{ TIB_DataLink                                                                 }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: General event notification for the IB_DataLink component.}
+TIB_DataLinkEvent = procedure( Sender: TIB_DataLink;
+                               ADataSource: TIB_DataSource ) of object;
+
+{: General event notification for the IB_DataLink component that also
+includes a reference to a single column, which might be either an input or an
+output column object.}
+TIB_ColumnDataLinkEvent = procedure( Sender: TIB_DataLink;
+                                     ADataSource: TIB_DataSource;
+                                     AField: TIB_Column ) of object;
+
+{: This component is used to make another component or control data aware.
+<br><br>
+It is the base class of many specialized links tailored to suit more specific
+needs.
+<br><br>
+It is typically used as a contained or owned object that gives a clean
+interface to interact with the data. See the IB_Controls and IB_Grid units to
+see how it is implemented.}
+TIB_DataLink = class(TIB_Component)
+private
+  FDataSource: TIB_DataSource;
+  FReceiveFocus: boolean;
+  FEditing: boolean;
+  FChangingLevel: integer;
+  FUpdating: boolean;
+  FBoundToBuffer: boolean;
+  FIgnoreColorScheme: boolean;
+  FSearchAlways: boolean;
+  FSearchBuffer: string;
+  FSearchSaved: string;
+  FSearchLast: string;
+  FAdvSearchDisplay: string;
+  FAdvSearchDisplaySaved: string;
+  FAdvSearchDisplayLast: string;
+  FAdvSearchWhere: string;
+  FAdvSearchWhereSaved: string;
+  FAdvSearchWhereLast: string;
+  FAdvSearchData: string;
+  FAdvSearchDataSaved: string;
+  FAdvSearchDataLast: string;
+  FAfterAssignment: TIB_DataLinkEvent;
+  FAfterExecute: TIB_DataLinkEvent;
+  FBeforeAssignment: TIB_DataLinkEvent;
+  FBeforeExecute: TIB_DataLinkEvent;
+  FOnPreparedChanged: TIB_DataLinkEvent;
+  FOnPrepareSQL: TIB_DataLinkEvent;
+  FOnReceiveFocus: TIB_DataLinkEvent;
+  FOnEditingChanged: TIB_DataLinkEvent;
+  FOnActiveChange: TIB_DataLinkEvent;
+  FOnStateChanged: TIB_DataLinkEvent;
+  FOnLayoutChanged: TIB_DataLinkEvent;
+  FOnDataChange: TIB_ColumnDataLinkEvent;
+  FOnUpdateData: TIB_ColumnDataLinkEvent;
+
+  { Pha Inicio }
+  FOnOrderingChanged: TIB_DataLinkEvent;
+  FOnOrderingLinkChanged: TIB_DataLinkEvent;
+  FOnSearchingLinkChanged: TIB_DataLinkEvent;
+  { Pha Fim }
+
+{ Property Access methods }
+  function GetActiveRecord: longint;
+  procedure SetActiveRecord( AValue: longint );
+  function GetBufferRecord: longint;
+  procedure SetBufferRecord( AValue: longint );
+  function GetKeySource: TIB_DataSource;
+  function GetMasterSource: TIB_DataSource;
+  function GetBufferRowCount: longint;
+  function GetDisabled: boolean;
+{$IFDEF IBO4_BETA}
+  function GetBufferHasBof: boolean;
+{$ENDIF}
+  function GetBufferHasEof: boolean;
+  function GetBufferActive: boolean;
+  procedure SetSearchAlways( AValue: boolean );
+  function GetDataChanging: boolean;
+protected
+{$IFDEF IBO4_BETA}
+  FIsCtrlLink: boolean;
+{$ENDIF}
+  FIsGridLink: boolean;
+  FInternalSearchUpdate: integer;
+  FSearchUpdateRequired: boolean;
+  FSessionCursorIsLocked: boolean;
+{ Inherited Methods }
+  procedure Loaded; override;
+  procedure SetSession( ASession: TIB_Session ); override;
+{ Property access methods }
+  procedure SetDataSource( AValue: TIB_DataSource ); //~virtual;
+  procedure SetBoundToBuffer( AValue: boolean ); //~virtual;
+  procedure SetIgnoreColorScheme( AValue: boolean ); //~virtual;
+  function GetDataset: TIB_Dataset; //~virtual;
+  function GetPrepared: boolean; //~virtual;
+  function GetActive: boolean; //~virtual;
+  function GetNeedToPost: boolean; //~virtual;
+  function GetState: TIB_DatasetState; //~virtual;
+  function GetRowState: TIB_RowState; //~virtual;
+  function GetCanModify: boolean; //~virtual;
+  function GetReadOnly: boolean; virtual;
+  function GetPreventDeleting: boolean; virtual;
+  function GetPreventEditing: boolean; virtual;
+  function GetPreventInserting: boolean; virtual;
+  function GetPreventSearching: boolean; virtual;
+  function GetSearchEntryName: string; virtual;
+  function GetField: TIB_Column; virtual;
+  procedure SetSearchBuffer( const AValue: string ); //~virtual;
+  function GetSearchBuffer: string; virtual;
+  function GetAdvSearchDisplay: string; //~virtual;
+  procedure SetAdvSearchWhere( const AValue: string ); //~virtual;
+  function GetAdvSearchWhere: string; //~virtual;
+  procedure SetAdvSearchData( const AValue: string ); virtual;
+  function GetAdvSearchData: string; //~virtual;
+  procedure ClearSearchCriteria( WithUpdate: boolean ); //~virtual;
+  function GetColor: TColor; virtual;
+  function GetEditingColor: TColor; virtual;
+  function GetInsertingColor: TColor; virtual;
+  function GetDeletingColor: TColor; virtual;
+  function GetSearchingColor: TColor; virtual;
+  function GetInvalidColor: TColor; virtual;
+  function GetActiveColor: TColor; //~virtual;
+  procedure SetReceiveFocus( AValue: boolean ); //~virtual;
+  function GetColorScheme: boolean; //~virtual;
+  procedure SetEditing( AValue: boolean ); //~virtual;
+  function GetEditing: boolean; //~virtual;
+  function GetRecordCount: longint; //~virtual;
+  procedure SetBufferCount( AValue: longint ); //~virtual;
+  function GetBufferCount: longint; //~virtual;
+  function GetBof: boolean; //~virtual;
+  function GetEof: boolean; //~virtual;
+{ System Methods }
+  procedure SysPrepareSQL; virtual;
+  procedure SysPreparedChanged; virtual;
+  procedure SysBeforeExecute; //~virtual;
+  procedure SysAfterExecute; //~virtual;
+  procedure SysEditingChanged; //~virtual;
+  procedure SysActiveChange; //~virtual;
+  procedure SysStateChanged; virtual;
+  procedure SysLayoutChanged; virtual;
+  procedure SysDataChange( AField: TIB_Column ); virtual;
+  procedure SysUpdateData( AField: TIB_Column ); virtual;
+  procedure SysBindingChanged; virtual;
+  procedure SysAssignField; virtual;
+{ Focusing stuff }
+  procedure DoReceiveFocus( DS: TIB_DataSource ); //~virtual;
+{ Event Dispatch methods }
+
+  { Pha Inicio }
+  procedure ProcessStatementEvent( AEvent: TIB_StatementEventType;
+                                   Info: longint ); virtual;
+  { Pha Fim }
+
+  procedure ProcessGridEvent( AEvent: TIB_StatementEventType;
+                              Info: longint ); virtual;
+  procedure DoBeforeAssignment; virtual;
+  procedure DoAfterAssignment; virtual;
+  procedure DoPrepareSQL; virtual;
+  procedure DoDataChange( AField: TIB_Column ); //~virtual;
+  procedure DoUpdateData( AField: TIB_Column ); //~virtual;
+  procedure CheckBrowseMode; virtual;
+
+public
+
+{ Methods }
+
+  procedure DataChange;
+
+{ Properties }
+  property BoundToBuffer: boolean read FBoundToBuffer write SetBoundToBuffer;
+{$IFDEF IBO4_BETA}
+  property BufferHasBof: boolean read GetBufferHasBof;
+{$ENDIF}
+  property BufferHasEof: boolean read GetBufferHasEof;
+  property BufferActive: boolean read GetBufferActive;
+  property DataChangingLevel: integer read FChangingLevel;
+  property DataChanging: boolean read GetDataChanging;
+  property DataUpdating: boolean read FUpdating;
+  property Bof: boolean read GetBof;
+  property Eof: boolean read GetEof;
+  property IgnoreColorScheme: boolean read FIgnoreColorScheme
+                                      write SetIgnoreColorScheme;
+  property InvalidColor: TColor read GetInvalidColor;
+
+{: This property can make the control act as though it were always in search
+mode.}
+  property SearchAlways: boolean read FSearchAlways write SetSearchAlways;
+{: Property indicates whether the datalink is currently updating from its
+controls.}
+  property UpdatingRecord: boolean read FUpdating;
+
+{ Event Hooks }
+
+{: Event notification when this datalink has just been assigned to a new
+datasource.}
+  property AfterAssignment: TIB_DataLinkEvent read FAfterAssignment
+                                              write FAfterAssignment;
+{: General event notification.}
+  property AfterExecute: TIB_DataLinkEvent read FAfterExecute
+                                           write FAfterExecute;
+{: Event notification when this datalink is about to be assigned to a new
+datasource.}
+  property BeforeAssignment: TIB_DataLinkEvent read FBeforeAssignment
+                                               write FBeforeAssignment;
+{: General event notification.}
+  property BeforeExecute: TIB_DataLinkEvent read FBeforeExecute
+                                            write FBeforeExecute;
+{: General event notification.}
+  property OnPreparedChanged: TIB_DataLinkEvent read FOnPreparedChanged
+                                                write FOnPreparedChanged;
+{: General event notification.}
+  property OnPrepareSQL: TIB_DataLinkEvent read FOnPrepareSQL
+                                           write FOnPrepareSQL;
+{: General event notification.}
+  property OnReceiveFocus: TIB_DataLinkEvent read FOnReceiveFocus
+                                             write FOnReceiveFocus;
+{: General event notification.}
+  property OnEditingChanged: TIB_DataLinkEvent read FOnEditingChanged
+                                               write FOnEditingChanged;
+{: General event notification.}
+  property OnActiveChange: TIB_DataLinkEvent read FOnActiveChange
+                                             write FOnActiveChange;
+{: General event notification.}
+  property OnStateChanged: TIB_DataLinkEvent read FOnStateChanged
+                                             write FOnStateChanged;
+{: General event notification.}
+  property OnLayoutChanged: TIB_DataLinkEvent read FOnLayoutChanged
+                                              write FOnLayoutChanged;
+{: General event notification.}
+  property OnDataChange: TIB_ColumnDataLinkEvent read FOnDataChange
+                                                 write FOnDataChange;
+{: General event notification.}
+  property OnUpdateData: TIB_ColumnDataLinkEvent read FOnUpdateData
+                                                 write FOnUpdateData;
+
+{ Pha Inicio }
+  property OnOrderingChanged: TIB_DataLinkEvent read  FOnOrderingChanged
+                                                write FOnOrderingChanged;
+  property OnOrderingLinkChanged: TIB_DataLinkEvent read  FOnOrderingLinkChanged
+                                                    write FOnOrderingLinkChanged;
+  property OnSearchingLinkChanged: TIB_DataLinkEvent read  FOnSearchingLinkChanged
+                                                     write FOnSearchingLinkChanged;
+{ Pha Fim }
+
+{ Inherited Methods }
+  constructor Create( AOwner: TComponent ); override;
+  destructor Destroy; override;
+
+{ New methods }
+
+{: Method to denote that the Active status of the data link has been changed.}
+  procedure ActiveChanged; virtual;
+{: Used to insert a record at the last position in the dataset.}
+  procedure Append; dynamic;
+{: Method to indicate when the dataset property has been changed.}
+  procedure DatasetChanged; virtual;
+{: Attempt to go into dssEdit state and return the result without raising an
+exception.}
+  function Edit: Boolean;
+{: Make the control to which this datalink may be bound receive the focus.}
+  procedure FocusControl( AField: TIB_ColumnRef ); dynamic;
+{: Attempt to go into dssInsert state and return the result without raising
+an exception.}
+  procedure Insert; dynamic;
+{: Attempt to go into dssEdit state (if a row is current in the buffer) or into
+dssInsert state (if no row is current) and return the result without raising
+an exception.}
+  function Modify: boolean; dynamic;
+{: Refresh the data in the control to which this datalink is displaying to
+reflect the most current.}
+  procedure Reset; dynamic;
+{//: This method simply causes the Before and After Scroll events to fire in the
+dataset.}
+//  procedure DataSetScrolled( Distance: Integer ); //~virtual;
+{: VCL compatibility.}
+  procedure EditingChanged; virtual;
+{: VCL compatibility.}
+  procedure LayoutChanged; //~virtual;
+{: VCL compatibility.}
+  procedure RecordChanged(Field: TIB_Column); virtual;
+{: Set the AdvSearchDisplay value.  Note that the AdvSearchDisplay property
+is read-only because it will return the internally stored AdvSearchDisplay only
+if it is defined.  If there is not one defined, it simply returns the SearchBuffer. }
+  procedure SetAdvSearchDisplay( const AValue: string ); //~virtual;
+{: Announce the focusing of the IB_DataSource, IB_Dataset, IB_Transaction
+and IB_Connection for this datalink.}
+  procedure SetFocus; dynamic;
+{: Save to the dataset any changes the control is holding.}
+  procedure UpdateData; dynamic;
+  procedure UpdateRecord; dynamic;
+{: This method will cause the screen cursor for the session to be left alone.}
+  procedure LockSessionCursor;
+{: This method will allow the screen cursor for the session to be altered.}
+  procedure UnlockSessionCursor;
+
+{ Properties }
+
+public
+{: Returns True if the dataset is Active or False if not.}
+  property Active: boolean read GetActive;
+{: VCL compatibility property. This is simply the RowNum.}
+  property ActiveRecord: longint read GetActiveRecord write SetActiveRecord;
+{: This is simply the BufferRowNum.}
+  property BufferRecord: longint read GetBufferRecord write SetBufferRecord;
+{: VCL compatibility property.
+<br><br>
+IB Objects does not have an individual buffer for each datalink. All
+datalinks make direct use of the dataset's buffer.}
+  property BufferCount: longint read GetBufferCount write SetBufferCount;
+{: Number of rows in the dataset buffer. This applies to the TIB_BDataset
+class only. (IB_Query)}
+  property BufferRowCount: longint read GetBufferRowCount;
+{: General datalink property.}
+  property CanModify: boolean read GetCanModify;
+{: If using the ColorScheme, this returns the appropriate color as defined in
+the IB_Session.}
+  property Color: TColor read GetColor;
+{: Returns True if the dataset is using the colorscheme.}
+  property ColorScheme: boolean read GetColorScheme;
+{: Dataset to which this datalink is bound or nil if none.}
+  property Dataset: TIB_Dataset read GetDataset;
+{: Returns the DataSource to which this datalink is bound or nil if none.}
+  property DataSource: TIB_DataSource read FDataSource write SetDataSource;
+{: Returns True if the referenced DataSource is disabled.}
+  property Disabled: boolean read GetDisabled;
+{: Same as NeedToPost.}
+  property Editing: boolean read GetEditing;
+{: Returns the KeySource of the referenced dataset or nil if none.}
+  property KeySource: TIB_DataSource read GetKeySource;
+{: Returns the MasterSource of the referenced dataset or nil if none.}
+  property MasterSource: TIB_DataSource read GetMasterSource;
+{: Returns True if the dataset is in a state that needs to be posted or
+cancelled.}
+  property NeedToPost: boolean read GetNeedToPost;
+{: Returns the Prepared status of the dataset or false if none.}
+  property Prepared: boolean read GetPrepared;
+{: General datalink property.}
+  property PreventDeleting: boolean read GetPreventDeleting;
+{: General datalink property.}
+  property PreventEditing: boolean read GetPreventEditing;
+{: General datalink property.}
+  property PreventInserting: boolean read GetPreventInserting;
+{: General datalink property.}
+  property PreventSearching: boolean read GetPreventSearching;
+{: General datalink property.}
+  property ReadOnly: boolean read GetReadOnly;
+{: Determines whether the announcements of focusing datasources should be
+received by this component.}
+  property ReceiveFocus: boolean read FReceiveFocus write SetReceiveFocus;
+{: Returns the number of rows in the entire dataset if it were to be
+completely fetched.}
+  property RecordCount: longint read GetRecordCount;
+{: Dataset property extender.}
+  property RowState: TIB_RowState read GetRowState;
+{: Access to the SearchBuffer used in dssSearch state.
+<br><br>
+This may also be modified when the dataset is only prepared. It will call
+InvalidateSQL as necessary.}
+  property SearchBuffer: string read GetSearchBuffer write SetSearchBuffer;
+{: Returns the internal AdvSearchDisplay value if it is defined (using
+SetAdvSearchDisplay); otherwise, it simply returns the SearchBuffer. }
+  property AdvSearchDisplay: string read GetAdvSearchDisplay;
+{: This property allows certain controls to define an explicit WHERE subclause
+directly, without the value being parsed by the normal search buffer
+processing.  Such a definition is in ADDITION to any normal search buffer
+value that may be defined in the normal way. }
+  property AdvSearchWhere: string read GetAdvSearchWhere write SetAdvSearchWhere;
+{: This is simply a storage area for a control to hold its own search
+information, in its own format.  It is not interpreted or used in any way by
+the normal search processing.  Generally a control will store information in
+this area which will allow it to build/restore values that it places in the
+AdvSearchWhere property. }
+  property AdvSearchData: string read GetAdvSearchData write SetAdvSearchData;
+{: State of the referenced Dataset or dssInactive if none.}
+  property State: TIB_DatasetState read GetState;
+{: Indicates whether the session cursor is in a locked status.}
+  property SessionCursorIsLocked: boolean read FSessionCursorIsLocked;
+end;
+
+// IBA_DataLink.IMP

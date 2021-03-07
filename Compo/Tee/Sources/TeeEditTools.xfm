@@ -1,0 +1,172 @@
+object FormTeeTools: TFormTeeTools
+  Left = 293
+  Top = 271
+  AutoScroll = False
+  ClientHeight = 270
+  ClientWidth = 404
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 100
+    Top = 41
+    Height = 205
+  end
+  object LBTools: TListBox
+    Left = 0
+    Top = 41
+    Width = 100
+    Height = 205
+    HelpContext = 1773
+    Style = lbOwnerDrawFixed
+    Align = alLeft
+    ItemHeight = 18
+    TabOrder = 0
+    OnClick = LBToolsClick
+    OnDrawItem = LBToolsDrawItem
+  end
+  object PanelToolEditor: TPanel
+    Left = 103
+    Top = 41
+    Width = 301
+    Height = 205
+    Align = alClient
+    BevelOuter = bvLowered
+    TabOrder = 1
+  end
+  object PTop: TPanel
+    Left = 0
+    Top = 0
+    Width = 404
+    Height = 41
+    Align = alTop
+    TabOrder = 2
+    object BClone: TSpeedButton
+      Left = 151
+      Top = 8
+      Width = 27
+      Height = 25
+      Hint = 'Clone'
+      Enabled = False
+      Glyph.Data = {
+        36030000424D3603000000000000360000002800000010000000100000000100
+        1800000000000003000000000000000000000000000000000000C8D0D4C8D0D4
+        C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0
+        D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D400000000
+        0000000000000000000000000000000000000000000000C8D0D4C8D0D4C8D0D4
+        C8D0D4C8D0D4C8D0D4C8D0D4000000FEFCFDFEFCFDFEFCFDFEFCFDFEFCFDFEFC
+        FDFEFCFD000000C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4000000FE
+        FCFD000000000000000000000000000000FEFCFD000000C8D0D4C8D0D4C8D0D4
+        C8D0D4C8D0D4C8D0D4C8D0D4000000FEFCFDFEFCFDFEFCFDFEFCFDFEFCFDFEFC
+        FDFEFCFD000000C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4000000FE
+        FCFD000000000000000000000000000000FEFCFD000000C8D0D4000000000000
+        000000000000000000000000000000FEFCFDFEFCFDFEFCFDFEFCFDFEFCFDFEFC
+        FDFEFCFD000000C8D0D400000001CBD701CBD701CBD701CBD701CBD7000000FE
+        FCFD000000000000FEFCFD000000000000000000000000C8D0D400000001CBD7
+        000000000000000000000000000000FEFCFDFEFCFDFEFCFDFEFCFD000000FEFC
+        FD000000C8D0D4C8D0D400000001CBD701CBD701CBD701CBD701CBD7000000FE
+        FCFDFEFCFDFEFCFDFEFCFD000000000000C8D0D4C8D0D4C8D0D400000001CBD7
+        000000000000000000000000000000000000000000000000000000000000C8D0
+        D4C8D0D4C8D0D4C8D0D400000001CBD701CBD701CBD701CBD701CBD701CBD700
+        0000C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D400000001CBD7
+        00000000000001CBD7000000000000000000C8D0D4C8D0D4C8D0D4C8D0D4C8D0
+        D4C8D0D4C8D0D4C8D0D400000001CBD701CBD701CBD701CBD7000000FEFCFD00
+        0000C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D400000001CBD7
+        01CBD701CBD701CBD7000000000000C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0
+        D4C8D0D4C8D0D4C8D0D4000000000000000000000000000000000000C8D0D4C8
+        D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4C8D0D4}
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = BCloneClick
+    end
+    object BAdd: TButton
+      Left = 5
+      Top = 8
+      Width = 68
+      Height = 25
+      Hint = 'Add'
+      Caption = '&Add...'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      OnClick = BAddClick
+    end
+    object BDelete: TButton
+      Left = 79
+      Top = 8
+      Width = 63
+      Height = 25
+      Hint = 'Remove'
+      Caption = '&Delete'
+      Enabled = False
+      TabOrder = 4
+      OnClick = BDeleteClick
+    end
+    object CBActive: TCheckBox
+      Left = 191
+      Top = 3
+      Width = 97
+      Height = 17
+      HelpContext = 1773
+      Caption = 'A&ctive'
+      TabOrder = 2
+      OnClick = CBActiveClick
+    end
+    object Panel2: TPanel
+      Left = 334
+      Top = 1
+      Width = 69
+      Height = 39
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 0
+      object BMoveUp: TSpeedButton
+        Left = 5
+        Top = 6
+        Width = 27
+        Height = 25
+        Flat = True
+        NumGlyphs = 2
+        OnClick = BMoveUpClick
+      end
+      object BMoveDown: TSpeedButton
+        Left = 37
+        Top = 6
+        Width = 27
+        Height = 25
+        Flat = True
+        NumGlyphs = 2
+        OnClick = BMoveDownClick
+      end
+    end
+    object CBShowInEditor: TCheckBox
+      Left = 191
+      Top = 20
+      Width = 138
+      Height = 17
+      HelpContext = 1773
+      Caption = 'Show in this editor'
+      TabOrder = 1
+      Visible = False
+      OnClick = CBShowInEditorClick
+    end
+  end
+  object PBottom: TPanel
+    Left = 0
+    Top = 246
+    Width = 404
+    Height = 24
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 3
+    Visible = False
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 151
+    Top = 73
+  end
+end

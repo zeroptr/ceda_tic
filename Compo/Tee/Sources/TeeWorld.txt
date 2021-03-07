@@ -1,0 +1,8 @@
+TeeAfrica
+TeeAsia
+TeeAustralia
+TeeCentralAmerica
+TeeEurope
+TeeMiddleEast
+TeeNorthAmerica
+TeeSouthAmerica

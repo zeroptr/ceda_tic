@@ -1,0 +1,240 @@
+inherited CursorToolEditor: TCursorToolEditor
+  ClientHeight = 238
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    inherited CBSeries: TComboFlat
+      HelpContext = 1229
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 29
+    Width = 233
+    Height = 209
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Style'
+      object Label2: TLabel
+        Left = 8
+        Top = 88
+        Width = 53
+        Height = 13
+        Caption = '&Horiz. Size:'
+        FocusControl = Edit1
+      end
+      object Label7: TLabel
+        Left = 104
+        Top = 87
+        Width = 48
+        Height = 13
+        Caption = '&Vert. Size:'
+        FocusControl = Edit2
+      end
+      object Label9: TLabel
+        Left = 8
+        Top = 40
+        Width = 26
+        Height = 13
+        Caption = '&Style:'
+        FocusControl = CBStyle
+      end
+      object Label10: TLabel
+        Left = 8
+        Top = 135
+        Width = 57
+        Height = 13
+        Caption = 'S&cope Size:'
+        FocusControl = EScope
+      end
+      object Label6: TLabel
+        Left = 104
+        Top = 136
+        Width = 58
+        Height = 13
+        Caption = 'Scope sty&le:'
+        FocusControl = CBScopeStyle
+      end
+      object BPen: TButtonPen
+        Left = 7
+        Top = 5
+        HelpContext = 1275
+        Caption = '&Pen...'
+        TabOrder = 0
+      end
+      object CBStyle: TComboFlat
+        Left = 6
+        Top = 56
+        Width = 145
+        HelpContext = 1277
+        TabOrder = 1
+        OnChange = CBStyleChange
+        Items.Strings = (
+          'Horizontal'
+          'Vertical'
+          'Both'
+          'Scope'
+          'Scope only')
+      end
+      object Edit1: TEdit
+        Left = 8
+        Top = 106
+        Width = 33
+        Height = 21
+        TabOrder = 2
+        Text = '0'
+        OnChange = Edit1Change
+      end
+      object UDHorizSize: TUpDown
+        Left = 41
+        Top = 106
+        Width = 15
+        Height = 21
+        Associate = Edit1
+        Max = 1000
+        TabOrder = 3
+      end
+      object Edit2: TEdit
+        Left = 104
+        Top = 105
+        Width = 33
+        Height = 21
+        TabOrder = 4
+        Text = '0'
+        OnChange = Edit2Change
+      end
+      object UDVertSize: TUpDown
+        Left = 137
+        Top = 105
+        Width = 15
+        Height = 21
+        Associate = Edit2
+        Max = 1000
+        TabOrder = 5
+      end
+      object EScope: TEdit
+        Left = 8
+        Top = 152
+        Width = 33
+        Height = 21
+        TabOrder = 6
+        Text = '0'
+        OnChange = EScopeChange
+      end
+      object UDScope: TUpDown
+        Left = 41
+        Top = 152
+        Width = 15
+        Height = 21
+        Associate = EScope
+        Max = 1000
+        TabOrder = 7
+      end
+      object CBScopeStyle: TComboFlat
+        Left = 104
+        Top = 152
+        Width = 108
+        TabOrder = 8
+        OnChange = CBScopeStyleChange
+        Items.Strings = (
+          'Rectangle'
+          'Circle'
+          'Diamond'
+          'Empty'
+          'Camera')
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Snap'
+      ImageIndex = 1
+      object Label5: TLabel
+        Left = 8
+        Top = 40
+        Width = 52
+        Height = 13
+        Caption = 'Snap sty&le:'
+        FocusControl = CBSnapStyle
+      end
+      object CBZ: TCheckBox
+        Left = 8
+        Top = 86
+        Width = 145
+        Height = 17
+        HelpContext = 1276
+        Caption = 'Use Series &Z'
+        TabOrder = 0
+        OnClick = CBZClick
+      end
+      object CBSnap: TCheckBox
+        Left = 8
+        Top = 8
+        Width = 145
+        Height = 17
+        HelpContext = 1276
+        Caption = 'S&nap'
+        TabOrder = 1
+        OnClick = CBSnapClick
+      end
+      object CBSnapStyle: TComboFlat
+        Left = 8
+        Top = 55
+        Width = 117
+        TabOrder = 2
+        OnChange = CBSnapStyleChange
+        Items.Strings = (
+          'Default'
+          'Horizontal'
+          'Vertical')
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Mouse'
+      ImageIndex = 2
+      object Label3: TLabel
+        Left = 8
+        Top = 38
+        Width = 73
+        Height = 13
+        Caption = 'Click &tolerance:'
+        FocusControl = EPixels
+      end
+      object Label4: TLabel
+        Left = 61
+        Top = 58
+        Width = 26
+        Height = 13
+        Caption = 'pixels'
+      end
+      object CBFollow: TCheckBox
+        Left = 8
+        Top = 7
+        Width = 145
+        Height = 17
+        HelpContext = 1274
+        Caption = '&Follow mouse'
+        TabOrder = 0
+        OnClick = CBFollowClick
+      end
+      object EPixels: TEdit
+        Left = 8
+        Top = 55
+        Width = 33
+        Height = 21
+        TabOrder = 1
+        Text = '0'
+        OnChange = EPixelsChange
+      end
+      object UDClick: TUpDown
+        Left = 41
+        Top = 55
+        Width = 15
+        Height = 21
+        Associate = EPixels
+        Max = 1000
+        TabOrder = 2
+      end
+    end
+  end
+end

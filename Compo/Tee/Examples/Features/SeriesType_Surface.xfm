@@ -1,0 +1,181 @@
+inherited SurfaceSeriesForm: TSurfaceSeriesForm
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 98
+  end
+  inherited Memo1: TMemo
+    Height = 57
+    Lines.Strings = (
+      'Surface displays a grid of XYZ floating point values.'
+      
+        'Options include palette, border, pattern, null values, wire-fram' +
+        'e, dots,'
+      'surface sides, marks, gradients, inverted axes, etc.'
+      '')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    Top = 100
+    Height = 237
+    BackWall.Brush.Color = clWhite
+    BackWall.Color = 8453888
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Brush.Color = clWhite
+    BottomWall.Brush.Style = bsClear
+    BottomWall.Color = clAqua
+    BottomWall.Size = 10
+    Foot.Font.Height = -12
+    Foot.Frame.Color = clScrollBar
+    Gradient.EndColor = clWhite
+    Gradient.MidColor = 8454143
+    Gradient.StartColor = clGray
+    Gradient.Visible = True
+    LeftWall.Size = 10
+    Legend.LegendStyle = lsSeries
+    Legend.TopPos = 4
+    Legend.Visible = False
+    MarginBottom = 5
+    MarginLeft = 5
+    MarginRight = 5
+    MarginTop = 5
+    Title.Frame.Color = clScrollBar
+    Title.Text.Strings = (
+      'Surface')
+    BottomAxis.Grid.Color = clScrollBar
+    Chart3DPercent = 90
+    ClipPoints = False
+    DepthAxis.Visible = True
+    LeftAxis.Grid.Color = clScrollBar
+    RightAxis.Grid.Color = clScrollBar
+    TopAxis.Grid.Color = clScrollBar
+    View3DOptions.Elevation = 348
+    View3DOptions.Orthogonal = False
+    View3DOptions.Rotation = 329
+    View3DOptions.VertOffset = -20
+    View3DOptions.Zoom = 60
+    BevelInner = bvLowered
+    BevelWidth = 5
+    TabOrder = 0
+    object SurfaceSeries1: TSurfaceSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      NumXValues = 15
+      NumZValues = 15
+      PaletteStyle = psStrong
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+      OnGetYValue = SurfaceSeries1GetYValue
+      Left = 335
+      Top = 128
+    end
+    object ChartTool1: TRotateTool
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 57
+    object Label1: TLabel
+      Left = 88
+      Top = 12
+      Width = 26
+      Height = 13
+      Caption = '&Style:'
+      FocusControl = CBColorMode
+    end
+    object Label2: TLabel
+      Left = 336
+      Top = 12
+      Width = 38
+      Height = 13
+      Caption = 'Sa&mple:'
+      FocusControl = Edit1
+    end
+    object Animation1: TCheckBox
+      Left = 15
+      Top = 11
+      Width = 64
+      Height = 17
+      Caption = '&Animate'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      OnClick = Animation1Click
+    end
+    object CBColorMode: TComboBox
+      Left = 121
+      Top = 8
+      Width = 104
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 1
+      OnChange = CBColorModeChange
+      Items.Strings = (
+        'Single Color'
+        'Color Range'
+        'Color Palette'
+        'Strong Palette'
+        'Gray scale'
+        'Inverted Gray'
+        'Rainbow')
+    end
+    object Edit1: TEdit
+      Left = 380
+      Top = 9
+      Width = 29
+      Height = 21
+      TabOrder = 2
+      Text = '1'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 409
+      Top = 9
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 1
+      Max = 8
+      Position = 1
+      TabOrder = 3
+    end
+    object ComboBox1: TComboBox
+      Left = 232
+      Top = 8
+      Width = 97
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 4
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Solid and Grid'
+        'Solid'
+        'Wireframe'
+        'Dots')
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 32
+    Top = 265
+  end
+end

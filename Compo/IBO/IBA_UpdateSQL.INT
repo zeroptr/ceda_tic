@@ -1,0 +1,124 @@
+
+{                                                                              }
+{ IBA_UpdateSQL                                                                }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: This component is very much like the TUpdateSQL component in the standard
+data aware components except that it is owned and contained by the dataset
+instead of being a separate reference.
+<br><br>
+The properties for this component are actually a part of the properties of the
+TIB_Dataset class and are published for the TIB_Query component. Please refer
+to the help for this component to see the descriptions.}
+TIB_UpdateSQL = class(TComponent)
+private
+  FDataset: TIB_Dataset;
+  FPreparedEdits: boolean;
+  FPreparedInserts: boolean;
+  FSearchedDeletes: boolean;
+  FSearchedEdits: boolean;
+  FDeleteSQL: TIB_StringList;
+  FModifySQL: TIB_StringList;
+  FLockSQL: TIB_StringList;
+  FInsertSQL: TIB_StringList;
+  FEditDSQL: TIB_Statement;
+  FLockDSQL: TIB_Statement;
+  FInsertDSQL: TIB_Statement;
+  FDeleteDSQL: TIB_Statement;
+  FNeedRecordResync: boolean;
+  procedure AssignKeyRefs( ADSQL: TIB_Statement );
+  procedure CheckKeyRelation;
+  function CheckDSQLNeedsInit( var ADSQL: TIB_Statement ): boolean;
+  function GetEditDSQL: TIB_Statement;
+  function GetLockDSQL: TIB_Statement;
+  function GetInsertDSQL: TIB_Statement;
+  function GetDeleteDSQL: TIB_Statement;
+  procedure PrepareCustomDML( ADSQL: TIB_Statement; const ASQL: string );
+  procedure SetPreparedEdits( AValue: boolean );
+  procedure SetPreparedInserts( AValue: boolean );
+  procedure SetSearchedDeletes( AValue: boolean );
+  procedure SetSearchedEdits( AValue: boolean );
+  procedure SetDeleteSQL( AValue: TIB_StringList );
+  procedure SetModifySQL( AValue: TIB_StringList );
+  procedure SetLockSQL( AValue: TIB_StringList );
+  procedure SetInsertSQL( AValue: TIB_StringList );
+  procedure SQLChanged( Sender: TObject );
+protected
+  procedure HandleOutputValues( ADSQL: TIB_Statement );
+  procedure DoHandleError(       Sender: TObject;
+                           const errcode: isc_long;
+                                 ErrorMessage,
+                                 ErrorCodes: TStringList;
+                           const SQLCODE: isc_long;
+                                 SQLMessage,
+                                 SQL: TStringList;
+                             var RaiseException: boolean ); 
+  procedure SysDeallocate;
+  procedure SysUnprepare;
+{ SQL Generator procedures }
+  procedure SQL_Edit;
+  function SQL_Lock: boolean;
+  procedure SQL_Insert;
+  procedure SQL_Delete;
+{ Properties }
+  property Dataset: TIB_Dataset read FDataset;
+  property PreparedEdits: boolean read FPreparedEdits
+                                  write SetPreparedEdits;
+  property PreparedInserts: boolean read FPreparedInserts
+                                    write SetPreparedInserts;
+  property SearchedDeletes: boolean read FSearchedDeletes
+                                    write SetSearchedDeletes;
+  property SearchedEdits: boolean read FSearchedEdits
+                                  write SetSearchedEdits;
+  property DeleteSQL: TIB_StringList read FDeleteSQL write SetDeleteSQL;
+  property ModifySQL: TIB_StringList read FModifySQL write SetModifySQL;
+  property LockSQL: TIB_StringList read FLockSQL write SetLockSQL;
+  property InsertSQL: TIB_StringList read FInsertSQL write SetInsertSQL;
+public
+{$IFNDEF HELPSCAN}
+  constructor Create( AOwner: TComponent ); override;
+  destructor Destroy; override;
+  property EditDSQL: TIB_Statement read GetEditDSQL;
+  property LockDSQL: TIB_Statement read GetLockDSQL;
+  property InsertDSQL: TIB_Statement read GetInsertDSQL;
+  property DeleteDSQL: TIB_Statement read GetDeleteDSQL;
+  property NeedRecordResync: boolean read FNeedRecordResync;
+{$ENDIF}
+end;
+
+// IBA_UpdateSQL.IMP

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="4.3" DotMatrixReport="True" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Varsay�lan" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="39203,4383004167" ReportOptions.Description.Text="" ReportOptions.LastChange="39203,6849196991" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end." StoreInDFM="False" PropData="044C65667403500103546F7003910008446174617365747301010C3C00000020446174615365743D2266727849424F4B616E7461725F466973692220446174615365744E616D653D2266727849424F4B616E7461725F46697369220000095661726961626C65730100055374796C650100">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxDMPPage Name="Page1" PaperWidth="208,27986548592" PaperHeight="89,9582752352806" PaperSize="256" LeftMargin="2,53999835958439" RightMargin="2,53999835958439" TopMargin="4,49791376176403" BottomMargin="4,49791376176403" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="" FontStyle="0">
+    <TfrxReportTitle Name="ReportTitle1" Height="289" Left="0" Top="17" Width="768">
+      <TfrxDMPMemoView Name="DMPMemo1" Left="38,4" Top="85" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="GİRİŞ TARİHİ"/>
+      <TfrxDMPMemoView Name="DMPMemo2" Left="38,4" Top="102" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="GİRİŞ SAATİ"/>
+      <TfrxDMPMemoView Name="DMPMemo3" Left="38,4" Top="119" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="GİRİŞ KİLOSU"/>
+      <TfrxDMPMemoView Name="DMPMemo4" Left="38,4" Top="136" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="MAKBUZ NO"/>
+      <TfrxDMPMemoView Name="DMPMemo5" Left="38,4" Top="170" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="GELDİĞİ YER"/>
+      <TfrxDMPMemoView Name="DMPMemo6" Left="38,4" Top="204" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="GİTTİĞİ YER"/>
+      <TfrxDMPMemoView Name="DMPMemo7" Left="38,4" Top="238" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="AÇIKLAMA"/>
+      <TfrxDMPMemoView Name="DMPMemo8" Left="422,4" Top="102" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="ÇIKIŞ KİLOSU"/>
+      <TfrxDMPMemoView Name="DMPMemo9" Left="38,4" Top="17" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="CARİ KODU"/>
+      <TfrxDMPMemoView Name="DMPMemo10" Left="38,4" Top="34" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="CARİ ADI"/>
+      <TfrxDMPMemoView Name="DMPMemo11" Left="38,4" Top="51" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="PLAKA NO"/>
+      <TfrxDMPMemoView Name="DMPMemo12" Left="422,4" Top="119" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="FARK"/>
+      <TfrxDMPMemoView Name="DMPMemo13" Left="422,4" Top="136" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="ÜCRETİ"/>
+      <TfrxDMPMemoView Name="DMPMemo14" Left="182,4" Top="17" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;CARI_KOD&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo15" Left="182,4" Top="34" Width="230,4" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;CARI_AD&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo16" Left="182,4" Top="51" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;PLAKA_NO&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo17" Left="182,4" Top="85" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="dd.mm.yyyy" DisplayFormat.Kind="fkDateTime" Text="[(&#60;frxIBOKantar_Fisi.&#34;GIRIS_TARIHI&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo18" Left="182,4" Top="102" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="hh:mm" DisplayFormat.Kind="fkDateTime" Text="[(&#60;frxIBOKantar_Fisi.&#34;GIRIS_SAATI&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo19" Left="182,4" Top="119" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;GIRIS_KILO&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo20" Left="182,4" Top="136" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;MAKBUZ_NO&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo21" Left="182,4" Top="170" Width="384" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;GELDIGI_YER&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo22" Left="182,4" Top="204" Width="384" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;GITTIGI_YER&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo23" Left="182,4" Top="238" Width="384" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;ACIKLAMA&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo24" Left="547,2" Top="102" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;CIKIS_KILO&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo25" Left="547,2" Top="119" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;FARK_KILO&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo26" Left="547,2" Top="136" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2n" DisplayFormat.Kind="fkNumeric" Text="[(&#60;frxIBOKantar_Fisi.&#34;UCRETI&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo27" Left="422,4" Top="34" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="ÇIKIŞ TARİHİ"/>
+      <TfrxDMPMemoView Name="DMPMemo28" Left="422,4" Top="51" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="ÇIKIŞ SAATİ"/>
+      <TfrxDMPMemoView Name="DMPMemo29" Left="547,2" Top="34" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="dd.mm.yyyy" DisplayFormat.Kind="fkDateTime" Text="[(&#60;frxIBOKantar_Fisi.&#34;GIRIS_TARIHI&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo30" Left="547,2" Top="51" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="hh:mm" DisplayFormat.Kind="fkDateTime" Text="[(&#60;frxIBOKantar_Fisi.&#34;CIKIS_SAATI&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo31" Left="489,6" Top="255" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="PERSONEL"/>
+      <TfrxDMPMemoView Name="DMPMemo32" Left="614,4" Top="255" Width="115,2" Height="17" DisplayFormat.DecimalSeparator="," Text="[(&#60;frxIBOKantar_Fisi.&#34;ACIKLAMA&#34;&#62;)]"/>
+      <TfrxDMPMemoView Name="DMPMemo33" Left="153,6" Top="17" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo34" Left="153,6" Top="34" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo35" Left="153,6" Top="51" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo36" Left="153,6" Top="85" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo37" Left="153,6" Top="102" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo38" Left="153,6" Top="119" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo39" Left="153,6" Top="136" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo40" Left="153,6" Top="204" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo41" Left="153,6" Top="170" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo42" Left="537,6" Top="102" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo43" Left="537,6" Top="119" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo44" Left="537,6" Top="136" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo45" Left="537,6" Top="34" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo46" Left="537,6" Top="51" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo47" Left="604,8" Top="255" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+      <TfrxDMPMemoView Name="DMPMemo48" Left="153,6" Top="238" Width="9,6" Height="17" DisplayFormat.DecimalSeparator="," Text=":"/>
+    </TfrxReportTitle>
+  </TfrxDMPPage>
+</TfrxReport>

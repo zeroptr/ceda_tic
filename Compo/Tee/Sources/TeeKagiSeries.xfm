@@ -1,0 +1,45 @@
+object KagiSeriesEditor: TKagiSeriesEditor
+  Left = 397
+  Top = 312
+  AutoScroll = False
+  ClientHeight = 264
+  ClientWidth = 308
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 308
+    Height = 264
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Lines'
+      object BUp: TButtonPen
+        Left = 8
+        Top = 16
+        Caption = '&Up...'
+        TabOrder = 0
+      end
+      object BDown: TButtonPen
+        Left = 8
+        Top = 48
+        Caption = '&Down...'
+        TabOrder = 1
+      end
+    end
+    object TabBuy: TTabSheet
+      Caption = 'Buy'
+      ImageIndex = 1
+    end
+    object TabSell: TTabSheet
+      Caption = 'Sell'
+      ImageIndex = 2
+    end
+  end
+end

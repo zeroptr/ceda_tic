@@ -1,0 +1,70 @@
+
+{                                                                              }
+{  IB_Control.PBL                                                              }
+{                                                                              }
+
+{$IFNDEF HELPSCAN}
+  
+published
+
+{$IFDEF IBO_VCL30_OR_GREATER}
+{$IFDEF IB_AutoLabel}
+property AutoLabel;
+{$ENDIF}
+{$ENDIF}
+{$IFNDEF IBG_CustomGrid}
+property DataField;
+{$ENDIF}
+property DataSource;
+property IgnoreColorScheme;
+property OnPrepareSQL;
+property Align;
+{$IFDEF IBO_VCL40_OR_GREATER}
+property Anchors;
+property BiDiMode;
+{$ENDIF}
+property Color;
+{$IFDEF IBO_VCL40_OR_GREATER}
+property Constraints;
+{$ENDIF}
+property DragCursor;
+{$IFDEF IBO_VCL40_OR_GREATER}
+property DragKind;
+{$ENDIF}
+property DragMode;
+property Enabled;
+property Font;
+{$IFDEF IBO_VCL40_OR_GREATER}
+property ParentBiDiMode;
+{$ENDIF}
+property ParentColor;
+property ParentFont;
+property ParentShowHint;
+property PopupMenu;
+{$IFDEF IB_FieldControl}
+property SearchWithMask;
+property SearchAlways;
+{$ENDIF}
+property ShowHint;
+property Visible;
+{$IFDEF IBO_VCL40_OR_GREATER}
+property OnCanResize;
+{$ENDIF}
+property OnClick;
+property OnDblClick;
+property OnDragDrop;
+property OnDragOver;
+property OnEndDrag;
+{$ifdef IBC_Text}
+property OnGetDisplayText;
+{$endif}
+property OnMouseDown;
+property OnMouseMove;
+property OnMouseUp;
+{$IFDEF IBO_VCL40_OR_GREATER}
+property OnResize;
+{$ENDIF}
+property OnStartDrag;
+
+{$ENDIF}
+

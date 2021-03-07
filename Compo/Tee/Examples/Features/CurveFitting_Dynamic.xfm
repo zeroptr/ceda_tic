@@ -1,0 +1,204 @@
+object DynamicTrend: TDynamicTrend
+  Left = 177
+  Top = 162
+  Width = 443
+  Height = 379
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  Position = poScreenCenter
+  Scaled = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Chart1: TChart
+    Left = 132
+    Top = 33
+    Width = 303
+    Height = 319
+    BackWall.Brush.Color = clWhite
+    BackWall.Size = 20
+    BottomWall.Size = 20
+    Gradient.Direction = gdFromBottomLeft
+    Gradient.EndColor = clGray
+    Gradient.Visible = True
+    LeftWall.Size = 20
+    Legend.Color = 8454016
+    Legend.ColorWidth = 35
+    Legend.Symbol.Width = 35
+    Title.Text.Strings = (
+      'TChart')
+    Title.Visible = False
+    Chart3DPercent = 35
+    LeftAxis.LabelsFont.Style = [fsBold]
+    View3DOptions.Elevation = 347
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 55
+    View3DOptions.Rotation = 348
+    View3DOptions.Zoom = 90
+    Align = alClient
+    TabOrder = 0
+    object Series2: TAreaSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clBlue
+      AreaLinesPen.Color = clNavy
+      AreaLinesPen.Style = psDot
+      DrawArea = True
+      LinePen.Color = clNavy
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction1: TCurveFittingFunction
+        Period = 1
+        PolyDegree = 2
+      end
+    end
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      DataSource = Series1
+      SeriesColor = clYellow
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      object TeeFunction2: TCurveFittingFunction
+        Period = 1
+      end
+    end
+    object ChartTool1: TRotateTool
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 33
+    Width = 132
+    Height = 319
+    Align = alLeft
+    TabOrder = 1
+    object GroupBox1: TGroupBox
+      Left = 7
+      Top = 8
+      Width = 118
+      Height = 103
+      Caption = 'Blue Area Trend'
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 8
+        Top = 19
+        Width = 40
+        Height = 13
+        Caption = 'Position:'
+      end
+      object Label2: TLabel
+        Left = 8
+        Top = 59
+        Width = 23
+        Height = 13
+        Caption = 'Size:'
+      end
+      object ScrollBar3: TScrollBar
+        Left = 8
+        Top = 36
+        Width = 99
+        Height = 16
+        TabOrder = 0
+        OnChange = ScrollBar3Change
+      end
+      object ScrollBar4: TScrollBar
+        Left = 8
+        Top = 76
+        Width = 99
+        Height = 16
+        Min = 3
+        Position = 3
+        TabOrder = 1
+        OnChange = ScrollBar4Change
+      end
+    end
+    object GroupBox2: TGroupBox
+      Left = 7
+      Top = 118
+      Width = 118
+      Height = 105
+      Caption = 'Yellow Curve Fitting'
+      TabOrder = 1
+      object Label3: TLabel
+        Left = 7
+        Top = 20
+        Width = 40
+        Height = 13
+        Caption = 'Position:'
+      end
+      object Label4: TLabel
+        Left = 7
+        Top = 60
+        Width = 23
+        Height = 13
+        Caption = 'Size:'
+      end
+      object ScrollBar1: TScrollBar
+        Left = 7
+        Top = 36
+        Width = 99
+        Height = 16
+        TabOrder = 0
+        OnChange = ScrollBar1Change
+      end
+      object ScrollBar2: TScrollBar
+        Left = 7
+        Top = 76
+        Width = 99
+        Height = 16
+        Min = 3
+        Position = 3
+        TabOrder = 1
+        OnChange = ScrollBar2Change
+      end
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 0
+    Width = 435
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 2
+  end
+  object Timer1: TTimer
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 56
+    Top = 265
+  end
+end

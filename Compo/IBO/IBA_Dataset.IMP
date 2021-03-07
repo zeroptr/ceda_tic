@@ -1,0 +1,5533 @@
+// IBA_Dataset.INT
+// IBA_BDataset.INT
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  16-Feb-2002                                                                 }
+{     Fixed KeyToChildAction to so that tmpKeyFlds and tmpKeyVals corresponded }
+{     properly in the call to Lookup.                                          }
+{                                                                              }
+{  Marco Menardi <mmenaz@lycosmail.com>                                        }
+{  10-Feb-02                                                                   }
+{     in SysGetServerDefaults2 TrimLeftPrevOrdChar is applied to DEFAULT to    }
+{     remove chars lower than #32 included, since server bug allows spaces and }
+{     CR/LF chars be embedded in front of the keyword                          }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  07-Nov-2001                                                                 }
+{     RefreshBuffers in APINext function to prevent columns always showing     }
+{     as modified (and therefore blob columns as loaded).                      }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  13-Sep-2001                                                                 }
+{     Reset Eof in APIFirst function.                                          }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  10-Aug-2001                                                                 }
+{     Altered the calls to GetGeneratorValue so that they are consistent       }
+{     with other uses of that function - by converting to a quoted identifier  }
+{     if necessary.                                                            }
+{                                                                              }
+{******************************************************************************}
+{                                                                              }
+{  Wassim Haddad <lobolo2000@yahoo.com>                                        }
+{  22-Aug-2001                                                                 }
+{     Added support to import column defaults from the server upon request.    }
+{                                                                              }
+{  29-Aug-2001                                                                 }
+{    Added OnKeySourceStateChanged event which fires whenever the keysource    }
+{    state changes.                                                            }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_Dataset.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIB_KeyDataLink := TIB_KeyDataLink.Create( Self );
+  FIB_KeyDataLink.FChildDataset := Self;
+  FIB_KeyDataLink.OnDataChange := IB_KeyDataChange;
+  FIB_KeyDataLink.OnStateChanged := IB_KeyStateChanged;
+  FIB_MasterDataLink := TIB_MasterDataLink.Create( Self );
+  FIB_MasterDataLink.FChildDataset := Self;
+  FIB_MasterDataLink.OnDataChange := IB_MasterDataChange;
+  FUpdateSQL := TIB_UpdateSQL.Create( Self );
+  FUpdateSQL.FDataset := Self;
+  FDataSourceList := TList.Create;
+  FDefaultValues := TIB_StringProperty.Create;
+  FGeneratorLinks := TIB_StringProperty.Create;
+  FKeyLinks := TIB_StringProperty.Create;
+  FKeyLinksAutoDefine := false;
+  FKeyDescLinks := TIB_StringProperty.Create;
+  FMasterLinks := TIB_StringProperty.Create;
+  FOrderingItems := TIB_StringProperty.Create;
+  FOrderingLinks := TIB_StringProperty.Create;
+  FMasterParamLinks := TIB_StringProperty.Create;
+  FSearchingLinks := TIB_StringProperty.Create;
+  FSQLSelect := TIB_StringList.Create;
+  FSQLFrom := TIB_StringList.Create;
+  FSQLWhere := TIB_StringList.Create;
+  FSQLGroup := TIB_StringList.Create;
+  FSQLHaving := TIB_StringList.Create;
+  FSQLUnion := TIB_StringList.Create;
+  FSQLPlan := TIB_StringList.Create;
+  FSQLOrder := TIB_StringList.Create;
+  FSQLForUpdate := TIB_StringList.Create;
+  FSQLOrderLinks := TIB_StringProperty.Create;
+  FSQLWhereLow := TIB_StringProperty.Create;
+  FSQLWhereMed := TIB_StringProperty.Create;
+  FSQLWhereHigh := TIB_StringProperty.Create;
+  (FKeyLinks as TIB_StringList).OnChange := OnSQLChange;
+  (FMasterLinks as TIB_StringList).OnChange := OnSQLChange;
+  (FMasterParamLinks as TIB_StringList).OnChange := OnSQLChange;
+  (FOrderingItems as TIB_StringList).OnChange := OnSQLChange;
+  (FOrderingLinks as TIB_StringList).OnChange := OnSQLChange;
+  (FSearchingLinks as TIB_StringList).OnChange := OnSQLChange;
+  FSQLSelect.OnChange := SQLSectionChange;
+  FSQLFrom.OnChange := SQLSectionChange;
+  FSQLWhere.OnChange := SQLSectionChange;
+  FSQLGroup.OnChange := SQLSectionChange;
+  FSQLHaving.OnChange := SQLSectionChange;
+  FSQLUnion.OnChange := SQLSectionChange;
+  FSQLPlan.OnChange := SQLSectionChange;
+  FSQLOrder.OnChange := SQLSectionChange;
+  FSQLForUpdate.OnChange := SQLSectionChange;
+  FCallbackInc := 5;
+  FCallbackInitInt := 3000;
+  FCallbackRefreshInt := 250;
+  FAutoFetchAll := false;
+  FAutoFetchFirst := true;
+  FCursorName := '';
+  FParamChar := ':';
+  FAutoPostDelete := true;
+  FKeySeeking := true;
+  FConfirmDeletePrompt := TIB_StringList.Create;
+  FCheckRequired := true;
+  FControlsDisabledLevel := 0;
+  FHasPostRetained := false;
+  FMasterSearchFlags := [ msfOpenMasterOnOpen,
+                          msfSearchAppliesToMasterOnly ];
+  flag_keylinks := 0;
+  FRefreshDML := False;
+end;
+
+destructor TIB_Dataset.Destroy;
+begin
+  if Fetching then
+    AbortFetching;
+  try
+    SysClose;
+  except
+  end;
+  try
+    SysDeallocate( true );
+  except
+  end;
+  KeySource := nil;
+  MasterSource := nil;
+  IB_Transaction := nil;
+  IB_Connection := nil;
+  while DataSourceCount > 0 do
+    DataSources[ 0 ].Dataset := nil;
+  with FIB_KeyDataLink do
+  begin
+    OnStateChanged := nil;
+    OnDataChange := nil;
+    FChildDataset := nil;
+  end;
+  with FIB_MasterDataLink do
+  begin
+    OnPrepareSQL := nil;
+    OnStateChanged := nil;
+    OnDataChange := nil;
+    FChildDataset := nil;
+  end;
+  (FSQLSelect as TIB_StringList).OnChange := nil;
+  (FSQLFrom as TIB_StringList).OnChange := nil;
+  (FSQLWhere as TIB_StringList).OnChange := nil;
+  (FSQLGroup as TIB_StringList).OnChange := nil;
+  (FSQLHaving as TIB_StringList).OnChange := nil;
+  (FSQLUnion as TIB_StringList).OnChange := nil;
+  (FSQLPlan as TIB_StringList).OnChange := nil;
+  (FSQLOrder as TIB_StringList).OnChange := nil;
+  (FSQLForUpdate as TIB_StringList).OnChange := nil;
+  inherited Destroy;
+  FDataSourceList.Free;
+  FDataSourceList := nil;
+  FDefaultValues.Free;
+  FDefaultValues := nil;
+  FGeneratorLinks.Free;
+  FGeneratorLinks := nil;
+  FKeyLinks.Free;
+  FKeyLinks := nil;
+  FKeyDescLinks.Free;
+  FKeyDescLinks := nil;
+  FMasterLinks.Free;
+  FMasterLinks := nil;
+  FOrderingItems.Free;
+  FOrderingItems := nil;
+  FOrderingLinks.Free;
+  FOrderingLinks := nil;
+  FMasterParamLinks.Free;
+  FMasterParamLinks := nil;
+  FSearchingLinks.Free;
+  FSearchingLinks := nil;
+  FSQLWhereLow.Free;
+  FSQLWhereLow := nil;
+  FSQLWhereMed.Free;
+  FSQLWhereMed := nil;
+  FSQLWhereHigh.Free;
+  FSQLWhereHigh := nil;
+  FSQLSelect.Free;
+  FSQLSelect := nil;
+  FSQLFrom.Free;
+  FSQLFrom := nil;
+  FSQLWhere.Free;
+  FSQLWhere := nil;
+  FSQLGroup.Free;
+  FSQLGroup := nil;
+  FSQLHaving.Free;
+  FSQLHaving := nil;
+  FSQLUnion.Free;
+  FSQLUnion:= nil;
+  FSQLPlan.Free;
+  FSQLPlan := nil;
+  FSQLOrder.Free;
+  FSQLOrder := nil;
+  FSQLOrderLinks.Free;
+  FSQLOrderLinks := nil;
+  FSQLForUpdate.Free;
+  FSQLForUpdate := nil;
+  FFetchingAborted := true;
+  FConfirmDeletePrompt.Free;
+  FConfirmDeletePrompt := nil;
+end;
+
+procedure TIB_Dataset.Loaded;
+begin
+  inherited Loaded;
+  if not ( csFixups in ComponentState ) then
+    SysOpenAfterLoad;
+end;
+
+procedure TIB_Dataset.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties( Filer );
+end;
+
+procedure TIB_Dataset.SysOpenAfterLoad;
+begin
+  try
+    if flag_open_after_load and not Active then
+    begin
+      Active := true;
+      flag_open_after_load := not Active;
+    end;
+  except
+    on E: Exception do
+      Application.ShowException( E );
+  end;
+end;
+
+procedure TIB_Dataset.AssignSQLWithSearch( ADataset: TIB_Dataset );
+begin
+  FSQL.AssignWithSearch( ADataset.FSQL );
+end;
+
+procedure TIB_Dataset.AssignSQLWhere( ADataset: TIB_Dataset );
+var
+  tmpStr: string;
+  Bg, En: longint;
+begin
+  if Assigned( ADataset ) then
+  begin
+    GetSQLWhere( ADataset.ClientSQL, tmpStr, Bg, En );
+    tmpStr := Trim( Copy( tmpStr, 6, MaxInt ));
+  end
+  else
+    tmpStr := '';
+  if FAssignedSQLWhere <> tmpStr then
+  begin
+    FAssignedSQLWhere := tmpStr;
+    if tmpStr <> '' then
+    begin
+      ParamValueLinks.AddStrings( ADataset.ParamValueLinks );
+      OldParamValueLinks.AddStrings( ADataset.ParamValueLinks );
+    end;
+    InvalidateSQL;
+  end;
+end;
+
+procedure TIB_Dataset.DoMacroSubstitute;
+begin
+  if FAlwaysCallMacroSubstitute or Assigned(FOnMacroSubstitute) then
+  begin
+    inherited DoMacroSubstitute;
+    KeyRelation := IB_Parse.SubstMacros( KeyRelation, SysSubstituteMacros,
+                                         MacroBegin, MacroEnd );
+    KeyLinks.Text := IB_Parse.SubstMacros( KeyLinks.Text, SysSubstituteMacros,
+                                           MacroBegin, MacroEnd );
+    KeyDescLinks.Text := IB_Parse.SubstMacros( KeyDescLinks.Text, SysSubstituteMacros,
+                                               MacroBegin, MacroEnd );
+    JoinLinks.Text := IB_Parse.SubstMacros( JoinLinks.Text, SysSubstituteMacros,
+                                            MacroBegin, MacroEnd );
+    MasterLinks.Text := IB_Parse.SubstMacros( MasterLinks.Text, SysSubstituteMacros,
+                                              MacroBegin, MacroEnd );
+    MasterParamLinks.Text := IB_Parse.SubstMacros( MasterParamLinks.Text,SysSubstituteMacros,
+                                                   MacroBegin, MacroEnd);
+    OrderingItems.Text := IB_Parse.SubstMacros( OrderingItems.Text, SysSubstituteMacros,
+                                                MacroBegin, MacroEnd );
+    OrderingLinks.Text := IB_Parse.SubstMacros( OrderingLinks.Text, SysSubstituteMacros,
+                                                MacroBegin, MacroEnd );
+    SearchingLinks.Text := IB_Parse.SubstMacros( SearchingLinks.Text, SysSubstituteMacros,
+                                                 MacroBegin, MacroEnd );
+  end;
+end;
+
+procedure TIB_Dataset.SysPrepareSQL;
+var
+  tmpStr: string;
+  ii: integer;
+begin
+  inherited SysPrepareSQL;
+  if ( FAssignedSQLWhere <> '' ) and IsSelectSQL then
+  begin
+    tmpStr := FAssignedSQLWhere;
+    for ii := 1 to Length( tmpStr ) do
+    begin
+      if Ord( tmpStr[ii] ) < Ord( ' ' ) then
+        tmpStr[ ii ] := ' ';
+    end;
+    SQLWhereItems.Add( '( ' + tmpStr + ' )' );
+  end;
+end;
+
+procedure TIB_Dataset.CheckActive;
+begin
+  if not BufferActive then
+    raise EIB_DatasetError.Create( E_DatasetClosed );
+end;
+
+procedure TIB_Dataset.CheckBrowseMode;
+begin
+  if ( State <> dssInsert ) or not Unidirectional then
+    CheckActive;
+  if State in [ dssSearch, dssEdit, dssInsert ] then
+  // This will be redundant in SysPost but this needs to be here.
+  // I may eventually have the setCheckBrowseMode treated like an UpdateData.
+    ProcessLinkEvent( setFieldsUpdateData, 0 );
+  ProcessLinkEvent( setCheckBrowseMode, 0);
+  if NeedToPost then
+    SysPost( true, false )
+  else
+  if FCachedUpdates then
+    {TODO:Check to see if changed blobs need to be cached};
+end;
+
+procedure TIB_Dataset.CheckCanScroll;
+begin
+  if Active and not CanScroll then
+    raise EIB_DatasetError.Create( E_DatasetCannotScroll );
+end;
+
+procedure TIB_Dataset.CheckPrepared;
+begin
+  if not Prepared then
+    raise EIB_DatasetError.Create( E_NOT_PREPARED );
+end;
+
+function TIB_Dataset.BufferActive: boolean;
+begin
+  Result := Active or ( Prepared and ( BufferRowCount > 0 ));
+end;
+
+function TIB_Dataset.GetModified: boolean;
+begin
+  Result := ( Fields.RowState = rsModified ) or
+            ( Fields.RowData <> Fields.OldRowData );
+end;
+
+function TIB_Dataset.GetSysKeyRelation: string;
+var
+  tmpPos: integer;
+  tmpLen: longint;
+begin
+  Result := inherited GetSysKeyRelation;
+  if KeyRelation = '' then
+  begin
+    MakeServerSQL( Trim(SQLFrom.Text), nil,
+                                       nil,
+                                       nil, Result, ParamChar, false, tmpLen );
+    Result := Trim( Copy( Result, 6, MaxInt ));
+    swap_chars( Result, #10#13, #32 );
+    tmpPos := getLitSafeStrPos( ' JOIN ', UpperCase( Result ), 1 );
+    if tmpPos = 0 then
+      tmpPos := getLitSafePos( ',', Result, 1 );
+    if tmpPos > 0 then
+    begin
+      Result := '';
+      Exit;
+    end;
+    tmpPos := getLitSafePos( ' ', Result, 1 );
+    if tmpPos > 0 then
+      Result := Trim( Copy( Result, 1, tmpPos - 1 ));
+  end;
+  CheckConnection( false );
+  if Assigned( IB_Connection ) and IB_Connection.Connected then
+    Result := IB_Connection.mkIdent( Result );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysBeforeParamsDataChange( Sender: TIB_Row;
+                                                 AField: TIB_Column );
+begin
+//  if Active and Fetching and
+//    ( RefreshOnParamChange or ( MasterDataChangeLevel > 0 )) then
+//    AbortFetching;
+  inherited SysBeforeParamsDataChange( Sender, AField );
+end;
+
+procedure TIB_Dataset.SysAfterParamsDataChange( Sender: TIB_Row;
+                                                AField: TIB_Column );
+begin
+  inherited SysAfterParamsDataChange( Sender, AField );
+  FParamWasChanged := true;
+  try
+    if RefreshOnParamChange or ( MasterDataChangeLevel > 0 ) then
+    begin
+      if Active and
+         not NeedToPost and
+         not IsPosting and
+         not ( csDestroying in ComponentState ) and
+         not ( IB_Connection.ConnectionStatus in [ csDisconnectPending,
+                                                   csDropPending ] ) then
+      begin
+        if Fetching then
+          AbortFetching;
+        RefreshKeys;
+      end;
+    end;
+    FCursorRecordCountValid := false;
+  finally
+    FParamWasChanged := false;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysKeyDataChange( AField: TIB_Column );
+begin
+  if KeyDataFreezeLevel = 0 then
+  begin
+    try
+      Inc( FKeyChildUpdatingLevel );
+      try
+        DoKeyDataChange( AField );
+      except
+        on E: Exception do
+        begin
+          if E is EIB_StatementError then
+          // Who cares!
+          else
+            Application.HandleException( E );
+        end;
+      end;
+    finally
+      Dec( FKeyChildUpdatingLevel );
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.DoKeyDataChange;
+begin
+// Abstract.
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.IB_MasterDataChange( ADataLink: TIB_DataLink;
+                                           ADataSource: TIB_DataSource;
+                                           AField: TIB_Column );
+begin
+  SysMasterDataChange( AField );
+end;
+
+procedure TIB_Dataset.IB_KeyDataChange( ADataLink: TIB_DataLink;
+                                        ADataSource: TIB_DataSource;
+                                        AField: TIB_Column );
+begin
+  SysKeyDataChange( AField );
+end;
+
+function TIB_Dataset.GetMasterLinkParamName( AIndex: integer ): string;
+var
+  tmpStr: string;
+begin
+  tmpStr := MasterLinks.IndexNamesCol[ AIndex ];
+  if IsLitCriteria( tmpStr, '"' ) then
+    tmpStr := stLitCriteria( tmpStr )
+  else
+    tmpStr := UpperCase( tmpStr );
+  if Length( tmpStr ) > 30 then
+    SetLength( tmpStr, 30 );
+  tmpStr := tmpStr + '_' + IntToStr( AIndex );
+  CheckConnection( false );
+  if Assigned( IB_Connection ) then
+    Result := IB_Connection.mkVARIdent( IB_MasterLink + tmpStr );
+end;
+
+procedure TIB_Dataset.SysMasterDataChange( AField: TIB_Column );
+var
+  ii: integer;
+  tmpParam: TIB_Column;
+begin
+  if Prepared and
+     Assigned( MasterDataset ) and MasterDataset.Prepared then
+  begin
+    if MasterDataChangeLevel = 0 then
+    begin
+      FMasterDataChangeMaxLevel := 0;
+      Params.BeginUpdate;
+    end;
+    Inc( FMasterDataChangeMaxLevel );
+    Inc( FMasterDataChangeLevel );
+    try
+      try
+        for ii := 0 to MasterLinks.Count - 1 do
+        begin
+          tmpParam := ParamByName( GetMasterLinkParamName( ii ));
+          try
+            tmpParam.Assign( MasterDataset.FieldByName( MasterFieldName[ii] ));
+          except
+            tmpParam.Clear;
+          end;
+        end;
+        for ii := 0 to MasterParamLinks.Count - 1 do
+        begin
+          tmpParam := ParamByName( MasterParamLinks.IndexNames[ ii ] );
+          try
+            tmpParam.Assign(
+              MasterDataset.FieldByName( MasterParamLinks.LinkValues[
+                                         MasterParamLinks.IndexNames[ ii ]] ));
+          except
+            tmpParam.Clear;
+          end;
+        end;
+        // Generate a datachange event if we are in search mode, since none
+        // will be generated by actual changes to data...
+        if State = dssSearch then
+          ProcessLinkEvent( setFieldsDataChange, 0 );
+      finally
+        if ( MasterDataChangeLevel = 1 ) and
+           Assigned( MasterDataset ) and
+           MasterDataset.Prepared then
+        begin
+          try
+          // I made it so that this will only generate change notifications if
+          // actual values were changed at the binary level instead of relying
+          // solely upon the Assign() method to suppress a change notification
+          // if values were actually the same.
+          // The reason I had to make it go to the binary level is because it
+          // was possible for an infinite loop to be kicked off if the way one
+          // column's value compared to another column's valeu as different
+          // even after it was assigned. This happened when assigning from a
+          // VARCHAR based column to a CHAR based column.
+            Params.EndUpdate( true );
+          except
+          end;
+        end;
+      end;
+    finally
+      Dec( FMasterDataChangeLevel );
+    end;
+// Recurse until it is for sure on the last record it should be.
+// Note comments above about avoiding infinite looping.
+    if ( FMasterDataChangeLevel = 0 ) and
+       ( FMasterDataChangeMaxLevel > 1 ) then
+      SysMasterDataChange( AField );
+  end;
+end;
+
+procedure TIB_Dataset.SysMasterDataUpdate( AField: TIB_Column );
+var
+  ii: integer;
+  tmpField: TIB_Column;
+  tmpMFld: TIB_Column;
+begin
+  if Prepared and Assigned( MasterDataset ) and MasterDataset.Prepared then
+  begin
+    if (               State = dssInsert ) and
+       ( MasterDataset.State = dssInsert ) and
+       ( IsPosting ) and
+       ( not MasterDataset.FCachedUpdates ) and
+       ( not MasterDataset.HasPostRetained ) then
+      MasterDataset.PostRetaining;
+    for ii := 0 to MasterLinks.Count - 1 do
+    begin
+      tmpField := FieldByName( MasterLinks.IndexNames[ ii ] );
+      if (not tmpField.IsModified) or (State = dssInsert) then
+        tmpField.Assign(
+          MasterDataset.FieldByName( MasterLinks.IndexValues[ ii ] ));
+    end;
+    for ii := 0 to MasterParamLinks.Count - 1 do
+    begin
+      tmpField := FindField( MasterParamLinks.IndexNames[ ii ] );
+      if Assigned( tmpField ) and
+        (( not tmpField.IsModified ) or ( State = dssInsert )) then
+      begin
+        tmpMFld := MasterDataset.FindField( MasterParamLinks.IndexValues[ii] );
+        if Assigned( tmpMFld ) then
+          tmpField.Assign( tmpMFld );
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.IsKeyLinkedTo( DataSource: TIB_DataSource ): Boolean;
+var
+  tmpDataset: TIB_Dataset;
+begin
+  Result := True;
+  while DataSource <> nil do
+  begin
+    tmpDataset := DataSource.Dataset;
+    if tmpDataset = nil then Break;
+    if tmpDataset = Self then Exit;
+    DataSource := tmpDataset.KeySource;
+  end;
+  Result := False;
+end;
+
+function TIB_Dataset.IsMasterLinkedTo( DataSource: TIB_DataSource ): Boolean;
+var
+  tmpDataset: TIB_Dataset;
+begin
+  Result := True;
+  while DataSource <> nil do
+  begin
+    tmpDataset := DataSource.Dataset;
+    if tmpDataset = nil then Break;
+    if tmpDataset = Self then Exit;
+    DataSource := tmpDataset.MasterSource;
+  end;
+  Result := False;
+end;
+
+procedure TIB_Dataset.SetRequestLive( AValue: boolean );
+begin
+  if RequestLive <> AValue then
+  begin
+    if Active and not ( csLoading in ComponentState ) then
+    begin
+      raise EIB_DatasetError.Create( E_REQUEST_LIVE_ACTIVE );
+    end
+    else
+    begin
+      FRequestLive := AValue;
+      if AValue then
+      begin
+        if ( SQLForUpdate.Count = 0 ) and
+           ( not SearchedEdits or not SearchedDeletes ) then
+        begin
+          InvalidateSQL;
+        end;
+      end
+      else
+      if SQLForUpdate.Count > 0 then
+        SQLForUpdate.Clear;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SetCallbackCaption( const AValue: string );
+begin
+  if CallbackCaption <> AValue then
+  begin
+    FCallbackCaption := AValue;
+    if Assigned( dlgCancelQuery ) then
+      if CallbackCaption <> '' then
+        dlgCancelQuery.Caption := CallbackCaption
+      else
+        dlgCancelQuery.Caption := Application.Title;
+  end;
+end;
+
+procedure TIB_Dataset.SetConfirmDeletePrompt(AValue: TStrings);
+begin
+  FConfirmDeletePrompt.Assign( AValue );
+end;
+
+procedure TIB_Dataset.SetAutoPostDelete( AValue: boolean );
+begin
+  if AutoPostDelete <> AValue then
+  begin
+    FAutoPostDelete := AValue;
+    if AutoPostDelete and ( State = dssDelete ) then
+      Post;
+  end;
+end;
+
+procedure TIB_Dataset.SetKeySeeking( AValue: boolean );
+begin
+  if KeySeeking <> AValue then
+  begin
+    FKeySeeking := AValue;
+    if KeySeeking and Assigned( KeySource ) then
+      SysKeyDataChange( nil );
+  end;
+end;
+
+procedure TIB_Dataset.SetKeySource( AValue: TIB_DataSource );
+begin
+  if IsMasterLinkedTo( AValue ) or
+     IsKeyLinkedTo( AValue ) then
+    raise EIB_DatasetError.Create( E_CIRCULAR_REFERENCE );
+  FIB_KeyDataLink.DataSource := AValue;
+end;
+
+procedure TIB_Dataset.IB_KeyStateChanged(Sender: TIB_DataLink;
+                               ADataSource: TIB_DataSource );
+begin
+  if not ( csLoading    in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( FOnKeySourceStateChanged ) then
+      FOnKeySourceStateChanged( Self, ADataSource );
+end;
+procedure TIB_Dataset.SetMasterSource( AValue: TIB_DataSource );
+begin
+  if IsMasterLinkedTo( AValue ) or
+     IsKeyLinkedTo( AValue ) then
+    raise EIB_DatasetError.Create( E_CIRCULAR_REFERENCE );
+  FIB_MasterDataLink.DataSource := AValue;
+end;
+
+function TIB_Dataset.GetKeySource: TIB_DataSource;
+begin
+  Result := FIB_KeyDataLink.DataSource;
+end;
+
+function TIB_Dataset.GetMasterSource: TIB_DataSource;
+begin
+  if Assigned( FIB_MasterDataLink ) then
+    Result := FIB_MasterDataLink.DataSource
+  else
+    Result := nil;
+end;
+
+function TIB_Dataset.GetKeyDataset: TIB_Dataset;
+begin
+  if KeySource <> nil then
+    Result := KeySource.Dataset
+  else
+    Result := nil;
+end;
+
+function TIB_Dataset.GetMasterDataset: TIB_Dataset;
+begin
+  if Assigned( MasterSource ) then
+    Result := MasterSource.Dataset
+  else
+    Result := nil;
+end;
+
+procedure TIB_Dataset.SetMasterParamLinks( Value: TIB_StringList );
+begin
+  FMasterParamLinks.Text := Trim( Value.Text );
+end;
+
+procedure TIB_Dataset.SetMasterLinks( Value: TIB_StringList );
+begin
+  FMasterLinks.Text := Trim( Value.Text );
+end;
+
+procedure TIB_Dataset.GetColumnIsReadOnly(     AColumn: TIB_Column;
+                                           var AReadOnly: boolean );
+var
+  tmpCol: TIB_Column;
+  tmpState: TIB_DatasetState;
+begin
+  if not AReadOnly then
+  begin
+    tmpState := State;
+    if ( tmpState = dssBrowse ) and
+       ( AColumn.Row.RowState = rsNone ) then
+      tmpState := dssPrepared;
+    case tmpState of
+      dssBrowse,
+      dssEdit: if Assigned( FOnUpdateRecord ) then
+      else
+      if EditSQL.Count > 0 then
+      begin
+        tmpCol := FUpdateSQL.EditDSQL.FindParam( AColumn.FieldName );
+        AReadOnly := not Assigned( tmpCol );
+      end
+      else
+        inherited GetColumnIsReadOnly( AColumn, AReadOnly );
+      dssPrepared,
+      dssInsert: if Assigned( FOnUpdateRecord ) then
+      else
+      if InsertSQL.Count > 0 then
+      begin
+        tmpCol := FUpdateSQL.InsertDSQL.FindParam( AColumn.FieldName );
+        AReadOnly := not Assigned( tmpCol );
+      end
+      else
+        inherited GetColumnIsReadOnly( AColumn, AReadOnly );
+      else AReadOnly := true;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.GetControlIsReadOnly(     AColumn: TIB_Column;
+                                            var AReadOnly: boolean );
+begin
+  if not AReadOnly then
+    case State of
+      dssPrepared,
+      dssBrowse: AReadOnly := (( Fields.RowState = rsNone ) and
+                                 AColumn.PreventInserting ) or
+                              (( Fields.RowState <> rsNone ) and
+                                 AColumn.PreventEditing );
+      dssSearch: AReadOnly := AColumn.PreventSearching;
+      dssEdit: AReadOnly := AColumn.PreventEditing;
+      dssInsert: AReadOnly := AColumn.PreventInserting;
+      else AReadOnly := true;
+    end;
+  if not AReadOnly and ( State <> dssSearch ) then
+    AReadOnly := AColumn.GetReadOnly;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.ProcessTransactionEvent( ATransactionLink: TIB_TransactionLink;
+                                               AEvent: TIB_TransactionEventType );
+begin
+  if Active and ( AEvent = tetBeforeAssignment ) then
+    Close;
+  inherited ProcessTransactionEvent( ATransactionLink, AEvent );
+  if AEvent in [ tetAfterEnd,
+                 tetAfterCommitRetaining,
+                 tetAfterRollbackRetaining ] then
+    if FIsRowLocked then
+    begin
+      FIsRowLocked := false;
+      Dec( IB_Transaction.FPessimisticLockCount );
+    end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SetOrderingItems( Value: TIB_StringList );
+begin
+  FOrderingItems.Text := Trim( Value.Text );
+end;
+
+procedure TIB_Dataset.SetOrderingLinks( Value: TIB_StringList );
+begin
+  FOrderingLinks.Text := Trim( Value.Text );
+end;
+
+procedure TIB_Dataset.SetSearchingLinks( Value: TIB_StringList );
+begin
+  FSearchingLinks.Text := Trim( Value.Text );
+end;
+
+procedure TIB_Dataset.ClearSearchingLinks;
+var
+  ii: integer;
+  tmpStr: string;
+  tmpPrm: TIB_Column;
+begin
+  for ii:= 0 to SearchingLinks.Count - 1 do
+  begin
+    tmpStr := SearchingLinks[ ii ];
+    tmpStr := Copy( tmpStr, getLitSafePos( '=', tmpStr, 1 ) + 1, maxint );
+    tmpPrm := FindParam( tmpStr );
+    if Assigned( tmpPrm ) then
+      tmpPrm.AsString := '';
+  end;
+end;
+
+function TIB_Dataset.GetSearchingLinksActive: boolean;
+var
+  ii: integer;
+  tmpStr: string;
+  tmpPrm: TIB_Column;
+begin
+  Result := false;
+  for ii:= 0 to SearchingLinks.Count - 1 do
+  begin
+    tmpStr := SearchingLinks[ ii ];
+    tmpStr := Copy( tmpStr, getLitSafePos( '=', tmpStr, 1 ) + 1, maxint );
+    tmpPrm := FindParam( tmpStr );
+    if Assigned( tmpPrm ) then
+      if tmpPrm.AsString <> '' then
+      begin
+        Result := true;
+        Break;
+      end;
+  end;
+end;
+
+procedure TIB_Dataset.GetOrderingItemsList( const OrderingItemsList: TStrings );
+var
+  ii: integer;
+begin
+  if OrderingItemsList = nil then Exit;
+  OrderingItemsList.Clear;
+  for ii := 0 to OrderingItems.Count - 1 do
+    OrderingItemsList.Add( OrderingItems.IndexNames[ ii ] );
+end;
+
+procedure TIB_Dataset.GetBufferFieldList( AList: TList; const
+                                          FieldNames: string );
+begin
+  BufferFields.GetColumnList( AList, FieldNames );
+end;
+
+procedure TIB_Dataset.GetCreateTableSQL( AStrings: TStrings;
+                                         DomainInfo,
+                                         ConstraintInfo: boolean );
+var
+  ii, jj: integer;
+  ss: string;
+  tmpCol: TIB_Column;
+  tmpStr: TIB_StringList;
+begin
+  if not Assigned( AStrings ) then Exit;
+  Prepare;
+  with AStrings do
+  begin
+    BeginUpdate;
+    try
+      Clear;
+      Add( 'CREATE TABLE ' + SysKeyRelation + ' (' );
+      jj := 0;
+      for ii := 0 to FieldCount - 1 do
+      begin
+        tmpCol := Fields[ ii ];
+        if tmpCol is TIB_ColumnDB_Key then
+          Continue;
+        if jj > 0 then
+          ss := ', '
+        else
+          ss := '  ';
+        Add( ss + tmpCol.GetFieldSource( DomainInfo ));
+        Inc( jj );
+      end;
+      if ConstraintInfo then
+      begin
+        tmpStr := IB_Connection.SchemaCache.IndexDefs;
+        for ii := 0 to tmpStr.Count - 1 do
+          if tmpStr.IndexParamValue[ ii, 'REL' ] = SysKeyRelation then
+            if tmpStr.IndexParamIsSet[ ii, 'PK' ] then
+            begin
+              Add( ', CONSTRAINT ' +
+                   IB_Connection.mkIdent(
+                     tmpStr.IndexParamValue[ ii,'CNST' ] ));
+              Add( '    PRIMARY KEY ( ' +
+                   IB_Connection.mkFldLst(
+                     tmpStr.IndexParamValue[ ii,'SEGS' ] ) + ' )' );
+            end else if ( tmpStr.IndexParamIsSet[ ii, 'UN' ] ) then
+              if Trim( tmpStr.IndexParamValue[ ii, 'CNST' ] ) <> '' then
+              begin
+                Add( ', CONSTRAINT ' +
+                     IB_Connection.mkIdent(
+                       tmpStr.IndexParamValue[ ii, 'CNST' ] ));
+                Add( '    UNIQUE ( ' +
+                     IB_Connection.mkFldLst(
+                       tmpStr.IndexParamValue[ ii, 'SEGS' ] ) + ' )' );
+              end;
+      end;
+      Add( ')' );
+    finally
+      EndUpdate;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.GetAlterTableSQL( AStrings: TStrings );
+var
+  ii, jj, kk: integer;
+  ss: string;
+  tmpStr: TIB_StringList;
+  str: string;
+begin
+  if not Assigned( AStrings ) then Exit;
+  kk := 0;
+  Prepare;
+  with AStrings do
+  begin
+    BeginUpdate;
+    try
+      Clear;
+      Add( 'ALTER TABLE ' + SysKeyRelation );
+      tmpStr := IB_Connection.SchemaCache.IndexDefs;
+      for ii := 0 to tmpStr.Count - 1 do
+      begin
+        if tmpStr.IndexParamValue[ii,'REL'] = SysKeyRelation then
+        begin
+          str := tmpStr.IndexParamValue[ ii,'FK' ];
+          if str <> EmptyStr then
+          begin
+            jj := tmpStr.LinkIndex[ str ];
+            if kk = 0 then
+              ss := '  '
+            else
+              ss := ', ';
+            Add( ss + 'ADD CONSTRAINT ' +
+                 IB_Connection.mkIdent(
+                          tmpStr.IndexParamValue[ ii,'CNST' ] ));
+            Add( '        FOREIGN KEY ( ' +
+                 IB_Connection.mkFldLst(
+                                   tmpStr.IndexParamValue[ ii, 'SEGS' ] ) +
+                 ' ) ' );
+            Add( '        REFERENCES ' + tmpStr.IndexParamValue[ jj, 'REL' ] +
+                 ' ( ' +
+                 IB_Connection.mkFldLst(
+                                   tmpStr.IndexParamValue[ jj, 'SEGS' ] ) +
+                 ' )' );
+            str := tmpStr.IndexParamValue[ ii,'UR' ];
+            if str <> EmptyStr then
+              Add( '          ON UPDATE ' + str );
+            str := tmpStr.IndexParamValue[ ii,'DR' ];
+            if str <> EmptyStr then
+              Add( '          ON DELETE ' + str );
+            Inc( kk );
+          end;
+        end;
+      end;
+    finally
+      if kk = 0 then
+        Clear;
+      EndUpdate;
+    end;
+  end;
+end;
+
+function TIB_Dataset.GetOrderingItemNoChanging: boolean;
+begin Result := FOrderingItemNoChanging > 0; end;
+function TIB_Dataset.GetOrderingLinkChanging: boolean;
+begin Result := FOrderingLinkChanging > 0; end;
+function TIB_Dataset.GetSearchingLinkChanging: boolean;
+begin Result := FSearchingLinkChanging > 0; end;
+
+procedure TIB_Dataset.SetOrderingItemNo( AValue: integer );
+begin
+  if OrderingItemNo <> AValue then
+  begin
+    FOrderingItemNo := AValue;
+    Inc( FOrderingItemNoChanging );
+    try
+      if not PreparingSQL then
+        InvalidateSQL;
+      ProcessLinkEvent( setOrderingChanged, 0 );
+      SysCheckOrderingLink;
+      if Active and not OrderingLinkChanging and
+                    not SearchingLinkChanging then
+        RefreshKeys;
+    finally
+      Dec( FOrderingItemNoChanging );
+    end;
+    if FOrderingItemNoChanging = 0 then
+      DoOrderingChanged;
+  end;
+end;
+
+procedure TIB_Dataset.SetOrderingLink( const AValue: string );
+var
+  tmpNo: string;
+  OldOrderingLink: string;
+begin
+  if ( OrderingLink <> AValue ) and not OrderingLinkChanging then
+  begin
+    Inc( FOrderingLinkChanging );
+    try
+      OldOrderingLink := OrderingLink;
+      tmpNo := OrderingLinks.LinkParamValue[ AValue, 'ITEM' ];
+      if tmpNo = '' then
+        tmpNo := OrderingLinks.LinkValues[ AValue ];
+      if tmpNo <> '' then
+        FOrderingLink := AValue
+      else
+        FOrderingLink := '';
+      if ( tmpNo <> '' ) and
+         ( StrToInt( tmpNo ) <> Abs( OrderingItemNo )) and
+         not OrderingItemNoChanging then
+        OrderingItemNo := StrToInt( tmpNo );
+      if OldOrderingLink <> OrderingLink then
+        ProcessLinkEvent( setOrderingLinkChanged, 0 );
+      if OrderingLink = '' then
+        FOrderingField := nil
+      else
+        FOrderingField := FindField( OrderingLink );
+      SysCheckSearchingLink;
+      if Active and not SQLIsValid and
+                    not OrderingItemNoChanging and
+                    not SearchingLinkChanging then
+        RefreshKeys;
+    finally
+      Dec( FOrderingLinkChanging );
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SetSearchingLink( const AValue: string );
+var
+  OldSearchingLink: string;
+begin
+  if ( SearchingLink <> AValue ) and not SearchingLinkChanging then
+  begin
+    Inc( FSearchingLinkChanging );
+    try
+      OldSearchingLink := SearchingLink;
+      FSearchingParamName := SearchingLinks.LinkValues[ AValue ];
+      if FSearchingParamName <> '' then
+        FSearchingLink := AValue
+      else
+        FSearchingLink := '';
+      FSearchingParam := FindParam( SearchingParamName );
+      if FSearchingParamName <> '' then
+      begin
+        if not OrderingLinkChanging then
+          OrderingLink := SearchingLink;
+        if OrderingLink = '' then
+        begin
+          FSearchingLink := '';
+          FSearchingParamName := '';
+        end;
+      end;
+      if OldSearchingLink <> SearchingLink then
+        ProcessLinkEvent( setSearchingLinkChanged, 0 );
+      if Active and not SQLIsValid and
+                    not OrderingItemNoChanging and
+                    not OrderingLinkChanging then
+        RefreshKeys;
+    finally
+      Dec( FSearchingLinkChanging );
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysCheckOrderingLink;
+var
+  ii: integer;
+  tmpStr: string;
+  NoOrderingLink: boolean;
+begin
+  if not OrderingLinkChanging then
+  begin
+    NoOrderingLink := true;
+    for ii := 0 to OrderingLinks.Count - 1 do
+    begin
+      tmpStr := OrderingLinks.IndexParamValue[ ii, 'ITEM' ];
+      if tmpStr = '' then
+        tmpStr := OrderingLinks.IndexValues[ ii ];
+      if StrToInt( tmpStr ) = Abs( OrderingItemNo ) then
+      begin
+        OrderingLink := OrderingLinks.IndexNames[ ii ];
+        NoOrderingLink := false;
+        Break;
+      end;
+    end;
+    if NoOrderingLink then
+      OrderingLink := '';
+  end;
+end;
+
+procedure TIB_Dataset.SysCheckSearchingLink;
+var
+  ii: integer;
+  tmpStr: string;
+  NoSearchingLink: boolean;
+begin
+  if not SearchingLinkChanging then
+  begin
+    NoSearchingLink := true;
+    for ii := 0 to SearchingLinks.Count - 1 do
+    begin
+      tmpStr := SearchingLinks.IndexNames[ ii ];
+      if CompareText( tmpStr, OrderingLink ) = 0 then //!! CompareIdent()
+      begin
+        SearchingLink := tmpStr;
+        NoSearchingLink := false;
+        Break;
+      end;
+    end;
+    if NoSearchingLink then
+      SearchingLink := '';
+  end;
+end;
+
+procedure TIB_Dataset.SetGeneratorLinks( Value: TIB_StringList );
+begin
+  FGeneratorLinks.Text := Trim( Value.Text );
+end;
+
+function TIB_Dataset.GetGeneratorLinks: TIB_StringList;
+begin
+  Result := FGeneratorLinks;
+end;
+
+function TIB_Dataset.GetBookmark: string;
+begin
+  Result := KeyFields.RowData;
+end;
+
+procedure TIB_Dataset.SetBookmark( const ABookMark: string );
+begin
+  raise Exception.Create( 'Not implemented' );
+end;
+
+function TIB_Dataset.GetBufferBookmark: string;
+begin
+  Result := '';
+end;
+
+procedure TIB_Dataset.SetBufferBookmark( const ABookmark: string );
+begin
+  raise Exception.Create( 'Not implemented' );
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.GetMasterRelation( LinkNo: integer ): string;
+var
+  Link: string;
+begin
+  if ( LinkNo >= 0 ) and ( LinkNo < MasterLinks.Count ) then
+  begin
+    Link := MasterLinks.IndexValues[ LinkNo ];
+    Result := Trim( Copy( Link, 1, getLitSafePos( '.', Link, 1 ) - 1 ));
+  end
+  else
+    Result := '';
+end;
+
+function TIB_Dataset.GetMasterFieldName( LinkNo: integer ): string;
+var
+  Link: string;
+begin
+  if ( LinkNo >= 0 ) and ( LinkNo < MasterLinks.Count ) then
+  begin
+    Link := MasterLinks.IndexValues[ LinkNo ];
+    Result := Trim( Copy( Link, getLitSafePos( '.', Link, 1 ) + 1, maxint ));
+  end
+  else
+    Result := '';
+end;
+
+procedure TIB_Dataset.InvalidateSQL;
+begin
+  if MasterSearch then
+    if Assigned( MasterDataset ) and
+       ( MasterDataset.State = dssSearch ) then
+      MasterDataset.InvalidateSQL;
+  inherited InvalidateSQL;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysPreparedChanged;
+begin
+  FOrderingField := FindField( OrderingLink );
+  if Prepared then
+    SetState( dssPrepared )
+  else
+    SetState( dssInactive );
+  inherited SysPreparedChanged;
+end;
+
+procedure TIB_Dataset.SysActiveChange;
+begin
+  FCursorRowNum := 0;
+  FCursorEof := false;
+  if WasSingleton then
+  begin
+    CursorFields.CleanBuffers( true );
+    if CursorFields <> Fields then
+      Fields.CleanBuffers( true );
+  end
+  else
+  begin
+    CursorFields.ClearBuffers( rsNone );
+    if CursorFields <> Fields then
+      Fields.ClearBuffers( rsNone );
+  end;
+  SysUpdateState;
+  if not Refreshing then
+    inherited SysActiveChange;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.GetState: TIB_DatasetState;
+begin
+  Result := FState;
+end;
+
+procedure TIB_Dataset.SetState( AValue: TIB_DatasetState );
+var
+  flag: boolean;
+begin
+  if State <> AValue then
+  begin
+    flag := State = dssSearch;
+    if NeedToPost then
+      IB_Transaction.SysAdjustPostPendingCount( -1 );
+    FState := AValue;
+    try
+      try
+        StateChanged;
+      finally
+        if NeedToPost then
+          IB_Transaction.SysAdjustPostPendingCount( 1 );
+      end
+    except
+      Application.HandleException( Self );
+    end;
+    if flag or ( State = dssSearch ) or
+       (( csDesigning in ComponentState ) and
+        ( State in [ dssInactive, dssPrepared ] )) then
+      ProcessLinkEvent( setFieldsDataChange, 0 );
+  end;
+end;
+
+procedure TIB_Dataset.StateChanged;
+begin
+  SysStateChanged;
+end;
+
+procedure TIB_Dataset.SysKeyStateChanged;
+begin
+  if FStateChangeLevel < 2 then
+  begin
+    Inc( FStateChangeLevel );
+    try
+      SysStateChanged;
+    finally
+      Dec( FStateChangeLevel );
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysMasterStateChanged;
+begin
+  if FStateChangeLevel < 2 then
+  begin
+    Inc( FStateChangeLevel );
+    try
+      SysStateChanged;
+    finally
+      Dec( FStateChangeLevel );
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.GetSQLSection( Index: TIB_SQLSections ): TStrings;
+var
+  OldNotif: TNotifyEvent;
+  NewText: string;
+begin
+  Result := nil;
+  case Index of
+  ssSelect: Result := FSQLSelect;
+  ssFrom: Result := FSQLFrom;
+  ssWhere: Result := FSQLWhere;
+  ssGroup: Result := FSQLGroup;
+  ssHaving: Result := FSQLHaving;
+  ssUnion: Result := FSQLUnion;
+  ssPlan: Result := FSQLPlan;
+  ssOrder: Result := FSQLOrder;
+  ssForUpdate: Result := FSQLForUpdate;
+  end;
+  NewText := TIB_SQLStrings( SQL ).Section[ Index ];
+  OldNotif := (Result as TIB_StringList).OnChange;
+  try
+    (Result as TIB_StringList).OnChange := nil;
+    Result.Text := NewText;
+  finally
+    (Result as TIB_StringList).OnChange := OldNotif;
+  end;
+end;
+
+function TIB_Dataset.IsKeyLinksStored: boolean;
+begin
+  Result := not Prepared or not KeyLinksAutoDefined;
+end;
+
+function TIB_Dataset.GetKeyLinks: TIB_StringList;
+var
+  TableName: string;
+  SQLSelectStr: string;
+  tmpStr: string;
+  tmpPos: integer;
+  ii: integer;
+begin
+  Result := FKeyLinks;
+  if flag_keylinks = 0 then
+  begin
+  // For some reason Delphi 5 Object inspector causes a reentrance problem here.
+    Inc( flag_keylinks );
+    try
+      if PreparingSQL and
+         KeyLinksAutoDefine and
+         not KeyLinksExist and
+         not Assigned( FBindingCursor ) and
+         not SQLIsAggregate and
+         not SQLIsSelectProc and
+         not ( SQLUnion.Count > 0 ) then
+      begin
+        TableName := SysKeyRelation;
+        if TableName <> '' then
+        begin
+          IB_Connection.SchemaCache.GetTableKeys( TableName, FKeyLinks );
+          if not KeyLinksExist and ( TableName = UpperCase( TableName )) then
+            IB_Connection.SchemaCache.GetTableKeys(
+              stLitCriteria( TableName ), FKeyLinks );
+          if KeyLinksExist then
+          begin
+            SQLSelectStr := UpperCase(
+                            StripLitsAndRounds(
+                            StripComments( SQLSelect.Text ), SQLDialect ));
+            if Pos( '*', SQLSelectStr ) = 0 then
+              for ii := 0 to FKeyLinks.Count - 1 do
+              begin
+                tmpStr := UpperCase( FKeyLinks.IndexNames[ii] );
+                tmpPos := getLitSafePos( '.', tmpStr, 1 );
+                if tmpPos > 0 then
+                  tmpStr := Copy( tmpStr, tmpPos + 1, MaxInt );
+                tmpPos := getLitSafeStrPos( tmpStr, SQLSelectStr, 1 );
+                while tmpPos > 0 do
+                begin
+                  if (( tmpPos = 1 ) or
+                      ( CharIsDelimiter( SQLSelectStr[ tmpPos - 1 ] ))) and
+                     (( tmpPos = Length( SQLSelectStr ) - Length( tmpStr )) or
+                      ( CharIsDelimiter( SQLSelectStr[ tmpPos +
+                                                       Length(tmpStr) ] ))) then
+                    Break;
+                  Inc( tmpPos, Length( tmpStr ));  
+                  tmpPos := getLitSafeStrPos( tmpStr, SQLSelectStr, tmpPos );
+                end;
+                if tmpPos = 0 then
+                begin
+                  FKeyLinks.Clear;
+                  Break;
+                end
+                else
+                begin
+                end;
+              end;
+          end;
+          if not KeyLinksExist then
+          begin
+            FKeyLinks.Add( TableName + '.' + IB_RDB + IB_DB_KEY );
+            FKeyLinksAreDBKEY := true;
+          end;
+          FKeyLinksAutoDefined := KeyLinksExist;
+        end;
+      end;
+    finally
+      Dec( flag_keylinks );
+    end;
+  end;
+end;
+
+function TIB_Dataset.GetKeyLinksExist: boolean;
+begin
+  Result := FKeyLinks.Count > 0;
+end;
+
+procedure TIB_Dataset.SetKeyLinks( AKeyLinks: TIB_StringList );
+var
+  ii: integer;
+begin
+  with FKeyLinks do
+  begin
+    BeginUpdate;
+    try
+      Assign( AKeyLinks );
+      for ii := Count - 1 downto 0 do
+        if Trim( Strings[ ii ] ) = '' then
+          Delete( ii );
+    finally
+      EndUpdate;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SetKeyDescLinks( AKeyDescLinks: TIB_StringList );
+begin
+  FKeyDescLinks.Assign( AKeyDescLinks );
+end;
+
+procedure TIB_Dataset.SetJoinLinks( AJoinLinks: TIB_StringList );
+begin
+  FJoinLinks.Assign( AJoinLinks );
+end;
+
+procedure TIB_Dataset.SetSQLSection( Index: TIB_SQLSections; Value: TStrings );
+var
+  NewText: string;
+  OldSection: TIB_SQLSections;
+begin
+  NewText := SQL.Text;
+  case Index of
+  ssSelect: SetSQLSelect( NewText, Value.Text );
+  ssFrom: SetSQLFrom( NewText, Value.Text );
+  ssWhere: SetSQLWhere( NewText, Value.Text );
+  ssGroup: SetSQLGroup( NewText, Value.Text );
+  ssHaving: SetSQLHaving( NewText, Value.Text );
+  ssUnion: SetSQLUnion( NewText, Value.Text );
+  ssPlan: SetSQLPlan( NewText, Value.Text );
+  ssOrder: SetSQLOrder( NewText, Value.Text );
+  ssForUpdate: SetSQLForUpdate( NewText, Value.Text );
+  end;
+  OldSection := FSQLSectionChanging;
+  FSQLSectionChanging := Index;
+  try
+    SQL.Text := NewText;
+  finally
+    FSQLSectionChanging := OldSection;
+  end;
+end;
+
+procedure TIB_Dataset.SQLSectionChange( Sender: TObject );
+var
+  AStrings: TStrings absolute Sender;
+begin
+  if Sender = FSQLSelect then
+    SetSQLSection( ssSelect, AStrings )
+  else
+  if Sender = FSQLFrom then
+    SetSQLSection( ssFrom, AStrings )
+  else
+  if Sender = FSQLWhere then
+  begin
+    FSQLWhereChanged := true;
+    SetSQLSection( ssWhere, AStrings );
+  end
+  else
+  if Sender = FSQLGroup then
+    SetSQLSection( ssGroup, AStrings )
+  else
+  if Sender = FSQLHaving then
+    SetSQLSection( ssHaving, AStrings )
+  else
+  if Sender = FSQLUnion then
+    SetSQLSection( ssUnion, AStrings )
+  else
+  if Sender = FSQLPlan then
+    SetSQLSection( ssPlan, AStrings )
+  else
+  if Sender = FSQLOrder then
+  begin
+    FSQLOrderChanged := true;
+    SetSQLSection( ssOrder, AStrings );
+  end
+  else
+  if Sender = FSQLForUpdate then
+    SetSQLSection( ssForUpdate, AStrings );
+end;
+
+function TIB_Dataset.GetDeleteSQL: TIB_StringList;
+begin Result := FUpdateSQL.DeleteSQL; end;
+function TIB_Dataset.GetEditSQL: TIB_StringList;
+begin Result := FUpdateSQL.ModifySQL; end;
+function TIB_Dataset.GetLockSQL: TIB_StringList;
+begin Result := FUpdateSQL.LockSQL; end;
+function TIB_Dataset.GetInsertSQL: TIB_StringList;
+begin Result := FUpdateSQL.InsertSQL; end;
+procedure TIB_Dataset.SetDeleteSQL( AValue: TIB_StringList );
+begin FUpdateSQL.DeleteSQL.Assign( AValue ); end;
+procedure TIB_Dataset.SetEditSQL( AValue: TIB_StringList );
+begin FUpdateSQL.ModifySQL.Assign( AValue ); end;
+procedure TIB_Dataset.SetLockSQL( AValue: TIB_StringList );
+begin FUpdateSQL.LockSQL.Assign( AValue ); end;
+procedure TIB_Dataset.SetInsertSQL( AValue: TIB_StringList );
+begin FUpdateSQL.InsertSQL.Assign( AValue ); end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.AddSQLWhereClause( const WhereClause: string );
+var
+  NewText: string;
+begin
+  NewText := SQLWhere.Text;
+  AddWhereClause( NewText, WhereClause );
+  SQLWhere.Text := NewText;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SetFocus;
+begin
+  if Assigned( IB_Session ) then
+    IB_Session.FocusedDataset := Self;
+end;
+
+procedure TIB_Dataset.Execute;
+begin
+  if Active and IsSelectSQL then
+    raise EIB_StatementError.Create( E_OPENED )
+  else
+    inherited Execute;
+end;
+
+function TIB_Dataset.FetchSingle: boolean;
+begin
+  BeginBusy( false );
+  try
+    Result := SysFetchSingle;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Dataset.Open;
+begin
+  if not Active then
+  begin
+    BeginBusy( false );
+    try
+      DisableControls;
+      try
+        SysJustBeforeOpen;
+        if SysOpen then
+          SysJustAfterOpen;
+      finally
+        EnableControls;
+      end;
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+
+procedure TIB_Dataset.SysJustBeforeOpen;
+begin
+// Abstract.
+end;
+
+procedure TIB_Dataset.SysJustAfterOpen;
+begin
+  if AutoFetchFirst and
+     Bof and
+     ( KeySource = nil ) then
+    SysMoveBy( 1 );
+end;
+
+function TIB_Dataset.Refresh: boolean;
+begin
+  Result := RefreshAll;
+end;
+
+function TIB_Dataset.RefreshAll: boolean;
+begin
+  if not Active then
+  begin
+    if BufferActive then
+      Result := RefreshRows
+    else
+      Result := false;
+  end
+  else
+  begin
+    BeginBusy( true );
+    try
+      Result := SysRefresh( true, true );
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+function TIB_Dataset.RefreshKeys: boolean;
+begin
+  if not Active then
+    Result := false
+  else
+  begin
+    BeginBusy( true );
+    try
+      Result := SysRefresh( false, true );
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+function TIB_Dataset.RefreshRows: boolean;
+begin
+  if not BufferActive then
+    Result := false
+  else
+  begin
+    BeginBusy( true );
+    try
+      Result := SysRefresh( true, false );
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.Close;
+begin
+  if BufferActive then
+  begin
+    BeginBusy( false );
+    try
+      if Fetching and not FetchingAborted and not Refreshing then
+        raise EIB_DatasetError.Create( E_DatasetIsFetching );
+      SysClose;
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+function TIB_Dataset.BufferFieldByName( const AFieldName: string ): TIB_Column;
+begin Result := BufferFields.ByName( AFieldName ); end;
+procedure TIB_Dataset.BufferFirst;
+begin
+  if not BufferHasBof then
+    FetchAll;
+  BufferRowNum := BofRowNum + 1;
+end;
+procedure TIB_Dataset.BufferLast;
+begin
+  if not BufferHasEof then
+    FetchAll;
+  BufferRowNum := EofRowNum - 1;
+end;
+
+function TIB_Dataset.BufferMoveBy( Increment: longint ):longint;
+var
+  OldRow: longint;
+begin
+  OldRow := BufferRowNum;
+  BufferRowNum := BufferRowNum + Increment;
+  Result := BufferRowNum - OldRow;
+end;
+
+procedure TIB_Dataset.BufferNext;
+begin BufferRowNum := BufferRowNum + 1; end;
+procedure TIB_Dataset.BufferPrior;
+begin BufferRowNum := BufferRowNum - 1; end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.SysFetchSingle: boolean;
+var
+  tmpErr: longint;
+begin
+  if Active then
+    SysClose
+  else
+    SysPrepare;
+  CursorFields.ClearBuffers( rsNone );
+  FCursorEof := true;
+  FCursorRowNum := 0;
+  tmpErr := API_QuickFetch( false );
+  FActive := tmpErr = 0;
+  if Active then
+  begin
+    FCursorRowNum := 1;
+    SetState( dssBrowse );
+    CursorFields.RefreshBuffers( true, true, true );
+    if SysAfterFetchCursorRow then
+      inherited SysActiveChange
+    else
+    begin
+      FActive := false;
+      FCursorRowNum := 0;
+      SetState( dssPrepared );
+      CursorFields.ClearBuffers( rsNone );
+      SysAfterFetchCursorEof;
+    end;
+  end
+  else
+  if tmpErr = 100 then
+    SysAfterFetchCursorEof;
+  Result := Active;
+end;
+
+function TIB_Dataset.SysOpen: boolean;
+var
+  NewWasSearching: boolean;
+begin
+  NewWasSearching := FWasSearching;
+  if not Active and not FOpenPending then
+  begin
+    FOpenPending := true;
+    try
+      if ( csLoading in ComponentState ) or
+         ( csFixups  in ComponentState ) then
+        flag_open_after_load := true
+      else
+      begin
+        CheckTransaction( false );
+        DisableControls;
+        try
+          NewWasSearching := ( State = dssSearch ) or
+                             ( NewWasSearching and Refreshing );
+          if MasterSearch and
+             ( State = dssSearch ) and
+             Assigned( MasterDataset ) and
+             ( MasterDataset.State = dssSearch ) and
+             ( msfOpenMasterOnOpen in MasterSearchFlags ) then
+            MasterDataset.SysPostSearch( true );
+          SysExecute;
+        finally
+          FOpenPending := false;
+          EnableControls;
+        end;
+      end;
+    finally
+      FOpenPending := false;
+    end;
+    FWasSearching := NewWasSearching;
+  { Moved from SysAfterExecuteForOutput 12/08/1999}
+    if Active and Assigned( KeySource ) then
+      if ( FKeyChildUpdatingLevel = 0 ) and
+         ( FRefiningIncSearch = 0 ) then
+        SysKeyDataChange( nil );
+  end;
+  Result := Active;
+end;
+
+function TIB_Dataset.GetRefreshing: boolean;
+begin
+  Result := FRefreshCurLevel > 0;
+end;
+
+function TIB_Dataset.GetCallbackFreezeLevel: integer;
+begin
+  Result := IB_Session.CallbackFreezeLevel
+end;
+
+function TIB_Dataset.SysRefresh( Rows, Keys: boolean ): boolean;
+begin
+  Result := false;
+  if Rows and not Keys then
+  begin
+    InvalidateRows;
+    Result := true;
+  end
+  else
+  if Active then
+  begin
+    if ( IB_Transaction.TransactionState in [ tsCommitPending,
+                                              tsRollbackPending ] ) and
+       ( (( CommitAction = caClose ) and not IB_Transaction.FOATPending ) or
+         IB_Transaction.FClosePending ) then
+    begin
+      if Fetching then
+        AbortFetching;
+      Close;
+    end
+    else
+    begin
+      if FRefreshCurLevel = 0 then
+      begin
+        FRefreshMaxLevel := 0;
+        FRefreshWasScrolled := false;
+      end;
+      Inc( FRefreshCurLevel );
+      Inc( FRefreshMaxLevel );
+      try
+        DisableControls;
+        if Fetching then
+        begin
+          if FKeyLookupCurLevel = 0 then
+            AbortFetching;
+        end
+        else
+          SysBeforeScroll;
+        if FRefreshCurLevel = 1 then
+        begin
+// If this only does a close on the first one then it is possible for the
+// master-detail relationship to get messed up because the detail datasets
+// won't get executed again with the apropriate input parameter values.
+          SysClose; // Move above so it will always close?
+          FRefreshEof := FClosedEof;
+          FRefreshRowNum := FClosedRowNum;
+          FRefreshBookmark := FClosedBookmark;
+          FRefreshResult := false;
+        end;
+        if Rows then
+          InvalidateRows;
+        if FParamWasChanged or
+           ( FMasterDataChangeLevel > 0 ) then
+        begin
+          Open;
+          if FRefreshCurLevel = FRefreshMaxLevel then
+          begin
+            FRefreshResult := Active and not Eof and not Bof;
+            if Bookmark <> FRefreshBookmark then
+              FRefreshWasScrolled := true;
+          end;
+        end
+        else
+// I added a check of the KeyLookupCurLevel because doing anything but a raw
+// open can lead to a problem if it is doing the "rarely" needed refresh
+// when looking up a key that exists on the server but not in the buffer
+// and all records are indicated to already be in the buffer.
+// Thus, just doing the raw open here will refresh the dataset buffer and
+// allow the needed record it knows on the server to enter the buffer.
+        if FKeyLookupCurLevel > 0 then
+        begin
+// Refinement criteria shouldn't be reset with a call to Open!
+          SysOpen;
+          FRefreshResult := true;
+        end
+        else
+        if not Unidirectional and
+           ( FRefreshBookmark <> '' ) and
+           (( Assigned( OrderingParam )) or
+            ( Assigned( KeySource ) and KeySeeking ) or
+            ( RefreshAction = raKeepDataPos )) then
+        begin
+          SysOpen;
+          if FRefreshCurLevel = FRefreshMaxLevel then
+          begin
+            Bookmark := FRefreshBookmark;
+            if FRefreshCurLevel = FRefreshMaxLevel then
+            begin
+              FRefreshResult := ( Bookmark = FRefreshBookmark ) and not Eof and
+                                                                    not Bof;
+              if not FRefreshResult and not FRefreshEof then
+              begin
+                if Assigned( OrderingParam ) then
+                  RowNum := BofRowNum + 1
+                else
+                  RowNum := FRefreshRowNum;
+                if FRefreshCurLevel = FRefreshMaxLevel then
+                  if Bookmark = FRefreshBookmark then
+                  begin
+                    FRefreshResult := true;
+                    FRefreshWasScrolled := false;
+                  end;
+              end;
+              if not FRefreshResult and not FRefreshEof then
+              begin
+                SysFirst;
+                if FRefreshCurLevel = FRefreshMaxLevel then
+                  if Bookmark = FRefreshBookmark then
+                  begin
+                    FRefreshResult := true;
+                    FRefreshWasScrolled := false;
+                  end;
+              end;
+              if FRefreshCurLevel = FRefreshMaxLevel then
+                if Bookmark <> FRefreshBookmark then
+                  FRefreshWasScrolled := true;
+            end;
+          end;
+        end
+        else
+        if ( KeySource = nil ) and
+           ( RefreshAction = raKeepRowNum ) then
+        begin
+          SysOpen;
+          if FRefreshCurLevel = FRefreshMaxLevel then
+          begin
+            RowNum := FRefreshRowNum;
+            if FRefreshCurLevel = FRefreshMaxLevel then
+            begin
+              if Eof and not FRefreshEof and not Unidirectional then
+                SysLast;
+              if FRefreshCurLevel = FRefreshMaxLevel then
+              begin
+                FRefreshResult := ( RowNum = FRefreshRowNum ) and not Eof and
+                                                                  not Bof;
+                if Bookmark <> FRefreshBookmark then
+                  FRefreshWasScrolled := true;
+              end;
+            end;
+          end;
+        end
+        else
+        begin
+          Open;
+          if FRefreshCurLevel = FRefreshMaxLevel then
+            FRefreshResult := Active and not Eof and not Bof;
+        end;
+      finally
+        try
+          EnableControls;
+        finally
+          Dec( FRefreshCurLevel );
+        end;
+      end;
+      if FRefreshCurLevel = 0 then
+        if not Fetching and FRefreshWasScrolled then
+          SysAfterScroll;
+      Result := FRefreshResult;
+    end;
+  end;
+  Include( FDatasetFlags, dsfWasRefreshed );
+end;
+
+procedure TIB_Dataset.SysExecute;
+begin
+  if Active then
+    raise EIB_Error.Create( E_DatasetOpen )
+  else
+  begin
+    if State = dssSearch then
+      SysPost( false, false );
+    inherited SysExecute;
+  end;
+end;
+
+procedure TIB_Dataset.SysClose;
+begin
+  if BufferActive and not ClosePending then
+  begin
+    FClosePending := true;
+    try
+      SysBeforeClose;
+{ TODO : Need to clear buffers if dssPrepared records exist (Not w/CU).}
+      if Assigned( IB_Transaction ) and
+         ( IB_Transaction.TransactionState in [ tsRollbackRetainingPending,
+                                                tsRollbackPending,
+                                                tsRollbackRefreshPending ] ) or
+         ( csDestroying in ComponentState ) then
+      begin
+        if NeedToPost then
+          Cancel;
+      end
+      else
+        CheckBrowseMode;
+      if BufferRowCount > 0 then
+        SysPost( false, false );
+      if not FOpenPending and ( FRefiningIncSearch = 0 ) then
+      begin
+        try
+          FClosedEof := Eof or Bof;
+          FClosedRowNum := RowNum;
+        except
+          FClosedRowNum := 0;
+        end;
+        try
+          FClosedBookmark := Bookmark;
+        except
+          FClosedBookmark := EmptyStr;
+        end;
+      end;
+      if FCursorIsOpen then
+      begin
+        API_CloseCursor;
+        if Assigned( IB_Transaction ) then
+          IB_Transaction.CheckOAT;
+      end;
+      try
+        Inc( FCursorGen );
+      except
+        FCursorGen := 0;
+      end;
+      inherited SysClose;
+      SysAfterClose;
+    finally
+      FClosePending := false;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysExecSelect;
+begin
+  API_Execute;
+  API_OpenCursor( FCursorName );
+  try
+    Inc( FCursorGen );
+  except
+    FCursorGen := 0;
+  end;
+end;
+
+procedure TIB_Dataset.SysBeforeExecuteForOutput;
+begin
+  if IsSelectSQL then
+    SysBeforeOpen;
+  if Assigned( MasterSource ) and
+     (( MasterDataChangeLevel = 0 ) or
+      ( FMasterDataChangeMaxLevel <= 1 )) then
+    SysMasterDataChange( nil );
+  inherited SysBeforeExecuteForOutput;
+end;
+
+procedure TIB_Dataset.SysAfterExecuteForOutput;
+begin
+  if FParamWasChanged then
+  begin
+    FParamWasChanged := false;
+    FCursorRecordCountValid := false;
+  end;
+  inherited SysAfterExecuteForOutput;
+  if AutoFetchAll and ( StatementType in [ stSelect, stSelectForUpdate ] ) then
+  begin
+    if Unidirectional then
+      SysLast
+    else
+      SysFetchAll( 0 );
+  end;
+  if IsSelectSQL then
+    SysAfterOpen;
+end;
+
+procedure TIB_Dataset.SysUpdateDescriptors;
+var
+  tmpPos: integer;
+  prmStr: string;
+begin
+  inherited SysUpdateDescriptors;
+  if not RepreparingSQL then
+  begin
+    FCursorKeyFieldCount := 0;
+    if ( FCursorFieldCount > 0 ) and
+       not Assigned( FBindingCursor ) and IsSelectSQL then
+    begin
+      FCursorKeyFieldCount := KeyLinks.Count;
+      if FCursorKeyFieldCount = 0 then
+        FCursorKeyFieldCount := 1; // Will use the KeyRowNum as the key.
+    end;
+    FCursorKeyFields.SysUpdate( FCursorKeyFieldCount );
+  end;
+  if Prepared then
+    FCursorRecordCountValid := false;
+  if FUnpreparing then
+  begin
+    FSearchingParam := nil;
+    FOrderingParam := nil;
+  end
+  else
+  begin
+    FSearchingParam := FindParam( SearchingParamName );
+    prmStr := OrderingLink;
+    if prmStr = '' then
+      FOrderingParam := nil
+    else
+    begin
+      tmpPos := getLitSafePos( '.', prmStr, 1 );
+      if tmpPos > 0 then
+        System.Delete( prmStr, 1, tmpPos );
+      prmStr := stLitCriteria( prmStr );
+      prmStr := IB_Connection.mkVarIdent( Copy( IB_ORDLINK + prmStr, 1, 31 ));
+      FOrderingParam := FindParam( prmStr );
+    end;
+  end;
+end;
+
+function TIB_Dataset.FindBufferField( const FieldName: string ): TIB_Column;
+begin
+  BufferFields.GetByName( FieldName, Result );
+end;
+
+function TIB_Dataset.FindKeyField( const FieldName: string ): TIB_Column;
+begin
+  KeyFields.GetByName( FieldName, Result );
+end;
+
+procedure TIB_Dataset.FreeServerResources;
+begin
+  if Active and not WasSingleton then
+    FetchAll;
+  if FCursorIsOpen then
+    API_CloseCursor;
+  FCursorName := '';
+  FCursorFields.FCursorName := '';
+  inherited FreeServerResources;
+end;
+
+procedure TIB_Dataset.SysDescribeVARList( ARow: TIB_Row );
+var
+  ii: smallint;
+  tmpCol: TIB_Column;
+begin
+  with ARow, FPSQLDA^ do
+    if RowType = rtKey then
+    begin
+      if KeyLinksExist then
+        for ii := 0 to sqln - 1 do
+        begin
+          if CursorFields.GetByName( KeyLinks.IndexNames[ii], tmpCol ) then
+          begin
+            sqlvar[ii] := tmpCol.PSQLVAR^;
+            sqlvar[ii].SQLInd := nil;
+            sqlvar[ii].SQLData := nil;
+            if sqlvar[ii].SQLName = IB_DB_KEY then
+            begin
+              sqlvar[ii].SQLName := IB_RDB + IB_DB_KEY;
+              sqlvar[ii].SQLName_length := Length( IB_RDB + IB_DB_KEY );
+            end;
+          end
+          else
+            raise EIB_Error.Create( Format( E_Invalid_KeyLinks,
+                                            [ KeyLinks[ ii ]] ));
+        end
+      else
+      if sqln = 1 then
+      begin
+        sqlvar[0].SQLScale := 0;
+        sqlvar[0].SQLType := SQL_LONG;
+        sqlvar[0].SQLLen := 4;
+        sqlvar[0].SQLInd := nil;
+        sqlvar[0].SQLData := nil;
+        FillChar( sqlvar[0].ownname, 32, #0 );
+        FillChar( sqlvar[0].relname, 32, #0 );
+        FillChar( sqlvar[0].sqlname, 32, #0 );
+        FillChar( sqlvar[0].aliasname, 32, #0 );
+        sqlvar[0].aliasname := 'KEYROWNUM';
+        sqlvar[0].ownname_length := -1;
+        sqlvar[0].relname_length := -1;
+        sqlvar[0].sqlname_length := -1;
+        sqlvar[0].aliasname_length := Length( 'KEYROWNUM' );
+      end
+      else
+        raise EIB_Error.Create( Format( E_Invalid_KeyLinks, ['<BLANK>'] ));
+    end
+    else
+      inherited SysDescribeVARList( ARow );
+end;
+
+procedure TIB_Dataset.SysPrepareFailed;
+begin
+  inherited SysPrepareFailed;
+  SQLWhereLow.Clear;
+  SQLWhereMed.Clear;
+  SQLWhereHigh.Clear;
+  ParamValueLinks.Clear;
+  FSearchingParam := nil;
+  if not RepreparingSQL then
+  begin
+    if FKeyLinksAutoDefined then
+    begin
+      FKeyLinks.Clear;
+      FKeyLinksAutoDefined := false;
+      FKeyLinksAreDBKEY := false;
+    end;
+    Fields.FRelationList.Clear;
+    Params.FRelationList.Clear;
+    FCursorKeyFieldCount := 0;
+    FCursorKeyFields.SysUpdate( FCursorKeyFieldCount );
+  end;
+end;
+
+procedure TIB_Dataset.SysUnprepare;
+begin
+  FUpdateSQL.SysDeallocate;
+  inherited SysUnprepare;
+  if not ( csDestroying in ComponentState ) then
+  begin
+    ClearSearch;
+    SaveSearch;
+  end;
+end;
+
+function TIB_Dataset.SysPrepare: boolean;
+var
+  ii: integer;
+begin
+  if Prepared and ( State = dssSearch ) then
+  begin
+    ProcessLinkEvent( setFieldsUpdateData, 0 );
+    for ii := 0 to IB_Session.Session_Datasets.Count - 1 do
+      with TIB_Dataset( IB_Session.Session_Datasets.Items[ ii ] ) do
+        if Assigned( MasterSource ) then
+          if MasterSource.Dataset = Self then
+            if MasterSearch then
+              SysPrepare;
+  end;
+  Result := inherited SysPrepare;
+end;
+
+function TIB_Dataset.SysNeedToRefineSQL: boolean;
+begin
+  Result := inherited SysNeedToRefineSQL;
+  if not Result and ( OrderingItemNo <> 0 ) then
+    with OrderingLinks do
+      Result := (( OrderingItemNo > 0 ) and
+                 ( LinkParamValue[ OrderingLink, 'PLANASC' ] <> '' )) or
+                (( OrderingItemNo < 0 ) and
+                 ( LinkParamValue[ OrderingLink, 'PLANDESC' ] <> '' ));
+end;
+
+procedure TIB_Dataset.SysRefineSQL;
+var
+  tmpStr: string;
+begin
+  inherited SysRefineSQL;
+  if OrderingItemNo <> 0 then
+    with OrderingLinks do
+    begin
+      tmpStr := '';
+      if OrderingItemNo > 0 then
+        tmpStr := LinkParamValue[ OrderingLink, 'PLANASC' ]
+      else
+      if OrderingItemNo < 0 then
+        tmpStr := LinkParamValue[ OrderingLink, 'PLANDESC' ];
+      if tmpStr <> '' then
+        SQLPlan.Text := 'PLAN ' + tmpStr;
+    end;
+end;
+
+procedure TIB_Dataset.SysInitRawSQL;
+begin
+  inherited SysInitRawSQL;
+  SQLWhereLow.Clear;
+  SQLWhereMed.Clear;
+  SQLWhereHigh.Clear;
+  if not RefiningSQL then
+  begin
+    FSQLWhereChanged := false;
+    FSQLOrderChanged := false;
+    if ( FReadOnly or
+         FCachedUpdates or
+       ( PreventEditing and PreventDeleting )) and
+       ( StatementType = stSelectForUpdate ) then
+      SQLForUpdate.Clear
+    else
+    if RequestLive and not ( SearchedEdits and SearchedDeletes ) and
+       IsSelectSQL and ( SQLForUpdate.Count = 0 ) then
+      SQLForUpdate.Text := 'FOR UPDATE';
+  end;
+end;
+
+procedure TIB_Dataset.SysFinishRawSQL;
+var
+  ii: integer;
+  OldWhereClause: string;
+  NewWhereClause: string;
+  BindingParam: string;
+  tmpStr: string;
+  tmpName: string;
+  tmpInt: integer;
+  tmpPos: integer;
+  newOrd: string;
+  tmpBool: boolean;
+  tmpNulls: boolean;
+  tmpNullOpt: string;
+begin
+  inherited SysFinishRawSQL;
+  OldWhereClause := SQLWhere.Text;
+  NewWhereClause := OldWhereClause;
+  if not RefiningSQL then
+  begin
+    FMasterWhere := NewWhereClause;
+    if JoinLinks.Count > 0 then
+      ProcessSQLWhereStrings( JoinLinks, NewWhereClause, true );
+  end;
+  if SQLWhereHigh.Count > 0 then
+  begin
+    if RefiningSQL then
+      ProcessSQLWhereStrings( SQLWhereHigh, NewWhereClause, true )
+    else
+    begin
+      if not Assigned( MasterSource ) or
+         not MasterSearch or
+         not ( MasterDataset.State = dssSearch ) or
+         not ( msfSearchAppliesToMasterOnly in MasterSearchFlags ) then
+        ProcessSQLWhereStrings( SQLWhereHigh, NewWhereClause, true );
+      ProcessSQLWhereStrings( SQLWhereHigh, FMasterWhere, true );
+      FSQLWhereChanged := true;
+    end;
+  end;
+  if not RefiningSQL then
+    for ii := MasterLinks.Count - 1 downto 0 do
+    begin
+      if Assigned( FBindingCursor ) then
+        BindingParam := '=?' + IB_BindLink + IntToStr( ii )
+      else
+        BindingParam := '=?' + GetMasterLinkParamName( ii );
+      AddWhereClauseHigh( NewWhereClause,
+                          MasterLinks.IndexNames[ ii ] + BindingParam );
+    end;
+  if SQLWhereMed.Count > 0 then
+  begin
+    if RefiningSQL then
+      ProcessSQLWhereStrings( SQLWhereMed, NewWhereClause, false )
+    else
+    begin
+      if not Assigned( MasterSource ) or
+         not MasterSearch or
+         not ( MasterDataset.State = dssSearch ) or
+         not ( msfSearchAppliesToMasterOnly in MasterSearchFlags ) then
+        ProcessSQLWhereStrings( SQLWhereMed, NewWhereClause, false );
+      ProcessSQLWhereStrings( SQLWhereMed, FMasterWhere, false );
+      FSQLWhereChanged := true;
+    end;
+  end;
+  if SQLWhereLow.Count > 0 then
+  begin
+    if RefiningSQL then
+      ProcessSQLWhereStrings( SQLWhereLow, NewWhereClause, false )
+    else
+    begin
+      if not Assigned( MasterSource ) or
+         not MasterSearch or
+         not ( MasterDataset.State = dssSearch ) or
+         not ( msfSearchAppliesToMasterOnly in MasterSearchFlags ) then
+        ProcessSQLWhereStrings( SQLWhereLow, NewWhereClause, false );
+      ProcessSQLWhereStrings( SQLWhereLow, FMasterWhere, false );
+      FSQLWhereChanged := true;
+    end;
+  end;
+  if RefiningSQL then
+  begin
+    if Trim( OldWhereClause ) <> Trim( NewWhereClause ) then
+    begin
+      tmpBool := FSQLWhereChanged;
+      try
+        SQLWhere.Text := Trim( NewWhereClause );
+      finally
+        FSQLWhereChanged := tmpBool;
+      end;
+    end;
+  end
+  else
+  begin
+    if FSQLWhereChanged then
+    begin
+      SQLWhere.Text := NewWhereClause;
+      FMasterWhere := Copy( FMasterWhere, 7, MaxInt );
+    end
+    else
+    begin
+      if Trim( OldWhereClause ) <> Trim( NewWhereClause ) then
+        SQLWhere.Text := NewWhereClause;
+      FMasterWhere := '';
+      FSQLWhereChanged := false; // Resets the value.
+    end;
+    if IsSelectSQL then
+    begin
+      if OrderingItemNo = 0 then
+        tmpStr := Trim( SQLOrder.Text )
+      else
+        tmpStr := GetOrderingSQL( OrderingItemNo );
+      tmpStr := Trim( Copy( tmpStr, 6, MaxInt ));
+      tmpStr := Trim( Copy( tmpStr, 3, MaxInt ));
+      MakeServerSQL( tmpStr, nil, nil, nil, tmpStr, ParamChar, false, tmpPos );
+      for tmpPos := 1 to Length( tmpStr ) do
+        if tmpStr[ tmpPos ] < ' ' then
+          tmpStr[ tmpPos ] := ' ';
+      tmpPos := Length( tmpStr );
+      while ( tmpPos > 0 ) and ( tmpStr[ tmpPos ] = ';' ) do
+      begin
+        System.Delete( tmpStr, tmpPos, 1 );
+        tmpStr := Trim( tmpStr );
+        tmpPos := Length( tmpStr );
+      end;
+      if ( tmpPos > 0 ) then with FSQLOrderLinks do
+      begin
+        BeginUpdate;
+        try
+          Clear;
+          repeat
+            tmpInt := getLitSafePos( ',', tmpStr, 1 );
+            if tmpInt = 0 then
+            begin
+              if Trim( tmpStr) <> '' then
+              begin
+                swap_chars( tmpStr, #10#13, #32 );
+                Add( tmpStr );
+              end;
+            end
+            else
+            begin
+              Add( Copy( tmpStr, 1, tmpInt - 1 ));
+              tmpStr := Trim( Copy( tmpStr, tmpInt + 1, MaxInt ));
+            end;
+          until tmpInt = 0;
+          newOrd := 'ORDER BY ';
+          for tmpInt := 0 to Count - 1 do
+          begin
+            tmpNulls := false;
+            tmpNullOpt := '';
+            tmpStr := Strings[tmpInt];
+            tmpPos := getLitSafeStrPos( ' NULLS', UpperCase( tmpStr ), 1 );
+            if tmpPos > 1 then
+            begin
+              tmpNulls := true;
+              System.Delete( tmpStr, tmpPos, 6 );
+              tmpPos := getLitSafeStrPos( ' FIRST', UpperCase( tmpStr ), 1 );
+              if tmpPos > 1 then
+              begin
+                tmpNullOpt := 'FIRST';
+                System.Delete( tmpStr, tmpPos, 6 );
+              end
+              else
+              begin
+                tmpPos := getLitSafeStrPos( ' LAST', UpperCase( tmpStr ), 1 );
+                if tmpPos > 1 then
+                begin
+                  tmpNullOpt := 'LAST';
+                  System.Delete( tmpStr, tmpPos, 5 );
+                end;
+              end;
+            end;
+            tmpPos := getLitSafeStrPos( ' ASC', UpperCase( tmpStr ), 1 );
+            if tmpPos > 1 then
+              tmpStr := Copy( tmpStr, 1, tmpPos - 1 );
+            tmpPos := getLitSafeStrPos( ' DESC', UpperCase( tmpStr ), 1 );
+            if tmpPos > 1 then
+              tmpStr := Copy( tmpStr, 1, tmpPos - 1 );
+            tmpStr := Trim( StripComments( tmpStr ));
+            tmpName := tmpStr;
+            if IsColAttributeSet[ tmpStr, IB_NOCASE ] then
+            begin
+              tmpStr := Trim( ColAttributeParams[ tmpStr, IB_NOCASE ] );
+              if tmpStr = '' then
+//                tmpStr := 'UPPER( ' + tmpName + ' )';
+                tmpStr := '' + tmpName + ''; // I should issue a warning here.
+            end;
+            if tmpInt > 0 then
+              newOrd := newOrd + #13#10'       , ';
+            if tmpPos > 0 then
+            begin
+              newOrd := newOrd + tmpStr + ' DESC';
+              Strings[tmpInt] := tmpName + '=DESC';
+            end
+            else
+            begin
+              newOrd := newOrd + tmpStr + ' ASC';
+              Strings[tmpInt] := tmpName + '=ASC';
+            end;
+            if tmpNulls then
+              newOrd := newOrd + ' NULLS ' + tmpNullOpt;
+          end;
+          SQLOrder.Text := newOrd;
+        finally
+          EndUpdate;
+        end;
+      end;
+      if ( SearchedEdits or ( EditSQL.Count > 0 )) and
+         ( SearchedDeletes or ( DeleteSQL.Count > 0 )) then
+        SQLForUpdate.Clear;
+    end;
+  end;
+end;
+
+function TIB_Dataset.GetOrderingSQL( ItemNo: integer ): string;
+begin
+  if ItemNo = 0 then
+    Result := SQLOrder.Text
+  else
+  with OrderingItems do
+  begin
+    Result := '';
+    if ( Abs( ItemNo ) <= Count ) then
+    begin
+      Result := IndexValues[ Abs( ItemNo ) - 1 ];
+      if getLitSafePos( ';', Result, 1 ) > 0 then
+      begin
+        if ItemNo > 0 then
+          Result := Copy( Result, 1, getLitSafePos( ';', Result, 1 ) - 1 )
+        else
+          Result := Copy( Result, getLitSafePos( ';', Result, 1 ) + 1, maxint );
+      end
+      else
+      if ItemNo < 0 then
+        Result := '';  // Invalid ItemNo value.
+    end;
+    Result := Trim( Result );
+    if Result <> '' then
+      Result := 'ORDER BY ' + Result;
+  end;
+end;
+
+procedure TIB_Dataset.ProcessSQLWhereStrings( const AStrings: TStrings;
+                                              var   NewWhereClause: string;
+                                                    High: boolean );
+var
+  tmpStr: string;
+  tmpClause: string;
+  ii: integer;
+  tmpCnt: integer;
+  NeedOper: boolean;
+begin
+  tmpCnt := 0;
+  tmpClause := '';
+  NeedOper := false;
+  for ii := 0 to AStrings.Count - 1 do
+  begin
+    tmpStr := Trim( AStrings.Strings[ii] );
+    if tmpStr = '(' then
+    begin
+      Inc( tmpCnt );
+      if NeedOper then
+      begin
+        tmpStr := ' AND ' + tmpStr;
+        NeedOper := false;
+      end;
+    end
+    else
+    if tmpStr = ')' then
+    begin
+      Dec( tmpCnt );
+      NeedOper := true;
+    end
+    else
+    if tmpCnt > 0 then
+    begin
+      if AnsiCompareText( tmpStr, 'AND' ) = 0 then
+      begin
+        tmpStr := ' AND ';
+        NeedOper := false;
+      end
+      else
+      if AnsiCompareText( tmpStr, 'OR' ) = 0 then
+      begin
+        tmpStr := ' OR ';
+        NeedOper := false;
+      end
+      else
+      if NeedOper then
+        tmpStr := ' AND ' + tmpStr
+      else
+        NeedOper := true;
+    end;
+    tmpClause := tmpClause + tmpStr;
+    if tmpCnt = 0 then
+    begin
+      if High then
+        AddWhereClauseHigh( NewWhereClause, tmpClause )
+      else
+        AddWhereClause( NewWhereClause, tmpClause );
+      tmpClause := '';
+      NeedOper := false;
+    end;
+  end;
+  if tmpCnt <> 0 then
+    raise EIB_Error.Create( E_Invalid_Syntax + ':' + #13#10 + AStrings.Text );
+end;
+
+{- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+
+procedure TIB_Dataset.FetchAll;
+begin
+  BeginBusy( true );
+  try
+    SysOpen;
+    SysFetchAll( 0 );
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Dataset.SysFetchAll( ATicks: DWORD );
+var
+  tmpTicks: DWORD;
+  FAGen: integer;
+begin
+  if CanScroll or not Unidirectional then
+  begin
+    if Unidirectional and NeedToPost then
+      CheckBrowseMode;
+    FAGen := FFetchingAbortedGen;
+    if ATicks = 0 then
+      try
+        BeginCallbackFetching;
+        while Active and not CursorEof and ( FAGen = FFetchingAbortedGen ) do
+          SysFetchNext;
+      finally
+        EndCallbackFetching;
+      end
+    else
+    begin
+      tmpTicks := GetTickCount + ATicks; // this does roll over every so often..
+      BeginCallbackFreeze;
+      try
+        while Active and
+              not CursorEof and
+              ( FAGen = FFetchingAbortedGen ) and ( tmpTicks > GetTickCount ) do
+          SysFetchNext;
+      finally
+        EndCallbackFreeze;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.DoDMLCacheAnnounceItem(
+                                      ADMLCacheItemType: TIB_DMLCacheItemType );
+begin
+  if Assigned( OnDMLCacheAnnounceItem ) then
+    OnDMLCacheAnnounceItem( Self, ADMLCacheItemType )
+  else
+    DefaultDMLCacheAnnounceItem( ADMLCacheItemType );
+end;
+
+procedure TIB_Dataset.DefaultDMLCacheAnnounceItem(
+                                      ADMLCacheItemType: TIB_DMLCacheItemType );
+var
+  ii: integer;
+  tmpStr: string;
+begin
+  tmpStr := '';
+  for ii := 0 to KeyFields.ColumnCount - 1 do
+  begin
+    if ii > 0 then
+      tmpStr := tmpStr + ';';
+    tmpStr := tmpStr + KeyFields[ii].FieldName;
+  end;
+  case ADMLCacheItemType of
+    ditEdit, ditDelete:
+      IB_Transaction.AddDMLCacheItem( IB_Connection,
+                                      Self,
+                                      tmpStr,
+                                      Fields.OldValues[ tmpStr ],
+                                      ADMLCacheItemType );
+    ditInsert:
+      IB_Transaction.AddDMLCacheItem( IB_Connection,
+                                      Self,
+                                      tmpStr,
+                                      Fields.Values[ tmpStr ],
+                                      ADMLCacheItemType );
+  end;
+end;
+
+procedure TIB_Dataset.DefaultDMLCacheReceivedItem(
+                                        const ADMLCacheItem: TIB_DMLCacheItem );
+begin
+// Abstract here.
+end;
+
+procedure TIB_Dataset.DoDMLCacheReceiveItem(
+                                        const ADMLCacheItem: TIB_DMLCacheItem );
+begin
+  if Assigned( OnDMLCacheReceivedItem ) then
+    OnDMLCacheReceivedItem( Self, ADMLCacheItem )
+  else
+    DefaultDMLCacheReceivedItem( ADMLCacheItem );
+end;
+
+procedure TIB_Dataset.DoAppCallback;
+begin
+  if CallbackInc >= 0 then
+    if ( CallbackFreezeLevel = 0 ) and
+       not FetchingAborted and
+       not ( csDestroying in ComponentState ) then
+      try
+        Application.ProcessMessages;
+      except
+        AbortFetching;
+        Application.HandleException( Self );
+      end;
+end;
+
+procedure TIB_Dataset.DoCallback;
+var
+  CurTick: DWORD;
+begin
+  if Fetching or ( MasterDataChangeLevel > 0 ) then
+  begin
+    CurTick := GetTickCount;
+    if ( CallbackInc < 0 ) or ( CallbackFreezeLevel <> 0 ) or
+       ( csDestroying in ComponentState ) or
+       (( Owner is TIB_Dataset ) and
+        ( TIB_Dataset( Owner ).CallbackFreezeLevel <> 0 )) then
+    else
+    if CallbackInc = 0 then
+      DoAppCallback
+    else
+    if CursorRowNum mod CallbackInc = 0 then
+    begin
+      if CurTick > CallbackInitTick + CallbackInitInt then
+        if CurTick >= CallbackRefreshTick + CallbackRefreshInt then
+        begin
+          CallbackRefreshTick := CurTick;
+          SysProcessCallback( csRefresh );
+        end;
+      DoAppCallback;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysFetchNext;
+var
+  ARow: TIB_Row;
+  procedure DoCloseOffToEof;
+  begin
+    FCursorEof := true;
+    API_CloseCursor;
+    IB_Transaction.CheckOAT;
+    ARow.ClearBuffers( rsNone );
+    SysAfterFetchCursorEof;
+  end;
+var
+  SaveCW: word;
+begin
+  ARow := CursorFields;
+  with IB_Session do
+  begin
+    while not FetchingAborted do
+    begin
+      if (( MaxRows > 0 ) and ( FCursorRowNum = MaxRows )) or
+         (( MaxTicks > 0 ) and ( MaxTicks <= ( GetTickCount -
+                                               CallbackInitTick ))) or
+         ( ARow.PSQLDA.SQLd <= 0 ) then
+        errcode := 100
+      else
+      begin
+        asm fstcw [SaveCW] end;
+        errcode := isc_dsql_fetch( @status,
+                                   PstHandle,
+                                   SQLDialect,
+                                   ARow.PSQLDA );
+        asm fldcw [SaveCW] end;
+      end;
+      if errcode = 0 then
+      begin
+        Inc( FCursorRowNum );
+        ARow.RefreshBuffers( true, true, true );
+        if not FetchingAborted then
+        begin
+          if SysAfterFetchCursorRow then
+          begin
+            if Fetching then
+              DoCallback;
+            Break;
+          end
+          else
+          begin
+            Dec( FCursorRowNum );
+            if Fetching then
+              DoCallback;
+            if FCursorEof then
+              Break;
+          end;
+        end
+        else
+        begin
+          if Fetching then
+            DoCallback;
+          Break;
+        end;
+      end
+      else
+      if errcode = 100 then
+      begin
+        DoCloseOffToEof;
+        if Fetching then
+          DoCallback;
+        Break;
+      end
+      else
+      if errcode = ISC_DEADLOCK then
+        try
+          HandleException( Self );
+          if Fetching then
+            DoCallback;
+        except
+          DoCloseOffToEof;
+          raise;
+        end
+      ELSE
+        try
+          HandleException( Self );
+        FINALLY
+          DoCloseOffToEof;
+        end;
+    end;
+  end;
+end;
+
+function TIB_Dataset.SysAfterFetchCursorRow: boolean;
+begin
+  Result := true;
+  if Assigned( FAfterFetchRow ) then
+    FAfterFetchRow( Self );
+  if Unidirectional and ( ControlsDisabledLevel > 0 ) then
+    inherited ProcessLinkEvent( setFieldsDataChange, 0 );
+end;
+
+procedure TIB_Dataset.SysAfterFetchCursorEof;
+begin
+  if Assigned( FAfterFetchEof ) then
+    FAfterFetchEof( Self );
+end;
+
+procedure TIB_Dataset.SysProcessCallback( Status: TIB_CallbackStatus );
+begin
+  if Assigned( FOnCallback ) then
+    FOnCallback( Self, Status, CursorRowNum, FFetchingAborted )
+  else
+    DefaultProcessCallback( Status );
+end;
+
+procedure TIB_Dataset.DefaultProcessCallback( Status: TIB_CallbackStatus );
+begin
+  case Status of
+    csRefresh:
+    begin
+      if not Assigned( dlgCancelQuery ) then
+      begin
+        dlgCancelQuery := TdlgCancelQuery.Create( Application );
+        with dlgCancelQuery as TdlgCancelQuery do
+        begin
+          DatasetToAbort := Self;
+          if CallbackCaption <> '' then
+            Caption := CallbackCaption
+          else
+            Caption := Application.Title;
+          WindowState := wsNormal;
+        end;
+      end;
+      with dlgCancelQuery as TdlgCancelQuery do
+      begin
+        lbRowNum.Caption := Format( M_Row_Num, [ CursorRowNum ] );
+        Visible := true;
+      end;
+    end;
+    csFinal:
+    begin
+      if Assigned( dlgCancelQuery ) then
+      begin
+        dlgCancelQuery.WindowState := wsNormal;
+        dlgCancelQuery.Visible := false;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.BeginCallbackFreeze;
+begin
+  IB_Session.BeginCallbackFreeze;
+end;
+
+procedure TIB_Dataset.EndCallbackFreeze;
+begin
+  IB_Session.EndCallbackFreeze;
+end;
+
+procedure TIB_Dataset.BeginKeyDataFreeze;
+begin
+  Inc( FKeyDataFreezeLevel );
+end;
+
+procedure TIB_Dataset.EndKeyDataFreeze;
+begin
+  if KeyDataFreezeLevel > 0 then
+    Dec( FKeyDataFreezeLevel );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysEditCursorRow;
+begin
+  if  (State = dssEdit) or
+     ((State = dssInsert) and (IsPostRetaining or FHasPostRetained)) then
+  begin
+    if Assigned( OnCustomEdit ) then
+      OnCustomEdit( Self )
+    else
+      SQL_EditRow;
+  end
+  else
+    SysUtils.Abort;
+end;
+
+procedure TIB_Dataset.SysInsertCursorRow;
+begin
+  if State = dssInsert then
+  begin
+    if Assigned( OnCustomInsert ) then
+      OnCustomInsert( Self )
+    else
+      SQL_InsertRow;
+  end
+  else
+    SysUtils.Abort;
+end;
+
+procedure TIB_Dataset.SysDeleteCursorRow;
+var
+  CanDoDelete: boolean;
+  SkipDelete: boolean;
+begin
+  CanDoDelete := false;
+  SkipDelete := false;
+  if State = dssDelete then
+    CanDoDelete := true
+  else
+  if ( State = dssInsert ) and FHasPostRetained then
+  begin
+    CanDoDelete := true;
+    if IB_Transaction.TransactionState in [ tsRollbackRetainingPending,
+                                            tsRollbackPending,
+                                            tsRollbackRefreshPending ] then
+      SkipDelete := true;
+  end;
+  if CanDoDelete then
+  begin
+    if not SkipDelete then
+    begin
+      if Assigned( OnCustomDelete ) then
+        OnCustomDelete( Self )
+      else
+        SQL_DeleteRow;
+    end;
+  end
+  else
+    SysUtils.Abort;
+end;
+
+procedure TIB_Dataset.SQL_DeleteRow;
+begin
+  FUpdateSQL.SQL_Delete;
+end;
+
+procedure TIB_Dataset.SQL_InsertRow;
+begin
+  FUpdateSQL.SQL_Insert;
+end;
+
+procedure TIB_Dataset.SQL_EditRow;
+begin
+  FUpdateSQL.SQL_Edit;
+end;
+
+function TIB_Dataset.SQL_LockRow: boolean;
+begin
+  if Assigned( OnCustomLockRow ) then begin
+    Result := true;
+    try
+      OnCustomLockRow( Self );
+    except
+      Result := false;
+      Application.HandleException( Self );
+    end;
+  end else begin
+    Result := FUpdateSQL.SQL_Lock;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysBeforeFieldDataChange( Sender: TIB_Row;
+                                                AField: TIB_Column);
+begin
+  if Sender.RowType = rtField then
+  begin
+    case State of
+      dssInactive: raise EIB_DatasetError.Create( E_DatasetClosed );
+      dssPrepared,
+      dssBrowse:
+      begin
+        if ReadOnly then
+          raise EIB_DatasetError.Create( E_DatasetReadOnly )
+        else
+        if Assigned( AField ) and AField.ReadOnly then
+        begin
+// I have decided to allow alteration of fields that the DML generating process
+// will ignore anyway. This allows the KeyDescLinks assignments to be performed
+// without causing an exception or taking the dataset into an editing mode.
+          if not AField.Computed and not AField.IsCalculated then
+            raise EIB_DatasetError.Create( Format( E_FLD_READONLY,
+                                                   [AField.FullFieldName] ));
+        end
+        else
+        if Fields.RowState = rsNone then
+          SysInsert
+        else
+          SysEdit;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysLayoutChange( Sender: TObject );
+begin
+  inherited SysLayoutChange( Sender );
+  if Sender = FieldsReadOnly then
+  begin
+    FUpdateSQL.SysUnprepare;
+    SysStateChanged;
+  end;
+end;
+
+procedure TIB_Dataset.API_OpenCursor( const ACursorName: string );
+var
+  SaveCW: word;
+begin
+  if FCursorIsOpen then
+    raise EIB_DatasetError.Create( 'Cursor is already open' )
+  else
+  begin
+    with IB_Session do
+    begin
+      asm fstcw [SaveCW] end;
+      errcode := isc_dsql_set_cursor_name( @status,
+                                           PstHandle,
+                                           PChar( ACursorName ),
+                                           0 {Unused Input } );
+      asm fldcw [SaveCW] end;
+      FCursorIsOpen := errcode = 0;
+      if errcode <> 0 then
+        HandleException( Self );
+    end;
+    if FCursorIsOpen then
+      Inc( IB_transaction.FOpenCursors );
+  end;
+end;
+
+procedure TIB_Dataset.API_CloseCursor;
+var
+  SaveCW: word;
+begin
+  if IB_Session <> nil then
+    with IB_Session do
+    begin
+      if Psthandle^ <> FakePointer then
+      begin
+        asm fstcw [SaveCW] end;
+        errcode := isc_dsql_free_statement( @status,
+                                            PstHandle,
+                                            DSQL_CLOSE );
+        asm fldcw [SaveCW] end;
+      end;
+      if FCursorIsOpen then
+      begin
+        FCursorIsOpen := false;
+        Dec( IB_transaction.FOpenCursors );
+      end;
+    end;
+end;
+
+function TIB_Dataset.API_FetchRow: isc_long;
+var
+  SaveCW: word;
+begin
+  with IB_Session do
+  begin
+    if CursorFields.PSQLDA.SQLd > 0 then
+    begin
+      asm fstcw [SaveCW] end;
+      errcode := isc_dsql_fetch( @status,
+                                 PstHandle,
+                                 SQLDialect,
+                                 CursorFields.PSQLDA );
+      asm fldcw [SaveCW] end;
+    end
+    else
+      errcode := 100;
+    Result := errcode;
+    if ( errcode <> 0 ) and ( errcode <> 100 ) then
+      HandleException( Self );
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SetTransaction( AValue: TIB_Transaction );
+begin
+  if IB_Transaction <> AValue then
+  begin
+    if ( IB_Transaction <> nil ) then
+      if IB_Transaction.FDatasetList <> nil then
+        IB_Transaction.FDatasetList.Remove( Self );
+    inherited SetTransaction( AValue );
+    if ( IB_Transaction <> nil ) then
+      if IB_Transaction.FDatasetList <> nil then
+        IB_Transaction.FDatasetList.Add( Self );
+  end;
+end;
+
+procedure TIB_Dataset.SetConnection( AValue: TIB_Connection );
+begin
+  if IB_Connection <> AValue then
+  begin
+    if ( IB_Connection <> nil ) then
+      if IB_Connection.FDatasetList <> nil then
+        IB_Connection.FDatasetList.Remove( Self );
+    inherited SetConnection( AValue );
+    if ( IB_Connection <> nil ) then
+      if IB_Connection.FDatasetList <> nil then
+        IB_Connection.FDatasetList.Add( Self );
+  end;
+end;
+
+procedure TIB_Dataset.SetActive( Value: boolean );
+begin
+  if Value <> Active then begin
+    if Value then begin
+      Open;
+    end else begin
+      Close;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.CheckCursorName;
+var
+  Hour, Min, Sec, MSec: Word;
+begin
+  if FCursorName = '' then
+  begin
+    try
+      Inc( IB_Session.FCursorNameSeed );
+    except
+      IB_Session.FCursorNameSeed := 1;
+    end;
+    DecodeTime( now, Hour, Min, Sec, MSec );
+    FCursorname := 'C' +
+                   IntToStr(cardinal(Self)) +
+                   IntToStr(MSec) +
+                   IntToStr(Sec) +
+                   IntToStr(Min) +
+                   IntToStr(IB_Session.FCursorNameSeed);
+    FCursorFields.FCursorName := FCursorname;
+  end;
+end;
+
+procedure TIB_Dataset.SysAfterPrepare;
+var
+  AStrings: TIB_StringList;
+  ii: integer;
+begin
+  CheckCursorName;
+  if not Assigned( FBindingCursor ) and RequestLive and not ReadOnly then
+  begin
+    AStrings := TIB_StringList.Create;
+    try
+      GetSQLForUpdateColumns( SQL.Text, AStrings );
+      if AStrings.Count > 0 then
+        for ii := 0 to Fields.ColumnCount - 1 do
+          with Fields.Columns[ii] do
+//!!! Handle the case of table aliases used in the FOR UPDATE clause.
+            FNotInForUpdate := AStrings.LinkIndex[ FullFieldName ] = -1;
+    finally
+      AStrings.Free;
+    end;
+  end;
+  inherited SysAfterPrepare;
+  if not Refreshing then
+    ClearSearchingLinks;
+  DoOrderingChanged;
+end;
+
+procedure TIB_Dataset.SysAfterUnprepare;
+begin
+  if FKeyLinksAutoDefined then
+  begin
+    FKeyLinks.Clear;
+    FKeyLinksAutoDefined := false;
+    FKeyLinksAreDBKEY := false;
+  end;
+  Fields.FRelationList.Clear;
+  Params.FRelationList.Clear;
+  FSQLOrderLinks.Clear;
+  inherited SysAfterUnprepare;
+  FCursorName := '';
+  FCursorFields.FCursorName := '';
+end;
+
+function TIB_Dataset.GetCursorBof: boolean; begin Result := FCursorRowNum = 0;
+                                                                          end;
+function TIB_Dataset.GetBof:       boolean; begin Result := CursorBof;    end;
+function TIB_Dataset.GetEof:       boolean; begin Result := CursorEof;    end;
+function TIB_Dataset.GetRowNum:    longint; begin Result := CursorRowNum; end;
+function TIB_Dataset.GetBofRowNum: longint; begin Result := 0; end;
+function TIB_Dataset.GetEofRowNum: longint; begin Result := RowNum + 1; end;
+procedure TIB_Dataset.SetRowNum( AValue: longint );
+begin raise EIB_DatasetError.Create( E_ROWNUM_NOT_IMPLEMENTED ); end;
+function TIB_Dataset.GetRecNo: longint;
+begin Result := RowNum; end;
+procedure TIB_Dataset.SetRecNo( AValue: longint );
+begin RowNum := AValue; end;
+function TIB_Dataset.GetSQLWhereChanged: boolean;
+begin
+  if Prepared and not Active and not SQLIsValid then
+    Prepare;
+  Result := Prepared and FSQLWhereChanged;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.IsUsingManualDML( UpdateKind: TIB_UpdateKind ): boolean;
+begin
+  Result := false;
+  case UpdateKind of
+    ukiModify: Result := Assigned( OnCustomEdit   ) or ( EditSQL.Count   > 0 );
+    ukiInsert: Result := Assigned( OnCustomInsert ) or ( InsertSQL.Count > 0 );
+    ukiDelete: Result := Assigned( OnCustomDelete ) or ( DeleteSQL.Count > 0 );
+  end;
+end;
+
+function TIB_Dataset.GetCanModify: boolean;
+begin
+  Result := Prepared and not ( ReadOnly or ( PreventEditing and
+                                             PreventInserting and
+                                             PreventDeleting ));
+  if Result and not ( State in [ dssEdit, dssInsert ] ) then
+  begin
+    if Fields.RowState = rsNone then
+      Result := CanInsert
+    else
+      Result := CanEdit;
+  end;
+end;
+
+function TIB_Dataset.GetCanEdit: boolean;
+begin
+  Result := Prepared and
+            not ReadOnly and
+            not PreventEditing and
+            IsSelectSQL and
+            ( Fields.RowState <> rsNone ) and
+            ( State <> dssInsert );
+  if Result then
+  begin
+    if not IsUsingManualDML( ukiModify ) then
+    begin
+      Result := RequestLive;
+      if Result and SearchedEdits then
+        Result := GetCanDoSearchedSQL;
+    end;
+  end;
+  // Allow the developer to adjust the result.
+  if Result and Assigned( OnGetCanModify ) then
+    OnGetCanModify( Self, cmEdit, Result );
+end;
+
+function TIB_Dataset.GetCanInsert: boolean;
+begin
+  Result := Prepared and
+            not ReadOnly and
+            not PreventInserting and
+            IsSelectSQL and
+            (( MasterSource = nil ) or
+            (( MasterSource.RowState <> rsNone ) and
+             ( MasterSource.State <> dssDelete )));
+  // It is possible for an insert to be performed.
+  if Result then
+  begin
+    if not IsUsingManualDML( ukiInsert ) then
+      Result := SysKeyRelation <> '';
+  end;
+  // Allow the developer to adjust the result.
+  if Result and Assigned( OnGetCanModify ) then
+    OnGetCanModify( Self, cmInsert, Result );
+end;
+
+function TIB_Dataset.GetCanDelete: boolean;
+begin
+  Result := Prepared and not ReadOnly and not PreventDeleting and IsSelectSQL;
+  if Result and ( State = dssInsert ) then
+    Result := false;
+  if Result and ( Fields.RowState = rsNone ) then
+    Result := false;
+  if Result then
+  begin
+    if not IsUsingManualDML( ukiDelete ) then
+    begin
+      Result := RequestLive and ( SysKeyRelation <> '' );
+      if Result and SearchedDeletes then
+        Result := GetCanDoSearchedSQL;
+    end;
+  end;
+  if Result and Assigned( OnGetCanModify ) then
+    OnGetCanModify( Self, cmDelete, Result );
+end;
+
+function TIB_Dataset.GetCanSearch: boolean;
+begin
+  Result := not PreventSearching;
+end;
+
+function TIB_Dataset.GetNeedToPost: boolean;
+begin
+  Result := State in [ dssEdit, dssInsert, dssDelete ];
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.GetDataSourceCount: integer;
+begin
+  if FDataSourceList <> nil then
+    Result := FDataSourceList.Count
+  else
+    Result := 0;
+end;
+
+function TIB_Dataset.GetDataSources( Index: integer ): TIB_DataSource;
+begin
+  if ( Index < 0 ) or ( Index >= DataSourceCount ) then
+    Result := nil
+  else
+    Result := TIB_DataSource( FDataSourceList.Items[ Index ] );
+end;
+
+function TIB_Dataset.GetUnidirectional: boolean;
+begin
+  Result := true;
+end;
+
+procedure TIB_Dataset.SetReadOnly( AValue: boolean );
+begin
+  if FReadOnly <> AValue then
+  begin
+    FReadOnly := AValue;
+    SysStateChanged;
+  end;
+end;
+
+function TIB_Dataset.GetReadOnly: boolean;
+begin
+  Result := FReadOnly or
+            not Assigned( IB_Transaction ) or
+            IB_Transaction.ReadOnly;
+  if Result and ( csDesigning in ComponentState ) then
+    Result := FReadOnly;
+end;
+
+procedure TIB_Dataset.SetPreventEditing( AValue: boolean );
+begin
+  if PreventEditing <> AValue then
+  begin
+    FPreventEditing := AValue;
+    SysStateChanged;
+  end;
+end;
+
+procedure TIB_Dataset.SetPreventInserting( AValue: boolean );
+begin
+  if PreventInserting <> AValue then
+  begin
+    FPreventInserting := AValue;
+    SysStateChanged;
+  end;
+end;
+
+procedure TIB_Dataset.SetPreventDeleting( AValue: boolean );
+begin
+  if PreventDeleting <> AValue then
+  begin
+    FPreventDeleting := AValue;
+    SysStateChanged;
+  end;
+end;
+
+procedure TIB_Dataset.SetPreventSearching( AValue: boolean );
+begin
+  if PreventSearching <> AValue then
+  begin
+    FPreventSearching := AValue;
+    SysStateChanged;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.DoBeforeOpen;
+begin
+  if not ( csLoading in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( BeforeOpen ) then
+      BeforeOpen( Self );
+end;
+
+procedure TIB_Dataset.DoAfterOpen;
+begin
+  if not ( csLoading in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( AfterOpen ) then
+      AfterOpen( Self );
+end;
+
+procedure TIB_Dataset.DoBeforeClose;
+begin
+  if not ( csLoading in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( BeforeClose ) then
+      BeforeClose( Self );
+end;
+
+procedure TIB_Dataset.DoAfterClose;
+begin
+  if not ( csLoading in ComponentState ) and
+     not ( csDestroying in ComponentState ) then
+    if Assigned( AfterClose ) then
+      AfterClose( Self );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.DoLinkStateChanged;
+var
+  ii: integer;
+begin
+  for ii := 0 to DataSourceCount - 1 do
+     DataSources[ ii ].SysStateChanged;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.First;
+begin
+  BeginBusy( false );
+  try
+    DisableControls;
+    try
+      if Active then
+        CheckBrowseMode
+      else
+        Prepared := true;
+      SysFirst;
+    finally
+      EnableControls;
+    end;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Dataset.KillCursor;
+begin
+  BeginBusy( false );
+  try
+    if not FCursorEof then
+    begin
+      API_CloseCursor;
+      FCursorEof := true;
+      IB_Transaction.CheckOAT;
+      SysAfterFetchCursorEof;
+    end;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Dataset.Last;
+begin
+  if Eof and Unidirectional then
+    raise EIB_DatasetError.Create( E_AT_END_OF_Dataset )
+  else
+  begin
+    BeginBusy( false );
+    try
+      DisableControls;
+      try
+        if Active then
+          CheckBrowseMode
+        else
+          Prepared := true;
+        SysLast;
+      finally
+        EnableControls;
+      end;
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+function TIB_Dataset.MoveBy( JumpRecs: longint ): longint;
+begin
+  BeginBusy( false );
+  try
+    DisableControls;
+    try
+      if not Prepared then Prepare;
+      Result := SysMoveBy( JumpRecs );
+    finally
+      EnableControls;
+    end;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Dataset.Next;
+begin
+  if Eof then
+    raise EIB_DatasetError.Create( E_END_OF_Dataset )
+  else
+    MoveBy( 1 )
+end;
+
+procedure TIB_Dataset.Prior;
+begin
+  if Bof then
+    raise EIB_DatasetError.Create( E_BEGINNING_OF_Dataset )
+  else
+    MoveBy( -1 )
+end;
+
+procedure TIB_Dataset.Edit;
+begin
+  if not Prepared then
+    SysPrepare;
+  if (( Fields.RowState = rsNone ) and CanInsert ) then
+    SysInsert
+  else
+  if CanEdit then
+    SysEdit
+  else
+  begin
+    SysStateChanged;
+    raise EIB_DatasetError.Create( E_Cannot_Edit_Row );
+  end;
+end;
+
+procedure TIB_Dataset.Append;
+begin
+  if not Prepared then
+    SysPrepare;
+  if CanInsert then
+  begin
+    if not Unidirectional then
+    begin
+      BeginCallbackFetching;
+      try
+        if not BufferHasEof then
+          FetchAll;
+        if FetchingAborted then
+          Exit;
+      finally
+        EndCallbackFetching;
+      end;
+      RowNum := BufferRowCount + 1;
+    end;
+    SysInsert;
+  end
+  else
+  begin
+    SysStateChanged;
+    raise EIB_DatasetError.Create( E_Cannot_Insert_Row );
+  end;
+end;
+
+procedure TIB_Dataset.Insert;
+begin
+  if not Prepared then
+    SysPrepare;
+  if CanInsert then
+    SysInsert
+  else
+  begin
+    SysStateChanged;
+    raise EIB_DatasetError.Create( E_Cannot_Insert_Row );
+  end;
+end;
+
+procedure TIB_Dataset.Delete;
+begin
+  if CanDelete then
+    SysDelete
+  else
+  begin
+    SysStateChanged;
+    raise EIB_DatasetError.Create( E_Cannot_Delete_Row );
+  end;
+end;
+
+procedure TIB_DataSet.CheckOperation( Operation: TIB_DataOperation;
+                                      ErrorEvent: TIB_DataSetErrorEvent );
+var
+  Done: Boolean;
+  Action: TIB_DataAction;
+begin
+  Done := False;
+  repeat
+    try
+      Operation;
+      Done := True;
+    except
+      on E: EIB_Error do
+      begin
+        Action := dacFail;
+        if Assigned( ErrorEvent ) then
+          ErrorEvent( Self, E, Action );
+        if Action = dacFail then
+          raise;
+        if Action = dacAbort then
+          SysUtils.Abort;
+      end;
+    end;
+  until Done;
+end;
+
+procedure TIB_Dataset.Post;
+begin
+  if NeedToPost or ( State = dssSearch ) then
+  begin
+    BeginBusy( false );
+    try
+      SysPost( false, false );
+    finally
+      EndBusy;
+    end;
+  end
+  else
+  begin
+    SysStateChanged;
+    raise EIB_DatasetError.Create( E_CANNOT_POST_ROW );
+  end;
+end;
+
+procedure TIB_Dataset.PostRetaining;
+begin
+  if NeedToPost or ( State = dssSearch ) then
+  begin
+    BeginBusy( false );
+    try
+      SysPost( false, true );
+    finally
+      EndBusy;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.Cancel;
+begin
+  if NeedToPost or ( State = dssSearch ) then
+  begin
+    BeginBusy( false );
+    try
+      SysCancel;
+    finally
+      EndBusy;
+    end;
+  end
+  else
+  begin
+    SysStateChanged;
+    raise EIB_DatasetError.Create( E_CANNOT_CANCEL_ROW );
+  end;
+end;
+
+procedure TIB_Dataset.UpdateData;
+begin
+  ProcessLinkEvent( setParamsUpdateData, 0 );
+  ProcessLinkEvent( setFieldsUpdateData, 0 );
+end;
+
+procedure TIB_Dataset.DataChange;
+begin
+  ProcessLinkEvent( setParamsDataChange, 0 );
+  ProcessLinkEvent( setFieldsDataChange, 0 );
+end;
+
+procedure TIB_Dataset.ShowNearest( ARowNum: longint );
+begin
+  ProcessLinkEvent( setShowNearest, ARowNum )
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.AbortFetching;
+begin
+  if Fetching then
+  begin
+    try
+      Inc( FFetchingAbortedGen );
+    except
+      FFetchingAbortedGen := -MaxInt;
+    end;
+    FFetchingAborted := true;
+  end;
+end;
+
+procedure TIB_Dataset.CheckRequiredFields;
+var
+  ii: Integer;
+begin
+  for ii := 0 to Fields.ColumnCount - 1 do
+    with Fields[ii] do
+      if IsNull and not ReadOnly and not Computed and Required then
+      begin
+        if ( State = dssInsert ) and
+           ( not PreparedInserts ) and
+           ( InsertSQL.Count = 0 ) and
+           ( IsDefaulted ) then
+          Continue
+        else
+        begin
+          FocusControl;
+          raise EIB_DatasetError.Create(Format(E_Required_Field,[DisplayName]));
+        end;
+      end;
+end;
+
+function TIB_Dataset.RecordCount: longint;
+begin
+  BeginBusy( false );
+  try
+    Result := SysRecordCount;
+  finally
+    EndBusy;
+  end;
+end;
+
+procedure TIB_Dataset.Search;
+begin
+  if CanSearch then
+  begin
+    BeginBusy( false );
+    try
+      if Fetching then
+        AbortFetching;
+      SysSearch;
+    finally
+      EndBusy;
+    end;
+  end
+  else
+    raise EIB_DatasetError.Create( E_Cannot_Search );
+end;
+
+procedure TIB_Dataset.SysSearch;
+begin
+  if State <> dssSearch then
+  begin
+    CheckTransaction( false );
+    DisableControls;
+    try
+      SysClose;
+      if State <> dssSearch then
+      begin
+        SysPrepare;
+        SysBeforeSearch;
+        SetState( dssSearch );
+        if MasterSearch and
+           Assigned( MasterDataset ) and
+           ( MasterDataset.State <> dssSearch ) and
+           ( msfSearchMasterOnSearch in MasterSearchFlags ) then
+            MasterDataset.SysSearch;
+        MasterToChildAction( mcaMasterSearchChanged );
+        SysAfterSearch;
+      end;
+    finally
+      EnableControls;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysMasterSearchChanged;
+begin
+  if MasterSearch and
+     Assigned( MasterSource ) and
+     ( MasterSource.State = dssSearch ) then
+  begin
+    if State <> dssSearch then
+    begin
+      FMasterSearchWasActive := Active;
+      if CanSearch then
+        Search;
+    end;
+  end
+  else
+  begin
+    if State = dssSearch then
+      SysPostSearch( true );
+    if FMasterSearchWasActive and
+       MasterSource.Active and
+       not MasterSource.Eof and
+       not MasterSource.Bof then
+    begin
+      Open;
+      FMasterSearchWasActive := false;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysBeforeSearch;
+begin
+  DoBeforeSearch;
+end;
+
+procedure TIB_Dataset.SysAfterSearch;
+begin
+  DoAfterSearch;
+end;
+
+procedure TIB_Dataset.MasterToChildAction( AAction: TIB_MasterChildAction );
+var
+  ii: integer;
+begin
+  with IB_Session do if Assigned( Session_Datasets ) then
+  begin
+    for ii := 0 to Session_Datasets.Count - 1 do
+    begin
+      with TIB_Dataset( Session_Datasets.Items[ ii ] ) do
+      begin
+        if Assigned( MasterSource ) then
+        begin
+          if MasterSource.Dataset = Self then
+          begin
+            case AAction of
+              mcaSaveSearch:
+                if MasterSearch then
+                  SaveSearch;
+              mcaClearSearch:
+                if MasterSearch then
+                  ClearSearch;
+              mcaRecallSearch:
+                if MasterSearch then
+                  RecallSearch;
+              mcaRecallLastSearch:
+                if MasterSearch then
+                  RecallLastSearch;
+              mcaWriteSearch:
+                if MasterSearch then
+                  WriteSearch( Self.FSearchCriteria );
+              mcaReadSearch:
+                if MasterSearch then
+                  ReadSearch( Self.FSearchCriteria );
+              mcaMasterSearchChanged:
+                if MasterSearch then
+                  SysMasterSearchChanged;
+              mcaPost:
+                SysPost( false, false );
+              mcaCancelInsert:
+                if State = dssInsert then
+                  SysCancel;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.KeyToChildAction( AAction: TIB_KeyChildAction;
+                                        Info: longint );
+var
+  ii, jj: integer;
+  ADataset: TIB_Dataset;
+  tmpKeyFlds: string;
+  tmpKeyVals: string;
+  tmpFlds: string;
+  tmpVals: string;
+begin
+  with IB_Session do if Assigned( Session_Datasets ) then
+  begin
+    for ii := 0 to Session_Datasets.Count - 1 do
+    begin
+      ADataset := TIB_Dataset( Session_Datasets.Items[ ii ] );
+      with ADataset do
+      begin
+        if Assigned( KeySource ) then
+        begin
+          if KeySource.Dataset = Self then
+          begin
+            case AAction of
+              kcaUpdateKeyDescCalcFields:
+              if ( KeyDescLinks.Count > 0 ) and
+                 ( ADataset is TIB_BDataset ) then
+              begin
+                tmpKeyFlds := '';
+                tmpKeyVals := '';
+                for jj := 0 to KeyLinks.Count - 1 do
+                begin
+                  if jj > 0 then
+                  begin
+                    tmpKeyFlds := tmpKeyFlds + ';';
+                    tmpKeyVals := tmpKeyVals + ';';
+                  end;
+                  tmpKeyFlds := tmpKeyFlds + KeyLinks.IndexNames[jj];
+                  tmpKeyVals := tmpKeyVals + KeyLinks.IndexValues[jj];
+                end;
+                tmpFlds := '';
+                tmpVals := '';
+                for jj := 0 to KeyDescLinks.Count - 1 do
+                begin
+                  if jj > 0 then
+                  begin
+                    tmpFlds := tmpFlds + ';';
+                    tmpVals := tmpVals + ';';
+                  end;
+                  tmpFlds := tmpFlds + KeyDescLinks.IndexNames[jj];
+                  tmpVals := tmpVals + KeyDescLinks.IndexValues[jj];
+                end;
+                ADataset.Prepare;
+                TIB_Row( Info ).Values[ tmpVals ] :=
+                  TIB_BDataset( ADataset ).Lookup(
+                    tmpKeyFlds, TIB_Row( Info ).Values[ tmpKeyVals ], tmpFlds );
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SaveSearch;
+begin
+  ProcessLinkEvent( setUpdateSearchCriteria, integer( setSaveCriteria ));
+  MasterToChildAction( mcaSaveSearch );
+end;
+
+procedure TIB_Dataset.ClearSearch;
+begin
+  FAssignedSQLWhere := '';
+  ProcessLinkEvent( setUpdateSearchCriteria, integer( setClearCriteria ));
+  MasterToChildAction( mcaClearSearch );
+end;
+
+procedure TIB_Dataset.RecallSearch;
+begin
+  ProcessLinkEvent( setUpdateSearchCriteria, integer( setRecallCriteria ));
+  MasterToChildAction( mcaRecallSearch );
+end;
+
+procedure TIB_Dataset.RecallLastSearch;
+begin
+  ProcessLinkEvent( setUpdateSearchCriteria, integer( setRecallLastCriteria ));
+  MasterToChildAction( mcaRecallLastSearch );
+end;
+
+procedure TIB_Dataset.WriteSearch( AStrings: TStrings );
+begin
+  if not Assigned( AStrings ) then
+    Exit;
+  FSearchCriteria := AStrings;
+  AStrings.BeginUpdate;
+  try
+    if not Assigned( MasterSource ) or
+       not Assigned( MasterSource.Dataset.FSearchCriteria ) then
+      AStrings.Clear;
+    ProcessLinkEvent( setUpdateSearchCriteria, integer( setWriteCriteria ));
+    MasterToChildAction( mcaWriteSearch );
+  finally
+    FSearchCriteria := nil;
+    AStrings.EndUpdate;
+  end;
+end;
+
+procedure TIB_Dataset.ReadSearch( AStrings: TStrings );
+begin
+  FSearchCriteria := AStrings;
+  try
+    ProcessLinkEvent( setUpdateSearchCriteria, integer( setReadCriteria ));
+    MasterToChildAction( mcaReadSearch );
+  finally
+    FSearchCriteria := nil;
+  end;
+end;
+
+procedure TIB_Dataset.SysSQLChange( Sender: TObject; var Unprepare: boolean );
+var
+  OldOrderingItemNo: integer;
+  ii: integer;
+begin
+  inherited SysSQLChange( Sender, Unprepare );
+  if Sender = FOrderingItems then
+  begin
+    if OrderingItemNo <> 0 then
+    begin
+      OldOrderingItemNo := OrderingItemNo;
+      FOrderingItemNo := 0;
+      OrderingItemNo := OldOrderingItemNo;
+    end;
+    Unprepare := false;
+  end
+  else
+  if Sender = FOrderingLinks then
+  begin
+    if OrderingItemNo <> 0 then
+      SysCheckOrderingLink;
+    Unprepare := false;
+    for ii := 0 to FieldCount - 1 do
+      Fields[ii].FOrderingLinkItemNo := -999;
+  end
+  else
+  if Sender = FSearchingLinks then
+  begin
+    if OrderingItemNo <> 0 then
+    begin
+      SysCheckSearchingLink;
+    end;
+    Unprepare := false;
+  end
+  else
+  if ( Sender = FSQL ) and ( SQLSectionChanging in [ ssWhere, ssOrder ] ) then
+  begin
+    Unprepare := false;
+    if not PreparingSQL then
+      InvalidateSQL;
+  end;
+  if ( Sender = FSQL ) and not PreparingSQL and ( SQLForUpdate.Count > 0 ) then
+    FRequestLive := true;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.SysRecordCount: longint;
+begin
+  Result := -1;
+  if not Active then
+    SysPrepare;
+  if Prepared then
+  begin
+    if ( State = dssSearch ) and
+       ( MasterSearch ) and
+       ( MasterDataset <> nil ) and
+       ( MasterDataset.State = dssSearch ) then
+      Result := MasterDataset.SysRecordCount
+    else
+    begin
+      if not FCursorRecordCountValid then
+      begin
+        FCursorRecordCount := SysGetCursorRecordCount;
+        FCursorRecordCountValid := false;
+        //IB_Transaction.Isolation <> tiCommitted; {Fix this optimization.}
+      end;
+      Result := FCursorRecordCount;
+    end;
+  end;
+end;
+
+function TIB_Dataset.SysGetCursorRecordCount: longint;
+var
+  PIn_DA,
+  PCount_DA: PXSQLDA;
+  CountSQL: string;
+  nullind: smallint;
+begin
+  Result := -1;
+  nullind := 0;
+  if Prepared then
+  begin
+    CheckTransaction( false );
+    SysBeforeExecute;
+    SysPostSearch( false );
+    if Assigned( FOnGetRecordCount ) then
+      FOnGetRecordCount( Self, Result )
+    else
+    begin
+      MakeCountSQL( ServerSQL, CountSQL );
+      if ParamCount > 0 then
+        PIn_DA := Params.PSQLDA
+      else
+        PIn_DA := nil;
+      PCount_DA := AllocMem( XSQLDA_LENGTH( 1 ));
+      try
+        with PCount_DA^ do
+        begin
+          version := SQLDA_VERSION1;
+          sqln := 1;
+          sqld := 1;
+          with sqlvar[ 0 ] do
+          begin
+            sqltype  := SQL_LONG;
+            sqlscale := 0;
+            sqllen   := 4;
+            sqldata  := @Result;
+            sqlind   := @nullind;
+          end;
+        end;
+        SysExecImmed2( CountSQL, PIn_DA, PCount_DA );
+      finally
+        FreeMem( PCount_DA );
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysEdit;
+begin
+  if CanEdit then
+  begin
+    SysBeforeEdit;
+    SysPost( false, false );
+    CheckOperation( SysLockRow, FOnEditError );
+    try
+      SetState( dssEdit );
+      SysMasterDataUpdate( nil );
+      SysAfterEdit;
+    except
+      SysCancel;
+      raise;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysLockRow;
+begin
+  if PessimisticLocking and not FCachedUpdates then
+  begin
+    if Assigned( IB_Transaction ) and
+      ( IB_Transaction.LockWait or
+        IB_Transaction.ServerAutoCommit ) then
+      raise EIB_DatasetError.Create( E_Cannot_Pessimistic_Lock );
+    if not IsRowLocked then
+    begin
+      FIsRowLocked := SQL_LockRow;
+      if IsRowLocked then
+        Inc( IB_Transaction.FPessimisticLockCount )
+      else
+        raise EIB_DatasetError.Create( '[' + Name + '] ' + E_Record_Locked );
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysInsert;
+begin
+  if CanInsert and not FInsertPending then
+  begin
+    SysBeforeInsert;
+    FInsertPending := true;
+    FWasSearching := ( State = dssSearch ) or ( Active and FWasSearching );
+    try
+      SysPost( false, false );
+      MasterToChildAction( mcaPost );
+      try
+        with Fields do
+        try
+          BeginUpdate;
+          SysInsertRow;
+          Fields.ClearBuffers( rsUnmodified );
+          SetState( dssInsert );
+          DoNewRecord;
+          SysMasterDataUpdate( nil );
+          RefreshBuffers( false, false, true );
+        finally
+          EndUpdate( true );
+        end;
+        SysAfterInsert;
+      except
+        SysCancel;
+        raise;
+      end;
+    finally
+      FInsertPending := false;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.DoNewRecord;
+begin
+  SysGetServerDefaults;
+  SysGetDefaultValues;
+  if Assigned( FOnNewRecord ) then
+    FOnNewRecord( Self );
+end;
+
+procedure TIB_Dataset.DoOrderingChanged;
+begin
+  if Assigned( FOnOrderingChanged ) then
+    FOnOrderingChanged( Self );
+end;
+
+procedure TIB_Dataset.SysGetDefaultValues;
+var
+  ii: integer;
+  tmpCol: TIB_Column;
+  tmpDef: string;
+begin
+  for ii := 0 to FieldCount - 1 do
+  begin
+    tmpCol := Fields[ii];
+    if tmpCol.IsNull then
+    begin
+      if GetColumnDefaultValue( tmpCol, tmpDef ) then
+        tmpCol.AsString := tmpDef;
+    end;
+  end;
+end;
+
+function TIB_Dataset.GetColumnDefaultValue( AColumn: TIB_Column;
+  var DefStr: string ): boolean;
+var
+  tmpIdx: integer;
+  tmpStr: string;
+begin
+  Result := false;
+  tmpStr := '';
+  // First try for a dataset based default
+  tmpIdx := DefaultValues.LinkIndex[ AColumn.FullFieldName ];
+  if tmpIdx >= 0 then
+  begin
+    tmpStr := DefaultValues.IndexValues[tmpIdx];
+    Result := true;
+  end;
+  // if not found try for a connection based default
+  if not Result then
+  begin
+    with AColumn.Statement.IB_Connection do
+    begin
+      tmpIdx := DefaultValues.LinkIndex[ AColumn.FullFieldName ];
+      if (tmpIdx < 0) and (fetDomainName in IB_Connection.FieldEntryTypes) then
+        tmpIdx := DefaultValues.LinkIndex[ AColumn.DomainName ];
+      if tmpIdx >= 0 then
+      begin
+        tmpStr := DefaultValues.IndexValues[tmpIdx];
+        Result := true;
+      end;
+    end;
+  end;
+  // if we found a default value, parse it for macros
+  if Result then
+  begin
+    if (FAlwaysCallMacroSubstitute or Assigned( FOnMacroSubstitute )) then
+      DefStr := IB_Parse.SubstMacros( tmpStr, SysSubstituteMacros,
+        MacroBegin, MacroEnd )
+    else
+      DefStr := tmpStr;
+  end;
+end;
+
+(*
+function IsValidNumeric( const Default_Source: string;
+                               Limit: integer ): boolean;
+var
+    iterator, DotLocation: smallint;
+begin
+   Result := True;
+   DotLocation := 0;
+   // The server always uses dot as decimal indicator
+   for iterator := Length( Default_Source ) downto 1 do
+   begin
+      if Default_Source[ Iterator ] = '.' then
+        if DotLocation > 0 then
+          DotLocation := -1
+        else
+          DotLocation := Iterator;
+      if not ( Default_Source[ Iterator ] in ['0'..'9'] ) then
+        DotLocation := -1;
+      if DotLocation = -1 then
+        Break;
+   end;
+   {TODO: Compare with the precision of the field in dialect 3}
+   if (( DotLocation < 0 )) or
+      (( Length( Default_Source ) > Limit ) and ( DotLocation > 0 )) or
+      (( Length( Default_Source ) > Limit-1 ) and ( DotLocation = 0 )) then
+     Result := False
+end;
+*)
+
+procedure TIB_Dataset.SysGetServerDefaults;
+var
+  ii: integer;
+  ColName, GenName: string;
+  GenValue: ISC_INT64;
+  tmpCol: TIB_Column;
+begin
+  with GeneratorLinks do
+    for ii := 0 to Count - 1 do
+    begin
+      ColName := IndexNames[ ii ];
+      GenName := IndexValues[ ii ];
+      tmpCol := FieldByName( ColName );
+      if tmpCol.IsNull and GetGeneratorValue( IB_Connection,
+                                              IB_Transaction,
+                                              IB_Connection.mkIdent(GenName),
+                                              1,
+                                              GenValue ) then
+        tmpCol.AsInt64 := GenValue;
+    end;
+  if IB_Connection.GeneratorLinks.Count > 0 then
+    for ii := 0 to FieldCount - 1 do
+    begin
+      tmpCol := Fields[ii];
+      if tmpCol.IsNull then
+        with IB_Connection.GeneratorLinks do
+        begin
+          GenName := LinkValues[ tmpCol.FullFieldName ];
+          if GenName <> '' then
+            if GetGeneratorValue( IB_Connection,
+                                  IB_Transaction,
+                                  IB_Connection.mkIdent(GenName),
+                                  1,
+                                  GenValue ) then
+              tmpCol.AsInt64 := GenValue;
+        end;
+    end;
+  if GetServerDefaults then
+    SysGetServerDefaults2( False );
+end;
+
+procedure TIB_Dataset.SysGetServerDefaults2( PreSetDefaults: boolean );
+var
+  ii: integer;
+begin
+  for ii := 0 to FieldCount - 1 do
+  begin
+    with Fields[ ii ] do
+    begin
+      if ( IsNull or (csDesigning in ComponentState) or PreSetDefaults ) and
+         ( IsDefaulted ) then
+      begin
+        if FDefaultValue = '' then
+          FDefaultValue := IB_Connection.
+                             SchemaCache.
+                               Defaults.LinkValues[ RelName + '.' + SQLName ];
+        if not (csDesigning in Self.ComponentState) and not PreSetDefaults then
+          AsString := FDefaultValue
+        else
+        if PreSetDefaults then
+          DefaultValues.LinkValues[ RelName + '.' + SQLName ] := FDefaultValue;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.ImportServerDefaults;
+var
+  PreparedState: boolean;
+begin
+  PreparedState := Prepared;
+  if not Prepared then Prepare;
+  DefaultValues.Clear;
+  SysGetServerDefaults2( True );
+  if not PreparedState then
+    Unprepare;
+end;
+
+procedure TIB_Dataset.SysInsertRow;
+begin
+  if Unidirectional then
+    SysClose;
+end;
+
+procedure TIB_Dataset.SysDelete;
+begin
+  if CanDelete then
+  begin
+    SysBeforeDelete;
+    SysCancel; // Clear out any pending edits.
+    MasterToChildAction( mcaCancelInsert );
+    SetState( dssDelete );
+    if AutoPostDelete then
+    begin
+      try
+        Post;
+      except
+        SysUpdateState;
+        raise;
+      end;
+      SysAfterDelete;
+    end
+    else
+      try
+        SysAfterDelete;
+      except
+        SysCancel;
+        raise;
+      end;
+  end;
+end;
+
+procedure TIB_Dataset.SysPostSearch( EndSearchMode: boolean );
+begin
+  if not IsPosting then
+  begin
+    Inc( FIsPostingLevel );
+    try
+      ProcessLinkEvent( setFieldsUpdateData, 0 );
+      if Assigned( IB_Transaction ) and IB_Transaction.Started then
+        SysPrepare;
+      if IsSelectSQL and EndSearchMode and SQLWhereChanged then
+        ProcessLinkEvent( setUpdateSearchCriteria,
+                          integer( setSaveLastCriteria ));
+      if EndSearchMode then
+      begin
+        if not FInsertPending and not FOpenPending then
+        begin
+          DisableControls;
+          try
+            Open;
+            if not Unidirectional then
+            begin
+              ValidateRows( 1, 1 );
+              if not Assigned( MasterSource ) and
+                 BufferHasEof and
+                 ( BufferRowCount = 0 ) then
+              begin
+                Search;
+                raise EIB_DatasetError.Create( E_NoRecordsFound );
+              end;
+            end;
+          finally
+            EnableControls;
+          end;
+        end
+        else
+          SetState( dssPrepared );
+        MasterToChildAction( mcaMasterSearchChanged );
+      end;
+    finally
+      Dec( FIsPostingLevel );
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysCancelSearch;
+begin
+  ClearSearch;
+  if Assigned( IB_Transaction ) and IB_Transaction.Started then
+    SysPrepare;
+  SetState( dssPrepared );
+end;
+
+procedure TIB_Dataset.SysPost( CancelUnmodified, IsRetaining: boolean );
+begin
+  if State = dssSearch then
+    SysPostSearch( true )
+  else
+  if NeedToPost and
+     ( not IsPosting or
+     ( IsRetaining and not IsPostRetaining )) then
+  begin
+    Inc( FIsPostingLevel );
+    if IsRetaining then
+      Inc( FIsPostRetainingLevel );
+    try
+      if State in [dssEdit, dssInsert] then
+        ProcessLinkEvent( setFieldsUpdateData, 0 );
+      try
+        DisableControls;
+        if State in [dssEdit, dssInsert] then
+          SysMasterDataUpdate( nil );
+        if (( CancelUnmodified ) or
+            ( IB_Connection.ConnectionStatus in [ csDisconnectPending,
+                                                  csDropPending ] )) and
+           not IsRetaining and
+           not Modified and
+           ( State in [dssEdit, dssInsert] ) then
+          SysCancel
+        else
+        begin
+          SysBeforePost;
+          if ( State in [dssEdit, dssInsert] ) and CheckRequired then
+            CheckRequiredFields;
+          if not IsRetaining then
+            ProcessLinkEvent( setCheckBrowseMode, 0 );
+          FPostedState := State;
+          SysExecPost( CancelUnmodified and not IsRetaining );
+          try
+            if not IsRetaining then
+              SysUpdateState;
+            SysUpdateKeyLinksData;
+          finally
+            FHasPostRetained := IsRetaining;
+            if IsRetaining then
+              Fields.SetRowState( rsModified );
+            if Fields.PSQLDA.SQLn > Fields.PSQLDA.SQLd then
+              CalculateFields;
+            if not FCachedUpdates then
+              case FPostedState of
+                dssInsert: Include( FDatasetFlags, dsfInsertWasPosted );
+                dssEdit: Include( FDatasetFlags, dsfEditWasPosted );
+                dssDelete: Include( FDatasetFlags, dsfDeleteWasPosted );
+              end;
+            SysAfterPost;
+          end;
+        end;
+      finally
+        EnableControls;
+      end;
+    finally
+      Dec( FIsPostingLevel );
+      if IsRetaining then
+        Dec( FIsPostRetainingLevel );
+    end;
+  end;
+end;
+
+function TIB_Dataset.GetIsPosting: boolean;
+begin
+  Result := FIsPostingLevel > 0;
+end;
+
+function TIB_Dataset.GetIsPostRetaining: boolean;
+begin
+  Result := FIsPostRetainingLevel > 0;
+end;
+
+function TIB_Dataset.GetCalculatingFields: boolean;
+begin
+  Result := inherited GetCalculatingFields;
+  if not Result then
+    Result := BufferFields.FCalculatingFields;
+end;
+
+procedure TIB_Dataset.SysExecPost( CancelUnmodified: boolean );
+begin
+  case State of
+    dssEdit: CheckOperation( SysPostEditedRow, FOnPostError );
+    dssInsert: if HasPostRetained then
+        CheckOperation( SysPostEditedRow, FOnPostError )
+      else
+        CheckOperation( SysPostInsertedRow, FOnPostError );
+    dssDelete: if DoConfirmDelete then
+      begin
+      // This should clean out cached inserts for the child datasets as well!!!
+        MasterToChildAction( mcaCancelInsert );
+        CheckOperation( SysPostDeletedRow, FOnDeleteError );
+      end
+      else
+        SysUtils.Abort;
+  end;
+end;
+
+procedure TIB_Dataset.SysUpdateState;
+begin
+  if Active then
+    SetState( dssBrowse )
+  else
+  if Prepared then
+  begin
+    if FWasSearching and
+       ( FRefiningIncSearch = 0 ) and
+       not FUnpreparing and
+       not Refreshing and
+       not (csDestroying in ComponentState) and
+       not IB_Transaction.ClosePending and
+       ( ClosePending or
+       ( IsCancelling and ( CancelledState = dssInsert ))) and
+       CanSearch then
+      Search
+    else
+      SetState( dssPrepared );
+  end
+  else
+    SetState( dssInactive );
+  SysClearLock;
+end;
+
+procedure TIB_Dataset.SysCancel;
+begin
+  if State = dssSearch then
+    SysCancelSearch
+  else
+  if NeedToPost and not IsCancelling then
+  begin
+    FIsCancelling := true;
+    try
+      SysBeforeCancel;
+      FCancelledState := State;
+      case State of
+        dssEdit: SysCancelEditedRow;
+        dssInsert:
+        begin
+          MasterToChildAction( mcaCancelInsert );
+          if FHasPostRetained then
+            SysDeleteCursorRow
+          else
+            SysCancelInsertedRow;
+        end;
+        dssDelete: SysCancelDeletedRow;
+      end;
+      try
+        SysUpdateState;
+      finally
+        FHasPostRetained := false;
+        FIsCancelling := false;
+        SysAfterCancel;
+      end;
+    finally
+      FIsCancelling := false;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysClearLock;
+begin
+  if IsRowLocked and Assigned( IB_transaction ) then
+    with IB_Transaction do
+      if ( PostPendingCount = 0 ) and
+         ( TransactionState = tsInactive ) then
+        SavePoint;
+end;
+
+procedure TIB_Dataset.SysFirst;
+begin
+  SysBeforeScroll;
+  if Active then
+    SysClose;
+  SysOpen;
+  if CursorBof and not CursorEof then
+    SysFetchNext;
+  SysAfterScroll;
+end;
+
+procedure TIB_Dataset.SysLast;
+begin
+  SysBeforeScroll;
+  SysOpen;
+  SysFetchAll( 0 );
+  SysAfterScroll;
+end;
+
+function TIB_Dataset.SysMoveBy( JumpRecs: longint ): longint;
+begin
+  SysBeforeScroll;
+  Result := SysCursorMoveByRow( JumpRecs );
+  if Result > 0 then
+    SysAfterScroll;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysUpdateKeyData;
+begin
+// Abstract.
+end;
+
+procedure TIB_Dataset.SysPostEditedRow;
+begin
+  Fields.PostBlobBuffers;
+  try
+    SysUpdateKeyData( false );
+    SysEditCursorRow;
+  except
+    Fields.AfterPostBuffers( false );
+    raise;
+  end;
+  Fields.AfterPostBuffers( true );
+  Fields.RefreshBuffers( false, false, true );
+//Fields.SysAfterModify( nil );
+end;
+
+procedure TIB_Dataset.SysPostInsertedRow;
+begin
+  Fields.PostBlobBuffers;
+  try
+    SysUpdateKeyData( false );
+    SysInsertCursorRow;
+  except
+    Fields.AfterPostBuffers( false );
+    raise;
+  end;
+  Fields.AfterPostBuffers( true );
+  if Unidirectional then
+    Fields.ClearBuffers( rsNone )
+  else
+  begin
+    Fields.RefreshBuffers( false, false, true );
+//    Fields.SysAfterModify( nil );
+  end;
+end;
+
+procedure TIB_Dataset.SysPostDeletedRow;
+begin
+  Fields.CancelBuffers;
+  SysDeleteCursorRow;
+  if Unidirectional then
+    Fields.ClearBuffers( rsNone );
+end;
+
+procedure TIB_Dataset.SysCancelEditedRow;
+begin
+  Fields.CancelBuffers;
+end;
+
+procedure TIB_Dataset.SysCancelInsertedRow;
+begin
+  Fields.CancelBuffers;
+  if Unidirectional then
+    Fields.ClearBuffers( rsNone );
+end;
+
+procedure TIB_Dataset.SysCancelDeletedRow;
+begin
+  Fields.CancelBuffers;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.BeginCallbackFetching;
+var
+  CurTicks: DWORD;
+begin
+  try
+    CurTicks := GetTickCount;
+    if FCallbackFetchingLevel = 0 then
+      FCallbackInitTick := CurTicks;
+    if not Fetching then
+    begin
+      FFetching := true;
+      FFetchingAborted := false;
+      FCallbackRefreshTick := CurTicks;
+      try
+        if ( CallbackInc >= 0 ) and ( CallbackFreezeLevel = 0 ) then
+          SysProcessCallback( csInit );
+      finally
+        BeginBusy(( CallbackInc >= 0 ) and ( CallbackFreezeLevel = 0 ));
+      end;
+    end;
+  finally
+    Inc( FCallbackFetchingLevel );
+  end;
+end;
+
+procedure TIB_Dataset.EndCallbackFetching;
+begin
+  Dec( FCallbackFetchingLevel );
+  if Fetching and ( FCallbackFetchingLevel = 0 ) then
+  begin
+    FFetching := false;
+    try
+      EndBusy;
+    finally
+      try
+        if ( CallbackInc >= 0 ) and ( CallbackFreezeLevel = 0 ) then
+          SysProcessCallback( csFinal );
+      finally
+        if FetchingAborted then
+        begin
+          StateChanged;
+          FFetchingAborted := false;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TIB_Dataset.SysCursorMoveByRow( JumpRecs: longint ): longint;
+var
+  ii: integer;
+  curScanning: integer;
+  curCursorGen: word;
+  curRowNum: longint;
+begin
+  Result := 0;
+  if Unidirectional and ( JumpRecs < 0 ) then
+    raise EIB_StatementError.Create( E_CURSOR_UNI )
+  else
+  if JumpRecs = 0 then
+    CursorFields.SysAfterModify( nil )
+  else
+  if ( FActive or SysOpen ) then
+  begin
+    if ( JumpRecs > 0 ) and not CursorEof then
+    begin
+      try
+        if FScanningLevel = 0 then
+          FMaxScanLevel := 0;
+        Inc( FScanningLevel );
+        Inc( FMaxScanLevel );
+        curScanning := FScanningLevel;
+        curCursorGen := FCursorGen;
+        if JumpRecs = 1 then
+        begin
+          ii := 0;
+          curRowNum := CursorRowNum;
+          SysFetchNext;
+          Inc( ii, CursorRowNum - curRowNum );
+          if FetchingAborted or ( curCursorGen <> FCursorGen ) then
+            Result := 0
+          else
+            Result := ii;
+        end
+        else
+        begin
+          try
+            BeginCallbackFetching;
+            try
+              DisableControls;
+              ii := 0;
+              repeat
+                curRowNum := CursorRowNum;
+                SysFetchNext;
+                Inc( ii, CursorRowNum - curRowNum );
+                Result := ii;
+                if FetchingAborted or ( curCursorGen <> FCursorGen ) then
+                begin
+                  Result := 0;
+                  Break;
+                end;
+                if curScanning <> FMaxScanLevel then
+                begin
+                  Inc( curScanning );
+//                  Break;
+                end;
+              until CursorEof or ( ii >= JumpRecs );
+            finally
+              EnableControls;
+            end;
+          finally
+            EndCallbackFetching;
+          end;
+        end;
+      finally
+        Dec( FScanningLevel );
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SysBeforeOpen;
+begin
+  if not Refreshing then
+    DoBeforeOpen;
+  if NeedToPost then
+    SysPost( false, false );
+end;
+
+procedure TIB_Dataset.SysAfterOpen;
+begin
+  if not Refreshing then
+    DoAfterOpen;
+end;
+
+procedure TIB_Dataset.SysBeforeClose;
+begin
+  if not Refreshing then
+    DoBeforeClose;
+end;
+
+procedure TIB_Dataset.SysAfterClose;
+begin
+  if not Refreshing then
+    DoAfterClose;
+end;
+
+procedure TIB_Dataset.SysBeforeEdit;
+begin
+  DoBeforeEdit;
+end;
+
+procedure TIB_Dataset.SysAfterEdit;
+begin
+  DoAfterEdit;
+end;
+
+procedure TIB_Dataset.SysBeforeInsert;
+begin
+  DoBeforeInsert;
+end;
+
+procedure TIB_Dataset.SysAfterInsert;
+begin
+  DoAfterInsert;
+end;
+
+procedure TIB_Dataset.SysBeforeDelete;
+begin
+  DoBeforeDelete;
+  if State = dssEdit then
+    SysCancel;
+end;
+
+procedure TIB_Dataset.SysAfterDelete;
+begin
+  DoAfterDelete;
+end;
+
+procedure TIB_Dataset.SysBeforePost;
+begin
+  DoBeforePost;
+end;
+
+procedure TIB_Dataset.SysAfterPost;
+begin
+  DoAfterPost;
+end;
+
+procedure TIB_Dataset.SysBeforeCancel;
+begin
+  DoBeforeCancel;
+end;
+
+procedure TIB_Dataset.SysAfterCancel;
+begin
+  DoAfterCancel;
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.GetCanScroll: boolean;
+begin
+  Result := Refreshing or SysGetCanScroll;
+  if Result and Assigned( FOnGetCanScroll ) then
+    OnGetCanScroll( Self, Result );
+end;
+
+function TIB_Dataset.SysGetCanScroll: boolean;
+begin
+  Result := ( BufferActive or ( State = dssSearch )) and
+            (( KeySource = nil ) or
+             ( FKeyChildUpdatingLevel > 0 ) or
+             ( KeySource.State = dssSearch ) or
+               KeySource.CanModify );
+end;
+
+procedure TIB_Dataset.SysBeforeScroll;
+begin
+  if Prepared then
+  begin
+    DoBeforeScroll;
+    CheckCanScroll;
+    if Active then
+      CheckBrowseMode
+    else
+    if NeedToPost then
+      SysPost( true, false );
+    if not Refreshing and
+       not ( csDestroying in ComponentState ) and
+       FIB_KeyDataLink.Prepared then
+      if ( KeyChildUpdatingLevel = 0 ) then
+        try
+          BeginKeyDataFreeze;
+          if not FIB_KeyDataLink.Modify then
+            SysUtils.Abort;
+        finally
+          EndKeyDataFreeze;
+        end;
+  end;
+end;
+
+procedure TIB_Dataset.SysAfterScroll;
+begin
+  if not Unidirectional and ( ControlsDisabledLevel > 0 ) then
+    FWasScrolled := true
+  else
+  if not Refreshing or Unidirectional then
+  begin
+    if FIsRowLocked then
+    begin
+      FIsRowLocked := false;
+      Dec( IB_Transaction.FPessimisticLockCount );
+      IB_Transaction.CheckOAT;
+    end;
+    if Assigned( KeySource ) then
+      if MasterDataChangeLevel = 0 then
+        SysUpdateKeyLinksData;
+    if ( Fields.RowState <> FLastRowState ) and not Fetching then
+    begin
+      SysStateChanged;
+      FLastRowState := Fields.RowState;
+      if Unidirectional then
+        DataChange;
+    end;
+    DoAfterScroll;
+  end;
+end;
+
+procedure TIB_Dataset.SysUpdateKeyLinksData;
+var
+  ii, jj: integer;
+  tmpCol: TIB_Column;
+  tmpCanModifyKeyLinkField: boolean;
+  wasExcp: boolean;
+begin
+  if not ( csDestroying in ComponentState ) and
+     not ( csDesigning in ComponentState ) and
+     Prepared and
+     Assigned( KeyDataset ) and
+     KeyDataset.Prepared and
+     not Refreshing then
+  begin
+    if KeyDataset.State = dssSearch then
+      KeyDataset.InvalidateSQL
+    else
+    begin
+      if KeyChildUpdatingLevel = 0 then
+      begin
+        wasExcp := false;
+        BeginKeyDataFreeze;
+        KeyDataset.Fields.BeginUpdate;
+        try
+          try
+            for ii := 0 to KeyLinks.Count - 1 do
+            begin
+              tmpCanModifyKeyLinkField := true;
+              tmpCol := FieldByName( KeyLinks.IndexNames[ ii ] );
+              for jj := 0 to MasterLinks.Count - 1 do
+                if tmpCol = FieldByName( MasterLinks.IndexNames[jj] ) then
+                begin
+                  tmpCanModifyKeyLinkField := false;
+                  Break;
+                end;
+              if tmpCanModifyKeyLinkField then
+                KeyDataset.FieldByName( KeyLinks.IndexValues[ ii ] ).Assign(
+                  FieldByName( KeyLinks.IndexNames[ ii ] ));
+            end;
+            if KeyDataset.NeedToPost then
+              for ii := 0 to KeyDescLinks.Count - 1 do
+                KeyDataset.FieldByName( KeyDescLinks.IndexValues[ ii ] ).Assign(
+                  FieldByName( KeyDescLinks.IndexNames[ ii ] ));
+          except
+            wasExcp := true;
+            raise;
+          end;
+        finally
+          KeyDataset.Fields.EndUpdate( true );
+          EndKeyDataFreeze;
+          if wasExcp then
+            SysKeyDataChange( nil );
+        end;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure LaunchDSEvent( const DS: TIB_Dataset;
+                         const EV: TIB_DatasetEvent );
+begin
+  if Assigned( EV ) and not ( csLoading in DS.ComponentState ) and
+                        not ( csDestroying in DS.ComponentState ) then EV( DS );
+end;
+procedure TIB_Dataset.DoBeforeEdit;
+begin LaunchDSEvent( Self, BeforeEdit ); end;
+procedure TIB_Dataset.DoAfterEdit;
+begin LaunchDSEvent( Self, AfterEdit ); end;
+procedure TIB_Dataset.DoBeforeSearch;
+begin LaunchDSEvent( Self, BeforeSearch ); end;
+procedure TIB_Dataset.DoAfterSearch;
+begin LaunchDSEvent( Self, AfterSearch ); end;
+procedure TIB_Dataset.DoBeforeInsert;
+begin LaunchDSEvent( Self, BeforeInsert ); end;
+procedure TIB_Dataset.DoAfterInsert;
+begin LaunchDSEvent( Self, AfterInsert ); end;
+procedure TIB_Dataset.DoAfterDelete;
+begin LaunchDSEvent( Self, AfterDelete ); end;
+procedure TIB_Dataset.DoBeforeDelete;
+begin LaunchDSEvent( Self, BeforeDelete ); end;
+procedure TIB_Dataset.DoBeforePost;
+begin LaunchDSEvent( Self, BeforePost ); end;
+procedure TIB_Dataset.DoAfterPost;
+begin LaunchDSEvent( Self, AfterPost ); end;
+procedure TIB_Dataset.DoBeforeCancel;
+begin LaunchDSEvent( Self, BeforeCancel ); end;
+procedure TIB_Dataset.DoAfterCancel;
+begin LaunchDSEvent( Self, AfterCancel ); end;
+procedure TIB_Dataset.DoAfterScroll;
+begin LaunchDSEvent( Self, AfterScroll ); end;
+procedure TIB_Dataset.DoBeforeScroll;
+begin LaunchDSEvent( Self, BeforeScroll ); end;
+
+{------------------------------------------------------------------------------}
+{  Buffering Methods                                                           }
+{------------------------------------------------------------------------------}
+{  At this level the buffering is made to appear as a simple cursor.           }
+{  Descendant classes will override this behavior and add in more              }
+{  functionality and/or replace this functionality.                            }
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.GetBufferRowNum: longint;
+begin
+  if BufferFields.RowState <> rsNone then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+procedure TIB_Dataset.SetBufferRowNum( AValue: longint );
+begin
+// Abstract action at this level.
+end;
+
+function TIB_Dataset.GetBufferBof: boolean;
+begin
+  Result := CursorBof;
+end;
+
+function TIB_Dataset.GetBufferEof: boolean;
+begin
+  Result := CursorEof or
+            ( not Active and (( BufferRowNum > BufferRowCount ) or
+                              ( BufferRowCount = 0 )));
+end;
+
+function TIB_Dataset.GetBufferFields: TIB_Row;
+begin
+  Result := CursorFields;
+end;
+
+function TIB_Dataset.GetBufferRowCount: longint;
+begin
+  if BufferFields.RowState <> rsNone then Result := 1 else
+                                          Result := 0;
+end;
+
+function TIB_Dataset.GetBufferHasBof: boolean;
+begin
+  Result := true;
+end;
+
+function TIB_Dataset.GetBufferHasEof: boolean;
+begin
+  Result := CursorEof or FWasSingleton;
+end;
+
+procedure TIB_Dataset.InvalidateRows;
+begin
+  if not Refreshing then
+  begin
+    if not NeedToPost then
+      SysMoveBy( 0 );
+    ProcessLinkEvent( setInvalidateRows, -1 );
+  end;
+end;
+
+procedure TIB_Dataset.InvalidateRowNum( ARowNum: longint );
+begin
+  if RowNum = ARowNum then
+    if not NeedToPost then
+      SysMoveBy( 0 );
+  ProcessLinkEvent( setInvalidateRows, ARowNum );
+end;
+
+function TIB_Dataset.InvalidateBookmark( const ABookmark: string ): boolean;
+begin
+// Abstract at this level.
+  raise EIB_DatasetError.Create( 'Not implemented' );
+end;
+
+function TIB_Dataset.ValidateRows( Start, Finish: longint ): boolean;
+begin
+// Abstract at this level.
+  raise EIB_DatasetError.Create( 'Not implemented' );
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.SetDefaultValues( AValue: TIB_StringList );
+begin
+  FDefaultValues.Assign( AValue );
+end;
+
+function TIB_Dataset.DoConfirmDelete: boolean;
+begin
+  Result := true;
+  if Assigned( FOnConfirmDelete ) then
+    FOnConfirmDelete( Self, Result )
+  else
+  if ConfirmDeletePrompt.Count > 0 then
+    Result := MessageDlg( ConfirmDeletePrompt.Text,
+                          mtWarning,
+                          mbOkCancel,
+                          0 ) = idOk; //mrOk;
+end;
+
+procedure TIB_Dataset.DisableControls;
+begin
+  Inc( FControlsDisabledLevel );
+end;
+
+procedure TIB_Dataset.EnableControls;
+begin
+  Dec( FControlsDisabledLevel );
+  if FControlsDisabledLevel = 0 then
+  begin
+    if FWasStateChange then
+    begin
+      SysStateChanged;
+      ProcessLinkEvent( setFieldsDataChange, 0 );
+    end; // Don't make an else here.
+    if FWasDataChange then
+      ProcessLinkEvent( setFieldsDataChange, 0 );
+    if FWasScrolled then
+    begin
+      FWasScrolled := false;
+      SysAfterScroll;
+    end;
+  end;
+end;
+
+procedure TIB_Dataset.SysStateChanged;
+begin
+  if not ( csDestroying in ComponentState ) then
+  begin
+    if not Unidirectional and ( ControlsDisabledLevel > 0 ) then
+      FWasStateChange := true
+    else
+    begin
+      FWasStateChange := false;
+      if State = dssPrepared then
+        FLastRowState := rsNone;
+      if ( State <> dssPrepared ) or not FInsertPending then begin
+        DoLinkStateChanged;
+        if FRefreshDML then begin
+          Refresh;
+          FRefreshDML := False;
+        end;
+      end;
+    end;
+  end;
+end;
+
+// This function is used to try and prevent master-detail cascades
+// from resetting the search criteria during the PostSearch process...
+function IsSearchNotPosting( DSet: TIB_Dataset ): boolean;
+begin
+  Result := false;
+  if DSet.State = dssSearch then
+    if not DSet.IsPosting then
+      if assigned( DSet.MasterDataset ) and DSet.MasterSearch then
+        Result := IsSearchNotPosting( DSet.MasterDataset )
+      else
+        Result := true;
+end;
+
+procedure TIB_Dataset.ProcessLinkEvent( AEvent: TIB_StatementEventType;
+                                        Info: integer );
+begin
+  if AEvent = setFieldsDataChange then
+  begin
+    if Assigned( KeyDataset ) and ( KeyDataset.State = dssSearch ) then
+    begin
+      if IsSearchNotPosting( KeyDataset ) then
+        IB_KeyDataLink.SetSearchFromKeyData;
+    end;
+    if not ( csDestroying in ComponentState ) then
+    begin
+      if not Unidirectional and ( ControlsDisabledLevel > 0 ) then
+        FWasDataChange := true
+      else
+      begin
+        FWasDataChange := false;
+        inherited ProcessLinkEvent( AEvent, Info );
+      end;
+    end;
+  end
+  else
+    inherited ProcessLinkEvent( AEvent, Info );
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_Dataset.GetCanDoSearchedSQL: boolean;
+var
+  ii: integer;
+  tmpStr, tmpSKR: string;
+begin
+  if SysKeyRelation = '' then
+    Result := false
+  else
+  begin
+    Result := true;
+    for ii := 0 to KeyFields.ColumnCount - 1 do
+    begin
+      if ii = 0 then
+        tmpStr := KeyFields[ ii ].RelName
+      else
+      if AnsiCompareText( tmpStr, KeyFields[ii].RelName ) <> 0 then
+      begin
+        Result := false;
+        Break;
+      end;
+      if tmpStr = '' then
+      begin
+        Result := false;
+        Break;
+      end;
+    end;
+    if Result then
+    begin
+      tmpSKR := SysKeyRelation;
+      if Pos( '"', tmpSKR ) = 0 then
+        tmpSKR := '"' + tmpSKR + '"';
+      if Pos( '"', tmpStr ) = 0 then
+        tmpStr := '"' + tmpStr + '"';
+      Result := AnsiCompareText( tmpStr, tmpSKR ) = 0;
+    end;
+  end;
+end;
+
+function TIB_Dataset.GetSearchedDeletes: boolean;
+begin
+  Result := FUpdateSQL.SearchedDeletes;
+end;
+
+procedure TIB_Dataset.SetSearchedDeletes( AValue: boolean );
+begin
+  if SearchedDeletes <> AValue then
+  begin
+    FUpdateSQL.SearchedDeletes := AValue;
+    SysStateChanged;
+  end;
+end;
+
+function TIB_Dataset.GetSearchedEdits: boolean;
+begin
+  Result := FUpdateSQL.SearchedEdits;
+end;
+
+procedure TIB_Dataset.SetSearchedEdits( AValue: boolean );
+begin
+  if SearchedEdits <> AValue then
+  begin
+    FUpdateSQL.SearchedEdits := AValue;
+    SysStateChanged;
+  end;
+end;
+
+function TIB_Dataset.GetPreparedEdits: boolean;
+begin
+  Result := FUpdateSQL.PreparedEdits;
+end;
+
+procedure TIB_Dataset.SetPreparedEdits( AValue: boolean );
+begin
+  if PreparedEdits <> AValue then
+  begin
+    FUpdateSQL.PreparedEdits := AValue;
+    SysStateChanged;
+  end;
+end;
+
+function TIB_Dataset.GetPreparedInserts: boolean;
+begin
+  Result := FUpdateSQL.PreparedInserts;
+end;
+
+procedure TIB_Dataset.SetPreparedInserts( AValue: boolean );
+begin
+  if PreparedInserts <> AValue then
+  begin
+    FUpdateSQL.PreparedInserts := AValue;
+    SysStateChanged;
+  end;
+end;
+
+function TIB_Dataset.GetKeyFields: TIB_Row;
+begin
+  if FCursorKeyFieldCount > 0 then
+    Result := CursorKeyFields
+  else
+    Result := CursorFields;
+end;
+
+function TIB_Dataset.KeyFieldByName( const AFieldName: string ): TIB_Column;
+begin
+  Result := KeyFields.ByName( AFieldName );
+end;
+
+function TIB_Dataset.GetUpdatesPending: boolean;
+begin
+  Result := false;
+end;
+
+function TIB_Dataset.GetUpdateStatus: TIB_UpdateStatus;
+begin
+  Result := ustUnmodified;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Dataset.APIFirst;
+begin
+  with IB_Session, FCursorFields do
+  begin
+    SysPrepare;
+    API_CloseCursor;
+    API_Execute;
+    API_OpenCursor( FCursorName );
+    FActive := true;
+    FCursorRowNum := 0;
+    CursorFields.CleanBuffers( true );
+    FCursorEof := false;
+    APINext;
+  end;
+end;
+
+procedure TIB_Dataset.APINext;
+var
+  SaveCW: word;
+begin
+  with IB_Session, CursorFields do
+  begin
+    if ( MaxRows > 0 ) and ( FCursorRowNum = MaxRows ) then
+      errcode := 100
+    else
+    begin
+      if ( BlobCount + ArrayCount > 0 ) then
+        ClearBlobNodes( true );
+      asm fstcw [SaveCW] end;
+      errcode := isc_dsql_fetch( @status,
+                                 PstHandle,
+                                 SQLDialect,
+                                 PSQLDA );
+      asm fldcw [SaveCW] end;
+    end;
+    Inc( FCursorRowNum );
+    if errcode = 0 then
+      RefreshBuffers( true, true, true )
+    else
+    if errcode = 100 then
+    begin
+      SetRowState( rsNone );
+      FCursorEof := true;
+      API_CloseCursor;
+    end
+    else
+      try
+        HandleException( Self );
+      finally
+        API_CloseCursor;
+      end;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_Cursor.Next;
+begin
+  if FActive or SysOpen then
+  begin
+    if CursorEof then
+      raise EIB_DatasetError.Create( E_END_OF_Dataset )
+    else
+    begin
+      BeginBusy( false );
+      try
+        SysBeforeScroll;
+        SysFetchNext;
+        SysAfterScroll;
+      finally
+        EndBusy;
+      end;
+    end;
+  end;
+end;
+
+procedure TIB_Cursor.APIFirst;
+begin
+  inherited APIFirst;
+end;
+
+procedure TIB_Cursor.APINext;
+begin
+  inherited APINext;
+end;

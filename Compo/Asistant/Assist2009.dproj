@@ -1,0 +1,138 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{D01D5E22-0F54-485D-8402-34EEA835B68F}</ProjectGuid>
+			<MainSource>Assist2009.dpk</MainSource>
+			<Config Condition="'$(Config)'==''">Debug</Config>
+			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+			<ProjectVersion>12.0</ProjectVersion>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_ImageBase>00400000</DCC_ImageBase>
+			<DCC_DependencyCheckOutputName>..\..\..\..\Public\Documents\RAD Studio\6.0\Bpl\Assist2009.bpl</DCC_DependencyCheckOutputName>
+			<DCC_DebugInformation>false</DCC_DebugInformation>
+			<DCC_WriteableConstants>true</DCC_WriteableConstants>
+			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+			<DCC_Description>Office Assistant Package for Delphi 2009</DCC_Description>
+			<DCC_Platform>x86</DCC_Platform>
+			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+			<DCC_N>true</DCC_N>
+			<DCC_K>false</DCC_K>
+			<GenDll>true</GenDll>
+			<DCC_S>false</DCC_S>
+			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+			<GenPackage>true</GenPackage>
+			<DCC_F>false</DCC_F>
+			<DCC_E>false</DCC_E>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="Assist2009.dpk">
+				<MainSource>MainSource</MainSource>
+			</DelphiCompile>
+			<DCCReference Include="oaReg.dcr"/>
+			<DCCReference Include="OffBtn.dcr"/>
+			<DCCReference Include="vcl.dcp"/>
+			<DCCReference Include="designide.dcp"/>
+			<DCCReference Include="oaTypes.pas"/>
+			<DCCReference Include="oaActor.pas"/>
+			<DCCReference Include="oaAssist.pas"/>
+			<DCCReference Include="oaBaloon.pas">
+				<Form>AssistantBalloon</Form>
+			</DCCReference>
+			<DCCReference Include="oaBitmap.pas"/>
+			<DCCReference Include="oaDirect.pas"/>
+			<DCCReference Include="oaEngine.pas"/>
+			<DCCReference Include="oaReg.pas"/>
+			<DCCReference Include="oaAbout.pas">
+				<Form>AssistantAbout</Form>
+			</DCCReference>
+			<DCCReference Include="OffBtn.pas"/>
+			<DCCReference Include="oaConst.pas"/>
+			<DCCReference Include="oaLZRWKH.pas"/>
+			<DCCReference Include="oaTopics.pas">
+				<Form>TopicsEditor</Form>
+			</DCCReference>
+			<DCCReference Include="oaProps.pas"/>
+			<DCCReference Include="oaStage.pas"/>
+			<DCCReference Include="oaSelect.pas">
+				<Form>ActorLibDialog</Form>
+			</DCCReference>
+			<DCCReference Include="oaReg.dcr"/>
+			<DCCReference Include="OffBtn.dcr"/>
+			<BuildConfiguration Include="Base">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+		<ProjectExtensions>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
+			<Borland.ProjectType>Package</Borland.ProjectType>
+			<BorlandProject>
+				<Delphi.Personality>
+					<Source>
+						<Source Name="MainSource">Assist2009.dpk</Source>
+					</Source>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">3</VersionInfo>
+						<VersionInfo Name="MinorVer">36</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1033</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName"/>
+						<VersionInfoKeys Name="FileDescription">Office Assistant Package for Delphi 2009</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">3.36.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName">ASSIST2009</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright © 1999-2008 Kambiz R. Khojasteh</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename">ASSIST2009.BPL</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductName"/>
+						<VersionInfoKeys Name="ProductVersion">3.36</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments">http://www.delphiarea.com</VersionInfoKeys>
+					</VersionInfoKeys>
+				</Delphi.Personality>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>

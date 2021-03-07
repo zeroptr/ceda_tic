@@ -1,0 +1,215 @@
+object LinkedTablesForm: TLinkedTablesForm
+  Left = 212
+  Top = 130
+  Width = 497
+  Height = 406
+  ActiveControl = DBNavigator1
+  Caption = 'TeeChart Linked Tables Demo'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clBlack
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  Position = poScreenCenter
+  Scaled = False
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object DBChart1: TDBChart
+    Left = 0
+    Top = 209
+    Width = 489
+    Height = 170
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    BackWall.Pen.Color = clAqua
+    BackWall.Pen.Style = psDashDot
+    Foot.Alignment = taRightJustify
+    Foot.Font.Color = clBlue
+    Foot.Font.Height = -15
+    Foot.Font.Style = [fsBold]
+    Foot.Frame.Color = clScrollBar
+    Foot.Visible = False
+    Title.Font.Color = clNavy
+    Title.Font.Height = -13
+    Title.Font.Style = [fsBold, fsItalic]
+    Title.Frame.Color = clScrollBar
+    Title.Text.Strings = (
+      'Linked Tables Chart Demo')
+    BottomAxis.LabelsAngle = 90
+    BottomAxis.LabelsFont.Color = clGreen
+    BottomAxis.LabelsFont.Height = -13
+    BottomAxis.LabelsFont.Style = [fsBold]
+    BottomAxis.LabelStyle = talText
+    Chart3DPercent = 90
+    Frame.Color = clAqua
+    Frame.Style = psDashDot
+    Legend.BevelWidth = 1
+    Legend.Color = clBlue
+    Legend.ColorWidth = 13
+    Legend.Font.Color = clYellow
+    Legend.Font.Height = -13
+    Legend.Font.Style = [fsBold]
+    Legend.Frame.Color = clNavy
+    Legend.Frame.Width = 2
+    Legend.Shadow.Color = clGray
+    Legend.Symbol.Width = 13
+    Legend.TextStyle = ltsRightValue
+    Legend.TopPos = 7
+    RightAxis.LabelsFont.Color = clRed
+    RightAxis.LabelsFont.Height = -13
+    RightAxis.LabelsFont.Style = [fsItalic]
+    RightAxis.TickLength = 12
+    RightAxis.Ticks.Color = clWhite
+    RightAxis.Ticks.Width = 2
+    View3DOptions.Elevation = 359
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 35
+    View3DOptions.Rotation = 341
+    View3DOptions.Zoom = 80
+    Align = alClient
+    TabOrder = 0
+    object AreaSeries1: TAreaSeries
+      ColorEachPoint = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      DataSource = Table2
+      VertAxis = aRightAxis
+      XLabelsSource = 'SaleDate'
+      DrawArea = True
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.ValueSource = 'AmountPaid'
+      Left = 40
+      Top = 258
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 489
+    Height = 39
+    Align = alTop
+    TabOrder = 1
+    object DBNavigator1: TDBNavigator
+      Left = 137
+      Top = 7
+      Width = 160
+      Height = 23
+      DataSource = DataSource1
+      VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+      Flat = True
+      TabOrder = 0
+    end
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = '&Open tables'
+      TabOrder = 1
+      OnClick = CheckBox1Click
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 39
+    Width = 489
+    Height = 170
+    Align = alTop
+    TabOrder = 2
+    object Splitter1: TSplitter
+      Left = 233
+      Top = 1
+      Height = 168
+    end
+    object DBGrid1: TDBGrid
+      Left = 1
+      Top = 1
+      Width = 232
+      Height = 168
+      Align = alLeft
+      DataSource = DataSource1
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clBlack
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = []
+    end
+    object DBGrid2: TDBGrid
+      Left = 236
+      Top = 1
+      Width = 252
+      Height = 168
+      Align = alClient
+      DataSource = DataSource2
+      Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+      TabOrder = 1
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clBlack
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = []
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = Table1
+    OnDataChange = DataSource1DataChange
+    Left = 344
+    Top = 112
+  end
+  object Table1: TTable
+    DatabaseName = 'DBDEMOS'
+    TableName = 'CUSTOMER.DB'
+    Left = 288
+    Top = 112
+    object Table1CustNo: TFloatField
+      DisplayWidth = 8
+      FieldName = 'CustNo'
+    end
+    object Table1Company: TStringField
+      DisplayWidth = 30
+      FieldName = 'Company'
+      Size = 30
+    end
+  end
+  object Table2: TTable
+    DatabaseName = 'DBDEMOS'
+    IndexFieldNames = 'CustNo'
+    MasterFields = 'CustNo'
+    MasterSource = DataSource1
+    TableName = 'ORDERS.DB'
+    Left = 288
+    Top = 160
+    object Table2OrderNo: TFloatField
+      DisplayWidth = 9
+      FieldName = 'OrderNo'
+    end
+    object Table2CustNo: TFloatField
+      FieldName = 'CustNo'
+      Required = True
+      Visible = False
+    end
+    object Table2SaleDate: TDateTimeField
+      DisplayWidth = 13
+      FieldName = 'SaleDate'
+    end
+    object Table2AmountPaid: TCurrencyField
+      DisplayWidth = 12
+      FieldName = 'AmountPaid'
+    end
+  end
+  object DataSource2: TDataSource
+    DataSet = Table2
+    Left = 344
+    Top = 160
+  end
+end

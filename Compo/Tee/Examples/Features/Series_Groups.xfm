@@ -1,0 +1,72 @@
+inherited SeriesGroupsForm: TSeriesGroupsForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Series components can be grouped to easily show / hide multiple ' +
+        'series at once. '
+      'The Chart editor, when groups are enabled, show the group names.'
+      ''
+      'Chart1.SeriesList.Groups.Add( '#39'My group'#39' );')
+  end
+  inherited Chart1: TChart
+    Left = 121
+    Width = 358
+    Chart3DPercent = 10
+  end
+  inherited Panel1: TPanel
+    object Button1: TButton
+      Left = 176
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object ComboFlat1: TComboFlat
+      Left = 10
+      Top = 10
+      Width = 145
+      TabOrder = 1
+      OnChange = ComboFlat1Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 265
+      Top = 4
+      Width = 130
+      Height = 17
+      Caption = 'Show &groups at editor'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+    end
+    object CheckBox2: TCheckBox
+      Left = 265
+      Top = 20
+      Width = 160
+      Height = 17
+      Caption = 'Show "&All group" at editor'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+    end
+  end
+  object ChartListBox1: TChartListBox
+    Left = 0
+    Top = 116
+    Width = 121
+    Height = 221
+    Chart = Chart1
+    Align = alLeft
+    ItemHeight = 24
+    TabOrder = 3
+  end
+  object ChartEditor1: TChartEditor
+    Chart = Chart1
+    Left = 176
+    Top = 180
+  end
+end

@@ -1,0 +1,47 @@
+inherited Gallery3DForm: TGallery3DForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 65
+  end
+  inherited Memo1: TMemo
+    Height = 65
+    Lines.Strings = (
+      'The 3D gallery offers an easy way to change 3D view settings'
+      'with just one mouse click.'
+      'This gallery is located under the Chart Editor dialog, 3D tab.')
+  end
+  inherited Chart1: TChart
+    Top = 108
+    Height = 229
+    Legend.Visible = False
+    Title.Visible = False
+    View3DOptions.Perspective = 171
+    View3DOptions.Zoom = 56
+    object Series1: TSurfaceSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 67
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 161
+      Height = 25
+      Caption = '&Show 3D Gallery...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+end

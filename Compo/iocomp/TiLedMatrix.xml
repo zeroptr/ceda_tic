@@ -1,0 +1,378 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Medium Squares [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>5</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>0</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>26</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>1</IndicatorStyle>
+<IndicatorWidth>26</IndicatorWidth>
+<OuterMargin>5</OuterMargin>
+<RowCount>5</RowCount>
+<SpacingHorizontal>2</SpacingHorizontal>
+<SpacingVertical>2</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Squares</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>6</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>0</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>11</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>1</IndicatorStyle>
+<IndicatorWidth>11</IndicatorWidth>
+<OuterMargin>5</OuterMargin>
+<RowCount>6</RowCount>
+<SpacingHorizontal>2</SpacingHorizontal>
+<SpacingVertical>2</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Raised Squares</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>6</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>1</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>11</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>1</IndicatorStyle>
+<IndicatorWidth>11</IndicatorWidth>
+<OuterMargin>5</OuterMargin>
+<RowCount>6</RowCount>
+<SpacingHorizontal>2</SpacingHorizontal>
+<SpacingVertical>2</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Sunken Squares</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>6</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>2</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>11</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>1</IndicatorStyle>
+<IndicatorWidth>11</IndicatorWidth>
+<OuterMargin>5</OuterMargin>
+<RowCount>6</RowCount>
+<SpacingHorizontal>2</SpacingHorizontal>
+<SpacingVertical>2</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Circles</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>6</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>0</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>11</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>0</IndicatorStyle>
+<IndicatorWidth>11</IndicatorWidth>
+<OuterMargin>5</OuterMargin>
+<RowCount>6</RowCount>
+<SpacingHorizontal>2</SpacingHorizontal>
+<SpacingVertical>2</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Small Sunken Circles</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>6</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>2</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>11</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>0</IndicatorStyle>
+<IndicatorWidth>11</IndicatorWidth>
+<OuterMargin>5</OuterMargin>
+<RowCount>6</RowCount>
+<SpacingHorizontal>2</SpacingHorizontal>
+<SpacingVertical>2</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Row of Rectangle LEDs</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>8</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>1</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>0</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>29</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>1</IndicatorStyle>
+<IndicatorWidth>65</IndicatorWidth>
+<OuterMargin>5</OuterMargin>
+<RowCount>1</RowCount>
+<SpacingHorizontal>2</SpacingHorizontal>
+<SpacingVertical>2</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Bank Rectangular LEDs</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>8</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>1</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>20</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>1</IndicatorStyle>
+<IndicatorWidth>50</IndicatorWidth>
+<OuterMargin>10</OuterMargin>
+<RowCount>8</RowCount>
+<SpacingHorizontal>1</SpacingHorizontal>
+<SpacingVertical>1</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Large Bank Circular LEDs</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BorderStyle>0</BorderStyle>
+<ColCount>8</ColCount>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorBevelStyle>1</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>25</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>0</IndicatorStyle>
+<IndicatorWidth>25</IndicatorWidth>
+<OuterMargin>10</OuterMargin>
+<RowCount>8</RowCount>
+<SpacingHorizontal>1</SpacingHorizontal>
+<SpacingVertical>1</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>LCD Matrix Configuration</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>9671775</BackGroundColor>
+<BorderStyle>1</BorderStyle>
+<ColCount>96</ColCount>
+<IndicatorActiveColor>16776960</IndicatorActiveColor>
+<IndicatorBevelStyle>0</IndicatorBevelStyle>
+<IndicatorCaptionActiveFont.Style>0</IndicatorCaptionActiveFont.Style>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionActiveFont.Name>MS Sans Serif</IndicatorCaptionActiveFont.Name>
+<IndicatorCaptionActiveFont.Size>8</IndicatorCaptionActiveFont.Size>
+<IndicatorCaptionInactiveFont.Style>0</IndicatorCaptionInactiveFont.Style>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<IndicatorCaptionInactiveFont.Name>MS Sans Serif</IndicatorCaptionInactiveFont.Name>
+<IndicatorCaptionInactiveFont.Size>8</IndicatorCaptionInactiveFont.Size>
+<IndicatorHeight>2</IndicatorHeight>
+<IndicatorShowReflection>1</IndicatorShowReflection>
+<IndicatorStyle>1</IndicatorStyle>
+<IndicatorWidth>2</IndicatorWidth>
+<OuterMargin>4</OuterMargin>
+<RowCount>32</RowCount>
+<SpacingHorizontal>1</SpacingHorizontal>
+<SpacingVertical>1</SpacingVertical>
+<Transparent>0</Transparent>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Semi-Transparent Lime [Default]</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Orange</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<IndicatorActiveColor>33023</IndicatorActiveColor>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Red</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<IndicatorActiveColor>255</IndicatorActiveColor>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<IndicatorActiveColor>65535</IndicatorActiveColor>
+<IndicatorCaptionActiveFont.Color>65535</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionInactiveFont.Color>32896</IndicatorCaptionInactiveFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>GrayScale</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<IndicatorActiveColor>16777215</IndicatorActiveColor>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight Orange</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<IndicatorActiveColor>33023</IndicatorActiveColor>
+<IndicatorCaptionActiveFont.Color>-2147483640</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionInactiveFont.Color>16777215</IndicatorCaptionInactiveFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight Lime</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<IndicatorActiveColor>65280</IndicatorActiveColor>
+<IndicatorCaptionActiveFont.Color>16777215</IndicatorCaptionActiveFont.Color>
+<IndicatorCaptionInactiveFont.Color>12632256</IndicatorCaptionInactiveFont.Color>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

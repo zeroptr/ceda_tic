@@ -1,0 +1,303 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Low Resolution [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>45056</BarColor>
+<BarCount>32</BarCount>
+<BarSpacing>1</BarSpacing>
+<BarWidth>6</BarWidth>
+<BorderStyle>2</BorderStyle>
+<DecayEnabled>1</DecayEnabled>
+<DecayInitialDelay>750</DecayInitialDelay>
+<DecayInterval>40</DecayInterval>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>5</OuterMarginLeft>
+<OuterMarginRight>5</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<PeakLineColor>16777215</PeakLineColor>
+<PeakShow>1</PeakShow>
+<ScaleMax>100</ScaleMax>
+<ScaleMin>0</ScaleMin>
+<Transparent>0</Transparent>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Medium Resolution</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>45056</BarColor>
+<BarCount>64</BarCount>
+<BarSpacing>1</BarSpacing>
+<BarWidth>3</BarWidth>
+<BorderStyle>2</BorderStyle>
+<DecayEnabled>1</DecayEnabled>
+<DecayInitialDelay>750</DecayInitialDelay>
+<DecayInterval>40</DecayInterval>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>5</OuterMarginLeft>
+<OuterMarginRight>5</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<PeakLineColor>16777215</PeakLineColor>
+<PeakShow>1</PeakShow>
+<ScaleMax>100</ScaleMax>
+<ScaleMin>0</ScaleMin>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>High Resolution</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>65280</BarColor>
+<BarCount>128</BarCount>
+<BarSpacing>1</BarSpacing>
+<BarWidth>1</BarWidth>
+<BorderStyle>2</BorderStyle>
+<DecayEnabled>1</DecayEnabled>
+<DecayInitialDelay>750</DecayInitialDelay>
+<DecayInterval>40</DecayInterval>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>5</OuterMarginLeft>
+<OuterMarginRight>5</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<PeakLineColor>16777215</PeakLineColor>
+<PeakShow>1</PeakShow>
+<ScaleMax>100</ScaleMax>
+<ScaleMin>0</ScaleMin>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Solid High Resolution</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<AutoSize>1</AutoSize>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>45056</BarColor>
+<BarCount>256</BarCount>
+<BarSpacing>0</BarSpacing>
+<BarWidth>1</BarWidth>
+<BorderStyle>2</BorderStyle>
+<DecayEnabled>1</DecayEnabled>
+<DecayInitialDelay>750</DecayInitialDelay>
+<DecayInterval>40</DecayInterval>
+<OuterMarginBottom>0</OuterMarginBottom>
+<OuterMarginLeft>5</OuterMarginLeft>
+<OuterMarginRight>5</OuterMarginRight>
+<OuterMarginTop>0</OuterMarginTop>
+<PeakLineColor>16777215</PeakLineColor>
+<PeakShow>1</PeakShow>
+<ScaleMax>100</ScaleMax>
+<ScaleMin>0</ScaleMin>
+<Transparent>0</Transparent>
+<UpdateFrameRate>0</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Midnight Lime [Default]</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>45056</BarColor>
+<PeakLineColor>16777215</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight Red</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>255</BarColor>
+<PeakLineColor>16777215</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight Blue</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>10485760</BarColor>
+<PeakLineColor>16777215</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight Teal</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>16776960</BarColor>
+<PeakLineColor>16777215</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>12632256</BarColor>
+<PeakLineColor>16777215</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<BarColor>65535</BarColor>
+<PeakLineColor>16777215</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Red</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BarColor>191</BarColor>
+<PeakLineColor>0</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Blue</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BarColor>16711680</BarColor>
+<PeakLineColor>0</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Green</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BarColor>32768</BarColor>
+<PeakLineColor>0</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Yellow</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BarColor>57825</BarColor>
+<PeakLineColor>0</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Semi-Transparent Purple</Name>
+<Properties>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BarColor>8388736</BarColor>
+<PeakLineColor>0</PeakLineColor>
+<Transparent>0</Transparent>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Peak Decay Scheme</Name>
+<Scheme>
+<Name>Medium Decay (40ms) [Default]</Name>
+<Properties>
+<DecayEnabled>1</DecayEnabled>
+<DecayInterval>40</DecayInterval>
+<PeakShow>1</PeakShow>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Slow Decay (100ms)</Name>
+<Properties>
+<DecayEnabled>1</DecayEnabled>
+<DecayInterval>100</DecayInterval>
+<PeakShow>1</PeakShow>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Medium-Fast Decay (25ms)</Name>
+<Properties>
+<DecayEnabled>1</DecayEnabled>
+<DecayInterval>25</DecayInterval>
+<PeakShow>1</PeakShow>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Fast Decay (10ms)</Name>
+<Properties>
+<DecayEnabled>1</DecayEnabled>
+<DecayInterval>10</DecayInterval>
+<PeakShow>1</PeakShow>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Instant Decay (0ms)</Name>
+<Properties>
+<DecayEnabled>1</DecayEnabled>
+<DecayInterval>40</DecayInterval>
+<PeakShow>1</PeakShow>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>No Decay</Name>
+<Properties>
+<DecayEnabled>0</DecayEnabled>
+<DecayInterval>40</DecayInterval>
+<PeakShow>1</PeakShow>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Disable Peaks</Name>
+<Properties>
+<DecayEnabled>0</DecayEnabled>
+<DecayInterval>40</DecayInterval>
+<PeakShow>0</PeakShow>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Peak Initial Delay Scheme</Name>
+<Scheme>
+<Name>Med-Long Delay (750ms) [Default]</Name>
+<Properties>
+<DecayInitialDelay>750</DecayInitialDelay>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Long Delay (1000ms)</Name>
+<Properties>
+<DecayInitialDelay>1000</DecayInitialDelay>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Medium Delay (500ms)</Name>
+<Properties>
+<DecayInitialDelay>500</DecayInitialDelay>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Short Delay (250ms)</Name>
+<Properties>
+<DecayInitialDelay>250</DecayInitialDelay>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>No Delay (0ms)</Name>
+<Properties>
+<DecayInitialDelay>0</DecayInitialDelay>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

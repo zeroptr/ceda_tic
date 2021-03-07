@@ -1,0 +1,42 @@
+inherited CandleAxisLabels: TCandleAxisLabels
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'When using Candle series with intraday data (default), the botto' +
+        'm axis'
+      
+        'automatically shows time labels.  But, when adding Candle points' +
+        ' that'
+      'have "weekends", it'#39's necessary some code to display day / month'
+      'labels correctly, without showing the weekend days.')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Title.Visible = False
+    View3D = False
+    OnGetAxisLabel = Chart1GetAxisLabel
+    object Series1: TCandleSeries
+      CloseValues.DateTime = False
+      CloseValues.Name = 'Close'
+      CloseValues.Order = loNone
+      DateValues.DateTime = True
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.DateTime = False
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.DateTime = False
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      OpenValues.DateTime = False
+      OpenValues.Name = 'Open'
+      OpenValues.Order = loNone
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+    end
+  end
+end

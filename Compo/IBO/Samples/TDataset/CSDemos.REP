@@ -1,0 +1,39 @@
+[OST File Replace]
+SourceDir=C:\Program Files\Borland\Delphi5\Demos\Db\Csdemos
+DestDir=IBOCSDemos
+FileTypes=*.*
+FileSelection=0
+CaseInsensitive=1
+WholeWordsOnly=1
+CopyUnchangedFiles=1
+FindOnly=0
+[Description]
+ItemCount=2
+Item0=DESCRIPTION: This makes it so that you can convert the entire CSDemos sample application to
+Item1=IBO in one straight shot.
+[Replace]
+ItemCount=11
+Item0=TDatabase
+Item1=TTable
+Item2=TQuery
+Item3=TStoredProc
+Item4=TUpdateSQL
+Item5=TFloatField
+Item6=TBCDField
+Item7=TDBDataset
+Item8=TBDEDataset
+Item9=DBTables
+Item10=SalesTableTOTAL_VALUE: TIntegerField
+[ReplaceWith]
+ItemCount=11
+Item0=TIBODatabase
+Item1=TIBOTable
+Item2=TIBOQuery
+Item3=TIBOStoredProc
+Item4=TIBOUpdateSQL
+Item5=TIBOFloatField
+Item6=TIBOBCDField
+Item7=TIBODataset
+Item8=TIBODataset
+Item9=IBODataset
+Item10=SalesTableTOTAL_VALUE: TIBOFloatField

@@ -1,0 +1,224 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{0bcfead3-6206-4767-a266-a7138ece961d}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="IBO40ADT.dproj" />
+    <Projects Include="IBO40CDT.dproj" />
+    <Projects Include="IBO40CRT.dproj" />
+    <Projects Include="IBO40EDT.dproj" />
+    <Projects Include="IBO40FDT.dproj" />
+    <Projects Include="IBO40FRT.dproj" />
+    <Projects Include="IBO40FTS.dproj" />
+    <Projects Include="IBO40RPL.dproj" />
+    <Projects Include="IBO40TDT.dproj" />
+    <Projects Include="IBO40TRT.dproj" />
+    <Projects Include="IBO40VDT.dproj" />
+    <Projects Include="IBO40VRT.dproj" />
+    <Projects Include="IBO40WDT.dproj" />
+    <Projects Include="IBO40WRT.dproj" />
+    <Projects Include="IBO40WSDT.dproj" />
+    <Projects Include="IBO40WSRT.dproj" />
+    <Projects Include="IBO40WXDT.dproj" />
+    <Projects Include="IBO40WXRT.dproj" />
+    <Projects Include="IBO40XDT.dproj" />
+    <Projects Include="IBO40XRT.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="IBO40CRT">
+    <MSBuild Projects="IBO40CRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40CRT:Clean">
+    <MSBuild Projects="IBO40CRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40CRT:Make">
+    <MSBuild Projects="IBO40CRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40TRT">
+    <MSBuild Projects="IBO40TRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40TRT:Clean">
+    <MSBuild Projects="IBO40TRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40TRT:Make">
+    <MSBuild Projects="IBO40TRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40VRT">
+    <MSBuild Projects="IBO40VRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40VRT:Clean">
+    <MSBuild Projects="IBO40VRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40VRT:Make">
+    <MSBuild Projects="IBO40VRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40FRT">
+    <MSBuild Projects="IBO40FRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40FRT:Clean">
+    <MSBuild Projects="IBO40FRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40FRT:Make">
+    <MSBuild Projects="IBO40FRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40XRT">
+    <MSBuild Projects="IBO40XRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40XRT:Clean">
+    <MSBuild Projects="IBO40XRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40XRT:Make">
+    <MSBuild Projects="IBO40XRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40WRT">
+    <MSBuild Projects="IBO40WRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40WRT:Clean">
+    <MSBuild Projects="IBO40WRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40WRT:Make">
+    <MSBuild Projects="IBO40WRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40WSRT">
+    <MSBuild Projects="IBO40WSRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40WSRT:Clean">
+    <MSBuild Projects="IBO40WSRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40WSRT:Make">
+    <MSBuild Projects="IBO40WSRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40WXRT">
+    <MSBuild Projects="IBO40WXRT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40WXRT:Clean">
+    <MSBuild Projects="IBO40WXRT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40WXRT:Make">
+    <MSBuild Projects="IBO40WXRT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40CDT">
+    <MSBuild Projects="IBO40CDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40CDT:Clean">
+    <MSBuild Projects="IBO40CDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40CDT:Make">
+    <MSBuild Projects="IBO40CDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40ADT">
+    <MSBuild Projects="IBO40ADT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40ADT:Clean">
+    <MSBuild Projects="IBO40ADT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40ADT:Make">
+    <MSBuild Projects="IBO40ADT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40TDT">
+    <MSBuild Projects="IBO40TDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40TDT:Clean">
+    <MSBuild Projects="IBO40TDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40TDT:Make">
+    <MSBuild Projects="IBO40TDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40VDT">
+    <MSBuild Projects="IBO40VDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40VDT:Clean">
+    <MSBuild Projects="IBO40VDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40VDT:Make">
+    <MSBuild Projects="IBO40VDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40FDT">
+    <MSBuild Projects="IBO40FDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40FDT:Clean">
+    <MSBuild Projects="IBO40FDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40FDT:Make">
+    <MSBuild Projects="IBO40FDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40XDT">
+    <MSBuild Projects="IBO40XDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40XDT:Clean">
+    <MSBuild Projects="IBO40XDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40XDT:Make">
+    <MSBuild Projects="IBO40XDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40WDT">
+    <MSBuild Projects="IBO40WDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40WDT:Clean">
+    <MSBuild Projects="IBO40WDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40WDT:Make">
+    <MSBuild Projects="IBO40WDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40WSDT">
+    <MSBuild Projects="IBO40WSDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40WSDT:Clean">
+    <MSBuild Projects="IBO40WSDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40WSDT:Make">
+    <MSBuild Projects="IBO40WSDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40WXDT">
+    <MSBuild Projects="IBO40WXDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40WXDT:Clean">
+    <MSBuild Projects="IBO40WXDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40WXDT:Make">
+    <MSBuild Projects="IBO40WXDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40EDT">
+    <MSBuild Projects="IBO40EDT.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40EDT:Clean">
+    <MSBuild Projects="IBO40EDT.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40EDT:Make">
+    <MSBuild Projects="IBO40EDT.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40RPL">
+    <MSBuild Projects="IBO40RPL.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40RPL:Clean">
+    <MSBuild Projects="IBO40RPL.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40RPL:Make">
+    <MSBuild Projects="IBO40RPL.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IBO40FTS">
+    <MSBuild Projects="IBO40FTS.dproj" Targets="" />
+  </Target>
+  <Target Name="IBO40FTS:Clean">
+    <MSBuild Projects="IBO40FTS.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IBO40FTS:Make">
+    <MSBuild Projects="IBO40FTS.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="IBO40CRT;IBO40TRT;IBO40VRT;IBO40FRT;IBO40XRT;IBO40WRT;IBO40WSRT;IBO40WXRT;IBO40CDT;IBO40ADT;IBO40TDT;IBO40VDT;IBO40FDT;IBO40XDT;IBO40WDT;IBO40WSDT;IBO40WXDT;IBO40EDT;IBO40RPL;IBO40FTS" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="IBO40CRT:Clean;IBO40TRT:Clean;IBO40VRT:Clean;IBO40FRT:Clean;IBO40XRT:Clean;IBO40WRT:Clean;IBO40WSRT:Clean;IBO40WXRT:Clean;IBO40CDT:Clean;IBO40ADT:Clean;IBO40TDT:Clean;IBO40VDT:Clean;IBO40FDT:Clean;IBO40XDT:Clean;IBO40WDT:Clean;IBO40WSDT:Clean;IBO40WXDT:Clean;IBO40EDT:Clean;IBO40RPL:Clean;IBO40FTS:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="IBO40CRT:Make;IBO40TRT:Make;IBO40VRT:Make;IBO40FRT:Make;IBO40XRT:Make;IBO40WRT:Make;IBO40WSRT:Make;IBO40WXRT:Make;IBO40CDT:Make;IBO40ADT:Make;IBO40TDT:Make;IBO40VDT:Make;IBO40FDT:Make;IBO40XDT:Make;IBO40WDT:Make;IBO40WSDT:Make;IBO40WXDT:Make;IBO40EDT:Make;IBO40RPL:Make;IBO40FTS:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

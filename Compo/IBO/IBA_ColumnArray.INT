@@ -1,0 +1,152 @@
+
+{                                                                              }
+{ TIB_ColumnArray                                                              }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+{: This type is used for reading array slices or whole arrays into variant
+arrays using streams as the intermediate vehicle.}
+TIB_ArrayReader = procedure ( var Buffer; Count: longint ) of object;
+{: This type is used in order to write slices or whole arrays into variant
+arrays using streams as the intermediate vehicle.}
+TIB_ArrayWriter = procedure ( const Buffer; Count: longint ) of object;
+
+{: Foundation upon which a custom class of array handling columns can be based.
+<br><br>
+This is designed to allow a way to derive fully functional components that
+will interact with the InterBase array column type.
+<br><br>
+Provison is made to get and put the whole array or just a slice. Variants can be
+used, or calls can be made to operate on memory you have declared in your own
+code to store the array. It is the developer's responsibility to provide the
+buffer into and out of which the data is read and written when variants are not
+used. This is very simple, as can be seen in this example, where an array column
+is declared having bounds of 1 to 1024 of integer type:
+<br>
+<code>
+procedure TForm1.btArrayClick(Sender: TObject);
+var
+  ii: word;
+  ArrayValues: array [1..1024] of integer;
+  ArraySize: ISC_LONG;
+  tmpCol: TIB_ColumnArray;
+begin
+  if Sender = btWriteArray then begin
+    for ii := 1 to 1024 do ArrayValues[ii] := ii;
+  end else begin
+    FillChar( ArrayValues, SizeOf( ArrayValues ), 0 );
+  end;
+  ArraySize := ISC_LONG( sizeof( ArrayValues ));
+  tmpCol := QueryData.FieldByName( 'ARRAY_DATA' ) as TIB_ColumnArray;
+  if Sender = btWriteArray then begin
+    tmpCol.PutArray( @ArrayValues, @ArraySize );
+    QueryData.Post;
+  end else begin
+    tmpCol.GetArray( @ArrayValues, @ArraySize );
+  end;
+  meArrayData.Lines.BeginUpdate;
+  meArrayData.Lines.Clear;
+  try
+    for ii := 1 to 1024 do begin
+      meArrayData.Lines.add( IntToStr( ArrayValues[ii] ));
+    end;
+  finally
+    meArrayData.Lines.EndUpdate;
+  end;
+end;
+</code>}
+TIB_ColumnArray = class(TIB_Column)
+private
+  FArrayDesc: ISC_ARRAY_DESC;
+protected
+  function GetOldAsString: string; override;
+  function GetAsString: string; override;
+  procedure SetAsString( const NewValue: string); override;
+  function GetSQLTypeSource: string; override;
+  function GetAsVariant: variant; override;
+  procedure SetAsVariant( const NewValue: variant ); override;
+  function GetArrayID: isc_quad; //~virtual;
+  function GetOldArrayID: isc_quad; //~virtual;
+public
+{$IFNDEF HELPSCAN}
+  constructor Create( ARow: TIB_Row;
+                      PSQLVAR: PXSQLVAR;
+                      AFieldNo: smallint ); override;
+  procedure Clear; override;
+{$ENDIF}
+
+{: Method to indicate whether an ARRAY is equal to another ARRAY.
+<br><br>
+For now, this is not properly implemented and simply returns False.}
+  function IsEqualTo( AArray: TIB_ColumnArray ): boolean;
+{: This method reads the whole array into a buffer that you have declared
+directly via the API.}
+  procedure GetArray( PArrayBuffer: pointer; PArraySize: pointer );
+{: This method writes the whole array from a buffer that you have declared
+directly via the API.}
+  procedure PutArray( PArrayBuffer: pointer; PArraySize: pointer );
+{: This method allows you to read the array or a slice of it into a buffer
+that you have declared directly via the API.}
+  procedure GetSlice( PArrayDesc: PISC_ARRAY_DESC;
+                      PArrayBuffer: pointer;
+                      PArraySize: pointer );
+{: This method allows you to write the array or a slice of it from a buffer
+that you have declared directly via the API.}
+  procedure PutSlice( PArrayDesc: PISC_ARRAY_DESC;
+                      PArrayBuffer: pointer;
+                      PArraySize: pointer );
+{: This method allows you to specify the dimensions of the array that you want
+placed into a variant array.  An exception will be raised if you specify elements
+that are out of the scope of the array.
+<br><br>
+This method will return the variant Unassigned if the whole column is NULL.}
+  function GetVarSlice( Dimensions: array of integer ): variant;
+{: This method allows you to alter certain elements of the array by passing in
+a variant array holding what the new values should be. If the whole array is
+used and the dimension bound is shifted by one, IBO will slide the bounds
+automatically, thereby avoiding an exception.}
+  procedure PutVarSlice( const Values: variant );
+{: This is the description structure for the whole array. It can be used in the
+calls to Put/GetSlice.}
+  property ArrayDesc: ISC_ARRAY_DESC read FArrayDesc;
+{: This value is needed for various API calls but, since IBO makes all the API
+calls for you automatically, it should be unnecessary to use it.  It is here for
+your convenience, in case you need to do some specialized things that IBO
+doesn't handle.}
+  property ArrayID: isc_quad read GetArrayID;
+end;
+//IBA_ColumnArray.IMP

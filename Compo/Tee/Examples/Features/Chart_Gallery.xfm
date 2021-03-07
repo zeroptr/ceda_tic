@@ -1,0 +1,21 @@
+inherited ChartGallery: TChartGallery
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 72
+  end
+  inherited Memo1: TMemo
+    Height = 31
+    Lines.Strings = (
+      'The Chart Gallery now shows Series and Functions in groups.')
+  end
+  inherited Chart1: TChart
+    Top = 74
+    Height = 263
+  end
+  inherited Panel1: TPanel
+    Top = 31
+  end
+end

@@ -1,0 +1,63 @@
+object Release501Misc: TRelease501Misc
+  Left = 192
+  Top = 107
+  Width = 696
+  Height = 480
+  ParentFont = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 688
+    Height = 453
+    Align = alClient
+    Lines.Strings = (
+      'TeeChart Pro Release 5.01'
+      'Miscellaneous New Features'
+      '=========================='
+      ''
+      'Kylix support !'
+      ' This release supports Kylix (Borland Delphi for Linux).'
+      ''
+      'Memory saving'
+      ' Adding points without labels (ie: Series1.Add(123) ) now'
+      ' does not allocate memory for empty labels. This is a'
+      ' reduction of 4 bytes per point. For example, adding'
+      ' 100000 points to a fast line series now takes 0.4MB less'
+      ' of memory.'
+      ''
+      'Chart AddSeries method'
+      ' Now you can call Chart1.AddSeries(TLineSeries), that is,'
+      ' passing only the series class as parameter. This helps'
+      ' creating dynamic series in C++ Builder. The older way'
+      
+        ' is still supported: Chart1.AddSeries( TLineSeries.Create(Self) ' +
+        #39')'
+      ''
+      'Series Marks'
+      ' Added Transparency and Bevel properties.'
+      ''
+      'Shape Series'
+      ' Added Gradient property for Rectangle and Ellipse styles.'
+      ''
+      'TeeURL error messages'
+      ' When using the TeeURL methods (LoadChartFromURL, etc) or'
+      ' the TChartWebSource component, if there happens a Windows'
+      ' error, the exception now appends the text description to'
+      ' the error code number. (See TeeURLErrorMessage function).'
+      ''
+      'Writeable Constants OFF'
+      ' Now TeeChart 5.01 sources support compilation with'
+      ' Writeable Constants OFF (it was ON by default before).'
+      ' See: Project->Options->Compiler->Assignable Typed Constants.'
+      ' (Corresponds to the {$J} command-line compiler option).'
+      ''
+      'New DateToWeek function ( ISO-8601 )'
+      ' Returns the Week number given a Date. '
+      ' The previous algorithm is keeped into DateToWeekOld function.')
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+end

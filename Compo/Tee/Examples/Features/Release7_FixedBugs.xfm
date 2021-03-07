@@ -1,0 +1,35 @@
+object Release7Fixed: TRelease7Fixed
+  Left = 223
+  Top = 138
+  Width = 574
+  Height = 461
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 566
+    Height = 434
+    Align = alClient
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Courier New'
+    Font.Style = []
+    Lines.Strings = (
+      'Release 7.0'
+      ''
+      'Defect  Description'
+      '------  -----------'
+      ''
+      '')
+    ParentFont = False
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WantTabs = True
+    WordWrap = False
+  end
+end

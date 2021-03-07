@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality" Type="String">Default.Personality</Option>
+			<Option Name="ProjectType" Type="String"></Option>
+			<Option Name="Version" Type="String">1.0</Option>
+			<Option Name="GUID" Type="String">{E3F6DAA0-D557-4BF7-8EBE-BEA0262056A7}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects ActiveProject="TeeLanguage89.bpl">
+      <Projects Name="Tee89.bpl" Type="String">Tee89.bdsproj</Projects>
+      <Projects Name="TeeUI89.bpl" Type="String">TeeUI89.bdsproj</Projects>
+      <Projects Name="TeeDB89.bpl" Type="String">TeeDB89.bdsproj</Projects>
+      <Projects Name="TeePro89.bpl" Type="String">TeePro89.bdsproj</Projects>
+      <Projects Name="TeeLanguage89.bpl" Type="String">TeeLanguage89.bdsproj</Projects>
+      <Projects Name="TeeGL89.bpl" Type="String">TeeGL89.bdsproj</Projects>
+      <Projects Name="TeeImage89.bpl" Type="String">TeeImage89.bdsproj</Projects>
+      <Projects Name="DclTeePro89.bpl" Type="String">DclTeePro89.bdsproj</Projects>
+      <Projects Name="Targets" Type="String">Tee89.bpl TeeUI89.bpl TeeDB89.bpl TeePro89.bpl TeeLanguage89.bpl TeeGL89.bpl TeeImage89.bpl DclTeePro89.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

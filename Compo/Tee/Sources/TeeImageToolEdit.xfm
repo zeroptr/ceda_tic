@@ -1,0 +1,61 @@
+inherited ChartImageToolEditor: TChartImageToolEditor
+  ClientHeight = 213
+  ClientWidth = 251
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    Width = 251
+  end
+  object GroupBox2: TGroupBox
+    Left = 10
+    Top = 40
+    Width = 183
+    Height = 121
+    HelpContext = 1548
+    Caption = 'Image:'
+    TabOrder = 1
+    object Image1: TImage
+      Left = 97
+      Top = 18
+      Width = 73
+      Height = 58
+      Stretch = True
+    end
+    object Button1: TButton
+      Left = 8
+      Top = 18
+      Width = 75
+      Height = 25
+      HelpContext = 1548
+      Caption = '&Image...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object BSave: TButton
+      Left = 96
+      Top = 87
+      Width = 75
+      Height = 25
+      HelpContext = 1548
+      Caption = '&Save...'
+      Enabled = False
+      TabOrder = 1
+      OnClick = BSaveClick
+    end
+    object Button2: TButton
+      Left = 8
+      Top = 53
+      Width = 75
+      Height = 25
+      Caption = '&Filters...'
+      TabOrder = 2
+      OnClick = Button2Click
+    end
+  end
+  object BBorder: TButtonPen
+    Left = 18
+    Top = 176
+    Caption = '&Border...'
+    TabOrder = 2
+  end
+end

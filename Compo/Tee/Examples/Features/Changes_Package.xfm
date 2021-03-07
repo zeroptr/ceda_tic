@@ -1,0 +1,73 @@
+object ChangesPackage: TChangesPackage
+  Left = 308
+  Top = 142
+  Width = 408
+  Height = 463
+  Caption = 'ChangesPackage'
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Memo1: TMemo
+    Left = 0
+    Top = 0
+    Width = 400
+    Height = 436
+    Align = alClient
+    Lines.Strings = (
+      
+        'Package name'#39's contain the TeeChart version and the Delphi / C++' +
+        'Builder'
+      'version.'
+      ''
+      '  Tee57   means TeeChart 5 for Delphi 7 (vcl).'
+      '  Tee57clx means TeeChart 5 for Delphi 7 (clx).'
+      ''
+      '  Tee56   means TeeChart 5 for Delphi 6 (vcl).'
+      '  Tee56clx means TeeChart 5 for Delphi 6 (clx).'
+      ''
+      '  Tee55   means TeeChart 5 for Delphi 5.'
+      '  Tee54   means TeeChart 5 for Delphi 4.'
+      '  Tee53   means TeeChart 5 for Delphi 3.'
+      '  Tee5C5  means TeeChart 5 for C++ Builder 5'
+      '  Tee5C4  means TeeChart 5 for C++ Builder 4'
+      ' '
+      
+        'The difference between TeeChart version 4 and 5 is all database ' +
+        'units now reside at '
+      'TeeDB package instead of the TeeUI package, '
+      'so now the TeePro and TeeUI packages do not require the VCL'
+      'DB and BDE packages (database packages).'
+      ''
+      'New packages:'
+      ''
+      'TeeImage57.bpl '#9'Both a design and run-time package.'
+      #9#9'Adds chart exporting support for GIF, JPEG and PNG'
+      #9#9'graphic formats.'
+      ''
+      'Run-time packages for Delphi 7:'
+      ''
+      'Tee57.bpl'#9'Core engine.'
+      'TeeDB57.bpl'#9'Database Chart and components.'
+      'TeeUI57.bpl'#9'User Interface dialogs.'
+      'TeePro57.bpl'#9'Extended Series and components.'
+      'TeeQR57.bpl'#9'QuickReport Chart.'
+      'TeeGL57.bpl'#9'OpenGL 3D rendering.'
+      
+        'TeeImage57.bpl'#9'Exporting graphic formats (GIF, JPEG, PCX, VML an' +
+        'd PNG)'
+      ''
+      'Design-time packages:'
+      ''
+      'DCLTee57.bpl'#9'Standard Charts and Series.'
+      'DCLTeP57.bpl'#9'Professional Series and components.'
+      'DCLTQR57.bpl'#9'QuickReport Chart design-time package. *'
+      'DCLTGL57.bpl'#9'OpenGL 3D design-time package.'
+      'TeeImage57.bpl'#9'Exporting graphic formats.')
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+    WordWrap = False
+  end
+end

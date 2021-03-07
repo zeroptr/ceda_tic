@@ -1,0 +1,72 @@
+inherited SeriesTowerClick: TSeriesTowerClick
+  Width = 546
+  Height = 413
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 538
+  end
+  inherited Memo1: TMemo
+    Width = 538
+    Lines.Strings = (
+      
+        'Tower series returns the point index under a given XY position, ' +
+        'for example the mouse cursor position when'
+      'using the Series1 OnClick event:'
+      ''
+      'procedure TForm1.Series1Click(Sender: TChartSeries;'
+      
+        '  ValueIndex: Integer; Button: TMouseButton; Shift: TShiftState;' +
+        ' X, Y: Integer);'
+      'begin'
+      '  Label1.Caption:='#39' Clicked Tower :  '#39' + IntToStr(ValueIndex) +'
+      '  '#39'   X :  '#39' + FormatFloat('#39'0.##'#39',Series1.XValue[ValueIndex]) +'
+      '  '#39'   Y :  '#39' + FormatFloat('#39'0.##'#39',Series1.YValue[ValueIndex]) +'
+      '  '#39'   Z :  '#39' + FormatFloat('#39'0.##'#39',Series1.ZValue[ValueIndex]);'
+      'end;'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 538
+    Height = 230
+    LeftWall.Gradient.EndColor = clSilver
+    LeftWall.Gradient.Visible = True
+    Legend.Symbol.DefaultPen = False
+    Legend.Transparent = True
+    Title.Visible = False
+    Chart3DPercent = 75
+    View3DOptions.Elevation = 320
+    View3DOptions.Orthogonal = False
+    View3DOptions.Rotation = 330
+    View3DOptions.Zoom = 75
+    object Series1: TTowerSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      OnClick = Series1Click
+      NumXValues = 5
+      NumZValues = 5
+      Pen.SmallDots = True
+      StartColor = clGray
+      UseColorRange = False
+      UsePalette = True
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 538
+    object Label1: TLabel
+      Left = 12
+      Top = 13
+      Width = 71
+      Height = 13
+      Caption = 'Clicked Tower:'
+    end
+  end
+end

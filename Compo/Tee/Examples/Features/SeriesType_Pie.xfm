@@ -1,0 +1,98 @@
+inherited PieSeriesForm: TPieSeriesForm
+  Width = 493
+  Height = 383
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Width = 485
+    Lines.Strings = (
+      'The Pie style shows values displayed as slices in a cheese or'
+      
+        'pie cake. Options include 2D and 3D, moving the slices, marks, p' +
+        'atterns,'
+      'ellipse shape, border, shadow, grouping of small values,'
+      'partial pies, multiple pies, etc.')
+  end
+  inherited Chart1: TChart
+    Width = 485
+    Height = 242
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TPieSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = True
+      SeriesColor = clRed
+      PieValues.DateTime = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Shadow.HorizSize = 40
+      Shadow.VertSize = 40
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 485
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 13
+      Width = 49
+      Height = 17
+      Caption = '&3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 64
+      Top = 13
+      Width = 73
+      Height = 17
+      Caption = '&Exploded'
+      TabOrder = 1
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 144
+      Top = 13
+      Width = 65
+      Height = 17
+      Caption = '&Marks'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      OnClick = CheckBox3Click
+    end
+    object CheckBox4: TCheckBox
+      Left = 208
+      Top = 13
+      Width = 73
+      Height = 17
+      Caption = '&Shadow'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox4Click
+    end
+    object CheckBox5: TCheckBox
+      Left = 288
+      Top = 13
+      Width = 57
+      Height = 17
+      Caption = '&Partial'
+      TabOrder = 4
+      OnClick = CheckBox5Click
+    end
+    object Button1: TButton
+      Left = 360
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Edit...'
+      TabOrder = 5
+      OnClick = Button1Click
+    end
+  end
+end

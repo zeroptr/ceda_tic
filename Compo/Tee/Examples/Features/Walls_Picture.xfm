@@ -1,0 +1,86 @@
+inherited WallsPictureForm: TWallsPictureForm
+  Left = 300
+  Top = 179
+  Height = 401
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'You can assign images to the Chart Walls. To view use the Browse' +
+        ' button below to select an image to apply to a Wall.'
+      ''
+      'Example:'
+      ''
+      'Chart1.Walls.Left.Picture.Assign(Image1.Picture);')
+  end
+  inherited Chart1: TChart
+    Height = 218
+    BackWall.Transparent = False
+    RightWall.Color = 8454143
+    RightWall.Visible = True
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    Chart3DPercent = 100
+    DepthAxis.Axis.Width = 1
+    DepthAxis.Visible = True
+    DepthTopAxis.Axis.Width = 1
+    DepthTopAxis.Visible = True
+    LeftAxis.Axis.Width = 1
+    RightAxis.Axis.Width = 1
+    RightAxis.Axis.Visible = False
+    TopAxis.Axis.Width = 1
+    View3DOptions.Perspective = 176
+    object ChartTool1: TRotateTool
+      Inertia = 53
+      Pen.Color = clWhite
+      Pen.Mode = pmXor
+    end
+  end
+  inherited Panel1: TPanel
+    object bBrowse: TButton
+      Left = 14
+      Top = 9
+      Width = 103
+      Height = 24
+      Caption = '&Browse Image...'
+      TabOrder = 0
+      OnClick = bBrowseClick
+    end
+    object bApply: TButton
+      Left = 184
+      Top = 9
+      Width = 89
+      Height = 24
+      Caption = '&Apply to...'
+      TabOrder = 1
+      OnClick = bApplyClick
+    end
+    object cbWall: TComboFlat
+      Left = 285
+      Top = 10
+      Width = 92
+      TabOrder = 2
+      Items.Strings = (
+        'Left Wall'
+        'Right Wall'
+        'Bottom Wall'
+        'Back Wall')
+    end
+    object Panel2: TPanel
+      Left = 131
+      Top = 2
+      Width = 36
+      Height = 35
+      BevelInner = bvLowered
+      TabOrder = 3
+      object Image1: TImage
+        Left = 3
+        Top = 3
+        Width = 30
+        Height = 30
+        Stretch = True
+      end
+    end
+  end
+end

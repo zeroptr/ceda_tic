@@ -1,0 +1,116 @@
+inherited AxisGridDrawEveryForm: TAxisGridDrawEveryForm
+  Left = 349
+  Top = 237
+  Height = 416
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Axis grid lines can be displayed one by one or just one of every' +
+        ' "n" lines.'
+      ''
+      
+        'The DrawEvery property determines the number of grid lines to sk' +
+        'ip:'
+      ''
+      'Chart1.Axes.Left.Grid.DrawEvery := 3;')
+  end
+  inherited Chart1: TChart
+    Height = 233
+    BackWall.Gradient.EndColor = 10932991
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Legend.Visible = False
+    Title.Visible = False
+    BottomAxis.Grid.Color = 8421440
+    BottomAxis.Grid.Style = psSolid
+    BottomAxis.Grid.DrawEvery = 2
+    BottomAxis.MinorTicks.Visible = False
+    BottomAxis.TickLength = 18
+    LeftAxis.Grid.DrawEvery = 3
+    LeftAxis.MinorTicks.Visible = False
+    LeftAxis.TickLength = 15
+    View3D = False
+    ColorPaletteIndex = 7
+    object Series1: TBubbleSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.Gradient.Direction = gdRadial
+      Pointer.Gradient.EndColor = 10079487
+      Pointer.Gradient.SubGradient.EndColor = clBlack
+      Pointer.Gradient.SubGradient.Transparency = 67
+      Pointer.Gradient.SubGradient.Visible = True
+      Pointer.Gradient.Visible = True
+      Pointer.HorizSize = 16
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 16
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+      Data = {
+        000800000000000000008067405555555555B560400000000000D07C40ABAAAA
+        AAAAAA5C400000000000408B4055555555553561400000000000388640ABAAAA
+        AAAAAA5E400000000000B081405555555555F561400000000000207240ABAAAA
+        AAAA6A5F400000000000C08040ABAAAAAAAAAA5E400000000000C07740ABAAAA
+        AAAA6A5B40}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 122
+      Top = 13
+      Width = 60
+      Height = 13
+      Caption = '&Draw every :'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 14
+      Top = 14
+      Width = 25
+      Height = 13
+      Caption = '&Axis :'
+      FocusControl = Edit1
+    end
+    object Edit1: TEdit
+      Left = 189
+      Top = 11
+      Width = 33
+      Height = 21
+      TabOrder = 0
+      Text = '1'
+      OnChange = Edit1Change
+    end
+    object UpDown1: TUpDown
+      Left = 222
+      Top = 11
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Position = 1
+      TabOrder = 1
+    end
+    object cbAxis: TComboFlat
+      Left = 41
+      Top = 11
+      Width = 73
+      TabOrder = 2
+      OnChange = cbAxisChange
+      Items.Strings = (
+        'Left'
+        'Bottom')
+    end
+  end
+end

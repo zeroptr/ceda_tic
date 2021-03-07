@@ -1,0 +1,275 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{3DC4AAE0-7153-42FE-B5E9-060998A5EB22}</ProjectGuid>
+			<MainSource>TeeUI811.dpk</MainSource>
+			<Config Condition="'$(Config)'==''">Debug</Config>
+			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+			<ProjectVersion>12.0</ProjectVersion>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Basis' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+			<Cfg_1>true</Cfg_1>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+			<Cfg_2>true</Cfg_2>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_ImageBase>42300000</DCC_ImageBase>
+			<DCC_DependencyCheckOutputName>..\..\..\Bpl\TeeUI811.bpl</DCC_DependencyCheckOutputName>
+			<DCC_UNSAFE_TYPE>true</DCC_UNSAFE_TYPE>
+			<DCC_UNSAFE_CAST>true</DCC_UNSAFE_CAST>
+			<DCC_UNSAFE_CODE>true</DCC_UNSAFE_CODE>
+			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+			<DCC_Platform>x86</DCC_Platform>
+			<RuntimeOnlyPackage>true</RuntimeOnlyPackage>
+			<DCC_Description>TeeChart 8 User Interface Components</DCC_Description>
+			<DCC_DebugInformation>false</DCC_DebugInformation>
+			<DCC_N>true</DCC_N>
+			<DCC_K>false</DCC_K>
+			<DCC_S>false</DCC_S>
+			<GenDll>true</GenDll>
+			<DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+			<GenPackage>true</GenPackage>
+			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+			<DCC_F>false</DCC_F>
+			<DCC_E>false</DCC_E>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2)'!=''">
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+		</PropertyGroup>
+		<ItemGroup>
+			<DelphiCompile Include="TeeUI811.dpk">
+				<MainSource>MainSource</MainSource>
+			</DelphiCompile>
+			<DCCReference Include="rtl.dcp"/>
+			<DCCReference Include="vcl.dcp"/>
+			<DCCReference Include="vclx.dcp"/>
+			<DCCReference Include="Tee811.dcp"/>
+			<DCCReference Include="EditChar.pas"/>
+			<DCCReference Include="TeeAreaEdit.pas">
+				<Form>AreaSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeArrowEdi.pas">
+				<Form>ArrowSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeAxisIncr.pas">
+				<Form>AxisIncrement</Form>
+			</DCCReference>
+			<DCCReference Include="TeeAxMaxMin.pas">
+				<Form>AxisMaxMin</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBarEdit.pas">
+				<Form>BarSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBMPOptions.pas">
+				<Form>BMPOptions</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBrushDlg.pas">
+				<Form>BrushDialog</Form>
+			</DCCReference>
+			<DCCReference Include="TeeChartGrid.pas"/>
+			<DCCReference Include="TeeCircledEdit.pas">
+				<Form>CircledSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCustEdit.pas">
+				<Form>CustomSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCustomShapeEditor.pas">
+				<Form>FormTeeShape</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdi3D.pas">
+				<Form>FormTee3D</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiAxis.pas">
+				<Form>FormTeeAxis</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiFont.pas">
+				<Form>TeeFontEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiGene.pas">
+				<Form>FormTeeGeneral</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiGrad.pas">
+				<Form>TeeGradientEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiLege.pas">
+				<Form>FormTeeLegend</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiPage.pas">
+				<Form>FormTeePage</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiPane.pas">
+				<Form>FormTeePanel</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiPeri.pas">
+				<Form>FormPeriod</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiSeri.pas">
+				<Form>FormTeeSeries</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEditCha.pas">
+				<Form>ChartEditForm</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiTitl.pas">
+				<Form>FormTeeTitle</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEditTools.pas">
+				<Form>FormTeeTools</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEdiWall.pas">
+				<Form>FormTeeWall</Form>
+			</DCCReference>
+			<DCCReference Include="TeeEMFOptions.pas">
+				<Form>EMFOptions</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFLineEdi.pas">
+				<Form>FastLineSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFuncEdit.pas">
+				<Form>TeeFuncEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeGalleryPanel.pas"/>
+			<DCCReference Include="TeeGally.pas">
+				<Form>TeeGallery</Form>
+			</DCCReference>
+			<DCCReference Include="TeeGanttEdi.pas">
+				<Form>GanttSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeLisB.pas"/>
+			<DCCReference Include="TeeNavigator.pas"/>
+			<DCCReference Include="TeePenDlg.pas">
+				<Form>PenDialog</Form>
+			</DCCReference>
+			<DCCReference Include="TeePieEdit.pas">
+				<Form>PieSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePoEdi.pas">
+				<Form>SeriesPointerEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeePrevi.pas">
+				<Form>ChartPreview</Form>
+			</DCCReference>
+			<DCCReference Include="TeePreviewPanel.pas"/>
+			<DCCReference Include="TeeSelectList.pas">
+				<Form>SelectListForm</Form>
+			</DCCReference>
+			<DCCReference Include="TeeShapeEdi.pas">
+				<Form>ChartShapeEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSourceEdit.pas">
+				<Form>BaseSourceEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeStackBarEdit.pas">
+				<Form>StackBarSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeToolsGallery.pas">
+				<Form>TeeToolsGallery</Form>
+			</DCCReference>
+			<DCCReference Include="TeeURL.pas"/>
+			<DCCReference Include="TeeExport.pas"/>
+			<DCCReference Include="TeExport.pas">
+				<Form>TeeExportFormat</Form>
+			</DCCReference>
+			<DCCReference Include="TeeCustomFuncEditor.pas">
+				<Form>CustomFunctionEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeAvgFuncEditor.pas"/>
+			<DCCReference Include="TeeBaseFuncEdit.pas">
+				<Form>BaseFunctionEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeShadowEditor.pas">
+				<Form>TeeShadowEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBubbleEdit.pas">
+				<Form>BubbleSeriesEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeGalleryAlternate.pas">
+				<Form>TeeGalleryForm</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFormatting.pas">
+				<Form>FormatEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeSymbolEditor.pas">
+				<Form>SymbolEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeBackImage.pas">
+				<Form>BackImageEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeFiltersEditor.pas">
+				<Form>FiltersEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeStringsEditor.pas">
+				<Form>StringsEditor</Form>
+			</DCCReference>
+			<DCCReference Include="TeeMargins.pas">
+				<Form>MarginsEditor</Form>
+			</DCCReference>
+			<BuildConfiguration Include="Basis">
+				<Key>Base</Key>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Debug">
+				<Key>Cfg_2</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+			<BuildConfiguration Include="Release">
+				<Key>Cfg_1</Key>
+				<CfgParent>Base</CfgParent>
+			</BuildConfiguration>
+		</ItemGroup>
+		<Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+		<ProjectExtensions>
+			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
+			<Borland.ProjectType>Package</Borland.ProjectType>
+			<BorlandProject>
+				<Delphi.Personality>
+					<Source>
+						<Source Name="MainSource">TeeUI811.dpk</Source>
+					</Source>
+					<Parameters>
+						<Parameters Name="UseLauncher">False</Parameters>
+						<Parameters Name="LoadAllSymbols">True</Parameters>
+						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+					</Parameters>
+					<VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
+						<VersionInfo Name="MajorVer">8</VersionInfo>
+						<VersionInfo Name="MinorVer">0</VersionInfo>
+						<VersionInfo Name="Release">0</VersionInfo>
+						<VersionInfo Name="Build">0</VersionInfo>
+						<VersionInfo Name="Debug">False</VersionInfo>
+						<VersionInfo Name="PreRelease">False</VersionInfo>
+						<VersionInfo Name="Special">False</VersionInfo>
+						<VersionInfo Name="Private">False</VersionInfo>
+						<VersionInfo Name="DLL">False</VersionInfo>
+						<VersionInfo Name="Locale">1033</VersionInfo>
+						<VersionInfo Name="CodePage">1252</VersionInfo>
+					</VersionInfo>
+					<VersionInfoKeys>
+						<VersionInfoKeys Name="CompanyName">Steema Software</VersionInfoKeys>
+						<VersionInfoKeys Name="FileDescription">TeeChart User Interface editors</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">8.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="InternalName">TeeUI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (c) 2005-2007 by David Berneda</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalTrademarks"/>
+						<VersionInfoKeys Name="OriginalFilename">TeeUI811</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductName">TeeChart</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">8.0.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments"/>
+					</VersionInfoKeys>
+				</Delphi.Personality>
+			</BorlandProject>
+			<ProjectFileVersion>12</ProjectFileVersion>
+		</ProjectExtensions>
+	</Project>

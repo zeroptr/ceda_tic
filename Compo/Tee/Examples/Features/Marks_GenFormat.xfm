@@ -1,0 +1,55 @@
+inherited MarksGenFormat: TMarksGenFormat
+  Left = 290
+  Top = 191
+  Width = 455
+  Height = 403
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 226
+    Width = 447
+  end
+  inherited Memo1: TMemo
+    Width = 447
+    Height = 37
+    Lines.Strings = (
+      'Series Marks object now derive from TeeCustomShape object. '
+      
+        'A class with many formatting properties like gradient, font, bru' +
+        'sh, border, etc.')
+  end
+  inherited Chart1: TChart
+    Top = 228
+    Width = 447
+    Height = 148
+    object Series1: TPointSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 20
+      Marks.Visible = True
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 37
+    Width = 447
+    Height = 189
+    BevelOuter = bvNone
+    object PageControl1: TPageControl
+      Left = 0
+      Top = 0
+      Width = 447
+      Height = 189
+      Align = alClient
+      TabOrder = 0
+    end
+  end
+end

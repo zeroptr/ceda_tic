@@ -1,0 +1,103 @@
+inherited EditorStrings: TEditorStrings
+  Left = 407
+  Top = 342
+  Width = 617
+  Height = 473
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 609
+  end
+  inherited Memo1: TMemo
+    Width = 609
+    Lines.Strings = (
+      'Use the StringsEditor to modify any TeeChart text.'
+      'Example:'
+      'uses'
+      '  TeeStringsEditor;'
+      '...'
+      'var tmp : string;'
+      'begin'
+      '  tmp:=ChartTool1.Text;'
+      '  if TeeEditStrings(Self,tmp) then'
+      '     ChartTool1.Text:=tmp;'
+      'end;')
+  end
+  inherited Chart1: TChart
+    Width = 609
+    Height = 290
+    Gradient.EndColor = 10485760
+    Gradient.Visible = True
+    Legend.Visible = False
+    Title.Visible = False
+    BottomAxis.Axis.Visible = False
+    BottomAxis.Grid.SmallDots = True
+    LeftAxis.Axis.Visible = False
+    LeftAxis.Grid.SmallDots = True
+    LeftAxis.Grid.DrawEvery = 2
+    LeftAxis.LabelsSeparation = 100
+    View3D = False
+    object Series1: TBubbleSeries
+      ColorEachPoint = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.Gradient.Direction = gdRadial
+      Pointer.Gradient.EndColor = clRed
+      Pointer.Gradient.SubGradient.Balance = 97
+      Pointer.Gradient.SubGradient.EndColor = 8454143
+      Pointer.Gradient.SubGradient.Visible = True
+      Pointer.Gradient.Visible = True
+      Pointer.HorizSize = 25
+      Pointer.InflateMargins = True
+      Pointer.Pen.Visible = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 25
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+      Data = {
+        00080000000000000000288840ABAAAAAAAA2A5B400000000000804240555555
+        55553561400000000000006B405555555555D564400000000000B08640ABAAAA
+        AAAA6A5B400000000000E08A40ABAAAAAAAAAA5E400000000000808540ABAAAA
+        AAAA2A5B400000000000407240ABAAAAAAAA6A5B400000000000B07B40ABAAAA
+        AAAA6A5F40}
+    end
+    object ChartTool1: TAnnotationTool
+      Callout.Brush.Color = clBlack
+      Callout.Arrow.Visible = False
+      Shape.CustomPosition = True
+      Shape.Font.Height = -16
+      Shape.Font.Name = 'Verdana'
+      Shape.Font.Style = [fsItalic]
+      Shape.Frame.Visible = False
+      Shape.Left = 70
+      Shape.Shadow.Color = clSilver
+      Shape.Shadow.HorizSize = 2
+      Shape.Shadow.VertSize = 2
+      Shape.Top = 30
+      Shape.Text = 'My Annotation text !!!'
+      Text = 'My Annotation text !!!'
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 609
+    object bEdit: TButton
+      Left = 15
+      Top = 8
+      Width = 90
+      Height = 25
+      Caption = '&Edit Text...'
+      TabOrder = 0
+      OnClick = bEditClick
+    end
+  end
+end

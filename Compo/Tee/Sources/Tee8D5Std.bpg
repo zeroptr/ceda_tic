@@ -1,0 +1,44 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe -DNOUSE_BDE $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = Tee85.bpl TeeUI85.bpl DclTeeStd85.bpl TeePro85.bpl \
+  TeeImage85.bpl TeeLanguage85.bpl DCLTeeProStd85.bpl TeeGL85.bpl DclTGL85.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Tee85.bpl: Tee85.dpk
+  $(DCC)
+
+TeeUI85.bpl: TeeUI85.dpk
+  $(DCC)
+
+DclTeeStd85.bpl: DclTeeStd85.dpk
+  $(DCC)
+
+TeePro85.bpl: TeePro85.dpk
+  $(DCC)
+
+TeeGL85.bpl: TeeGL85.dpk
+  $(DCC)
+
+TeeLanguage85.bpl: TeeLanguage85.dpk
+  $(DCC)
+
+DCLTeeProStd85.bpl: DCLTeeProStd85.dpk
+  $(DCC)
+
+DclTGL85.bpl: DclTGL85.dpk
+  $(DCC)
+
+TeeImage85.bpl: TeeImage85.dpk
+  $(DCC)
+

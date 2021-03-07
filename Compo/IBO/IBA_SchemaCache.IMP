@@ -1,0 +1,732 @@
+// IBA_SchemaCache.INT
+// IB_Schema
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
+
+constructor TIB_SchemaCache.Create( AConnection: TIB_Connection );
+begin
+  inherited Create;
+  FTransaction := TIB_TransactionInternal.Create( AConnection );
+  FTransaction.IB_Connection := AConnection;
+  FValidInfoFlags := [];
+end;
+
+destructor TIB_SchemaCache.Destroy;
+var
+  ii: TIB_SchemaCacheItems;
+begin
+  FreeResources;
+  for ii := low( TIB_SchemaCacheItems ) to high( TIB_SchemaCacheItems ) do
+    if Assigned( FValueLists[ ii ] ) then
+      FValueLists[ ii ].Free;
+  FTransaction.Free;
+  FTransaction := nil;
+  inherited Destroy;
+end;
+
+procedure TIB_SchemaCache.CheckTransactionEnded;
+begin
+  if Assigned( Transaction ) then
+    if Transaction.IB_Session.TimerInterval = 0 then
+      if Transaction.Started then
+        Transaction.Commit;
+end;
+
+procedure TIB_SchemaCache.FreeResources;
+begin
+  if Assigned( FDomainNameCursor ) then
+  begin
+    FDomainNameCursor.Free;
+    FDomainNameCursor := nil;
+  end;
+  if Assigned( FTableKeyCursor ) then
+  begin
+    FTableKeyCursor.Free;
+    FTableKeyCursor := nil;
+  end;
+  if Assigned( FTableFieldsCursor ) then
+  begin
+    FTableFieldsCursor.Free;
+    FTableFieldsCursor := nil;
+  end;
+  if Assigned( FDomainSourceCursor ) then
+  begin
+    FDomainSourceCursor.Free;
+    FDomainSourceCursor := nil;
+  end;
+  if Assigned( FFieldSourceCursor ) then
+  begin
+    FFieldSourceCursor.Free;
+    FFieldSourceCursor := nil;
+  end;
+  if Assigned( FProcedureParamsCursor ) then
+  begin
+    FProcedureParamsCursor.Free;
+    FProcedureParamsCursor := nil;
+  end;
+  if Transaction.Started then
+    Transaction.Rollback;
+end;
+
+function TIB_SchemaCache.GetConnection: TIB_Connection;
+begin
+  Result := FTransaction.IB_Connection;
+end;
+
+procedure TIB_SchemaCache.CheckSchemaVersionTable;
+var
+  TmpItem: TIB_SchemaCacheItems;
+begin
+  with TIB_DSQL.Create( Connection ) do
+  try
+    RetrieveDomainNames := false;
+    ParamCheck := false;
+    IB_Connection := Connection;
+    try
+      if CheckConnection( true ) and CheckTransaction( true ) then
+      begin
+        // Note: Use ExecuteImmediate() here to avoid IBO's automatic
+        //       detection of DDL statement execution.
+        ExecuteImmediate( 'CREATE TABLE IBO$SCHEMA_VERSION ('#13#10 +
+                          '  SCHEMA_ITEM VARCHAR(31) NOT NULL,'#13#10 +
+                          '  VERSION_NUMBER INTEGER NOT NULL,'#13#10 +
+                          '  PRIMARY KEY (SCHEMA_ITEM) )', nil );
+        IB_Transaction.Activate;
+        ExecuteImmediate( 'GRANT ALL ON IBO$SCHEMA_VERSION TO PUBLIC', nil );
+        IB_Transaction.Activate;
+      end;
+    except
+      // Ignore an exception here.
+    end;
+    SQL.Clear;
+    SQL.Add( 'INSERT INTO IBO$SCHEMA_VERSION( SCHEMA_ITEM, VERSION_NUMBER )' );
+    SQL.Add( 'VALUES (' );
+    SQL.Add( '' );
+    SQL.Add( ', 0)' );
+    for TmpItem := Low(TIB_SchemaCacheItems) to High(TIB_SchemaCacheItems) do
+    begin
+      if TmpItem in [ sciRelationsByID,
+                      sciDatabaseSchemaVer,
+                      sciClientSchemaVer ] then
+        Continue;  // Skip these items (not under version control).
+      SQL.Strings[2] := '''' + GetItemName( TmpItem ) + '''';
+      try
+        Execute;
+      except
+        // Ignore an exception here.
+      end;
+    end;
+  finally
+    Free;
+  end;
+  CheckTransactionEnded;
+end;
+
+procedure TIB_SchemaCache.DeleteLocalFiles;
+var
+  TmpItem: TIB_SchemaCacheItems;
+begin
+  if LocalDir <> '' then
+    for TmpItem := Low(TIB_SchemaCacheItems) to High(TIB_SchemaCacheItems) do
+      SysUtils.DeleteFile( GetLocalFileName( TmpItem ));
+  CheckTransactionEnded;
+end;
+
+procedure TIB_SchemaCache.SetLocalDir( const AValue: string );
+var
+  ii: integer;
+  Done: boolean;
+begin
+  FLocalDir := Trim( AValue );
+  repeat
+    Done := true;
+    ii := Length( FLocalDir );
+    if ( ii > 0 ) and ( FLocalDir[ ii ] = '\' ) then begin
+      Delete( FLocalDir, ii, 1 );
+      Done := false;
+    end;
+  until Done;
+end;
+
+function TIB_SchemaCache.GetGDBFilename: string;
+var
+  tmpPos: integer;
+  ii: Integer;
+begin
+  Result := '';
+  if Assigned( Connection ) then
+  begin
+    ii := LastDelimiter( '/\:', Connection.Path );
+    Result := Copy( Connection.Path, ii + 1, MaxInt );
+    tmpPos := Pos( '.', Result );
+    if tmpPos > 0 then
+      Result := Copy( Result, 1, tmpPos - 1 );
+  end;
+end;
+
+function TIB_SchemaCache.GetItemName( ALst: TIB_SchemaCacheItems ): string;
+begin
+  case ALst of
+    sciDomainNames:       Result := 'DomainNames';
+    sciGeneratorNames:    Result := 'GeneratorNames';
+    sciTableNames:        Result := 'TableNames';
+    sciViewNames:         Result := 'ViewNames';
+    sciProcedureNames:    Result := 'ProcedureNames';
+    sciConstraintNames:   Result := 'ConstraintNames';
+    sciTriggerNames:      Result := 'TriggerNames';
+    sciIndexDefs:         Result := 'IndexDefs';
+    sciIndexNames:        Result := 'IndexNames';
+    sciPrimaryKeys:       Result := 'PrimaryKeys';
+    sciForeignKeys:       Result := 'ForeignKeys';
+    sciRequired:          Result := 'Required';
+    sciDefaults:          Result := 'Defaults';
+    sciComputed:          Result := 'Computed';
+    sciFieldDomains:      Result := 'FieldDomains';
+    sciTableKeys:         Result := 'TableKeys';
+    sciTableFields:       Result := 'TableFields';
+    sciProcedureParams:   Result := 'ProcedureParams';
+    sciRelationsByID:     Result := 'RelationsByID';
+    sciDatabaseSchemaVer: Result := 'DatabaseSchemaVer';
+    sciClientSchemaVer:   Result := 'ClientSchemaVer';
+    else                  Result := '';
+  end;
+end;
+
+function TIB_SchemaCache.GetLocalFileName( ALst: TIB_SchemaCacheItems ): string;
+begin
+  ForceDirectories( LocalDir + '\' + GDBFilename );
+  Result := LocalDir + '\' + GDBFilename + '\' + GetItemName( ALst ) + '.IBO';
+end;
+
+function TIB_SchemaCache.GetSchemaCacheList( AList: integer ): TIB_StringList;
+var
+  ALst: TIB_SchemaCacheItems absolute AList;
+  function SchemaVersionIsCurrent: boolean;
+  var
+    TmpItemName: string;
+    DatabaseVersion, ClientVersion: string;
+  begin
+    Result := false;
+    // Note: Always load sciRelationsByID directly from the database, as the
+    //       RDB$RELATION_ID values could change due to backup/restore, etc.
+    if ALst in [ sciProcedureParams,
+                 sciRelationsByID,
+                 sciDatabaseSchemaVer ] then
+    begin
+      Exit;  // Above items are never current, always reload from database.
+    end;
+    if FileExists( GetLocalFileName( ALst )) then
+    begin
+      if ALst = sciClientSchemaVer then
+        Result := true  // Always current (special file to hold version info).
+      else
+      with DatabaseSchemaVer do
+      begin
+        if Count > 0 then
+        begin
+          TmpItemName := GetItemName( ALst );
+          // Note: When an item is not found in DatabaseSchemaVer, return
+          //       failsafe Result=false to ensure that the missing item does
+          //       not prevent loading of new or modified metadata.
+          if FindValue( TmpItemName, DatabaseVersion )
+              and ClientSchemaVer.FindValue( TmpItemName, ClientVersion ) then
+            Result := AnsiCompareStr( DatabaseVersion, ClientVersion ) = 0;
+        end
+        else
+          // Note: No version info in database, so assume version is current.
+          //       This behaviour is the default when the IBO$SCHEMA_VERSION
+          //       table is not present in the database, or has no records.
+          Result := true;
+      end;
+    end;
+  end;
+  function GetLocalFile( AStrings: TStrings ): boolean;
+  begin
+    Result := SchemaVersionIsCurrent;
+    if Result then
+      AStrings.LoadFromFile( GetLocalFileName( ALst ));
+  end;
+  procedure SetLocalFile( AStrings: TStrings );
+  var
+    TmpItemName: string;
+    TmpVersion: string;
+    TmpIndex: integer;
+  begin
+    if ALst in [ sciProcedureParams,
+                 sciRelationsByID,
+                 sciDatabaseSchemaVer,
+                 sciClientSchemaVer ] then
+    begin
+      Exit;  // Don't save item to file here.
+    end;
+    try
+      {Save current list to a local file...}
+      AStrings.SaveToFile( GetLocalFileName( ALst ));
+      {Keep track of the schema version info...}
+      TmpVersion := '';
+      TmpItemName := GetItemName( ALst );
+      with DatabaseSchemaVer do
+      begin
+        if Count > 0 then
+          FindValue( TmpItemName, TmpVersion );
+      end;
+      with ClientSchemaVer do
+      begin
+        if FindIndex( TmpItemName, TmpIndex ) then
+          IndexValues[TmpIndex] := TmpVersion
+        else
+          Add( TmpItemName + '=' + TmpVersion );
+        SaveToFile( GetLocalFileName( sciClientSchemaVer ));
+      end;
+    except
+      // Ignore an exception here.
+    end;
+  end;
+begin
+  if not Assigned( FValueLists[ ALst ] ) then
+  begin
+    if ALst in [ sciFieldDomains,
+                 sciTableKeys,
+                 sciTableFields,
+                 sciProcedureParams ] then
+    begin
+      FValueLists[ ALst ] := TIB_StringList.Create;
+      FValueLists[ ALst ].Sorted := true;
+      FValueLists[ ALst ].Duplicates := dupIgnore;
+    end
+    else
+      FValueLists[ ALst ] := TIB_StringCache.Create;
+  end;
+  Result := FValueLists[ ALst ];
+  if not ( ALst in FValidInfoFlags ) then
+  begin
+    // Avoid an infinite loop with profile info via SQL Monitor.  When profile
+    // info is being gathered by the SQL Monitor, sciRelationsByID is accessed
+    // recursively due to API calls triggering further profiling.  Setting the
+    // sciRelationsByID list to valid here allows an empty list to be returned
+    // until the original call grabs the list contents.  This means that
+    // TIB_Profiler.TableDescription will return default output 'RELATION_ID='
+    // until the list data is loaded by the original call.
+    if ALst = sciRelationsByID then
+      FValidInfoFlags := FValidInfoFlags + [ sciRelationsByID ];
+    Result.BeginUpdate;
+    try
+      Result.Clear;
+      if Connection.Connected then
+      begin
+        if ( LocalDir = '' ) or not GetLocalFile( Result ) then
+        begin
+          case ALst of
+            sciDomainNames:
+              SchemaDomainNames( Connection, nil, false, Result );
+            sciGeneratorNames:
+              SchemaGeneratorNames( Connection, nil, false, Result );
+            sciTableNames:
+              SchemaRelationNames( Connection, nil, false, true, false, Result);
+            sciViewNames:
+              SchemaRelationNames( Connection, nil, false, false, true, Result);
+            sciProcedureNames:
+              SchemaProcedureInfo( Connection, nil, Result );
+            sciConstraintNames:
+              SchemaConstraintInfo( Connection, nil, false, Result, '' );
+            sciTriggerNames:
+              SchemaTriggerInfo( Connection, nil, false, Result, '' );
+            sciIndexDefs:
+              SchemaIndexDefinitions( Connection, nil, false, Result );
+            sciIndexNames:
+              SchemaIndexInfo( Connection, nil, false, Result, '' );
+            sciPrimaryKeys:
+              SchemaPrimaryKeyInfo( Connection, nil, '', Result );
+            sciForeignKeys:
+              SchemaForeignKeyInfo( Connection, nil, '', false, Result );
+            sciRequired:
+              SchemaRequiredCols( Connection, nil, false, '', Result );
+            sciDefaults:
+              SchemaDefaultedCols( Connection, nil, false, true, '', Result );
+            sciComputed:
+              SchemaComputedCols( Connection, nil, false, '', Result );
+            sciFieldDomains:
+              SchemaFieldDomains( Connection, nil, Result );
+            sciTableKeys:
+              SchemaPrimaryKeyInfo( Connection, nil, '<BY TABLE>', Result );
+            sciTableFields:
+              SchemaFieldNames( Connection, nil, Result, '<BY TABLE>' );
+            sciProcedureParams: {not loaded here};
+            sciRelationsByID:
+              SchemaRelationsByID( Connection, nil, true, Result );
+            sciDatabaseSchemaVer:
+              SchemaVersionInfo( Connection, nil, Result );
+            sciClientSchemaVer: {never loaded from database};
+          end;
+          if LocalDir <> '' then
+            SetLocalFile( Result );
+        end;
+        FValidInfoFlags := FValidInfoFlags + [ ALst ];
+      end;
+    finally
+      Result.EndUpdate;
+    end;
+  end;
+  CheckTransactionEnded;
+end;
+
+procedure TIB_SchemaCache.LoadRelationsByIDInfo;
+begin
+  GetSchemaCacheList( integer( sciRelationsByID ));
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TIB_SchemaCache.InvalidateAllItems;
+begin
+  FValidInfoFlags := [];
+end;
+
+{------------------------------------------------------------------------------}
+
+function TIB_SchemaCache.GetDomainName( const ARelName,
+                                              ASQLName: string ): string;
+begin
+  if not FieldDomains.FindValue( Trim( ARelName ) + '.' +
+                                 Trim( ASQLName ), Result ) then
+    if LocalDir = '' then
+      if ProcedureNames.IndexOf( ARelName ) = -1 then
+        with DomainNameCursor do
+        begin
+          Params[0].AsString := ARelName;
+          Params[1].AsString := ASQLName;
+          First;
+          Result := Trim( Fields[0].AsString );
+          FieldDomains.Add( Trim( ARelName ) + '.' +
+                            Trim( ASQLName ) + '=' + Result );
+          Close;
+        end;
+  CheckTransactionEnded;
+end;
+
+procedure TIB_SchemaCache.GetTableKeys( const TableName: string;
+                                        const AKeys: TStrings );
+var
+  tmpStr: string;
+  ii: integer;
+  ts: TIB_StringList;
+begin
+  AKeys.Clear;
+  if TableKeys.FindValue( TableName, tmpStr ) then
+  begin
+    ts := TIB_StringList.Create;
+    try
+      ts.SafeCommaText := tmpStr;
+      AKeys.Assign( ts );
+    finally
+      ts.Free;
+    end;
+    for ii := 0 to AKeys.Count - 1 do
+      AKeys[ii] := TableName + '.' + AKeys[ii];
+  end
+  else
+  if ( LocalDir = '' ) and ( ProcedureNames.LinkIndex[ TableName ] = -1 ) then
+  begin
+    tmpStr := '';
+    with TableKeyCursor do
+    begin
+      Params[0].AsString := TableName;
+      First;
+      while not Eof do
+      begin
+        AKeys.Add( IB_Connection.mkIdent( TrimRight( Fields[0].AsString )));
+        if Length( tmpStr ) > 0 then
+          tmpStr := tmpStr + ',';
+        tmpStr := tmpStr + IB_Connection.mkIdent(
+                                               TrimRight( Fields[0].AsString ));
+        Next;
+      end;
+      Close;
+    end;
+    TableKeys.Add( TableName + '=' + tmpStr );
+  end;
+  CheckTransactionEnded;
+end;
+
+procedure TIB_SchemaCache.GetTableFields( const TableName: string;
+                                          const AFields: TStrings );
+var
+  tmpStr: string;
+  ts: TIB_StringList;
+begin
+  AFields.BeginUpdate;
+  try
+    AFields.Clear;
+    if TableFields.FindValue( TableName, tmpStr ) then
+    begin
+      ts := TIB_StringList.Create;
+      try
+        ts.SafeCommaText := tmpStr;
+        AFields.Assign( ts );
+      finally
+        ts.Free;
+      end;
+    end
+    else
+    if ( LocalDir = '' ) and
+       ( ProcedureNames.IndexOf( TableName ) = -1 ) then
+    begin
+      tmpStr := '';
+      with TableFieldsCursor do
+      begin
+        Params[0].AsString := TableName;
+        First;
+        while not Eof do
+        begin
+          AFields.Add( IB_Connection.mkIdent( TrimRight( Fields[0].AsString )));
+          if Length( tmpStr ) > 0 then
+            tmpStr := tmpStr + ',';
+          tmpStr := tmpStr + IB_Connection.mkIdent(
+                                               TrimRight( Fields[0].AsString ));
+          Next;
+        end;
+        Close;
+        TableFields.Add( IB_Connection.mkIdent(
+                                       TrimRight( TableName )) + '=' + tmpStr );
+      end;
+    end;
+  finally
+    AFields.EndUpdate;
+  end;
+  CheckTransactionEnded;
+end;
+
+function TIB_SchemaCache.GetDomainNameCursor: TIB_Dataset;
+begin
+  if not Assigned( FDomainNameCursor ) then
+  begin
+    FDomainNameCursor := TIB_Dataset.Create( Connection );
+    FDomainNameCursor.FRetrieveDomainNames := false;  // Avoid recursion.
+    with FDomainNameCursor do
+    begin
+      IB_Connection := Connection;
+      IB_Transaction := Transaction;
+      OnError := Self.DoHandleError;
+      SQL.Add( 'SELECT RDB$FIELD_SOURCE' );
+      SQL.Add( 'FROM RDB$RELATION_FIELDS' );
+      SQL.Add( 'WHERE RDB$RELATION_NAME = ?RDB$RELATION_NAME' );
+      SQL.Add( '  AND RDB$FIELD_NAME = ?RDB$FIELD_NAME' );
+    end;
+  end;
+  FDomainNameCursor.Prepared := true;
+  Result := FDomainNameCursor;
+  CheckTransactionEnded;
+end;
+
+function TIB_SchemaCache.GetTableKeyCursor: TIB_Dataset;
+begin
+  if not Assigned( FTableKeyCursor ) then
+  begin
+    FTableKeyCursor := TIB_Dataset.Create( Connection );
+    with FTableKeyCursor do
+    begin
+      IB_Connection := Connection;
+      IB_Transaction := Transaction;
+      OnError := Self.DoHandleError;
+      SQL.Add( 'SELECT S.RDB$FIELD_NAME' );
+      SQL.Add( 'FROM RDB$RELATION_CONSTRAINTS C' );
+      SQL.Add( '   , RDB$INDICES I' );
+      SQL.Add( '   , RDB$INDEX_SEGMENTS S' );
+      SQL.Add( 'WHERE C.RDB$CONSTRAINT_TYPE = ''PRIMARY KEY''' );
+      SQL.Add( '  AND C.RDB$RELATION_NAME = I.RDB$RELATION_NAME' );
+      SQL.Add( '  AND C.RDB$INDEX_NAME = I.RDB$INDEX_NAME' );
+      SQL.Add( '  AND I.RDB$INDEX_NAME = S.RDB$INDEX_NAME' );
+      SQL.Add( '  AND I.RDB$RELATION_NAME = ?RDB$RELATION_NAME' );
+      SQL.Add( 'ORDER BY S.RDB$FIELD_POSITION' );
+    end;
+  end;
+  FTableKeyCursor.Prepared := true;
+  Result := FTableKeyCursor;
+  CheckTransactionEnded;
+end;
+
+function TIB_SchemaCache.GetTableFieldsCursor: TIB_Dataset;
+begin
+  if not Assigned( FTableFieldsCursor ) then
+  begin
+    FTableFieldsCursor := TIB_Dataset.Create( Connection );
+    with FTableFieldsCursor do
+    begin
+      IB_Connection := Connection;
+      IB_Transaction := Transaction;
+      OnError := Self.DoHandleError;
+      SQL.Add( 'SELECT RDB$FIELD_NAME' );
+      SQL.Add( 'FROM RDB$RELATION_FIELDS' );
+      SQL.Add( 'WHERE RDB$RELATION_NAME = ?RDB$RELATION_NAME' );
+    end;
+  end;
+  FTableFieldsCursor.Prepared := true;
+  Result := FTableFieldsCursor;
+  CheckTransactionEnded;
+end;
+
+function TIB_SchemaCache.GetFieldSourceCursor: TIB_Dataset;
+begin
+  if not Assigned( FFieldSourceCursor ) then begin
+    FFieldSourceCursor := TIB_Dataset.Create( Connection );
+    with FFieldSourceCursor do begin
+      IB_Connection := Connection;
+      IB_Transaction := Transaction;
+      OnError := Self.DoHandleError;
+      SQL.Add( 'SELECT RDB$DEFAULT_SOURCE' );
+      SQL.Add( 'FROM RDB$RELATION_FIELDS' );
+      SQL.Add( 'WHERE RDB$DEFAULT_SOURCE IS NOT NULL' );
+      SQL.Add( '  AND RDB$RELATION_NAME = ?RDB$RELATION_NAME' );
+      SQL.Add( '  AND RDB$FIELD_NAME = ?RDB$FIELD_NAME' );
+    end;
+  end;
+  FFieldSourceCursor.Prepared := true;
+  Result := FFieldSourceCursor;
+  CheckTransactionEnded;
+end;
+
+function TIB_SchemaCache.GetDomainSourceCursor: TIB_Dataset;
+begin
+  if not Assigned( FDomainSourceCursor ) then
+  begin
+    FDomainSourceCursor := TIB_Dataset.Create( Connection );
+    with FDomainSourceCursor do
+    begin
+      IB_Connection := Connection;
+      IB_Transaction := Transaction;
+      OnError := Self.DoHandleError;
+      SQL.Add( 'SELECT F.RDB$DEFAULT_SOURCE' );
+      SQL.Add( 'FROM RDB$FIELDS F' );
+      SQL.Add( 'JOIN RDB$RELATION_FIELDS R' );
+      SQL.Add( '  ON F.RDB$FIELD_NAME = R.RDB$FIELD_SOURCE' );
+      SQL.Add( 'WHERE R.RDB$RELATION_NAME = ?RDB$RELATION_NAME' );
+      SQL.Add( '  AND R.RDB$FIELD_NAME = ?RDB$FIELD_NAME' );
+      SQL.Add( '  AND F.RDB$DEFAULT_SOURCE IS NOT NULL' );
+    end;
+  end;
+  FDomainSourceCursor.Prepared := true;
+  Result := FDomainSourceCursor;
+  CheckTransactionEnded;
+end;
+
+procedure TIB_SchemaCache.DoHandleError( Sender: TObject;
+  const ERRCODE: longint; ErrorMessage, ErrorCodes: TStringList;
+  const SQLCODE: longint; SQLMessage, SQL: TStringList;
+    var RaiseException: boolean );
+begin
+  RaiseException := false;
+{$IFDEF IBO_VCL30_OR_GREATER}
+  if ( Sender <> FDomainNameCursor ) and
+     ( ERRCODE <> isc_network_error ) then begin
+    Assert( false, 'Internal SchemaCache ERRCODE: ' + IntToStr( ERRCODE ) );
+  end;
+{$ENDIF}
+end;
+
+function TIB_SchemaCache.GetProcedureParamsCursor: TIB_Dataset;
+begin
+  if not Assigned( FProcedureParamsCursor ) then begin
+    FProcedureParamsCursor := TIB_Dataset.Create( Connection );
+    with FProcedureParamsCursor do begin
+      IB_Connection := Connection;
+      IB_Transaction := Transaction;
+      OnError := Self.DoHandleError;
+      SQL.Add( 'SELECT RDB$PARAMETER_NAME' );
+      SQL.Add( 'FROM RDB$PROCEDURE_PARAMETERS' );
+      SQL.Add( 'WHERE RDB$PARAMETER_TYPE = ?RDB$PARAMETER_TYPE' );
+      SQL.Add( '  AND RDB$PROCEDURE_NAME = ?RDB$PROCEDURE_NAME' );
+      SQL.Add( 'ORDER BY RDB$PARAMETER_NUMBER' );
+    end;
+  end;
+  if Connection.Connected then
+    FProcedureParamsCursor.Prepared := true;
+  Result := FProcedureParamsCursor;
+  CheckTransactionEnded;
+end;
+
+procedure TIB_SchemaCache.GetProcedureParamNames( const AProcName: string;
+                                                  const AParamInput: boolean;
+                                                        AStrings: TStrings );
+var
+  tmpProc: string;
+  tmpStr: string;
+  tmpCol: TIB_Column;
+  ts: TIB_StringList;
+begin
+  ts := TIB_StringList.Create;
+  try
+    if IsLitCriteria( AProcName, '"' ) then
+      tmpProc := AProcName
+    else
+      tmpProc := UpperCase( AProcName );
+    if AParamInput then
+      tmpProc := Trim( tmpProc ) + '%IN'
+    else
+      tmpProc := Trim( tmpProc ) + '%OUT';
+    if ProcedureParams.FindValue( tmpProc, tmpStr ) then
+      ts.SafeCommaText := tmpStr
+    else
+    if Connection.Connected then
+      try
+        with GetProcedureParamsCursor do
+        begin
+          tmpCol := FieldByName( 'RDB$PARAMETER_NAME' );
+          if AParamInput then
+            Params[0].AsSmallint := 0
+          else
+            Params[0].AsSmallint := 1;
+          if IsLitCriteria( AProcName, '"' ) then
+            Params[1].AsString := stLitCriteria( AProcName )
+          else
+            Params[1].AsString := AnsiUpperCase( stLitCriteria( AProcName ));
+          First;
+          while not Eof do
+          begin
+            ts.Add( IB_Connection.mkIdent( tmpCol.AsString ));
+            Next;
+          end;
+          Close;
+        end;
+      finally
+        ProcedureParams.Add( tmpProc + '=' + ts.SafeCommaText );
+      end;
+    AStrings.Assign( ts );
+  finally
+    ts.Free;
+  end;
+  CheckTransactionEnded;
+end;
+

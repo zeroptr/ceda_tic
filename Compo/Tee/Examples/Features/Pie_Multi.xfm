@@ -1,0 +1,65 @@
+inherited PieMultiple: TPieMultiple
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Multiple Pie series can be aligned using the BeforeDrawValues ev' +
+        'ent and '
+      'the ChartRect property.'
+      ''
+      'Example: Chart1.ChartRect:=Rect( 20, 20, 120, 120);')
+  end
+  inherited Chart1: TChart
+    Legend.Visible = False
+    Chart3DPercent = 15
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    object Series1: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Style = smsValue
+      Marks.Visible = True
+      BeforeDrawValues = Series1BeforeDrawValues
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+    object Series2: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Style = smsValue
+      Marks.Visible = True
+      BeforeDrawValues = Series2BeforeDrawValues
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+    object Series3: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Style = smsValue
+      Marks.Visible = True
+      BeforeDrawValues = Series3BeforeDrawValues
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+    object Series4: TPieSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Style = smsValue
+      Marks.Visible = True
+      BeforeDrawValues = Series4BeforeDrawValues
+      Gradient.Direction = gdRadial
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Visible = False
+  end
+end

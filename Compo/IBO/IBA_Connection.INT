@@ -1,0 +1,1426 @@
+
+{                                                                              }
+{ TIB_Connection                                                               }
+{                                                                              }
+
+{***************************************************************}
+{                                                               }
+{          IB Objects Components and Resources Library          }
+{                                                               }
+{          Copyright (C) 1996-2001 Jason Wharton                }
+{          and Computer Programming Solutions, Mesa, AZ         }
+{                                                               }
+{  This source code unit is released under the terms of the     }
+{  CPS Trustware License.                                       }
+{  It may be distributed or deployed as source code or in       }
+{  compiled form only in compliance with the terms and          }
+{  conditions of the CPS Trustware License which may be         )
+{  examined at http://www.ibobjects.com/ibo_trustware.html      )
+{                                                               }
+{***************************************************************}
+
+{******************************************************************************}
+{  CONTRIBUTED MODIFICATIONS                                                   }
+{  Additions or modifications listed below using format:                       }
+{                                                                              }
+{  Joe Citizen <joe@joecitizen.com>                                            }
+{  mm/dd/yyyy                                                                  }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                 }
+{            Copyright (C) 2001 Joe Citizen                                    }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{  Place your credits and information in the top of the section                }
+{  below with any other descriptions or explanations desired.                  }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  27-Apr-2003                                                                 }
+{     Added extract of Firebird specific version info to characteristics.      }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  09-Sep-2001                                                                 }
+{     Added psKeyFromEnviron option to TIB_PasswordStorage type.               }
+{                                                                              }
+{  Wassim Haddad <lobolo2000@yahoo.com>                                        }
+{  22-Aug-2001                                                                 }
+{     Added support to import column defaults from the server upon request.    }
+{     ImportServerDefaults is a public method that imports column defaults     }
+{     from the server.                                                         }
+{                                                                              }
+{  Geoff Worboys <geoff@telesiscomputing.com.au>                               }
+{  10-Aug-2001                                                                 }
+{     Implemented new PasswordStorage property to control if and how the       }
+{     Password property is saved to the DFM (via the SavedPassword property).  }
+{     See TIB_PasswordStorage type for detailed explanation.                   }
+{     Deprecating PasswordRemembered - some special streaming implemented      }
+{     so that it can still be read, but now it simply sets PasswordStorage     }
+{     to psKeyFromUserReg.                                                     }
+{     SavedPassword property set back to public (from published) and special   }
+{     streaming code provided to read/write to/from the DFM.                   }
+{                                                                              }
+{******************************************************************************}
+
+{: Exception class for the TIB_Connection component.}
+EIB_ConnectionError = class( EIB_Error );
+
+{: Status of the connection.
+<br><br>
+csForcedConnectPending occurs when a live dbHandle is written to the dbHandle
+or dbHandleShared property.
+<br><br>
+The rest should be self-explanatory.}
+TIB_ConnectionStatus = ( csDisconnected,        csConnected,
+                         csDisconnectPending,   csConnectPending,
+                         csDropPending,         csCreatePending,
+                         csForcedConnectPending );
+
+{: All of the different notification messages generated by the
+TIB_Connection component and propagated to the TIB_ConnectionLink class.}
+TIB_ConnectionEventType = ( cetBeforeAssignment,
+                            cetAfterAssignment,
+                            cetBeforeExecDDL,
+                            cetAfterExecDDL,
+                            cetConnectedChanged,
+                            cetBeforeCreateDatabase,
+                            cetAfterCreateDatabase,
+                            cetBeforeConnect,
+                            cetAfterConnect,
+                            cetBeforeDisconnect,
+                            cetAfterDisconnect,
+                            cetBeforeDropDatabase,
+                            cetAfterDropDatabase );
+{: Determines how connection passwords are stored.
+<br><br>
+psNone - password is not stored, must be re-entered via a login
+prompt or assigned to the connection in code at runtime.
+<br><br>
+psKeyFromUserReg - the password is stored in a jumbled form in
+the DFM and therefore the executable.  The key to unjumble this
+password is stored in the registry under HKEY_CURRENT_USER, so
+that only the current user can decrypt the password.  If the
+application is executed on another machine, or used by a different
+user on the same machine, it will NOT be able to open the connection.
+<br><br>
+psKeyFromMachineReg - the password is stored in a jumbled form in
+the DFM and therefore the executable.  The key to unjumbling this
+password is stored in the registry under HKEY_LOCAL_MACHINE, so that
+only users on the local machine can decrypt the password.  If the
+application executed on another machine it will NOT be able to
+open the connection.
+<br><br>
+psNotSecure - the password is stored in a jumbled form in the DFM
+and therefore the executable.  The key to unjumbling this password
+is hardcoded into IBObjects.  Any user on any machine will be able
+to open the connection (presuming they have network connection to
+the database).
+<br><br>
+psKeyFromEnviron - the password is stored in a jumbled form in
+the DFM and therefore the executable.  The key to unjumbling this
+password expected to be found in the environment variable
+IBO_PASSKEY.  If no such variable is found then the processing
+reverts to psNotSecure.
+<br><br>
+NOTE: The psNotSecure setting will allow you to share your
+applications with any user/machine that has access to the database.
+It also means that almost anyone can easily determine what the real
+password is and use it to access the database from other applications.
+<br><br>
+NOTE 2: On Windows NT and Windows 2000 machines there may be security
+issues with creating entries in the HKEY_LOCAL_MACHINE area of the
+registry.  Users *may* be able to read entries stored in that location,
+but they will not be able to create the entry.  If the password does
+not seem to being stored on your machine, try using the psUser option
+or check the registry security with RegEdt32.
+<br><br>
+NOTE 3: See the JumbleString function in IB_Utils.pas for information
+on the encryption mechanism used by the psKeyFrom* options, and also
+the GetJumbleKey function for registry access methods used.
+}
+TIB_PasswordStorage = (
+  psNone,
+  psKeyFromUserReg,
+  psKeyFromMachineReg,
+  psNotSecure,
+  psKeyFromEnviron
+  );
+
+{: This type is used in setting DPB settings for a connection. }
+TIB_DPBFlag = ( dpbDefault, dpbTrue, dpbFalse );
+{: Event type used by most events for the TIB_Connection component.}
+TIB_ConnectionEvent = procedure( Sender: TIB_Connection ) of object;
+{: Event type used by the TIB_Connection class for logging in a user.}
+TIB_LoginEvent = procedure(     Sender: TIB_Connection;
+                            var AbortLogin: boolean ) of object;
+{: Event type used by the TIB_Connection class to pass in custom DPB settings.}
+TIB_CustomizeDPBEvent = procedure (     Sender: TIB_Connection;
+                                    var ABufPtr: integer;
+                                    var ABuffer: array of char ) of object;
+
+{: This event is used in order to provide custom handling of search criteria.
+It is triggered before IBO's default search buffer handling code.  It is
+possible therefore to design your own extensions and syntax for use in search
+mode.  In this event check for your special syntax and manipulate it into a
+format that IBO can handle by default.
+<br><br>
+It is also possible to override IBO's default handling completely, by setting
+the reference variable for it to False. This assumes that you provide your own
+entries into the SQLWhereItems and ParamValueLinks string lists.}
+TIB_ProcessSearchBuffer = procedure(     Sender: TObject;
+                                         IB_Field: TIB_Column;
+                                     var SearchBuffer: string;
+                                         WhereClause,
+                                         Parameters,
+                                         Macros: TStrings;
+                                     var DefaultHandling: boolean ) of object;
+{: This event type is used to process the DMLCacheItems in order to maintain
+cross-connection buffer synchronization.
+<br><br>
+It is possible to change the contents of the cache item or reject it altogether.}
+TIB_ReceiveDMLCacheEvent = procedure ( AConnection: TObject;
+                                   var AKeyFieldNames: string;
+                                   var AKeyFieldValues: variant;
+                                   var ADMLCacheItemType: TIB_DMLCacheItemType;
+                                   var Accept: boolean ) of object;
+
+{: Event type to define SoundEx parsing routines for a connection.}
+TIB_SoundExParse = procedure(       Sender: TObject;
+                              const SourceStr: string;
+                              var   ResultStr: string ) of object;
+
+{: Event to use custom string comparisons instead of (Ansi)CompareText.
+<br>
+Returns -1, 0, 1, less than, equal to or greater than.}
+TIB_CompareTextEvent = function( IB_Field: TIB_Column;
+                                 const S1, S2: string ): integer of object;
+
+{: Event to use custom high char in order to support different collations along
+with the horizontal dataset refinement. In some cases #255 is considered at a
+lesser position in the collation order than 'z' is. In such a case, the
+dataset is going to appear truncated if the Last method is called.}
+TIB_GetHighCollateChar = procedure(     IB_Field: TIB_Column;
+                                    var AChar: char ) of object;
+
+{: Structure used to retrieve various settings for a connection.}
+TIB_ConnectCharacteristics = packed record
+  dbAllocation: longint;
+  dbLevelPrefix: byte;
+  dbBase_Level: byte;
+  dbFilePrefix: byte;
+  dbFile: string;
+  dbSite: string;
+  dbImplementationPrefix: byte;
+  dbImplementation: byte;
+  dbClass: byte;
+  dbNo_Reserve: byte;
+  dbForced_Writes: byte;
+  dbODS_Minor_Version: word;
+  dbODS_Version: word;
+  dbPage_Size: word;
+  dbVersionPrefix: byte;
+  dbVersion: string;
+  dbFBVersionPrefix: byte;
+  dbFBVersion: string;
+  dbSweep_Interval: integer;
+  dbPage_Buffers: integer;
+  dbSQLDialect: integer;
+  dbReadOnly: boolean;
+  dbSizeInPages: integer;
+end;
+
+{: This indicates whether DomainName and SQLType entries are included in any of
+the stringlist properties.
+<br><br>
+This property exists to avoid unnecessary processing if these more advanced
+features are not in use by your application.}
+TIB_ConnectionFieldEntryTypes = ( fetDomainName, fetSQLType );
+{: Set type for the field entry types property.}
+TIB_ConnectionFieldEntryTypeSet = set of TIB_ConnectionFieldEntryTypes;
+
+{: This component obtains a persistent connection to an InterBase database.
+<br><br>
+It is responsible for providing all of the properties and methods that are
+associated with an InterBase database.
+<br><br>
+It also provides many useful features to assist with database administration.
+<br><br>
+See the dbHandleShared property to see how you can share a single connection to
+an InterBase database with BDE based components TDatabase, TQuery, etc.
+<br><br>
+IBO includes a lot of features that were designed to preserve compatibility with
+applications which must retain a connection through the BDE.  The benefit of
+this is the ability to have additional concurrent transactions using IB's full
+transaction capabilities and even cross-database transactions involving the
+connection being used by the BDE.}
+TIB_Connection = class(TIB_Component)
+private
+{ Property storage fields }
+  FSchemaCache: TIB_SchemaCache;
+  FColumnAttributes: TIB_StringProperty;
+  FDefaultValues: TIB_StringProperty;
+  FFieldsAlignment: TIB_StringProperty;
+  FFieldsCharCase: TIB_StringProperty;
+  FFieldsDisplayLabel: TIB_StringProperty;
+  FFieldsGridLabel: TIB_StringProperty;
+  FFieldsDisplayFormat: TIB_StringProperty;
+  FFieldsDisplayWidth: TIB_StringProperty;
+  FFieldsEditMask: TIB_StringProperty;
+  FFieldsReadOnly: TIB_StringProperty;
+  FFieldsTrimming: TIB_StringProperty;
+  FFieldsVisible: TIB_StringProperty;
+  FGeneratorLinks: TIB_StringProperty;
+  FConnectAfterLoad: boolean;
+  FdbHandle: isc_db_Handle;
+  FIsHandleShared: boolean;
+  FParams: TIB_StringList;
+  FPassword: string;
+  FPasswordStorage: TIB_PasswordStorage;
+  FConnectedDatabase: string;
+  FConnectedUserName: string;
+  FConnectedPassword: string;
+  FConnectedSQLRolename: string;
+  FUsers: TIB_StringList;
+  FStatementList: TList;
+  FDatasetList: TList;
+  FTransactionList: TList;
+  FActiveTransactionList: TList;
+  FConnectionLinkList: TList;
+  FConnectionStatus: TIB_ConnectionStatus;
+  FAnnounceFocus: boolean;
+  FLoginCaption: string;
+  FLoginSQLRoleList: string;
+  FLoginSQLRolePrefix: string;
+  FLoginUsernamePrefix: string;
+  FLoginRegKey: string;
+  FLoginPrompt: boolean;
+  FLoginAttempts: word;
+  FLoginAborted: boolean;
+  FLoginDBReadOnly: boolean;
+  FLoginWasUsed: boolean;
+  FLoginHelpContext: integer;
+  FDatabaseName: string;
+  FStmtHandleCache: pointer;
+  FStmtHandleCount: integer;
+  FStmtHandleCapacity: integer;
+  FCacheStatementHandles: boolean;
+  FEscapeCharacter: char;
+  FFieldEntryTypes: TIB_ConnectionFieldEntryTypeSet;
+  FRequestReconnect: boolean;
+  FDefaultNoCase: boolean;
+  FDefaultNoTrailing: boolean;
+  FDefaultNoTrimming: boolean;
+  FDefaultTransaction: TIB_Transaction;
+  FStartedTransactionCount: integer;
+  FLastOpened: TDateTime;
+  FLastClosed: TDateTime;
+  FAliasName: string;
+  FAliasParams: TIB_StringList;
+  FKeepConnection: boolean;
+  FLastConnected: TDateTime;
+  FMacroBegin: string;
+  FMacroEnd: string;
+{ Database characteristics }
+  FCharacteristics: TIB_ConnectCharacteristics;
+  FCharacteristicsValid: boolean;
+  FConnectionWasLost: boolean;
+{ Event Storage }
+  FBeforeExecDDL: TIB_ConnectionEvent;
+  FAfterExecDDL: TIB_ConnectionEvent;
+  FBeforeConnect: TIB_ConnectionEvent;
+  FAfterConnect: TIB_ConnectionEvent;
+  FBeforeDisconnect: TIB_ConnectionEvent;
+  FAfterDisconnect: TIB_ConnectionEvent;
+  FBeforeCreateDatabase: TIB_ConnectionEvent;
+  FAfterCreateDatabase: TIB_ConnectionEvent;
+  FBeforeDropDatabase: TIB_ConnectionEvent;
+  FAfterDropDatabase: TIB_ConnectionEvent;
+  FOnConnectedChanged: TIB_ConnectionEvent;
+  FOnLogin: TIB_LoginEvent;
+  FOnLoginFailure: TIB_ConnectionEvent;
+  FOnGainFocus: TIB_ConnectionEvent;
+  FOnLoseFocus: TIB_ConnectionEvent;
+  FOnCustomizeDPB: TIB_CustomizeDPBEvent;
+  FOnProcessSearchBuffer: TIB_ProcessSearchBuffer;
+  FOnSoundExParse: TIB_SoundExParse;
+  FOnSoundExMaxParse: TIB_SoundExParse;
+  FOnReceiveDMLCache: TIB_ReceiveDMLCacheEvent;
+  FOnCustomCompareText: TIB_CompareTextEvent;
+  FOnCustomCompareStr: TIB_CompareTextEvent;
+  FOnGetHighCollateChar: TIB_GetHighCollateChar;
+{ Property Access Methods }
+  procedure GetSessionName( AReader: TReader );
+  procedure LoadSavedPassword( AReader: TReader );
+  procedure StoreSavedPassword( AWriter: TWriter );
+  procedure LoadPasswordRemembered( AReader: TReader );
+  procedure SetAliasName( const AValue: string );
+  function GetAliasParams: TIB_StringList;
+  procedure SetKeepConnection( AValue: boolean );
+  function IsConnectedStored: boolean;
+  procedure SetParams( Value: TIB_StringList );
+  function GetPrm( Index: integer ): string;
+  procedure SetPrm( Index: integer; const Value: string );
+  function GetPassword: string;
+  procedure SetPassword( AValue: string );
+  function GetForcedWrites: TIB_DPBFlag;
+  procedure SetForcedWrites( AValue: TIB_DPBFlag );
+  function GetDBKeyScope: TIB_DPBFlag;
+  procedure SetDBKeyScope( AValue: TIB_DPBFlag );
+  function GetReservePageSpace: TIB_DPBFlag;
+  procedure SetReservePageSpace( AValue: TIB_DPBFlag );
+  function GetPageSize: word;
+  procedure SetPageSize( AValue: word );
+  function GetSweepInterval: word;
+  procedure SetSweepInterval( AValue: word );
+  function GetTransactionCount: integer;
+  function GetTransaction( Index: integer ): TIB_Transaction;
+  function GetStatementCount: integer;
+  function GetStatement( Index: integer ): TIB_Statement;
+  function GetDatasetCount: integer;
+  function GetDataset( Index: integer ): TIB_Dataset;
+  function GetConnectionLinkCount: integer;
+  function GetPdbHandle: pisc_db_handle;
+  procedure SetdbHandle( AValue: isc_db_handle );
+  procedure SetdbHandleShared( AValue: isc_db_handle );
+  function GetUsers: TStrings;
+  function GetProtocol: TIB_Protocol;
+  procedure SetProtocol( AValue: TIB_Protocol );
+  function GetCharacteristics: TIB_ConnectCharacteristics;
+  procedure SetColumnAttributes( AValue: TIB_StringProperty );
+  procedure SetDefaultValues( AValue: TIB_StringProperty );
+  procedure SetFieldsAlignment( AValue: TIB_StringProperty );
+  procedure SetFieldsCharCase( AValue: TIB_StringProperty );
+  procedure SetFieldsDisplayLabel( AValue: TIB_StringProperty );
+  procedure SetFieldsGridLabel( AValue: TIB_StringProperty );
+  procedure SetFieldsDisplayFormat( AValue: TIB_StringProperty );
+  procedure SetFieldsDisplayWidth( AValue: TIB_StringProperty );
+  procedure SetFieldsEditMask( AValue: TIB_StringProperty );
+  procedure SetFieldsReadOnly( AValue: TIB_StringProperty );
+  procedure SetFieldsTrimming( AValue: TIB_StringProperty );
+  procedure SetFieldsVisible( AValue: TIB_StringProperty );
+  procedure SetGeneratorLinks( AValue: TIB_StringProperty );
+  procedure AllocateStmtHandle( const PstHandle: pisc_stmt_handle );
+  procedure DeallocateStmtHandle( const PstHandle: pisc_stmt_handle );
+  procedure SetCacheStatementHandles( AValue: boolean );
+  function GetSchemaCacheDir: string;
+  procedure SetSchemaCacheDir( const AValue: string );
+  function GetLoginUsername: string;
+  procedure SetLoginUsername( const AValue: string );
+  function GetLoginSQLRole: string;
+  procedure SetLoginSQLRole( const AValue: string );
+  function GetSQLDialect: smallint;
+  procedure SetSQLDialect( AValue: smallint );
+  function GetHasActiveTransaction: boolean;
+  procedure SetLostConnection;
+  procedure SetMacroBegin(AValue: string);
+  procedure SetMacroEnd(AValue: string);
+  function IsMacroBeginStored: boolean;
+  function IsMacroEndStored: boolean;
+protected
+{ Utility storage }
+  flag_junk_value: integer;
+{ Inherited Methods }
+  procedure DefineProperties( AFiler: TFiler ); override;
+  procedure Loaded; override;
+  procedure Notification( AComponent: TComponent;
+                          Operation: TOperation ); override;
+  function NeedTimerNotifications: boolean; override;
+  procedure SetSession( ASession: TIB_Session ); override;
+{ Property Access methods }
+  function GetDatabase: string; //~virtual;
+  procedure SetDatabase( const AValue: string ); //~virtual;
+  function GetDatabaseName: string; //~virtual;
+  procedure SetDatabaseName( const AValue: string ); //~virtual;
+  function IsDatabaseNameStored: boolean; //~virtual;
+  procedure SetConnected( Value: boolean); //~virtual;
+  function GetConnected: boolean; //~virtual;
+  procedure SetAnnounceFocus( AValue: boolean ); virtual;
+  procedure SetDefaultTransaction( AValue: TIB_Transaction ); virtual;
+  function GetSavedPassword: string; virtual;
+  procedure SetSavedPassword( AValue: string ); virtual;
+  function IsSavedPasswordStored: boolean; virtual;
+  procedure SetPasswordStorage( AVal: TIB_PasswordStorage );
+{ System Methods }
+  procedure SysInvalidateCachedInformation; //~virtual;
+  procedure SysUpdateCharacteristics; //~virtual;
+  procedure SysConnectAfterLoad; //~virtual;
+  procedure SysBeforeExecDDL; //~virtual;
+  procedure SysAfterExecDDL; //~virtual;
+  procedure SysBeforeConnect; //~virtual;
+  procedure SysLogin; //~virtual;
+  procedure SysBeforeDisconnect; //~virtual;
+  function SysConnect( FromScript: boolean ): boolean;
+  procedure SysDisconnect; //~virtual;
+  procedure SysAfterConnect; //~virtual;
+  procedure SysAfterDisconnect; //~virtual;
+  procedure SysCreateDatabase; //~virtual;
+  procedure SysDropDatabase; //~virtual;
+  procedure SysBeforeCreateDatabase; //~virtual;
+  procedure SysBeforeDropDatabase; //~virtual;
+  procedure SysAfterCreateDatabase; //~virtual;
+  procedure SysAfterDropDatabase; //~virtual;
+{ API level calls }
+  procedure API_Connect;
+  procedure API_Disconnect;
+  procedure API_Database_Info( var Items: array of Char;
+                               var Buffer: array of Char );
+{ Event Dispatch Methods }
+  procedure DoBeforeExecDDL; //~virtual;
+  procedure DoAfterExecDDL; //~virtual;
+  procedure DoLogin; virtual;
+  procedure DoLoginFailure; virtual;
+  procedure DoBeforeConnect; virtual;
+  procedure DoAfterConnect; virtual;
+  procedure DoBeforeDisconnect; virtual;
+  procedure DoAfterDisconnect; virtual;
+  procedure DoBeforeCreateDatabase; //~virtual;
+  procedure DoAfterCreateDatabase; //~virtual;
+  procedure DoBeforeDropDatabase; //~virtual;
+  procedure DoAfterDropDatabase; //~virtual;
+  procedure DoConnectedChanged; //~virtual;
+  procedure DoGainFocus; //~virtual;
+  procedure DoLoseFocus; //~virtual;
+  procedure DoCustomizeDPB( var bufptr: integer;
+                            var buffer: array of char ); //~virtual;
+  procedure DoProcessSearchBuffer(     IB_Field: TIB_Column;
+                                   var SearchBuffer: string;
+                                       WhereClause,
+                                       Parameters,
+                                       Macros: TStrings;
+                                   var DefaultHandling: boolean ); virtual;
+  procedure DoSoundExParse( const SourceStr: string;
+                              var ResultStr: string ); virtual;
+  procedure DoSoundExMaxParse( const SourceStr: string;
+                               var   ResultStr: string ); virtual;
+{ Link Dispatch Method }
+  procedure DoLinkEvent( AEvent: TIB_ConnectionEventType );
+{ Link handling methods }
+  procedure AddConnectionLink( NewLink: TObject );
+  procedure RemoveConnectionLink( OldLink: TObject );
+{ Protected properties }
+  property ConnectionLinkCount: integer read GetConnectionLinkCount;
+
+public
+
+{$IFNDEF HELPSCAN}
+
+{ Inherited Methods }
+  constructor Create(AOwner: TComponent); override;
+  destructor Destroy; override;
+
+{$ENDIF}
+
+{ New methods }
+
+{: Method which will cause all transactions for the connection to be closed.
+See the Close method of TIB_Transaction to see what behavior will take place.}
+  procedure CloseTransactions; //~virtual;
+{: Method which will cause all statements to be deallocated. Implicitly this
+means that all datasets will close and all statements will be unprepared.}
+  procedure DeallocateStatements; //~virtual;
+{: This method will add/modify/delete a user to the server specified
+in the Database property, incorporating the Protocol, Username and Password
+properties in the process.}
+  procedure AlterUser( Action: TIB_AlterUserAction;
+                       AUserName,
+                       AUserPass,
+                       AGroupName,
+                       AFirstName,
+                       AMiddleName,
+                       ALastName: string );
+{: Method used to build the DPB when obtaining a connection to the database.}
+  procedure BuildDPB( var BufPtr: integer;
+                      var Buffer: array of char;
+                          Item: byte;
+                          Contents: string);
+{: Method to attach to the database.}
+  procedure Connect; dynamic;
+{: Methods to detach from the database.}
+  procedure Disconnect; dynamic;
+{: This method will attempt to disconnect three times and will ignore any
+exceptions that may be raised in the process.}  
+  procedure ForceDisconnect;
+{: Methods to detach from the database and store the handle in the connection
+pool.}
+  procedure DisconnectToPool; dynamic;
+{: Function to return a value from a generator.}
+  function Gen_ID( const AGenerator: string; Increment: integer ): ISC_INT64;
+{: Method to attach to the database.
+<br><br>
+Included for VCL compatibility.}
+  procedure Open; dynamic;
+{: Method to detach from the database.
+<br><br>
+Included for VCL compatibility.}
+  procedure Close; dynamic;
+{: Method to create a database using the properties and attributes defined for
+the current database connection.}
+  procedure CreateDatabase; dynamic;
+{: Method to drop (delete) a database.
+<br><br>
+There must be an existing connection and no others users may be logged in
+or an exception is raised.}
+  procedure DropDatabase; dynamic;
+{: This method will discard all schema cache information and cause it to be
+reloaded on demand.  If the SchemaCacheDir property is being used, this will
+delete all of the local cache files.
+<br><br>
+For finer control of which local cache information is deleted from the
+SchemaCacheDir, see the help for the following properties/methods...
+<br>  TIB_Connection.SchemaCacheDir
+<br>  TIB_SchemaCache.CheckSchemaVersionTable
+<br>  TIB_SchemaCache.InvalidateAllItems
+<br><br><br>
+The FlushSchemaCache method can be used to reload all schema information if an
+alteration to the database's metadata structure was executed through a means
+other than using a IB_DSQL or other query component and calling ExecSQL.
+<br><br>
+For example, if you use the ExecuteImmediate() method or execute an IB_Script,
+this method can be called to ensure that the consequent changes will be
+accurately reflected in the internal schema cache.
+<br><br>
+When executing DDL statements through an IB_DSQL or other dataset component, IBO
+prepares the statement individually, establishes that it is a DDL statement and
+and takes the appropriate action automatically.  Such an operation will cause
+the entire schema cache to be reloaded.  You might wish to consider avoiding it
+in low-bandwidth environments.}
+  procedure FlushSchemaCache;
+{: This method will trim the number of statement handles in the cache.
+<br><br>
+It is necessary when a large form or many forms with lots of statements have
+been freed and there is a good possibility that they will not get used for a
+while. It is merely a matter of conservation since the server is holding
+resources for each statement handle that is in the cache.   Forms are freed much
+more quickly when they don't have to deallocate immediately but, instead, simply
+pass the live handle to the connection.
+<br><br>
+I hope to include some timer driven worker threads that will periodically peruse
+the various caches and buffers of IBO and trim things up according to some
+tuning parameters which I will put together.
+<br><br>
+When dropping a table or other resources, it is possible to get an "object in
+use" error when attempting to commit the change, if a cached statement handle
+is holding the resource.  IBO checks for this problem now.  It automatically
+calls this method and retries the commit, which will succeed if a cached handle
+was holding the resources.  Consequently, the "Object in Use" error should now
+occur only if another user is holding the resource.
+<br><br>
+I'm hoping that I can figure out a way to propagate a notice to other users to
+free up their extra server resources as well.}
+  procedure FreeStmtHandleCache( MaxHandles: integer );
+{: These methods are used to access the Soundex conversion functionality
+built into the connection.}
+  function GetSoundEx( SourceStr: string ): string; //~virtual;
+{: These methods are used to access the Soundex conversion functionality
+built into the connection.}
+  function GetSoundExMax( SourceStr: string ): string; //~virtual;
+{: BDE emulation property.}
+  function IsSQLBased: boolean;
+{: This method is used to initiate the announcement of a DMLCacheItem so that
+all the datasets in this connection can synchronize with changes that have taken
+place externally to the connection.
+<br><br>
+It is ideally fed by an IB_Events alerter component that reads the pertinent
+information from a table containing a log of recent changes in the database,
+which itself fed by triggers configured on the tables for which you want to
+maintain synchronization.}
+  procedure ProcessDMLCacheItem( var AKeyFieldNames: string;
+                                 var AKeyFieldValues: variant;
+                                 var ADMLCacheItemType: TIB_DMLCacheItemType);
+{: This method sets a flag that will cause the connection to do a quick
+reconnect and disconnect upon disconnecting from the database.
+<br><br>
+This is used primarily to avoid a bug in the event alerter mechanisms. I put a
+call to this method in the AfterRegister event of the IB_Events component
+when I use events in order to prevent the system from freezing when closing the
+application.}
+  procedure RequestReconnect;
+{: Make this database connection the currently focused connection for the
+session.}
+  procedure SetFocus; dynamic;
+{: I plan to use this as a way to check and make sure that the connection is
+still valid and that a network error or server crash hasn't made the client's
+connection invalid.
+<br><br>
+This method will return False when something is actually wrong.  If it detects a
+lost connection, it will set the ConnectionWasLost flag as well.
+<br><br>
+Call this method sparingly because it does actually hit the wire. How else can
+I test the connection if I don't use it somehow?}
+  function VerifyConnection: boolean;
+{: Method to populate the DefaultValues property with table & domain defaults.}
+  procedure ImportServerDefaults;
+{: This function returns a string that is suitable for use as an identifier in a
+DDL script.}
+  function mkIdent( const AString: string ): string;
+{: This function returns a string that is suitable for use as an identifier in a
+DDL script.}
+  function mkFldLst( const AString: string ): string;
+{: This function returns a string that is suitable for use as an identifier in a
+DDL script, from the character array that the SQLVAR structure returns.}
+  function mkVarIdent( const AString: string ): string;
+{: Work in progress.}
+  procedure ProcessPassiveTasks( var IsDone,
+                                     IsWaiting,
+                                     Terminate: boolean ); override;
+
+{ properties }
+
+{: Flag to indicate if a connection was lost.}
+  property ConnectionWasLost: boolean read FConnectionWasLost;
+{: Native InterBase connection handle.}
+  property dbHandle: isc_db_Handle read FdbHandle write SetdbHandle;
+{: Native InterBase connection handle.
+<br><br>
+<br>A BDE-acquired handle can be assigned to this property in order to
+piggyback an IB Objects IB_Connection onto the BDE-acquired handle.  Because the
+handle is shared, a call to Disconnect() will not attempt to call
+isc_detach_database().
+@example
+<code>
+function GetNativeHandle(Database: TDatabase): Pointer;
+var
+  length: word;
+  APtr: Pointer;
+begin
+// This is how you get a native IB handle out of a TDatabase.
+  APtr := nil;
+  if Assigned( Database ) and
+     Database.Connected and
+     ( Database.DriverName = 'INTRBASE' ) then
+    Check( DBIGetProp( HDBIOBJ( Database.Handle ), dbNATIVEHNDL,
+                                                   Addr(APtr),
+                                                   SizeOf( Pointer ),
+                                                   length ));
+  Result := APtr;
+end;
+
+procedure TfrmEvents.FormCreate(Sender: TObject);
+begin
+// An IB_Connection can take a raw handle from a TDatabase
+  dbEvents.Connected := True;
+  ibEvents.dbHandleShared := GetNativeHandle(dbEvents);
+// Register the events to receive notification.
+  IB_Events.RegisterEvents;
+end;
+
+procedure TfrmEvents.FormDestroy(Sender: TObject);
+begin
+// Before the TDatabase closes be sure to clear the dbHandle out of the
+// IB_Connection. Otherwise, it may attempt an operation after the handle
+// has become invalid.
+  ibEvents.dbHandleShared := nil;
+end;
+</code>}
+  property dbHandleShared: isc_db_Handle write SetdbHandleShared;
+{: Pointer to the native InterBase connection handle.}
+  property PdbHandle: pisc_db_Handle read GetPdbHandle;
+{: Property that returns True if the current connection is shared.}
+  property IsHandleShared: boolean read FIsHandleShared write FIsHandleShared;
+{: This property returns the time at which the connection was last connected.}
+  property LastConnected: TDateTime read FLastConnected;
+{: This property returns the name that the user typed into the login dialog.
+<br><br>
+If the LoginUsernamePrefix is not used then this will be the same as Username.}
+  property LoginUsername: string read GetLoginUsername write SetLoginUsername;
+{: This property returns the Role that the user typed into the login dialog.
+<br><br>
+If the LoginSQLRolePrefix is not used then this will be the same as SQLRole.}
+  property LoginSQLRole: string read GetLoginSQLRole write SetLoginSQLRole;
+{: The version of the password that will be saved to the DFM file.  You should
+really ignore this property.  It is public for access if required but you must
+remember that the value may be obscured or encrypted.}
+  property SavedPassword: string read GetSavedPassword
+                                 write SetSavedPassword;
+{: Returns the number of transactions that are associated with the connection.}
+  property TransactionCount: integer read GetTransactionCount;
+{: Returns a transaction by its index within the array of all transactions
+associated with the connection.}
+  property Transactions[index: integer]: TIB_Transaction read GetTransaction;
+{: This property reveals how many transactions the connection has started. It
+is the actual count of physical transaction handles that have been requested
+from the server, not the number of explicit transactions the user may be in.}
+  property StartedTransactionCount: integer read FStartedTransactionCount;
+{: Returns the number of statements that are associated with the connection.
+<br><br>
+This also includes datasets since they are inherited from statements.}
+  property StatementCount: integer read GetStatementCount;
+{: Returns a statement by its index within the array of all statements
+associated with the connection.
+<br><br>
+Be aware that <ul>
+<li>because the TIB_Dataset class is a descendant of the TIB_Statement
+class, they will all show up in this array together.
+<li>the two internal cursors that each TIB_BDataset object maintains will show
+up as additional statements in this array.
+<li>if you are using the TDataset-based components, only the internal cursors
+of these components will show up in this index of statements. There is not yet a
+way to get an index of just TDataset-based components.
+</ul>}
+  property Statements[index: integer]: TIB_Statement read GetStatement;
+{: Returns the number of datasets that are associated with the connection.}
+  property DatasetCount: integer read GetDatasetCount;
+{: Returns a dataset by its index within the array of all datasets
+associated with the connection.
+Be aware that <ul>
+<li>the two internal cursors that each TIB_BDataset object maintains will show
+up as additional statements in this array.
+<li>if you are using the TDataset-based components, only the internal cursors
+of these components will show up in this index of statements. There is not yet a
+way to get an index of just TDataset-based components.
+</ul>}
+  property Datasets[index: integer]: TIB_Dataset read GetDataset;
+{: Status of this component's connection.
+<br><br>
+It can be very useful to reference this property in code that is associated
+with events generated by this component.}
+  property ConnectionStatus: TIB_ConnectionStatus read FConnectionStatus;
+{: Property that returns a number of connection characteristics.}
+  property Characteristics: TIB_ConnectCharacteristics
+      read GetCharacteristics;
+{: This property determines the string used to locate the database to
+attach to.
+<br><br>
+It is coordinated with the other properties like Path, Protocol, Server, etc.
+If you change one, the change is automatically reflected in the other related
+properties.
+<br><br>
+DatabaseName has also been included for VCL compatibility.}
+  property Database: string read GetDatabase write SetDatabase stored false;
+{: This property returns True if the connection has an active transaction
+in it.}
+  property HasActiveTransaction: boolean read GetHasActiveTransaction;
+{: Property to get the usernames logged on to the current database.
+<br><br>
+This seems to only provide a listing of users who are logged in to the server
+from the machine that is making the request. You only get a complete listing
+if you run the program from the server locally.
+<br><br>
+I suspect that this is an IB bug and that it will be fixed in a future release.}
+  property Users: TStrings read GetUsers;
+{: This property stores all of the information that IBO needs to know about the
+metadata of the database. Since it is cached here, all metadata queries will be
+performed once per each connection only.
+<br><br>
+Ideally, for very low-bandwidth connections I want to have the metadata
+information stored persistently so that the queries do not need to be done.}
+  property SchemaCache: TIB_SchemaCache read FSchemaCache;
+{: Property where the parameter values of the current AliasName are stored.  It
+is only valid to access this property from a client that has the BDE
+configuration file (IDAPI.cfg or IDAPI32.cfg) on board which contains a correct
+BDE Alias configuration for this connection.  The BDE itself is not required.}
+  property AliasParams: TIB_StringList read GetAliasParams;
+
+published
+
+{: This property provides the ability to use a BDE Alias for the database
+connection string and other limited values.
+<br><br>
+The only items that are considered right now are the following parameters:
+<br>
+<br>   BDE_SERVER_NAME - for the complete connection path to the database.
+<br>   BDE_USER_NAME - for the username used to connect to the database.
+<br>   BDE_PASSWORD - for the password to be used.
+<br>   BDE_ROLE_NAME - for the SQL ROLE that is to be used to connect.
+<br><br>
+It is only valid to access this property from a client that has the BDE
+configuration file (IDAPI.cfg or IDAPI32.cfg) on board which contains a correct
+BDE Alias configuration for this connection.  The BDE itself is not required.}
+  property AliasName: string read FAliasName write SetAliasName;
+
+{: This property is work in progress.
+<br><br>
+It will be used to allow a connection handle to be dropped and picked back up
+again as needed. For now it is forced to always be true.}
+  property KeepConnection: boolean read FKeepConnection
+                                   write SetKeepConnection
+                                   default true;
+{: Property that determines whether this component should have its focusing
+announced throughout the session when it becomes the focused connection.}
+  property AnnounceFocus: boolean read FAnnounceFocus
+                                  write SetAnnounceFocus
+                                  default false;
+{: Determines whether or not IBO will cache acquired statement handles.
+<br><br>
+This can help improve performance of applications closing and opening forms,
+where each form allocates and deallocates statement handles.}
+  property CacheStatementHandles: boolean read FCacheStatementHandles
+                                          write SetCacheStatementHandles
+                                          default true;
+{: }
+  property DefaultTransaction: TIB_Transaction read FDefaultTransaction
+                                               write SetDefaultTransaction;
+{: Provides the escape character to be used in "LIKE" specifications during
+ExtractSQLWhere (the building of select statements during search mode).}
+  property EscapeCharacter: char read FEscapeCharacter
+                                 write FEscapeCharacter
+                                 default '\';
+{: This property is required to tell whether or not entries have been made in
+these connection-level properties of using domain names or SQL types:
+<br>
+<br>  ColumnAttributes
+<br>  DefaultValues
+<br>  FieldsAlignment
+<br>  FieldsCharCase
+<br>  FieldsDisplayLabel
+<br>  FieldsGridLabel
+<br>  FieldsDisplayFormat
+<br>  FieldsDisplayWidth
+<br>  FieldsEditMask
+<br>  FieldsReadOnly
+<br>  FieldsTrimming
+<br>  FieldsVisible
+<br>  GeneratorLinks}
+  property FieldEntryTypes: TIB_ConnectionFieldEntryTypeSet
+    read FFieldEntryTypes
+    write FFieldEntryTypes
+    default [];
+{: This property can be used to default all string/text fields to being
+used as though field=NOCASE was specified in the column attributes.  The
+default can be overridden in the column attributes by the use of field=YESCASE.
+<br>
+<br>IMPORTANT: You must still specify field=NOCASE=dupfield in the column
+attributes if a special uppercase duplicate field exists for the column. }
+  property DefaultNoCase: boolean read FDefaultNoCase
+                                  write FDefaultNoCase
+                                  default false;
+{: This property can be used to default all string/text fields to being
+searched as though field=NOTRAILING was specified in the column attributes.
+This default can be overridden in the column attributes by the use of
+field=YESTRAILING.}
+  property DefaultNoTrailing: boolean read FDefaultNoTrailing
+                                      write FDefaultNoTrailing
+                                      default false;
+{: This property sets the default string trimming behavior for text columns.
+You may set this to True to emulate the VCL behavior, which is to retain
+the trailing blank-space padding on all char and varchar output column values,
+which expands them to their maximum byte size.}
+  property DefaultNoTrimming: boolean read FDefaultNoTrimming
+                                      write FDefaultNoTrimming
+                                      default false;
+{: This is the caption used on the default login dialog.}
+  property LoginCaption: string read FLoginCaption write FLoginCaption;
+{: This will provide an optional help context number so that help can be
+provided to the user upon logging in to their application.}
+  property LoginHelpContext: integer read FLoginHelpContext
+                                     write FLoginHelpContext
+                                     default 0;
+{: In order to have a list of SQL Role names to choose from, include them in
+this property, separated by semi colons.  The user will be able to choose a
+SQL Role from a combobox with these values in it.}
+  property LoginSQLRoleList: string read FLoginSQLRoleList
+                                    write FLoginSQLRoleList;
+{: For convenience, I have resources defined with a prefix to keep them separate
+per application. This makes it so that the actual value including its prefix
+does not need to be displayed in full. The prefix will be added to whatever
+SQL role the user selects.
+<br><br>
+For example, if the user selects USER from the SQL Role drop down and the
+prefix is set to MYAPP_ then the database will use the SQL Role of MYAPP_USER.}
+  property LoginSQLRolePrefix: string read FLoginSQLRolePrefix
+                                      write FLoginSQLRolePrefix;
+{: For convenience, a prefix can be added to the actual Username that the
+user enters into the login dialog. I usually give all my users a prefix and
+separate login for all the applications that they use. This way I know what
+database they are logged into and they don't know that I have different
+logins for each of the applications they use. This prefix makes it so that they
+are not aware that they are actually using different sign-ons.}
+  property LoginUsernamePrefix: string read FLoginUsernamePrefix
+                                       write FLoginUsernamePrefix;
+{: If true a login prompt will be presented to the user for entering a username
+and password.
+<br><br>
+Use the OnLogin event if you want to take specific control over how the user
+is prompted to enter in their login information.}
+  property LoginPrompt: boolean read FLoginPrompt
+                                write FLoginPrompt
+                                default false;
+{: Property that indicates whether the user aborted the login proocess.}
+  property LoginAborted: boolean read FLoginAborted;
+{: Property that determines how many failed login attempts a user may have
+before the database will be made inaccessible.}
+  property LoginAttempts: word read FLoginAttempts
+                               write FLoginAttempts
+                               default 3;
+{: Property that determines whether the user is permitted to alter the path of
+the database that will be used for the connection.}
+  property LoginDBReadOnly: boolean read FLoginDBReadOnly
+                                    write FLoginDBReadOnly
+                                    default false;
+{: This property is used to locate information in the system registry
+for storing various information relating to login. If it is left blank, no
+action will be taken to store and retrieve preferences.}
+  property LoginRegKey: string read FLoginRegKey write FLoginRegKey;
+{: Username of the person logging into a database. }
+  property Username: string index 1 read GetPrm write SetPrm stored false;
+{: Password of person logging in to the database.}
+  property Password: string read GetPassword write SetPassword stored false;
+{: Controls how the password is stored.
+<br><br>
+See the TIB_PasswordStorage type definition for detailed explanation of
+each option.
+<br><br>
+The recommended approach is to only deploy applications with PasswordStorage
+set to psNone and prompt the user for the password.  This way the password is
+not actually stored in the DFM and executable at all.
+<br><br>
+If you want to save the password while developing the application, to prevent
+needing to login every time, then set the PasswordStorage to psKeyFromUserReg.
+In this mode the password is stored, but it can only be unjumbled/decrypted
+on your current machine with your current operating system logon.  This will
+help protect your password if you accidently distribute a DFM or executable
+with the password saved.  When you have finished development and are ready to
+deploy, reset the PasswordStorage to psNone.
+<br><br>
+IMPORTANT:  The encryption is only fairly basic, so dont rely on this to
+be fully secure.  See the JumbleString function in IB_Utils.pas for more
+details on how it works.
+<br><br>
+If security does not matter to you or your client at all, then you can set
+PasswordStorage to psNotSecure.  In this mode the password is obscured, but
+the key is hardcoded in IBObjects, which means that anyone could reveal the
+password and use it directly in other applications to access the database.}
+  property PasswordStorage: TIB_PasswordStorage read FPasswordStorage
+                                       write SetPasswordStorage
+                                       default psNone;
+{: For remote connections, this is the name of the server where the database
+resides. IF the protocol is cpLocal, this property is ignored.}
+  property Server: string index 3 read GetPrm write SetPrm stored false;
+{: This property allows the SQL Dialect feature of InterBase to be used.}
+  property SQLDialect: smallint read GetSQLDialect
+                                write SetSQLDialect
+                                default 1;
+{: This property allows the SQL ROLE feature of InterBase to be used.}
+  property SQLRole: string index 4 read GetPrm write SetPrm stored false;
+{: Physical path where the database resides on the server that hosts it.
+<br><br>
+Do not confuse this with a client's path to a GDB file on a remote server via
+a mapped drive. The InterBase connect string must include the path for the
+server upon which the file resides and will fail if a mapped path is provided.}
+  property Path: string index 5 read GetPrm write SetPrm stored false;
+{: Not sure how this is implemented but it gives the DPB as documentd in the
+API guide.}
+  property License: string index 6 read GetPrm write SetPrm stored false;
+{: Name of the SYSDBA for the connection.
+<br><br>
+I'm not sure of the effect of including a SYSDBA with a USERNAME in the same
+connection. This property is as documented in the API guide.}
+  property SysDBA: string index 7 read GetPrm write SetPrm stored false;
+{: Property to determine the character set to use for the connection.
+<br><br>
+If this property is not used then character transliterations are not performed
+by the API and an exception can result.
+<br><br>
+The BDE did some of its own transliterations which seemed to make it appear
+unnecessary to deal with it at the database level but this is not the case.}
+  property CharSet: string index 9 read GetPrm write SetPrm stored false;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.
+<br><br>
+Settings made in the statement or dataset's ColumnAttributes property will
+take precedence over this for each individual parameter.}
+  property ColumnAttributes: TIB_StringProperty read FColumnAttributes
+                                                write SetColumnAttributes;
+{: Global property used to centralize settings for column default values.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property DefaultValues: TIB_StringProperty read FDefaultValues
+                                             write SetDefaultValues;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsAlignment: TIB_StringProperty read FFieldsAlignment
+                                               write SetFieldsAlignment;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsCharCase: TIB_StringProperty read FFieldsCharCase
+                                              write SetFieldsCharCase;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsDisplayLabel: TIB_StringProperty read FFieldsDisplayLabel
+                                                  write SetFieldsDisplayLabel;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsGridLabel: TIB_StringProperty read FFieldsGridLabel
+                                               write SetFieldsGridLabel;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsDisplayFormat: TIB_StringProperty read FFieldsDisplayFormat
+                                                   write SetFieldsDisplayFormat;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsDisplayWidth: TIB_StringProperty read FFieldsDisplayWidth
+                                                  write SetFieldsDisplayWidth;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsEditMask: TIB_StringProperty read FFieldsEditMask
+                                              write SetFieldsEditMask;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsReadOnly: TIB_StringProperty read FFieldsReadOnly
+                                              write SetFieldsReadOnly;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsTrimming: TIB_StringProperty read FFieldsTrimming
+                                              write SetFieldsTrimming;
+{: Global property used to centralize settings for column attributes.
+<br><br>
+It is possible to put entries in here based on domain names if the
+FieldEntryType property is set to include handling of domain names.}
+  property FieldsVisible: TIB_StringProperty read FFieldsVisible
+                                             write SetFieldsVisible;
+{: Global property used to centralize settings for generator mappings.}
+  property GeneratorLinks: TIB_StringProperty read FGeneratorLinks
+                                              write SetGeneratorLinks;
+{: Property that allows an alternative message file to be used.}
+  property MessageFile: string index 10 read GetPrm write SetPrm stored false;
+{: This porperty determines the network protocol used for the connection.}
+  property Protocol: TIB_Protocol read GetProtocol
+                                  write SetProtocol
+                                  stored false;
+{: Property to return or set the Forced Writes flag for a database.
+<br><br>
+Beware how this is used.  If you set it to True or False instead of Default, the
+database will change to use that particular setting every time your application
+is subsequently run.
+<br><br>
+See IB documentation for more details.}
+  property ForcedWrites: TIB_DPBFlag read GetForcedWrites
+                                     write SetForcedWrites
+                                     stored false;
+{: This property is used to determine how the DB_KEY scope should be treated
+for the database connection.
+<br><br>
+By default, a DB_KEY is only valid for and during a single transaction but it
+is possible to be able to obtain a DB_KEY and have it remain a valid (in
+scope) reference to a record by setting this property to true.
+<br><br>
+Caution should be used when setting this to true, because InterBase internally
+holds open a transaction for the duration of the connection, thus preventing
+the server from advancing the OAT (oldest active transaction). This can lead to
+serious performance degradation and eventual server crash. If you use this
+setting, please be sure to cycle connections periodically. I'm not sure how much
+this matters in low volume update systems but it would be mandatory to avoid
+these problems in a high volume system.}
+  property DBKeyScope: TIB_DPBFlag read GetDBKeyScope
+                                   write SetDBKeyScope
+                                   stored false;
+{: Property to return or set the reserve page space flag for a database.
+<br><br>
+Beware how this is used.  If you set it to True or False instead of Default, the
+database will change to use that particular setting every time your application
+is subsequently run.
+<br><br>
+This property isn't intended to be changed while the database is connected.
+Rather, it should be set before connecting because it uses special codes in the
+request to connect to the database to make these changes.
+<br><br>
+See IB documentation for more details.}
+  property ReservePageSpace: TIB_DPBFlag read GetReservePageSpace
+                                         write SetReservePageSpace
+                                         stored false;
+{: This gives an alias-like name to the connection. It displays the Database
+property value by default.  It will even allow a new database connection string
+to be supplied, although this is not the intended use of this property.
+<br><br>
+Included for VCL compatibility.
+<br><br>
+IBO checks to make sure that this name is unique for the session. If a
+duplicate is entered, it will have a numeric suffix appended in order to make
+it unique.}
+  property DatabaseName: string read GetDatabaseName
+                                write SetDatabaseName
+                                stored IsDatabaseNameStored;
+{: Page size for the database connected to or about to be created.
+<br><br>
+It is generally recognized that 4096 to 8192 are the best settings.
+The InterBase default page size of 1024 is too small to be useful, while page
+sizes around 10Kb and higher hamper the effectiveness of caching.}
+  property PageSize: word read GetPageSize write SetPageSize stored false;
+{: Sweep Interval for the database connected to. This isn't taken into
+consideration when a database is created.
+<br><br>
+This property isn't intended to be changed while the database is connected.
+Rather, it should be set before connecting because it uses special codes in the
+request to connect to the database to make these changes.}
+  property SweepInterval: word read GetSweepInterval
+                               write SetSweepInterval
+                               stored false;
+{: This property gives direct access to the connection parameters stored
+in the string list. It is not necessary to use this property since all of its
+settings are correlated using other more convenient, type checked properties.
+<br><br>
+If there is an existing connection it will not be closed by making changes to
+this property. Changes will affect the other related properties that resolve to
+this in stringlist-based storage and will not take effect until the next time a
+connection is established.
+<br><br>
+It could be a good way to strip a password out of memory after a connection
+has been obtained.
+<br><br>
+Use these Delphi constants as index references for the Values[ ] array:
+<br><br>
+<br>  IB_USER_NAME
+<br>  IB_PASSWORD
+<br>  IB_SERVER
+<br>  IB_PATH
+<br>  IB_LICENSE
+<br>  IB_SYSDBA
+<br>  IB_ENCRYPT_KEY
+<br>  IB_CHARACTER_SET
+<br>  IB_MESSAGE_FILE
+<br>  IB_FORCED_WRITES
+<br>  IB_BUFFERS
+<br>  IB_PAGE_SIZE
+<br>  IB_RESERVE_PAGE_SPACE
+<br>  IB_PROTOCOL
+<br>  IB_DB_KEY_SCOPE
+<br><br>
+  Blank is default or none.
+<br><br>
+IB_TRUE and IB_FALSE can be used for the boolean settings.}
+  property Params: TIB_StringList read FParams write SetParams;
+{: If this property is set to a valid path, IBO will maintain a local cache of
+metadata information that will avoid the need to make metadata queries in order
+to accomplish certain tasks.
+<br><br>
+This is a very helpful feature if your network connection is slow..
+<br><br>
+It is possible to use a path as generic as c:\temp because IBO will
+automatically add the filename of the GDB file as a sub-directory so that all
+database caches will reside in their own designated directory and not overwrite
+one another's files.
+<br><br>
+UPDATING THE SCHEMA CACHE TO REFLECT NEW METADATA
+<br><br>
+If the structure of your database changes, the schema cache needs to be
+regenerated.  If the IBO$SCHEMA_VERSION table is present and populated with
+records (see TIB_SchemaCache.CheckSchemaVersionTable), modifying the version
+numbers in this table will make sure that the corresponding items are rebuilt
+the next time the schema cache is loaded by the client application.  Simply
+update the records in this table in your database and IBO will do the rest!
+<br><br>
+On the other hand, if the IBO$SCHEMA_VERSION table is not present or has no
+records, it is necessary to delete the local files that the schema cache
+creates.  This can be done by calling the SchemaCache.DeleteLocalFiles
+method.  The schema cache files will be automatically regenerated the next
+time cached information is accessed.
+<br><br>
+You could also distribute the cache files with the application and place them
+in the directory for the user.  Note that the version information for loaded
+schema is saved in a file along with the other cache files, so you can
+distribute the cache files with your application even when using the
+IBO$SCHEMA_VERSION table to manage schema versioning.
+<br><br>
+NOTES ON MAKING CHANGES TO METADATA
+<br><br>
+When executing DDL statements through an IB_DSQL or other dataset component,
+IBO prepares the statement individually and can know that it is a DDL type
+statement being executed.  Changing metadata in this manner from within a
+application will cause the entire schema cache to be reloaded.
+<br><br>
+To make changes to metadata from within a application without causing a reload
+of the entire schema cache, use a IB_Script component to make the changes, or
+use the ExecuteImmediate() method.  If the IBO$SCHEMA_VERSION table is being
+used for cache version control, the appropriate items should be updated there;
+otherwise, individual files can be deleted from the schema cache directory.}
+  property SchemaCacheDir: string read GetSchemaCacheDir
+                                  write SetSchemaCacheDir;
+{: Returns or determines whether or not a connection has been obtained.}
+  property Connected: boolean read GetConnected
+                              write SetConnected
+                              stored IsConnectedStored;
+{: Text to signify the beginning of a macro. Statements that are connected to
+to TIB_Connection will assume the same MacroBegin value if a different text is
+not implicitly assigned to the MacroBegin property of the statement. }
+  property MacroBegin: string read FMacroBegin
+                              write SetMacroBegin
+                              stored IsMacroBeginStored;
+{: Text to signify the end of a macro. Statements that are connected to
+TIB_Connection will assume the same MacroEnd value if a different text value is
+not implicitly assigned to the MacroBegin property of the statement. }
+  property MacroEnd: string read FMacroEnd
+                            write SetMacroEnd
+                            stored IsMacroEndStored;
+
+
+{ New Events }
+
+{: Connection event notification.}
+  property BeforeExecDDL: TIB_ConnectionEvent
+     read FBeforeExecDDL
+    write FBeforeExecDDL;
+{: Connection event notification.}
+  property AfterExecDDL: TIB_ConnectionEvent
+     read FAfterExecDDL
+    write FAfterExecDDL;
+{: Connection event notification.}
+  property BeforeConnect: TIB_ConnectionEvent
+     read FBeforeConnect
+    write FBeforeConnect;
+{: Connection event notification.}
+  property AfterConnect: TIB_ConnectionEvent
+     read FAfterConnect
+    write FAfterConnect;
+{: Connection event notification.}
+  property BeforeDisconnect: TIB_ConnectionEvent
+     read FBeforeDisconnect
+    write FBeforeDisconnect;
+{: Connection event notification.}
+  property AfterDisconnect: TIB_ConnectionEvent
+     read FAfterDisconnect
+    write FAfterDisconnect;
+{: Connection event notification.}
+  property BeforeCreateDatabase: TIB_ConnectionEvent
+     read FBeforeCreateDatabase
+    write FBeforeCreateDatabase;
+{: Connection event notification.}
+  property AfterCreateDatabase: TIB_ConnectionEvent
+     read FAfterCreateDatabase
+    write FAfterCreateDatabase;
+{: Connection event notification.}
+  property BeforeDropDatabase: TIB_ConnectionEvent
+     read FBeforeDropDatabase
+    write FBeforeDropDatabase;
+{: Connection event notification.}
+  property AfterDropDatabase: TIB_ConnectionEvent
+     read FAfterDropDatabase
+    write FAfterDropDatabase;
+{: Connection event notification.}
+  property OnConnectedChanged: TIB_ConnectionEvent
+     read FOnConnectedChanged
+    write FOnConnectedChanged;
+{: This event is triggered when a database connection is being established
+and the LoginPrompt property is set to true.
+<br><br>
+It allows a custom dialog to be shown to the user instead of the default one.
+If this event is assigned then the default dialog is not shown.}
+  property OnLogin: TIB_LoginEvent
+     read FOnLogin
+    write FOnLogin;
+{: This event is triggered when the user fails all attempts to log in.
+<br><br>
+It is fired not at each failed attempt but only upon an ultimate failure.}
+  property OnLoginFailure: TIB_ConnectionEvent
+     read FOnLoginFailure
+    write FOnLoginFailure;
+{: This event is triggered when a control that is attached through this
+connection becomes focused.}
+  property OnGainFocus: TIB_ConnectionEvent read FOnGainFocus
+                                            write FOnGainFocus;
+{: This event is triggered when a control that is attached to another
+connection becomes focused and this connection is losing focus.}
+  property OnLoseFocus: TIB_ConnectionEvent read FOnLoseFocus
+                                            write FOnLoseFocus;
+{: This event is used to further refine the DPB that is used in the API call
+to establish the database connection.
+<br><br>
+The IB_SQL sample application has an example of how to use this event.}
+  property OnCustomizeDPB: TIB_CustomizeDPBEvent read FOnCustomizeDPB
+                                                 write FOnCustomizeDPB;
+{: This event gives the developer the ability to enhance and extend the search
+buffer processing capabilities of IBO.}
+  property OnProcessSearchBuffer: TIB_ProcessSearchBuffer
+      read FOnProcessSearchBuffer
+     write FOnProcessSearchBuffer;
+{: This event gives the developer the ability to define a SoundEx parsing
+routine to be used during searches.
+<br><br>
+Simply parse the SourceStr parameter using the same routine as implemented on
+this connection's server.  Return the value as a string.
+<br><br>
+So if your SoundEx algorithm usually returns an integer or small-integer value
+return ResultStr = IntToStr( val );
+<br><br>
+The ReturnStr value is used in a DSQL WHERE clause and would have been
+converted to text anyway.  By providing the interface in this way IBO supports
+SoundEx routines that do want to return string values.
+<br><br>
+For more information refer to the TC_SoundEx and TC_SoundExMax routines
+provided in the IB_Parse unit. }
+  property OnSoundExParse: TIB_SoundExParse
+      read FOnSoundExParse
+     write FOnSoundExParse;
+{: This event gives the developer the ability to define a SoundEx parsing
+routine that supports range selection.  This is NOT a standard SoundEx
+capability, so if your algorithm does not support this simply leave this
+property undefined - and the OnSoundExParse property will be used in its
+place, giving you the same result as usual.  If your algorithm does support
+range selection then, if the NOTRAILING attribute is defined on a search
+column the SQL generated will select WHERE Fld_SX >= SoundExValue AND
+Fld_SX <= SoundExMaxValue.
+<br><br>
+For more information refer to the TC_SoundEx and TC_SoundExMax routines
+provided in the IB_Parse unit. }
+  property OnSoundExMaxParse: TIB_SoundExParse
+      read FOnSoundExMaxParse
+     write FOnSoundExMaxParse;
+{: This event gives an opportunity to reject or modify a DML cache entry that
+is coming in from the external environment. These will typically be generated
+from the TIB_SyncCursor but not necessarily so.}
+  property OnReceiveDMLCache: TIB_ReceiveDMLCacheEvent
+      read FOnReceiveDMLCache
+     write FOnReceiveDMLCache;
+{: This event is used in order to hook in your own customized routine in order
+to handle non-standard collations for incremental searching and other areas
+where IBO needs to know what string is greater than another string.
+<br><br>
+This one is for handling strings in a case insensitive manner.}
+  property OnCustomCompareText: TIB_CompareTextEvent
+      read FOnCustomCompareText
+     write FOnCustomCompareText;
+{: This event is used in order to hook in your own customized routine in order
+to handle non-standard collations for incremental searching and other areas
+where IBO needs to know what string is greater than another string.
+<br><br>
+This one is for handling strings in a case sensitive manner.}
+  property OnCustomCompareStr: TIB_CompareTextEvent
+      read FOnCustomCompareStr
+     write FOnCustomCompareStr;
+
+{: This property is used in order to return the highest char for the current
+column's collation order. This is important for horizontal dataset refinement.
+If this isn't properly handled then it is possible to see a truncated dataset
+when the Last method is called.}     
+  property OnGetHighCollateChar: TIB_GetHighCollateChar
+      read FOnGetHighCollateChar
+     write FOnGetHighCollateChar;
+
+{$IFNDEF HELPSCAN}
+  property _ConnectionLinkCount: integer read GetConnectionLinkCount
+                                         write flag_junk_value
+                                         stored false;
+  property _TransactionCount: integer read GetTransactionCount
+                                      write flag_junk_value
+                                      stored false;
+  property _StatementCount: integer read GetStatementCount
+                                    write flag_junk_value
+                                    stored false;
+  property _DatasetCount: integer read GetDatasetCount
+                                  write flag_junk_value
+                                  stored false;
+{$ENDIF}
+{$I IB_Component.PBL}
+end;
+
+// IBA_Connection.IMP

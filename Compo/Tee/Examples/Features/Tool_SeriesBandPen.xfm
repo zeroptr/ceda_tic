@@ -1,0 +1,82 @@
+inherited ToolSeriesBandPen: TToolSeriesBandPen
+  Left = 359
+  Top = 179
+  Width = 563
+  Height = 432
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 555
+  end
+  inherited Memo1: TMemo
+    Width = 555
+    Lines.Strings = (
+      
+        'The SeriesBandTool Pen defines the outer border Pen of the Serie' +
+        'sBandTool delimited area.')
+  end
+  inherited Chart1: TChart
+    Width = 555
+    Height = 249
+    BackWall.Gradient.EndColor = 11118482
+    BackWall.Gradient.Visible = True
+    BackWall.Transparent = False
+    Border.Color = 14645801
+    Border.Width = 7
+    Border.Visible = True
+    BottomWall.Gradient.EndColor = 16580349
+    BottomWall.Gradient.StartColor = 3114493
+    BottomWall.Gradient.Visible = True
+    Gradient.Direction = gdDiagonalDown
+    Gradient.EndColor = 11645361
+    Gradient.Visible = True
+    LeftWall.Gradient.EndColor = 2413052
+    LeftWall.Gradient.StartColor = 900220
+    LeftWall.Gradient.Visible = True
+    Legend.Gradient.Direction = gdTopBottom
+    Legend.Gradient.EndColor = clYellow
+    Legend.Gradient.StartColor = clWhite
+    Legend.Gradient.Visible = True
+    Legend.Shadow.Transparency = 50
+    Legend.Transparent = True
+    Title.Visible = False
+    Chart3DPercent = 15
+    Shadow.Color = clBlack
+    Shadow.HorizSize = 10
+    Shadow.VertSize = 10
+    BevelOuter = bvNone
+    ColorPaletteIndex = 9
+  end
+  inherited Panel1: TPanel
+    Width = 555
+    object BPen: TButtonPen
+      Left = 7
+      Top = 8
+      HelpContext = 1150
+      Caption = '&Pen...'
+      TabOrder = 0
+    end
+    object CBDrawBehindSeries: TCheckBox
+      Left = 96
+      Top = 12
+      Width = 121
+      Height = 17
+      HelpContext = 1148
+      Caption = '&Draw Behind Series'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnClick = CBDrawBehindSeriesClick
+    end
+    object Button2: TButton
+      Left = 238
+      Top = 8
+      Width = 75
+      Height = 25
+      HelpContext = 1882
+      Caption = '&Edit...'
+      TabOrder = 2
+      OnClick = Button2Click
+    end
+  end
+end

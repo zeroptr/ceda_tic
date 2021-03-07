@@ -1,0 +1,178 @@
+inherited SeriesRegionEditor: TSeriesRegionEditor
+  Left = 192
+  Top = 107
+  ClientHeight = 244
+  ClientWidth = 269
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Panel1: TPanel
+    Width = 269
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 29
+    Width = 269
+    Height = 215
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Options'
+      object GroupBox1: TGroupBox
+        Left = 8
+        Top = 75
+        Width = 177
+        Height = 91
+        Caption = '&Bounds:'
+        TabOrder = 0
+        object Label3: TLabel
+          Left = 61
+          Top = 38
+          Width = 32
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '&Lower:'
+          FocusControl = ELower
+        end
+        object Label4: TLabel
+          Left = 61
+          Top = 61
+          Width = 32
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '&Upper:'
+          FocusControl = EUpper
+        end
+        object ELower: TEdit
+          Left = 98
+          Top = 35
+          Width = 65
+          Height = 21
+          TabOrder = 0
+          Text = '0'
+          OnChange = ELowerChange
+        end
+        object EUpper: TEdit
+          Left = 98
+          Top = 59
+          Width = 65
+          Height = 21
+          TabOrder = 1
+          Text = '0'
+          OnChange = EUpperChange
+        end
+        object CBAutoBounds: TCheckBox
+          Left = 9
+          Top = 18
+          Width = 128
+          Height = 17
+          Caption = '&Automatic'
+          Checked = True
+          State = cbChecked
+          TabOrder = 2
+          OnClick = CBAutoBoundsClick
+        end
+      end
+      object GroupBox2: TGroupBox
+        Left = 8
+        Top = 0
+        Width = 177
+        Height = 69
+        Caption = 'Origin:'
+        TabOrder = 1
+        object Label2: TLabel
+          Left = 62
+          Top = 41
+          Width = 30
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '&Origin:'
+          FocusControl = EOrigin
+        end
+        object CBUseOrigin: TCheckBox
+          Left = 10
+          Top = 17
+          Width = 127
+          Height = 17
+          Caption = '&Use origin'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          OnClick = CBUseOriginClick
+        end
+        object EOrigin: TEdit
+          Left = 98
+          Top = 38
+          Width = 65
+          Height = 21
+          TabOrder = 1
+          Text = '0'
+          OnChange = EOriginChange
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Format'
+      ImageIndex = 1
+      object Label5: TLabel
+        Left = 8
+        Top = 88
+        Width = 68
+        Height = 13
+        Caption = '&Transparency:'
+        FocusControl = ETransp
+      end
+      object ButtonPen1: TButtonPen
+        Left = 104
+        Top = 9
+        Caption = '&Border...'
+        TabOrder = 0
+      end
+      object ButtonColor1: TButtonColor
+        Left = 8
+        Top = 9
+        Caption = '&Color...'
+        TabOrder = 1
+      end
+      object Button1: TButton
+        Left = 8
+        Top = 49
+        Width = 75
+        Height = 25
+        Caption = '&Pattern...'
+        TabOrder = 2
+        OnClick = Button1Click
+      end
+      object CBBehind: TCheckBox
+        Left = 104
+        Top = 53
+        Width = 145
+        Height = 17
+        Caption = '&Draw Behind'
+        TabOrder = 3
+        OnClick = CBBehindClick
+      end
+      object ETransp: TEdit
+        Left = 8
+        Top = 104
+        Width = 57
+        Height = 21
+        TabOrder = 4
+        Text = '0'
+        OnChange = ETranspChange
+      end
+      object UDTransp: TUpDown
+        Left = 65
+        Top = 104
+        Width = 15
+        Height = 21
+        Associate = ETransp
+        TabOrder = 5
+      end
+    end
+    object TabGradient: TTabSheet
+      Caption = 'Gradient'
+      ImageIndex = 2
+    end
+  end
+end

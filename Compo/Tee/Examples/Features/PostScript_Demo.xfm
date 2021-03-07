@@ -1,0 +1,76 @@
+inherited PostScriptForm: TPostScriptForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 90
+  end
+  inherited Memo1: TMemo
+    Height = 49
+    Lines.Strings = (
+      
+        'New PostScript Canvas unit to export TeeCharts to PostScript (EP' +
+        'S) format.'
+      'TeePSCanvas.pas unit is Copyright 2002 by Marjan Slatinek.')
+  end
+  inherited Chart1: TChart
+    Top = 92
+    Height = 245
+    Title.Text.Strings = (
+      'TeeChart Export to PostScript (EPS)')
+    Chart3DPercent = 15
+    object Series1: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series2: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Series3: TLineSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 49
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 153
+      Height = 25
+      Caption = '&Export to PostScript...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = 'ps'
+    FileName = 'Chart1.ps'
+    Filter = 'PostScript files (*.ps)|*.ps'
+    Title = 'Export TeeChart to PostScript'
+    Left = 208
+    Top = 57
+  end
+end

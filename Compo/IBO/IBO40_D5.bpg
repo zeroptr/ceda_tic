@@ -1,0 +1,74 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = IBO40CRT_D5.bpl IBO40VRT_D5.bpl IBO40TRT_D5.bpl IBO40FRT_D5.bpl \
+  IBO40XRT_D5.bpl IBO40WRT_D5.bpl IBO40WXRT_D5.bpl IBO40CDT_D5.bpl \
+  IBO40ADT_D5.bpl IBO40VDT_D5.bpl IBO40TDT_D5.bpl IBO40FDT_D5.bpl IBO40XDT_D5.bpl \
+  IBO40WDT_D5.bpl IBO40WXDT_D5.bpl IBO40EDT_D5.bpl IBO40RPL_D5.bpl IBO40FTS_D5.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+IBO40CRT_D5.bpl: IBO40CRT_D5.dpk
+  $(DCC)
+
+IBO40VRT_D5.bpl: IBO40VRT_D5.dpk
+  $(DCC)
+
+IBO40TRT_D5.bpl: IBO40TRT_D5.dpk
+  $(DCC)
+
+IBO40FRT_D5.bpl: IBO40FRT_D5.dpk
+  $(DCC)
+
+IBO40XRT_D5.bpl: IBO40XRT_D5.dpk
+  $(DCC)
+
+IBO40XDT_D5.bpl: IBO40XDT_D5.dpk
+  $(DCC)
+
+IBO40WXRT_D5.bpl: IBO40WXRT_D5.dpk
+  $(DCC)
+
+IBO40RPL_D5.bpl: IBO40RPL_D5.dpk
+  $(DCC)
+
+IBO40FTS_D5.bpl: IBO40FTS_D5.dpk
+  $(DCC)
+
+IBO40WXDT_D5.bpl: IBO40WXDT_D5.dpk
+  $(DCC)
+
+IBO40WRT_D5.bpl: IBO40WRT_D5.dpk
+  $(DCC)
+
+IBO40WDT_D5.bpl: IBO40WDT_D5.dpk
+  $(DCC)
+
+IBO40CDT_D5.bpl: IBO40CDT_D5.dpk
+  $(DCC)
+
+IBO40VDT_D5.bpl: IBO40VDT_D5.dpk
+  $(DCC)
+
+IBO40TDT_D5.bpl: IBO40TDT_D5.dpk
+  $(DCC)
+
+IBO40FDT_D5.bpl: IBO40FDT_D5.dpk
+  $(DCC)
+
+IBO40EDT_D5.bpl: IBO40EDT_D5.dpk
+  $(DCC)
+
+IBO40ADT_D5.bpl: IBO40ADT_D5.dpk
+  $(DCC)
+
+

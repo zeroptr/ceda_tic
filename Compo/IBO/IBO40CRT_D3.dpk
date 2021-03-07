@@ -1,0 +1,54 @@
+package IBO40CRT_D3;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'IB Objects Core Runtime'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl30,
+  vclx30;
+
+contains
+  IB_Header,
+  IB_Session,
+  IB_Constants,
+  IB_Components,
+  IB_Utils,
+  IB_Parse,
+  uRounding,
+  UnixPass,
+  IB_Schema,
+  IBD_Login,
+  IBD_CancelQuery,
+  IBD_Error,
+  IB_StoredProc,
+  IB_ConnectionSource,
+  IB_TransactionSource,
+  IB_SessionProps,
+  IB_StatementSource,
+  IB_NodeList,
+  IB_MaskInterface;
+
+end.

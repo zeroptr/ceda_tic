@@ -1,0 +1,191 @@
+object FormQuality: TFormQuality
+  Left = 406
+  Top = 254
+  Width = 465
+  Height = 388
+  ActiveControl = Chart1
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Chart1: TChart
+    Left = 0
+    Top = 113
+    Width = 457
+    Height = 248
+    BackWall.Brush.Color = clWhite
+    BackWall.Brush.Style = bsClear
+    Border.EndStyle = esFlat
+    Legend.Alignment = laBottom
+    Legend.Color = clAqua
+    Legend.ColorWidth = 37
+    Legend.Symbol.Width = 37
+    Title.Font.Height = -16
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'Quality Control Chart')
+    BottomAxis.Grid.Visible = False
+    BottomAxis.Title.Caption = 'Samples'
+    Chart3DPercent = 10
+    LeftAxis.Grid.Style = psSolid
+    LeftAxis.LabelsFont.Color = clRed
+    LeftAxis.Title.Caption = 'Production (number of pieces)'
+    RightAxis.AxisValuesFormat = '#,##0.###%'
+    RightAxis.Grid.Visible = False
+    RightAxis.LabelsFont.Color = clGreen
+    RightAxis.LabelsFont.Style = [fsBold]
+    RightAxis.Title.Caption = 'SPC %'
+    Zoom.Animated = True
+    Align = alClient
+    TabOrder = 0
+    object Good: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Bad: TLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clGreen
+      Title = 'Bad % on Good'
+      VertAxis = aRightAxis
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Upper: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clYellow
+      Title = 'Upper %'
+      VertAxis = aRightAxis
+      LinePen.Color = clYellow
+      LinePen.Width = 3
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object Lower: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Length = 8
+      Marks.Visible = False
+      SeriesColor = clBlue
+      Title = 'Lower %'
+      VertAxis = aRightAxis
+      LinePen.Color = clBlue
+      LinePen.Width = 3
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 457
+    Height = 113
+    Align = alTop
+    TabOrder = 1
+    object Memo2: TMemo
+      Left = 1
+      Top = 1
+      Width = 365
+      Height = 111
+      Align = alClient
+      Lines.Strings = (
+        'Calculating and charting the Upper and Lower limits of an '
+        'SPC Quality Control series.'
+        
+          'This example includes formulae to calculate the SPC upper and lo' +
+          'wer '
+        
+          'limits. The Chart displays 2 series, one with the number of "goo' +
+          'd" parts '
+        
+          'and another with the percent of "bad" parts. With these two Seri' +
+          'es, '
+        'the example calculates two values: the upper and lower limits.'
+        'These limits are displayed using another two series.  '
+        
+          'Correctness of calculation depends very much on your particular ' +
+          'country rules.'
+        ' ')
+      ScrollBars = ssVertical
+      TabOrder = 0
+      WordWrap = False
+    end
+    object Panel2: TPanel
+      Left = 366
+      Top = 1
+      Width = 90
+      Height = 111
+      Align = alRight
+      TabOrder = 1
+      object Label1: TLabel
+        Left = 4
+        Top = 12
+        Width = 52
+        Height = 13
+        Caption = '&Upper limit:'
+        FocusControl = UpperEdit
+      end
+      object Label2: TLabel
+        Left = 4
+        Top = 60
+        Width = 52
+        Height = 13
+        Caption = '&Lower limit:'
+        FocusControl = LowerEdit
+      end
+      object UpperEdit: TEdit
+        Left = 7
+        Top = 32
+        Width = 73
+        Height = 21
+        TabOrder = 0
+        Text = 'UpperEdit'
+        OnChange = UpperEditChange
+      end
+      object LowerEdit: TEdit
+        Left = 7
+        Top = 80
+        Width = 73
+        Height = 21
+        TabOrder = 1
+        Text = 'LowerEdit'
+        OnChange = LowerEditChange
+      end
+    end
+  end
+end

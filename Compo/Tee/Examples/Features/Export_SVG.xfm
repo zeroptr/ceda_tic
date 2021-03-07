@@ -1,0 +1,201 @@
+inherited SVGExportForm: TSVGExportForm
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Exporting to SVG (Scalable Vector Graphics) graphic format is av' +
+        'ailable using the '
+      'Export Dialog or by code at run-time. '
+      ''
+      'The TeeSVG unit should be used. (Uses TeeSVG).')
+    TabOrder = 1
+  end
+  inherited Chart1: TChart
+    BackWall.Gradient.EndColor = clBlue
+    BackWall.Gradient.StartColor = 12615935
+    BackWall.Gradient.Visible = True
+    BackWall.Size = 10
+    BackWall.Transparent = False
+    BottomWall.Size = 10
+    Gradient.EndColor = clGray
+    Gradient.MidColor = clWhite
+    Gradient.StartColor = clSilver
+    Gradient.Visible = True
+    LeftWall.Size = 10
+    RightWall.Size = 10
+    Chart3DPercent = 15
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 87
+    View3DOptions.Rotation = 23
+    TabOrder = 0
+    object Series1: TBarSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+      Data = {
+        00060000000000000000A0824000000000008082400000000000D88540000000
+        00003885400000000000C087400000000000D08440}
+    end
+    object Series2: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        011900000000000000000000000000000000688040ABAAAAAAAAAACA3F000000
+        0000F07A40ABAAAAAAAAAADA3F0000000000308040000000000000E43F000000
+        0000A07E40ABAAAAAAAAAAEA3F0000000000408040ABAAAAAAAAAAF03F000000
+        0000E07C40000000000000F43F0000000000107740555555555555F73F000000
+        0000407B40AAAAAAAAAAAAFA3F0000000000307A40FFFFFFFFFFFFFD3F000000
+        0000807A40AAAAAAAAAAAA004000000000003079405555555555550240000000
+        000090734000000000000004400000000000F07840ABAAAAAAAAAA0540000000
+        0000307C4056555555555507400000000000407E400100000000000940000000
+        0000808140ACAAAAAAAAAA0A4000000000008882405755555555550C40000000
+        0000A883400200000000000E400000000000E08340ADAAAAAAAAAA0F40000000
+        0000788240ACAAAAAAAAAA104000000000005882400100000000801140000000
+        000090814056555555555512400000000000D88340ABAAAAAAAA2A1340000000
+        000010834000000000000014400000000000E88540}
+    end
+    object Series3: TPointSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {
+        011900000000000000000000000000000000707440ABAAAAAAAAAACA3F000000
+        0000707440ABAAAAAAAAAADA3F0000000000707340000000000000E43F000000
+        0000507540ABAAAAAAAAAAEA3F0000000000507340ABAAAAAAAAAAF03F000000
+        0000107440000000000000F43F0000000000C06C40555555555555F73F000000
+        0000407440AAAAAAAAAAAAFA3F0000000000007640FFFFFFFFFFFFFD3F000000
+        0000B07040AAAAAAAAAAAA00400000000000B075405555555555550240000000
+        0000E0724000000000000004400000000000B07740ABAAAAAAAAAA0540000000
+        0000E0724056555555555507400000000000606A400100000000000940000000
+        0000707240ACAAAAAAAAAA0A4000000000009076405755555555550C40000000
+        0000F070400200000000000E400000000000307640ADAAAAAAAAAA0F40000000
+        0000107740ACAAAAAAAAAA104000000000007074400100000000801140000000
+        0000F0784056555555555512400000000000807A40ABAAAAAAAA2A1340000000
+        0000B07E4000000000000014400000000000607940}
+    end
+    object Series4: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = True
+      Active = False
+      Gradient.Direction = gdRadial
+      Gradient.EndColor = clTeal
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        04080000000000000000004840044361727300000000002084400650686F6E65
+        730000000000B08440065461626C65730000000000006640084D6F6E69746F72
+        730000000000907540054C616D70730000000000688B40094B6579626F617264
+        7300000000000884400542696B6573000000000060814006436861697273}
+    end
+    object Series5: TBubbleSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Frame.Visible = False
+      Marks.Transparent = True
+      Marks.Visible = False
+      ClickableLine = False
+      Pointer.HorizSize = 11
+      Pointer.InflateMargins = False
+      Pointer.Style = psCircle
+      Pointer.VertSize = 11
+      Pointer.Visible = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      RadiusValues.Name = 'Radius'
+      RadiusValues.Order = loNone
+      Data = {
+        010800000000000000000000000000000000804240ABAAAAAAAAAA5540B76DDB
+        B66DDBE63F0000000000C05740ABAAAAAAAA2A5A40B76DDBB66DDBF63F000000
+        0000707F40ABAAAAAAAA2A564049922449922401400000000000005F40ABAAAA
+        AAAA2A5A40B76DDBB66DDB06400000000000388340ABAAAAAAAAEA5D40254992
+        2449920C400000000000D88540ABAAAAAAAAAA55404992244992241140000000
+        0000108040ABAAAAAAAA6A594000000000000014400000000000C06D40ABAAAA
+        AAAA6A5C40}
+    end
+    object ChartTool1: TAnnotationTool
+      Callout.Brush.Color = clBlack
+      Callout.Arrow.Visible = False
+      Shape.CustomPosition = True
+      Shape.Left = 55
+      Shape.Top = 25
+      Shape.Transparency = 60
+      Shape.Text = 'Hello'#13'World !'
+      Text = 'Hello'#13'World !'
+    end
+    object ChartTool2: TAnnotationTool
+      Callout.Brush.Color = clBlack
+      Callout.Arrow.Visible = False
+      Shape.ShapeStyle = fosRoundRectangle
+      Shape.Text = 'round'
+      Text = 'round'
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 272
+      Top = 16
+      Width = 91
+      Height = 13
+      Cursor = crHandPoint
+      Caption = '&Adobe SVG Viewer'
+      Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlue
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsUnderline]
+      ParentColor = False
+      ParentFont = False
+      OnClick = Label1Click
+    end
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 97
+      Height = 25
+      Caption = '&Save to SVG...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 128
+      Top = 8
+      Width = 129
+      Height = 25
+      Caption = 'Show &Export dialog...'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+  end
+end

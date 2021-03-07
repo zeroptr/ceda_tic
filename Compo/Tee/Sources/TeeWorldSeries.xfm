@@ -1,0 +1,40 @@
+inherited WorldSeriesEditor: TWorldSeriesEditor
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited PageControl2: TPageControl
+    inherited TabGlobal: TTabSheet
+      object Label7: TLabel [2]
+        Left = 104
+        Top = 88
+        Width = 24
+        Height = 13
+        Caption = '&Map:'
+        FocusControl = CBMap
+      end
+      object CBMap: TComboFlat
+        Left = 104
+        Top = 104
+        Width = 145
+        ItemIndex = 0
+        TabOrder = 7
+        Text = 'World'
+        OnChange = CBMapChange
+        Items.Strings = (
+          'World'
+          'Africa'
+          'Asia'
+          'Australia'
+          'Central America'
+          'Europe'
+          'Europe 15'
+          'Europe 27'
+          'Spain'
+          'Middle East'
+          'North America'
+          'South America'
+          'USA'
+          'USA Hawaii Alaska')
+      end
+    end
+  end
+end

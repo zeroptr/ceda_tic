@@ -1,0 +1,189 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<Alignment>0</Alignment>
+<AlignmentMargin>5</AlignmentMargin>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>0</BackGroundColor>
+<BorderStyle>2</BorderStyle>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Style>1</ErrorFont.Style>
+<ErrorFont.Color>255</ErrorFont.Color>
+<ErrorFont.Name>MS Sans Serif</ErrorFont.Name>
+<ErrorFont.Size>8</ErrorFont.Size>
+<ErrorText>Error</ErrorText>
+<Font.Style>1</Font.Style>
+<Font.Color>16776960</Font.Color>
+<Font.Name>MS Sans Serif</Font.Name>
+<Font.Size>8</Font.Size>
+<Precision>1</Precision>
+<UnitsText></UnitsText>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Color Scheme</Name>
+<Scheme>
+<Name>Teal [Default]</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>16776960</Font.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Automobile</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>65535</Font.Color>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Midnight</Name>
+<Properties>
+<BackGroundColor>0</BackGroundColor>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Color>255</ErrorFont.Color>
+<Font.Color>16777215</Font.Color>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Units Scheme</Name>
+<Scheme>
+<Name>No Units [Default]</Name>
+<Properties>
+<UnitsText> </UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Celcius (°C)</Name>
+<Properties>
+<UnitsText> °C</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Farenheight (°F)</Name>
+<Properties>
+<UnitsText> °F</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Degrees Kelvin (°K)</Name>
+<Properties>
+<UnitsText> °K</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Amps (A)</Name>
+<Properties>
+<UnitsText> A</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Milliamps (mA)</Name>
+<Properties>
+<UnitsText> mA</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Microamps (µA)</Name>
+<Properties>
+<UnitsText> µA</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Volts (V)</Name>
+<Properties>
+<UnitsText> V</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Kilovolts (kV)</Name>
+<Properties>
+<UnitsText> kV</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Millivolts (mV)</Name>
+<Properties>
+<UnitsText> mV</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Microvolts (µV)</Name>
+<Properties>
+<UnitsText> µV</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Watts (W)</Name>
+<Properties>
+<UnitsText> W</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Killowatts (kW)</Name>
+<Properties>
+<UnitsText> kW</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Megawatts (MW)</Name>
+<Properties>
+<UnitsText> MW</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Kilometers (km)</Name>
+<Properties>
+<UnitsText> km</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Centimeters (cm)</Name>
+<Properties>
+<UnitsText> cm</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Millimeters (mm)</Name>
+<Properties>
+<UnitsText> mm</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Micrometers (µm)</Name>
+<Properties>
+<UnitsText> µm</UnitsText>
+</Properties>
+</Scheme>
+<Scheme>
+<Name>Angstroms (Å)</Name>
+<Properties>
+<UnitsText> Å</UnitsText>
+</Properties>
+</Scheme>
+</SchemeType>
+<SchemeType>
+<Name>Error Scheme</Name>
+<Scheme>
+<Name>Default</Name>
+<Properties>
+<ErrorBackGroundColor>0</ErrorBackGroundColor>
+<ErrorFont.Style>1</ErrorFont.Style>
+<ErrorFont.Color>255</ErrorFont.Color>
+<ErrorFont.Name>MS Sans Serif</ErrorFont.Name>
+<ErrorFont.Size>8</ErrorFont.Size>
+<ErrorText>Error</ErrorText>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

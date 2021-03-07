@@ -1,0 +1,23 @@
+object TransposeSeriesToolEdit: TTransposeSeriesToolEdit
+  Left = 249
+  Top = 164
+  AutoScroll = False
+  ClientHeight = 158
+  ClientWidth = 183
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object BTranspose: TButton
+    Left = 16
+    Top = 24
+    Width = 145
+    Height = 25
+    HelpContext = 1869
+    Caption = '&Transpose now'
+    TabOrder = 0
+    OnClick = BTransposeClick
+  end
+end

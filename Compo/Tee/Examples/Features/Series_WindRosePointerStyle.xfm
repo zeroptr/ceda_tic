@@ -1,0 +1,108 @@
+inherited SeriesWindRosePointerStyle: TSeriesWindRosePointerStyle
+  Width = 624
+  Height = 516
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Width = 616
+  end
+  inherited Memo1: TMemo
+    Width = 616
+    Lines.Strings = (
+      
+        'Custom Polar series can be customized to display diferent pointe' +
+        'rs using the OnGetPointerStyle event:'
+      ''
+      'Example:'
+      ''
+      
+        'function TForm1.Series1GetPointerStyle(Sender: TChartSeries; Val' +
+        'ueIndex: Integer): TSeriesPointerStyle;'
+      'begin'
+      '  if Series1.RadiusValues.Items[ValueIndex] > 600 then'
+      '  begin'
+      '    Series1.Pointer.HorizSize:=10;'
+      '    Series1.Pointer.VertSize:=10;'
+      '    result:=psCircle;'
+      '  end'
+      '  else'
+      '  begin'
+      '    Series1.Pointer.HorizSize:=4;'
+      '    Series1.Pointer.VertSize:=4;'
+      '    result:=TSeriesPointerStyle(Random(13));'
+      '  end;'
+      'end;'
+      '')
+  end
+  inherited Chart1: TChart
+    Width = 616
+    Height = 333
+    Gradient.EndColor = clSilver
+    Gradient.Visible = True
+    Legend.Visible = False
+    Title.Visible = False
+    BottomAxis.Axis.Width = 1
+    BottomAxis.Grid.SmallDots = True
+    BottomAxis.Increment = 10.000000000000000000
+    LeftAxis.Axis.Width = 1
+    LeftAxis.Grid.SmallDots = True
+    RightAxis.Axis.Width = 1
+    TopAxis.Axis.Width = 1
+    View3D = False
+    ColorPaletteIndex = 6
+    object Series1: TWindRoseSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = clRed
+      Circled = True
+      Shadow.Visible = False
+      AngleIncrement = 10.000000000000000000
+      AngleValues.Name = 'Angle'
+      AngleValues.Order = loAscending
+      Brush.Color = clWhite
+      Brush.Style = bsClear
+      CircleGradient.Direction = gdRadial
+      CircleGradient.EndColor = 14155775
+      CircleGradient.Visible = True
+      CircleLabelsFont.Color = clNavy
+      CircleLabelsRotated = True
+      CirclePen.Color = clNavy
+      CirclePen.SmallDots = True
+      Pen.Color = clNavy
+      Pointer.Gradient.EndColor = 13500416
+      Pointer.InflateMargins = True
+      Pointer.Pen.SmallDots = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = True
+      OnGetPointerStyle = Series1GetPointerStyle
+      Data = {
+        011400000000000000000032400000000000208C400000000000004240000000
+        0000F07E400000000000004B400000000000D088400000000000005240000000
+        000080504000000000008056400000000000B07E400000000000005B40000000
+        0000C88E400000000000805F4000000000005088400000000000006240000000
+        0000004640000000000040644000000000001080400000000000806640000000
+        000000F03F0000000000C0684000000000009083400000000000006B40000000
+        0000E07B400000000000406D400000000000E88D400000000000806F40000000
+        0000E07C400000000000E0704000000000003882400000000000007240000000
+        0000F07F4000000000002073400000000000D088400000000000407440000000
+        0000C08B40000000000060754000000000006068400000000000807640000000
+        0000307D40}
+    end
+  end
+  inherited Panel1: TPanel
+    Width = 616
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 11
+      Width = 225
+      Height = 17
+      Caption = 'Use OnGetPointerStyle event'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

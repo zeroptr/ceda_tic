@@ -1,0 +1,127 @@
+inherited DrawLineToolDemo: TDrawLineToolDemo
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'The Draw Line tool allows the user to draw lines at run-time usi' +
+        'ng the mouse.'
+      'Line pen is customizable.'
+      'All drawn lines are stored in a Lines array property.'
+      ''
+      'Example: Draw a line dragging the mouse.')
+  end
+  inherited Chart1: TChart
+    Top = 137
+    Height = 200
+    Title.Visible = False
+    View3D = False
+    object Series1: TFastLineSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      LinePen.Color = clRed
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
+    object ChartTool1: TDrawLineTool
+      Pen.Color = clBlue
+      OnNewLine = ChartTool1NewLine
+      OnSelect = ChartTool1Select
+    end
+  end
+  inherited Panel1: TPanel
+    Height = 64
+    object Label1: TLabel
+      Left = 104
+      Top = 16
+      Width = 28
+      Height = 13
+      Caption = 'Lines:'
+    end
+    object NumLines: TLabel
+      Left = 144
+      Top = 16
+      Width = 6
+      Height = 13
+      Caption = '0'
+    end
+    object Label2: TLabel
+      Left = 264
+      Top = 16
+      Width = 68
+      Height = 13
+      Caption = '&Mouse button:'
+      FocusControl = ComboBox1
+    end
+    object CheckBox1: TCheckBox
+      Left = 8
+      Top = 6
+      Width = 65
+      Height = 17
+      Caption = '&Active'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+    object ButtonPen1: TButtonPen
+      Left = 176
+      Top = 5
+      Caption = '&Pen...'
+      TabOrder = 1
+      OnClick = ButtonPen1Click
+    end
+    object ComboBox1: TComboBox
+      Left = 338
+      Top = 13
+      Width = 97
+      Height = 21
+      Style = csDropDownList
+      Color = clWindow
+      ItemHeight = 13
+      TabOrder = 2
+      OnChange = ComboBox1Change
+      Items.Strings = (
+        'Left'
+        'Right'
+        'Middle')
+    end
+    object CheckBox2: TCheckBox
+      Left = 8
+      Top = 23
+      Width = 85
+      Height = 17
+      Caption = '&Enable Draw'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = CheckBox2Click
+    end
+    object CheckBox3: TCheckBox
+      Left = 8
+      Top = 40
+      Width = 113
+      Height = 17
+      Caption = 'Enable &Selection'
+      Checked = True
+      State = cbChecked
+      TabOrder = 4
+      OnClick = CheckBox3Click
+    end
+    object ButtonDelete: TButton
+      Left = 176
+      Top = 34
+      Width = 75
+      Height = 25
+      Caption = '&Delete'
+      Enabled = False
+      TabOrder = 5
+      OnClick = ButtonDeleteClick
+    end
+  end
+end

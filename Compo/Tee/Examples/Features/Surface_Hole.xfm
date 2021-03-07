@@ -1,0 +1,148 @@
+object SurfaceHolesForm: TSurfaceHolesForm
+  Left = 359
+  Top = 136
+  Width = 448
+  Height = 309
+  Color = clBtnFace
+  ParentFont = True
+  OldCreateOrder = True
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Chart1: TChart
+    Left = 0
+    Top = 74
+    Width = 440
+    Height = 208
+    BackImage.Data = {
+      07544269746D617056030000424D560300000000000076000000280000001C00
+      00002E0000000100040000000000E00200000000000000000000100000001000
+      0000000000000000800000800000008080008000000080008000808000008080
+      8000C0C0C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
+      FF008B8B8B8B8B8BFB8B3B8B8B8B8B8BFFFFB8B8B8B8B8B8F8B838B8B8B8B8B8
+      FFFF8B8B8B8B8B8BFB8B3B8B8B8B8B8B1110B8B8B8B8B8B8F8B838B8B8B8B8B8
+      AA508B8B8B8B8B8BFB8B3B8B8B8B8B8BAA50B8B8B8B8B8B8F8B833B8B8B8B8B8
+      BB508B8B8B8B83338B8B83338B8B8B8B3333B8B8B8B333B8B8B8B8B333B8B8B8
+      FFFF8B8B83338B8B8B8B8B8B83338B8B0000B8B333B8B8B8BFFFB8B8B8B333B8
+      000083338B8B8B8FFF8FFF8B8B8B8333F57933B8B8B8BFFFB8B8BFFFB8B8B8B3
+      55D08B8B8B8FFF8B8B8B8B8FFF8B8B8BFFFFB8B8BFFFB8B8B8B8B8B8BFFFB8B8
+      FFFF8B8FFF8B8B8B8B8B8B8B8B8FFF8B1110B83FB8B8B8B8B8B8B8B8B8B8BFF8
+      AA508B3B8B8B8B8B8B8B8B8B8B8B8BFB8A50B838B8B8B8B8B8B8B8B8B8B8B8F8
+      BB508B3B8B8B8B8B8B8B8B8B8B8B8BFB3333B838B8B8B8B8B8B8B8B8B8B8B8F8
+      FFFF8B3B8B8B8B8B8B8B8B8B8B8B8BFB0000B838B8B8B8B8B8B8B8B8B8B8B8F8
+      00008B3B8B8B8B8B8B8B8B8B8B8B8BFB7F75B838B8B8B8B8B8B8B8B8B8B8B8F8
+      77578B3B8B8B8B8B8B8B8B8B8B8B8BFBFFFFB838B8B8B8B8B8B8B8B8B8B8B8F8
+      FFFF8B3B8B8B8B8B8B8B8B8B8B8B8BFB1110B838B8B8B8B8B8B8B8B8B8B8B8F8
+      AA508B338B8B8B8B8B8B8B8B8B8B8BFBAA50B8B333B8B8B8B8B8B8B8B8B333B8
+      BB508B8B83338B8B8B8B8B8B83338B8B3333B8B8B8B333B8B8B8B8B333B8B8B8
+      FFFFFF8B8B8B83338B8B83338B8B8B8F0000BFFFB8B8B8B333B333B8B8B8BFFF
+      00008B8FFF8B8B8B83338B8B8B8FFF8B7FD5B8B8BFFFB8B8B8B8B8B8BFFFB8B8
+      DDDD8B8B8B8FFF8B8B8B8B8FFF8B8B8BFFFFB8B8B8B8BFFFB8B8BFFFB8B8B8B8
+      FFFF8B8B8B8B8B8FFB8B3F8B8B8B8B8B1110B8B8B8B8B8B8F8B838B8B8B8B8B8
+      88508B8B8B8B8B8BFB8B3B8B8B8B8B8B8850B8B8B8B8B8B8F8B838B8B8B8B8B8
+      BB508B8B8B8B8B8BFB8B3B8B8B8B8B8B3333B8B8B8B8B8B8F8B838B8B8B8B8B8
+      FFFF8B8B8B8B8B8BFB8B3B8B8B8B8B8B0000B8B8B8B8B8B8F8B838B8B8B8B8B8
+      0000}
+    BackImageMode = pbmTile
+    BackWall.Brush.Color = clWhite
+    BackWall.Size = 10
+    BottomWall.Color = 8454016
+    BottomWall.Size = 6
+    LeftWall.Color = 16777088
+    LeftWall.Size = 6
+    Legend.Visible = False
+    Title.Text.Strings = (
+      'TChart')
+    Title.Visible = False
+    Chart3DPercent = 70
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 55
+    View3DOptions.Zoom = 70
+    Align = alClient
+    TabOrder = 0
+    object Series1: TSurfaceSeries
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+      EndColor = 16744703
+      MidColor = 8453888
+      NumXValues = 15
+      NumZValues = 15
+      SideBrush.Color = clWhite
+      SideBrush.Style = bsClear
+      XValues.DateTime = False
+      XValues.Name = 'X'
+      XValues.Order = loNone
+      YValues.DateTime = False
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      ZValues.DateTime = False
+      ZValues.Name = 'Z'
+      ZValues.Order = loNone
+    end
+  end
+  object TeeCommander1: TTeeCommander
+    Left = 0
+    Top = 0
+    Width = 440
+    Height = 33
+    Panel = Chart1
+    Align = alTop
+    ParentShowHint = False
+    TabOrder = 1
+    LabelValues = False
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 33
+    Width = 440
+    Height = 41
+    Align = alTop
+    TabOrder = 2
+    object BitBtn1: TBitBtn
+      Left = 16
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&Normal'
+      TabOrder = 0
+      OnClick = BitBtn1Click
+    end
+    object BitBtn2: TBitBtn
+      Left = 112
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = '&With hole'
+      TabOrder = 1
+      OnClick = BitBtn2Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 200
+      Top = 12
+      Width = 73
+      Height = 17
+      Caption = '&Animate'
+      Enabled = False
+      TabOrder = 2
+      OnClick = CheckBox1Click
+    end
+    object CheckBox2: TCheckBox
+      Left = 280
+      Top = 12
+      Width = 97
+      Height = 17
+      Caption = '&Back wall'
+      TabOrder = 3
+      OnClick = CheckBox2Click
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = Timer1Timer
+    Left = 24
+    Top = 112
+  end
+end

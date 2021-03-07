@@ -1,0 +1,132 @@
+inherited LegendPositionPercentForm: TLegendPositionPercentForm
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      
+        'Legend position (Left and Top) can be expressed in pixel coordin' +
+        'ates or '
+      'as percent (from 0 to 100) of total Chart Width and Height.'
+      ''
+      'Chart1.Legend.CustomPosition := True;'
+      'Chart1.Legend.PositionUnits := muPercent;'
+      ''
+      'Chart1.Legend.LeftPercent := 25;  // %'
+      'Chart1.Legend.TopPercent := 34; // %'
+      '')
+  end
+  inherited Chart1: TChart
+    Legend.CustomPosition = True
+    Legend.Left = 36
+    Legend.LeftPercent = 5
+    Legend.PositionUnits = muPercent
+    Legend.ResizeChart = False
+    Legend.Shadow.Color = clGray
+    Legend.Shadow.HorizSize = 4
+    Legend.Shadow.Transparency = 20
+    Legend.Shadow.VertSize = 4
+    Legend.Top = 20
+    Legend.TopPercent = 5
+    Legend.Transparency = 1
+    MarginBottom = 10
+    MarginLeft = 10
+    Title.Visible = False
+    LeftAxis.Visible = False
+    ColorPaletteIndex = 10
+    object Series1: TVolumePipeSeries
+      ConePercent = 60
+      Gradient.EndColor = 8653042
+      Gradient.MidColor = clWhite
+      Gradient.StartColor = 8653042
+      Gradient.Visible = True
+      LinesPen.Visible = False
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      Pen.Visible = False
+      Data = {
+        0405000000000000000020714004436172730000000000F880400650686F6E65
+        730000000000508540065461626C65730000000000C08940084D6F6E69746F72
+        730000000000507E40054C616D7073}
+    end
+  end
+  inherited Panel1: TPanel
+    object Label1: TLabel
+      Left = 152
+      Top = 15
+      Width = 21
+      Height = 13
+      Caption = '&Left:'
+      FocusControl = Edit1
+    end
+    object Label2: TLabel
+      Left = 245
+      Top = 15
+      Width = 22
+      Height = 13
+      Caption = '&Top:'
+      FocusControl = Edit2
+    end
+    object cbCustom: TCheckBox
+      Left = 16
+      Top = 14
+      Width = 113
+      Height = 17
+      Caption = '&Custom position'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = cbCustomClick
+    end
+    object Edit1: TEdit
+      Left = 177
+      Top = 12
+      Width = 33
+      Height = 21
+      TabOrder = 1
+      Text = '5'
+      OnChange = Edit1Change
+    end
+    object Edit2: TEdit
+      Left = 274
+      Top = 12
+      Width = 33
+      Height = 21
+      TabOrder = 2
+      Text = '5'
+      OnChange = Edit2Change
+    end
+    object UpDown1: TUpDown
+      Left = 210
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Max = 1000
+      Position = 5
+      TabOrder = 3
+    end
+    object UpDown2: TUpDown
+      Left = 307
+      Top = 12
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Max = 1000
+      Position = 5
+      TabOrder = 4
+    end
+    object cbPercent: TCheckBox
+      Left = 344
+      Top = 15
+      Width = 97
+      Height = 17
+      Caption = '&Percent'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+      OnClick = cbPercentClick
+    end
+  end
+end

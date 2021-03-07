@@ -1,0 +1,50 @@
+inherited CandleOnGetPointer: TCandleOnGetPointer
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited Memo1: TMemo
+    Lines.Strings = (
+      'Candle series now uses the OnGetPointerStyle event.'
+      'This event is called just before each Candle is displayed.'
+      'On this event we can modify properties to alter the display '
+      'of each specific candle point.')
+  end
+  inherited Chart1: TChart
+    Title.Text.Strings = (
+      'Candle Series  --  OnGetPointer event example')
+    View3D = False
+    object Series1: TCandleSeries
+      OnGetPointerStyle = Series1GetPointerStyle
+      CloseValues.DateTime = False
+      CloseValues.Name = 'Close'
+      CloseValues.Order = loNone
+      DateValues.DateTime = True
+      DateValues.Name = 'Date'
+      DateValues.Order = loAscending
+      HighValues.DateTime = False
+      HighValues.Name = 'High'
+      HighValues.Order = loNone
+      LowValues.DateTime = False
+      LowValues.Name = 'Low'
+      LowValues.Order = loNone
+      OpenValues.DateTime = False
+      OpenValues.Name = 'Open'
+      OpenValues.Order = loNone
+      Marks.ArrowLength = 8
+      Marks.Visible = False
+      SeriesColor = clRed
+    end
+  end
+  inherited Panel1: TPanel
+    object CheckBox1: TCheckBox
+      Left = 16
+      Top = 8
+      Width = 265
+      Height = 17
+      Caption = 'Use the event to change Candle border colors'
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CheckBox1Click
+    end
+  end
+end

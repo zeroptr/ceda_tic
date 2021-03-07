@@ -1,0 +1,39 @@
+<SchemeTypes>
+<SchemeType>
+<Name>Overall Scheme</Name>
+<Scheme>
+<Name>Simple Three Position [Default]</Name>
+<Properties>
+<AutoFrameRate>0</AutoFrameRate>
+<BackGroundColor>-2147483633</BackGroundColor>
+<BackGroundColorTop>16776960</BackGroundColorTop>
+<BorderStyle>0</BorderStyle>
+<KnobHandleColor>8421504</KnobHandleColor>
+<KnobHandleWidth>10</KnobHandleWidth>
+<KnobInnerColor>8421504</KnobInnerColor>
+<KnobOuterColor>16777215</KnobOuterColor>
+<KnobRadius>50</KnobRadius>
+<KnobRadiusAutoSize>1</KnobRadiusAutoSize>
+<KnobSideMargin>0</KnobSideMargin>
+<MouseControlStyle>0</MouseControlStyle>
+<PanelBackGroundColor>0</PanelBackGroundColor>
+<PanelFontActive.Style>1</PanelFontActive.Style>
+<PanelFontActive.Color>16776960</PanelFontActive.Color>
+<PanelFontActive.Name>MS Sans Serif</PanelFontActive.Name>
+<PanelFontActive.Size>8</PanelFontActive.Size>
+<PanelFontInactive.Style>1</PanelFontInactive.Style>
+<PanelFontInactive.Color>16777215</PanelFontInactive.Color>
+<PanelFontInactive.Name>MS Sans Serif</PanelFontInactive.Name>
+<PanelFontInactive.Size>8</PanelFontInactive.Size>
+<PanelMarginBottom>0.25</PanelMarginBottom>
+<PanelMarginRow>0.25</PanelMarginRow>
+<PanelMarginTop>0.25</PanelMarginTop>
+<PositionCaption1>On</PositionCaption1>
+<PositionCaption2>Off</PositionCaption2>
+<PositionCaption3>Manual</PositionCaption3>
+<PositionCount>3</PositionCount>
+<UpdateFrameRate>60</UpdateFrameRate>
+</Properties>
+</Scheme>
+</SchemeType>
+</SchemeTypes>

@@ -1,0 +1,103 @@
+inherited ExportExcelForm: TExportExcelForm
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited BaseSplitter1: TSplitter
+    Top = 97
+  end
+  inherited Memo1: TMemo
+    Height = 56
+    Lines.Strings = (
+      'Series data can be exported to Excel spreadsheets. '
+      'There are several options when exporting to'
+      'Excel format, such as include labels, point'#39's index, etc.'
+      '')
+  end
+  inherited Chart1: TChart
+    Top = 99
+    Height = 238
+    object Series1: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series2: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series3: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+    object Series4: TBarSeries
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Visible = True
+      Gradient.Direction = gdTopBottom
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Bar'
+      YValues.Order = loNone
+    end
+  end
+  inherited Panel1: TPanel
+    Top = 56
+    object Button1: TButton
+      Left = 16
+      Top = 8
+      Width = 105
+      Height = 25
+      Caption = '&Save to Excel...'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 240
+      Top = 8
+      Width = 169
+      Height = 25
+      Caption = 'Show &Export dialog...'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+    object CheckBox1: TCheckBox
+      Left = 144
+      Top = 5
+      Width = 89
+      Height = 17
+      Caption = '&Point Index'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+    end
+    object CheckBox2: TCheckBox
+      Left = 144
+      Top = 22
+      Width = 81
+      Height = 17
+      Caption = '&Header'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = 'xls'
+    Filter = 'Excel files (*.xls)|*.xls'
+    Left = 24
+    Top = 122
+  end
+end

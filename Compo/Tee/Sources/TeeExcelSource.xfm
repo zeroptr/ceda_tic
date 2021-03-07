@@ -1,0 +1,142 @@
+inherited ExcelSourceForm: TExcelSourceForm
+  PixelsPerInch = 96
+  TextHeight = 13
+  object LabelFile: TLabel [0]
+    Left = 8
+    Top = 41
+    Width = 60
+    Height = 13
+    Caption = '&Excel file:'
+    FocusControl = EFileName
+  end
+  object LabelSheet: TLabel [1]
+    Left = 8
+    Top = 69
+    Width = 60
+    Height = 13
+    Caption = '&Worksheet:'
+    FocusControl = CBWorkSheet
+  end
+  inherited Pan: TPanel
+    TabOrder = 4
+    inherited PanelApply: TPanel
+      inherited BApply: TButton
+        OnClick = BApplyClick
+      end
+    end
+  end
+  object EFileName: TEdit
+    Left = 87
+    Top = 37
+    Width = 185
+    Height = 21
+    TabOrder = 0
+    OnChange = EFileNameChange
+  end
+  object CBWorkSheet: TComboFlat
+    Left = 87
+    Top = 64
+    Width = 185
+    Enabled = False
+    TabOrder = 1
+    OnChange = CBWorkSheetChange
+  end
+  object GroupBox1: TGroupBox
+    Left = 24
+    Top = 92
+    Width = 105
+    Height = 77
+    Caption = '&Values Range:'
+    TabOrder = 2
+    object Label3: TLabel
+      Left = 8
+      Top = 24
+      Width = 26
+      Height = 13
+      Caption = '&From:'
+    end
+    object Label4: TLabel
+      Left = 8
+      Top = 51
+      Width = 16
+      Height = 13
+      Caption = '&To:'
+      FocusControl = EValTo
+    end
+    object EValFrom: TEdit
+      Left = 52
+      Top = 21
+      Width = 41
+      Height = 21
+      Enabled = False
+      TabOrder = 0
+      OnChange = EValFromChange
+    end
+    object EValTo: TEdit
+      Left = 52
+      Top = 48
+      Width = 41
+      Height = 21
+      Enabled = False
+      TabOrder = 1
+      OnChange = EValFromChange
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 152
+    Top = 92
+    Width = 105
+    Height = 77
+    Caption = '&Labels Range:'
+    TabOrder = 3
+    object Label5: TLabel
+      Left = 8
+      Top = 24
+      Width = 26
+      Height = 13
+      Caption = 'F&rom:'
+    end
+    object Label6: TLabel
+      Left = 8
+      Top = 51
+      Width = 16
+      Height = 13
+      Caption = 'T&o:'
+      FocusControl = ELabTo
+    end
+    object ELabFrom: TEdit
+      Left = 53
+      Top = 21
+      Width = 41
+      Height = 21
+      Enabled = False
+      TabOrder = 0
+      OnChange = EValFromChange
+    end
+    object ELabTo: TEdit
+      Left = 53
+      Top = 48
+      Width = 41
+      Height = 21
+      Enabled = False
+      TabOrder = 1
+      OnChange = EValFromChange
+    end
+  end
+  object Button1: TButton
+    Left = 279
+    Top = 37
+    Width = 75
+    Height = 25
+    Caption = '&Browse...'
+    TabOrder = 5
+    OnClick = Button1Click
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'xls'
+    Filter = 'Microsoft Excel files|*.xls'
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    Left = 304
+    Top = 72
+  end
+end
